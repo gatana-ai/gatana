@@ -4,6 +4,8 @@ import { getCredentialsResource } from '../../actions/resources/credentials.js';
 import { getSandboxResource } from '../../actions/resources/sandbox.js';
 import { getServerResource } from '../../actions/resources/server.js';
 import { getToolResource } from '../../actions/resources/tool.js';
+import { createSkillsApi } from '../../actions/skills/api.js';
+import { getSkillResource } from '../../actions/skills/resource.js';
 
 export function createGetCommand(gatana: Gatana, gatana2: Gatana2): Command {
   const cmd = new Command('get').description('Display one or many resources');
@@ -50,6 +52,17 @@ export function createGetCommand(gatana: Gatana, gatana2: Gatana2): Command {
       .option('--all', 'Also include archived sandboxes')
       .action(async (id?: string, options?: { all?: boolean }) => {
         await getSandboxResource(gatana, id, options?.all);
+      })
+  );
+
+  cmd.addCommand(
+    new Command('skill')
+      .alias('skills')
+      .description('Get skill(s)')
+      .argument('[name]', 'Skill name (omit to list all)')
+      .option('-q, --query <text>', 'Only skills whose name or description contains the text')
+      .action(async (name?: string, options?: { query?: string }) => {
+        await getSkillResource(createSkillsApi(gatana), name, options?.query);
       })
   );
 

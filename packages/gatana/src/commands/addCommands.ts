@@ -13,6 +13,7 @@ import { createSchemaCommand } from './utility/schema.js';
 import { createCredsCommand } from './server/creds.js';
 import { createSandboxCommand } from './server/sandbox.js';
 import { createToolsCommand } from './server/tool.js';
+import { createSkillsCommand } from './skills.js';
 
 /**
  * Register all verb commands (get, describe, create, delete, deploy, logs, token, auth-info)
@@ -37,6 +38,9 @@ export function registerRootCommands(
   program.addCommand(createCredsCommand(gatana));
   program.addCommand(createHostedCommand(gatana, gatana2));
   program.addCommand(createSandboxCommand(gatana));
+
+  program.commandsGroup('Skills:');
+  program.addCommand(createSkillsCommand(gatana));
 
   program.commandsGroup('Utility Commands:');
   program.addCommand(createConfigCommand(configLoader));

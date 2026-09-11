@@ -163,6 +163,21 @@ Commands for deployments, tools, hosted server lifecycle, and credentials.
 | **hosted download**     | `gatana hosted download <name> [-o path]`                            | Download deployed source code as a zip                         |
 | **creds**               | `gatana creds <slug> [--cred-id <id>]`                               | Get the effective (resolved) credentials/token for a server    |
 
+### Skills
+
+Sync the skills of your organization into the folders AI agents read, and push local changes back. See the [skills documentation](https://docs.gatana.ai/skills) for the full story.
+
+| Command            | Syntax                                                                                           | Description                                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| **skills sync**    | `gatana skills sync [target...] [-w [s]] [--dry-run] [--no-prune] [--force] [-q text] [--quiet]` | Write every skill you can read as `<dir>/<name>/SKILL.md`. Targets: `claude`, `agents`, `hermes`, or a path |
+| **skills push**    | `gatana skills push <path> [--force] [--dry-run]`                                                | Create or update skills from a SKILL.md, a skill folder, or a directory of skill folders                    |
+| **skills ls**      | `gatana skills ls [-q text]`                                                                     | List the skills you can read                                                                                |
+| **skills hook**    | `gatana skills hook <claude\|hermes>`                                                            | Print the configuration that runs a quiet sync when an agent session starts                                 |
+| **get skill**      | `gatana get skill [name] [-q text]`                                                              | List skills, or show one with its instructions                                                              |
+| **describe skill** | `gatana describe skill <name>`                                                                   | Show a skill with its instructions                                                                          |
+
+> **Targets** for `skills sync`: `claude` = `~/.claude/skills` (Claude Code), `agents` = `~/.agents/skills` (Codex, Cursor, Gemini CLI, OpenCode, Copilot, Amp), `hermes` = `~/.hermes/skills`. Default: `claude` and `agents`. Folders the sync did not create are never touched, and a locally edited `SKILL.md` is not overwritten until it is pushed. All skills commands accept `--org <id>`.
+
 ### Utility Commands
 
 Configuration, authentication, and introspection.
@@ -188,6 +203,7 @@ Configuration, authentication, and introspection.
 | `server`      | `servers` | MCP server registrations               |
 | `tool`        | `tools`   | Tools exposed by servers               |
 | `credentials` | `creds`   | Authentication credentials for servers |
+| `skill`       | `skills`  | Markdown instructions agents follow    |
 
 ---
 
@@ -324,6 +340,27 @@ gatana config set-api-key -t sk-abc123 -o my-org --default
 
 # Remove an organization
 gatana config remove org-one
+```
+
+### Skills
+
+```bash
+# Write every skill you can read into ~/.claude/skills and ~/.agents/skills
+gatana skills sync
+
+# Only Hermes, or any directory
+gatana skills sync hermes
+gatana skills sync ./team-skills
+
+# Keep a folder fresh: poll every 60 seconds, or run on every Claude Code session start
+gatana skills sync --watch
+gatana skills hook claude   # paste the output into .claude/settings.json
+
+# Edit ~/.claude/skills/release-checklist/SKILL.md, then send it back
+gatana skills push ~/.claude/skills/release-checklist
+
+# Create a skill from a hand-written SKILL.md
+gatana skills push ./my-skill/SKILL.md
 ```
 
 ### Output Formats
