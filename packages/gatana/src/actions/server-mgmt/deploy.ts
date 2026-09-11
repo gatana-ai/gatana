@@ -67,7 +67,7 @@ export async function getDeploymentLogs(gatana: Gatana, serverSlug: string, opti
  */
 export async function turnOffServer(gatana: Gatana, serverSlug: string): Promise<void> {
   try {
-    await gatana.api.postMcpServersByServerSlugStop({
+    await gatana.api.stopMcpServer({
       path: { serverSlug },
     });
 
@@ -83,7 +83,7 @@ export async function turnOffServer(gatana: Gatana, serverSlug: string): Promise
  */
 export async function turnOnServer(gatana: Gatana, serverSlug: string, options: { wait?: boolean }): Promise<void> {
   try {
-    const { data } = await gatana.api.postMcpServersByServerSlugStart({
+    const { data } = await gatana.api.startMcpServer({
       path: { serverSlug },
     });
 

@@ -27,11 +27,11 @@ export async function getCredentialsResource(
   try {
     let serverId: string | undefined = undefined;
     if (serverSlug) {
-      const { data: serverData } = await gatana2.api.getServersBySlug({ path: { slug: serverSlug } });
+      const { data: serverData } = await gatana2.api.getServerV2({ path: { slug: serverSlug } });
       serverId = serverData?.id;
     }
 
-    const { data } = await gatana2.api.getCredentials({ query: { serverId } });
+    const { data } = await gatana2.api.listCredentialsV2({ query: { serverId } });
 
     const credentials = (data as any)?.credentials ?? [];
 
@@ -44,9 +44,9 @@ export async function getCredentialsResource(
       let secretRes: any = undefined;
       let effectiveRes: any = undefined;
       try {
-        secretRes = await gatana2.api.getCredentialsByIdSecret({ path: { id } });
+        secretRes = await gatana2.api.getCredentialSecretV2({ path: { id } });
         if (withEffectiveCredentials) {
-          effectiveRes = await gatana.api.getMcpServersByServerSlugCredentialsToken({
+          effectiveRes = await gatana.api.getMcpServerCredentialsToken({
             path: { serverSlug: cred.serverSlug },
             query: { credentialsId: cred.id },
           });
@@ -89,7 +89,7 @@ export async function createCredentialsResource(
 ): Promise<void> {
   try {
     // Look up the server to determine auth method
-    const { data: server } = await gatana.api.getMcpServersByServerSlug({
+    const { data: server } = await gatana.api.getMcpServer({
       path: { serverSlug },
     });
 
@@ -135,11 +135,11 @@ export async function createCredentialsResource(
         }
 
         scope === 'server'
-          ? await gatana.api.putMcpServersByServerSlugCredentialsServer({
+          ? await gatana.api.updateMcpServerCredentialsServer({
               path: { serverSlug },
               body: { type: 'oauth', tokenSet },
             })
-          : await gatana.api.putMcpServersByServerSlugCredentialsUser({
+          : await gatana.api.updateMcpServerCredentialsUser({
               path: { serverSlug },
               body: { type: 'oauth', tokenSet },
             });
@@ -147,7 +147,7 @@ export async function createCredentialsResource(
         outputSuccess(`OAuth credentials set for server '${serverSlug}'.`);
       } else {
         // No file/stdin — return the authorize URL
-        const { data } = await gatana.api.getMcpServersByServerSlugCredentialsAuthorizeUrl({
+        const { data } = await gatana.api.getMcpServerCredentialsAuthorizeUrl({
           path: { serverSlug },
           query: { scope: scope },
         });
@@ -183,11 +183,11 @@ export async function createCredentialsResource(
     }
 
     scope === 'server'
-      ? await gatana.api.putMcpServersByServerSlugCredentialsServer({
+      ? await gatana.api.updateMcpServerCredentialsServer({
           path: { serverSlug },
           body: { type: 'apikey', apikeys },
         })
-      : await gatana.api.putMcpServersByServerSlugCredentialsUser({
+      : await gatana.api.updateMcpServerCredentialsUser({
           path: { serverSlug },
           body: { type: 'apikey', apikeys },
         });
@@ -204,7 +204,7 @@ export async function createCredentialsResource(
  */
 export async function deleteCredentialsResource(gatana: Gatana, serverSlug: string, id: string): Promise<void> {
   try {
-    await gatana.api.deleteMcpServersByServerSlugCredentialsByCredentialsId({
+    await gatana.api.deleteMcpServerCredential({
       path: { serverSlug, credentialsId: id },
     });
 

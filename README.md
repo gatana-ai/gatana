@@ -87,7 +87,7 @@ import { Gatana } from 'gatana-sdk';
 // Or, ~/.gatana.config
 
 const client = new Gatana();
-const servers = await client.api.getMcpServers();
+const servers = await client.api.listMcpServers();
 ```
 
 ## Syntax
@@ -397,7 +397,7 @@ npm install gatana-sdk
 import { Gatana } from 'gatana-sdk';
 
 const client = new Gatana();
-const servers = await client.api.getMcpServers();
+const servers = await client.api.listMcpServers();
 ```
 
 ### Custom Authentication

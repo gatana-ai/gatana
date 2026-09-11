@@ -1,6 +1,5 @@
 import { Gatana, Gatana2 } from 'gatana-sdk';
-import { ServerCredentialsDto, getAuditLogs, getDeploymentsStatus } from 'gatana-sdk/api';
-import { Server } from 'gatana-sdk/apiv2';
+import { listAuditLogs, getDeploymentsStatus } from 'gatana-sdk/api';
 import {
   getErrorMessage,
   createServer,
@@ -33,10 +32,10 @@ const serverTableColumns: TableColumn[] = [
 export async function getServerResource(gatana: Gatana, gatana2: Gatana2, slug?: string): Promise<void> {
   try {
     if (slug) {
-      const { data: server } = await gatana2.api.getServersBySlug({ path: { slug } });
+      const { data: server } = await gatana2.api.getServerV2({ path: { slug } });
       output(server, { defaultFormat: 'yaml' });
     } else {
-      const { data } = await gatana2.api.getServers();
+      const { data } = await gatana2.api.listServersV2();
       output({ servers: data?.servers || [] }, { tableColumns: serverTableColumns, defaultFormat: 'table' });
     }
   } catch (error) {
@@ -50,15 +49,15 @@ export async function getServerResource(gatana: Gatana, gatana2: Gatana2, slug?:
  */
 export async function describeServerResource(gatana: Gatana, gatana2: Gatana2, slug: string): Promise<void> {
   try {
-    const { data: server } = await gatana2.api.getServersBySlug({ path: { slug } });
+    const { data: server } = await gatana2.api.getServerV2({ path: { slug } });
     if (!server) {
       outputError(`Server '${slug}' not found.`);
       return;
     }
-    const { data: logsFull } = await getAuditLogs({
+    const { data: logsFull } = await listAuditLogs({
       query: { entityTypes: ['mcp_server', 'mcp'], limit: '5', entityId: server.id.toString() },
     });
-    const { data: credentialsFull } = await gatana2.api.getCredentials({
+    const { data: credentialsFull } = await gatana2.api.listCredentialsV2({
       query: { serverId: server.id },
     });
     const logs = logsFull?.data.map(x => ({
@@ -132,7 +131,7 @@ export async function createServerResource(
  */
 export async function deleteServerResource(gatana: Gatana, gatana2: Gatana2, serverSlug: string): Promise<void> {
   try {
-    await gatana.api.deleteMcpServersByServerSlug({
+    await gatana.api.deleteMcpServer({
       path: { serverSlug },
     });
 
@@ -178,11 +177,11 @@ export async function deployServerResource(
 
     const {
       data: { servers },
-    } = await gatana2.api.getServers();
+    } = await gatana2.api.listServersV2();
     if (!servers.find(x => x.slug === slug)) {
       if (options.create) {
         outputInfo(`Server '${slug}' not found. Creating new server...`);
-        await gatana2.api.postServers({
+        await gatana2.api.createServerV2({
           body: {
             slug,
             transportConfig: { type: 'hosted', runtime: 'node24' },
@@ -206,10 +205,10 @@ export async function deployServerResource(
     }
     // sleep for 250ms - this is a workaround to ensure that the tools are available when we call the refresh endpoint, as there can be a slight delay after deployment even once the deployment is marked as done
     await new Promise(resolve => setTimeout(resolve, 250));
-    await gatana.api.postToolsRefresh({ query: { serverSlug: slug }, headers: { accept: 'text/event-stream' } });
+    await gatana.api.refreshTools({ query: { serverSlug: slug }, headers: { accept: 'text/event-stream' } });
     const {
       data: { tools },
-    } = await gatana.api.getMcpServersByServerSlugTools({ path: { serverSlug: slug } });
+    } = await gatana.api.listMcpServerTools({ path: { serverSlug: slug } });
     output(tools.map(x => ({ tool: x.toolName })));
     outputSuccess(`\nDeployment successful. ${tools.length ?? 0} tool(s) available on server '${slug}'.`);
   } catch (error) {
@@ -248,7 +247,7 @@ export async function getServerLogs(
   }
 
   if (!follow) {
-    const logs = await gatana.api.getDeploymentsLogs({
+    const logs = await gatana.api.listDeploymentsLogs({
       query: {
         podName,
         previous: previous ? 'true' : 'false',

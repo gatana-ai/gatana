@@ -18,7 +18,7 @@ export async function callTool(
 
   let data;
   try {
-    ({ data } = await gatana.api.postMcpServersByServerSlugToolsByToolNameCall({
+    ({ data } = await gatana.api.callMcpServerTool({
       path: {
         serverSlug: slug,
         toolName: name,
@@ -41,7 +41,7 @@ export async function callTool(
   if (result.isError) {
     outputError(result);
     if (result.errorCode === 'auth-required') {
-      const server = await gatana2.api.getServersBySlug({ path: { slug } });
+      const server = await gatana2.api.getServerV2({ path: { slug } });
       const method = server.data?.authorization.method;
       if (method === 'oauth') {
         outputError(`The server is missing credentials. Run "create creds ${slug}" to generate authorization url.`);

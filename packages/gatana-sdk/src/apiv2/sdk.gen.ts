@@ -3,26 +3,32 @@
 import { client } from './client.gen.js';
 import type { Client, Options as Options2, TDataShape } from './client/index.js';
 import type {
-  DeleteCredentialsByIdData,
-  DeleteCredentialsByIdResponses,
-  DeleteServersBySlugData,
-  DeleteServersBySlugResponses,
-  GetCredentialsByIdData,
-  GetCredentialsByIdResponses,
-  GetCredentialsByIdSecretData,
-  GetCredentialsByIdSecretResponses,
-  GetCredentialsData,
-  GetCredentialsResponses,
-  GetServersBySlugData,
-  GetServersBySlugResponses,
-  GetServersData,
-  GetServersResponses,
-  PatchServersBySlugData,
-  PatchServersBySlugResponses,
-  PostServersData,
-  PostServersResponses,
-  PutServersBySlugData,
-  PutServersBySlugResponses,
+  CreateServerV2Data,
+  CreateServerV2Responses,
+  DeleteCredentialV2Data,
+  DeleteCredentialV2Responses,
+  DeleteServerV2Data,
+  DeleteServerV2Responses,
+  GetCredentialAuditLogV2Data,
+  GetCredentialAuditLogV2Responses,
+  GetCredentialSecretV2Data,
+  GetCredentialSecretV2Responses,
+  GetCredentialV2Data,
+  GetCredentialV2Responses,
+  GetServerV2Data,
+  GetServerV2Responses,
+  ListCredentialAuditLogsV2Data,
+  ListCredentialAuditLogsV2Responses,
+  ListCredentialsV2Data,
+  ListCredentialsV2Responses,
+  ListServersV2Data,
+  ListServersV2Responses,
+  PatchServerV2Data,
+  PatchServerV2Responses,
+  RefreshCredentialV2Data,
+  RefreshCredentialV2Responses,
+  UpdateServerV2Data,
+  UpdateServerV2Responses,
 } from './types.gen.js';
 
 export type Options<
@@ -44,10 +50,12 @@ export type Options<
 };
 
 /**
- * List all MCP servers the caller has access to.
+ * List all MCP servers the caller has access to
  */
-export const getServers = <ThrowOnError extends boolean = true>(options?: Options<GetServersData, ThrowOnError>) =>
-  (options?.client ?? client).get<GetServersResponses, unknown, ThrowOnError>({
+export const listServersV2 = <ThrowOnError extends boolean = true>(
+  options?: Options<ListServersV2Data, ThrowOnError>
+) =>
+  (options?.client ?? client).get<ListServersV2Responses, unknown, ThrowOnError>({
     security: [
       { scheme: 'bearer', type: 'http' },
       { scheme: 'bearer', type: 'http' },
@@ -57,10 +65,12 @@ export const getServers = <ThrowOnError extends boolean = true>(options?: Option
   });
 
 /**
- * Create a new MCP server. Requires `slug` and `transportConfig`. All other fields are optional with sensible defaults. Read-only fields are silently ignored.
+ * Create a new MCP server. Requires `slug` and `transportConfig`. All other fields are optional with sensible defaults. Read-only fields are silently ignored
  */
-export const postServers = <ThrowOnError extends boolean = true>(options?: Options<PostServersData, ThrowOnError>) =>
-  (options?.client ?? client).post<PostServersResponses, unknown, ThrowOnError>({
+export const createServerV2 = <ThrowOnError extends boolean = true>(
+  options?: Options<CreateServerV2Data, ThrowOnError>
+) =>
+  (options?.client ?? client).post<CreateServerV2Responses, unknown, ThrowOnError>({
     security: [
       { scheme: 'bearer', type: 'http' },
       { scheme: 'bearer', type: 'http' },
@@ -74,12 +84,12 @@ export const postServers = <ThrowOnError extends boolean = true>(options?: Optio
   });
 
 /**
- * Delete an MCP server.
+ * Delete an MCP server
  */
-export const deleteServersBySlug = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteServersBySlugData, ThrowOnError>
+export const deleteServerV2 = <ThrowOnError extends boolean = true>(
+  options: Options<DeleteServerV2Data, ThrowOnError>
 ) =>
-  (options.client ?? client).delete<DeleteServersBySlugResponses, unknown, ThrowOnError>({
+  (options.client ?? client).delete<DeleteServerV2Responses, unknown, ThrowOnError>({
     security: [
       { scheme: 'bearer', type: 'http' },
       { scheme: 'bearer', type: 'http' },
@@ -89,12 +99,10 @@ export const deleteServersBySlug = <ThrowOnError extends boolean = true>(
   });
 
 /**
- * Get a single MCP server. The response body can be PUT back to update the server.
+ * Get a single MCP server. The response body can be PUT back to update the server
  */
-export const getServersBySlug = <ThrowOnError extends boolean = true>(
-  options: Options<GetServersBySlugData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetServersBySlugResponses, unknown, ThrowOnError>({
+export const getServerV2 = <ThrowOnError extends boolean = true>(options: Options<GetServerV2Data, ThrowOnError>) =>
+  (options.client ?? client).get<GetServerV2Responses, unknown, ThrowOnError>({
     security: [
       { scheme: 'bearer', type: 'http' },
       { scheme: 'bearer', type: 'http' },
@@ -104,12 +112,10 @@ export const getServersBySlug = <ThrowOnError extends boolean = true>(
   });
 
 /**
- * Partially update an MCP server using JSON Merge Patch (RFC 7396). Send only the fields to change. Explicit `null` clears nullable fields (oauthMetadata, oauthClientConfiguration). Absent fields are untouched. Read-only fields are silently ignored.
+ * Partially update an MCP server using JSON Merge Patch (RFC 7396). Send only the fields to change. Explicit `null` clears nullable fields (oauthMetadata, oauthClientConfiguration). Absent fields are untouched. Read-only fields are silently ignored
  */
-export const patchServersBySlug = <ThrowOnError extends boolean = true>(
-  options: Options<PatchServersBySlugData, ThrowOnError>
-) =>
-  (options.client ?? client).patch<PatchServersBySlugResponses, unknown, ThrowOnError>({
+export const patchServerV2 = <ThrowOnError extends boolean = true>(options: Options<PatchServerV2Data, ThrowOnError>) =>
+  (options.client ?? client).patch<PatchServerV2Responses, unknown, ThrowOnError>({
     security: [
       { scheme: 'bearer', type: 'http' },
       { scheme: 'bearer', type: 'http' },
@@ -123,12 +129,12 @@ export const patchServersBySlug = <ThrowOnError extends boolean = true>(
   });
 
 /**
- * Update an MCP server. Accepts the full server object from GET; read-only fields (id, tenantId, createdAt, updatedAt, lastToolRefreshAt) are silently ignored. Supports updating isEnabled, authorization, and config in a single call.
+ * Update an MCP server. Accepts the full server object from GET; read-only fields (id, tenantId, createdAt, updatedAt, lastToolRefreshAt) are silently ignored. Supports updating isEnabled, authorization, and config in a single call
  */
-export const putServersBySlug = <ThrowOnError extends boolean = true>(
-  options: Options<PutServersBySlugData, ThrowOnError>
+export const updateServerV2 = <ThrowOnError extends boolean = true>(
+  options: Options<UpdateServerV2Data, ThrowOnError>
 ) =>
-  (options.client ?? client).put<PutServersBySlugResponses, unknown, ThrowOnError>({
+  (options.client ?? client).put<UpdateServerV2Responses, unknown, ThrowOnError>({
     security: [
       { scheme: 'bearer', type: 'http' },
       { scheme: 'bearer', type: 'http' },
@@ -141,10 +147,13 @@ export const putServersBySlug = <ThrowOnError extends boolean = true>(
     },
   });
 
-export const getCredentials = <ThrowOnError extends boolean = true>(
-  options?: Options<GetCredentialsData, ThrowOnError>
+/**
+ * List the credentials the caller can read, optionally filtered by server. Secret values are not included
+ */
+export const listCredentialsV2 = <ThrowOnError extends boolean = true>(
+  options?: Options<ListCredentialsV2Data, ThrowOnError>
 ) =>
-  (options?.client ?? client).get<GetCredentialsResponses, unknown, ThrowOnError>({
+  (options?.client ?? client).get<ListCredentialsV2Responses, unknown, ThrowOnError>({
     security: [
       { scheme: 'bearer', type: 'http' },
       { scheme: 'bearer', type: 'http' },
@@ -153,10 +162,13 @@ export const getCredentials = <ThrowOnError extends boolean = true>(
     ...options,
   });
 
-export const deleteCredentialsById = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteCredentialsByIdData, ThrowOnError>
+/**
+ * Delete a credential. Requires the delete permission on the credential
+ */
+export const deleteCredentialV2 = <ThrowOnError extends boolean = true>(
+  options: Options<DeleteCredentialV2Data, ThrowOnError>
 ) =>
-  (options.client ?? client).delete<DeleteCredentialsByIdResponses, unknown, ThrowOnError>({
+  (options.client ?? client).delete<DeleteCredentialV2Responses, unknown, ThrowOnError>({
     security: [
       { scheme: 'bearer', type: 'http' },
       { scheme: 'bearer', type: 'http' },
@@ -165,10 +177,13 @@ export const deleteCredentialsById = <ThrowOnError extends boolean = true>(
     ...options,
   });
 
-export const getCredentialsById = <ThrowOnError extends boolean = true>(
-  options: Options<GetCredentialsByIdData, ThrowOnError>
+/**
+ * Get a credential by ID. Secret values are not included
+ */
+export const getCredentialV2 = <ThrowOnError extends boolean = true>(
+  options: Options<GetCredentialV2Data, ThrowOnError>
 ) =>
-  (options.client ?? client).get<GetCredentialsByIdResponses, unknown, ThrowOnError>({
+  (options.client ?? client).get<GetCredentialV2Responses, unknown, ThrowOnError>({
     security: [
       { scheme: 'bearer', type: 'http' },
       { scheme: 'bearer', type: 'http' },
@@ -177,14 +192,62 @@ export const getCredentialsById = <ThrowOnError extends boolean = true>(
     ...options,
   });
 
-export const getCredentialsByIdSecret = <ThrowOnError extends boolean = true>(
-  options: Options<GetCredentialsByIdSecretData, ThrowOnError>
+/**
+ * Reveal the secret values of a credential. Requires the read-secret permission on the credential
+ */
+export const getCredentialSecretV2 = <ThrowOnError extends boolean = true>(
+  options: Options<GetCredentialSecretV2Data, ThrowOnError>
 ) =>
-  (options.client ?? client).get<GetCredentialsByIdSecretResponses, unknown, ThrowOnError>({
+  (options.client ?? client).get<GetCredentialSecretV2Responses, unknown, ThrowOnError>({
     security: [
       { scheme: 'bearer', type: 'http' },
       { scheme: 'bearer', type: 'http' },
     ],
     url: '/credentials/{id}/secret',
+    ...options,
+  });
+
+/**
+ * Refresh the OAuth tokens of a credential and store the new token set. Only OAuth credentials can be refreshed, and the read-secret permission is required
+ */
+export const refreshCredentialV2 = <ThrowOnError extends boolean = true>(
+  options: Options<RefreshCredentialV2Data, ThrowOnError>
+) =>
+  (options.client ?? client).post<RefreshCredentialV2Responses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/credentials/{id}/refresh',
+    ...options,
+  });
+
+/**
+ * List the audit log entries of a credential, paginated. Requires the read-secret permission on the credential
+ */
+export const listCredentialAuditLogsV2 = <ThrowOnError extends boolean = true>(
+  options: Options<ListCredentialAuditLogsV2Data, ThrowOnError>
+) =>
+  (options.client ?? client).get<ListCredentialAuditLogsV2Responses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/credentials/{credentialId}/audit-logs',
+    ...options,
+  });
+
+/**
+ * Get a single audit log entry of a credential. Requires the read-secret permission on the credential
+ */
+export const getCredentialAuditLogV2 = <ThrowOnError extends boolean = true>(
+  options: Options<GetCredentialAuditLogV2Data, ThrowOnError>
+) =>
+  (options.client ?? client).get<GetCredentialAuditLogV2Responses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/credentials/{credentialId}/audit-logs/{auditLogId}',
     ...options,
   });

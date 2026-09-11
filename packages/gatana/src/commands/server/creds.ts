@@ -12,7 +12,7 @@ export function createCredsCommand(gatana: Gatana): Command {
     )
     .action(async (serverSlug: string, options: { credId?: string }) => {
       try {
-        const { data } = await gatana.api.getMcpServersByServerSlugCredentialsToken({
+        const { data } = await gatana.api.getMcpServerCredentialsToken({
           path: { serverSlug },
           query: { credentialsId: options.credId },
         });

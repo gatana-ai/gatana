@@ -1,5 +1,5 @@
 import { Gatana } from 'gatana-sdk';
-import { postSandboxesBySandboxIdSshSession } from 'gatana-sdk/api';
+import { createSandboxSshSession } from 'gatana-sdk/api';
 import { outputError, outputInfo } from '../../output.js';
 import { spawn } from 'child_process';
 
@@ -17,7 +17,7 @@ interface SshSessionResponse {
  */
 export async function sandboxShell(gatana: Gatana, sandboxId: string): Promise<void> {
   try {
-    const { data } = await postSandboxesBySandboxIdSshSession({
+    const { data } = await createSandboxSshSession({
       path: { sandboxId },
     });
 

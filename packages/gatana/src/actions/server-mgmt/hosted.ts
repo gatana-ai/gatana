@@ -151,7 +151,7 @@ export async function createServer(
   slug: string,
   transportType: 'hosted' | 'stdio' | 'httpstreaming' | 'sse'
 ): Promise<HostedServerInfo> {
-  const { data } = await gatana.api.postMcpServers({
+  const { data } = await gatana.api.createMcpServer({
     body: {
       slug: slug.toLowerCase().replace(/[^a-z0-9]/g, '-'),
       transportType,
@@ -201,7 +201,7 @@ export async function uploadZipToFunction(gatana: Gatana, serverSlug: string, zi
 }
 
 export async function startServer(gatana: Gatana, serverSlug: string): Promise<void> {
-  await gatana.api.postMcpServersByServerSlugStart({
+  await gatana.api.startMcpServer({
     path: { serverSlug },
   });
 }
@@ -253,7 +253,7 @@ export async function fetchCrashLogs(
   const attemptFetch = async (): Promise<{ stdout: string; stderr: string } | null> => {
     try {
       await new Promise(resolve => setTimeout(resolve, 200));
-      const { data } = await gatana.api.getDeploymentsLogs({
+      const { data } = await gatana.api.listDeploymentsLogs({
         query: { podName, previous: 'true' },
       });
 
@@ -568,13 +568,13 @@ export function waitForDeploymentDone(
 }
 
 export async function listServers(gatana: Gatana): Promise<HostedServerInfo[]> {
-  const { data } = await gatana.api.getMcpServers();
+  const { data } = await gatana.api.listMcpServers();
 
   return (data?.servers || []).map(s => ({ slug: s.slug }));
 }
 
 export async function getServer(gatana: Gatana, serverSlug: string): Promise<ServerDto> {
-  const { data } = await gatana.api.getMcpServersByServerSlug({
+  const { data } = await gatana.api.getMcpServer({
     path: { serverSlug },
   });
 

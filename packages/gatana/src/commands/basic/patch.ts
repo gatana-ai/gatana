@@ -86,7 +86,7 @@ Examples:
             return;
           }
 
-          const { data } = await gatana.api.patchServersBySlug({
+          const { data } = await gatana.api.patchServerV2({
             path: { slug: serverSlug },
             body,
           });

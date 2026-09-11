@@ -7,90 +7,116 @@ export type ClientOptions = {
 export type V2CreateServerRequest = {
   slug: Schema0;
   transportConfig?: Schema1;
-  transportConfigType?: Schema29;
-  description?: Schema30;
-  authorization?: ServerAuthorization;
-  oauthMetadata?: Schema36;
-  oauthClientConfiguration?: Schema39;
-  isEnabled?: Schema44;
-  timeoutProtocol?: Schema45;
-  timeoutTotal?: Schema46;
-  resetTimeoutOnProgressNotification?: Schema47;
-  isOutputCompressionEnabled?: Schema48;
-  isOutputCompressionTransformEnabled?: Schema49;
-  outputCompressionThresholdBytes?: Schema50;
-  firewallRules?: Schema51;
-  visibility?: ServerVisibility;
-  id?: Schema54;
-  tenantId?: Schema55;
-  lastToolRefreshAt?: Schema56;
-  createdAt?: Schema57;
-  updatedAt?: Schema58;
+  transportConfigType?: Schema60;
+  description?: Schema63;
+  authorization?: Schema65;
+  oauthMetadata?: Schema74;
+  oauthClientConfiguration?: Schema97;
+  isEnabled?: Schema112;
+  timeoutProtocol?: Schema114;
+  timeoutTotal?: Schema116;
+  resetTimeoutOnProgressNotification?: Schema118;
+  isOutputCompressionEnabled?: Schema120;
+  isOutputCompressionTransformEnabled?: Schema122;
+  outputCompressionThresholdBytes?: Schema124;
+  firewallRules?: Schema126;
+  visibility?: Schema129;
+  id?: Schema130;
+  tenantId?: Schema132;
+  lastToolRefreshAt?: Schema134;
+  createdAt?: Schema136;
+  updatedAt?: Schema138;
 };
 
 export type HttpStreamingTransportConfig = {
-  type: Schema2;
-  url: Schema3;
-  headers?: Schema4;
+  type: Schema3;
+  url: Schema4;
+  headers?: Schema5;
 };
 
 export type StdioTransportConfig = {
-  type: Schema5;
-  command: Schema6;
-  dockerImage?: Schema7;
-  env?: Schema8;
-  transport: Schema9;
-  httpPort?: Schema10;
-  urlPath?: Schema11;
-  healthCheck?: Schema12;
-  limits?: Schema13;
+  type: Schema7;
+  command: Schema8;
+  dockerImage?: Schema9;
+  env?: Schema11;
+  transport: Schema13;
+  httpPort?: Schema14;
+  urlPath?: Schema16;
+  healthCheck?: Schema18;
+  limits?: Schema24;
+  requests?: Schema28;
+  storage?: StdioTransportStorage;
+  tailscale?: StdioTransportTailscale;
 };
 
+/**
+ * Persistent storage for the server. When enabled the server keeps one volume, mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the deployment and counts against the organization storage quota
+ */
+export type StdioTransportStorage = Schema32 | null;
+
+/**
+ * Egress-only Tailscale access. When enabled the server can open connections to hosts on your tailnet, and to the subnets its routers advertise. Nothing on the tailnet can reach the server
+ */
+export type StdioTransportTailscale = Schema33 | null;
+
 export type SseTransportConfig = {
-  type: Schema16;
-  url: Schema17;
-  headers?: Schema18;
+  type: Schema35;
+  url: Schema36;
+  headers?: Schema37;
 };
 
 export type HostedTransportConfig = {
-  type: Schema19;
-  runtime: Schema20;
-  env?: Schema21;
-  limits?: Schema22;
+  type: Schema39;
+  runtime: Schema40;
+  env?: Schema41;
+  limits?: Schema43;
+  requests?: Schema45;
+  storage?: HostedTransportStorage;
+  tailscale?: HostedTransportTailscale;
 };
+
+/**
+ * Persistent storage for the server. When enabled the server keeps one volume, mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the deployment and counts against the organization storage quota
+ */
+export type HostedTransportStorage = Schema47 | null;
+
+/**
+ * Egress-only Tailscale access. When enabled the server can open connections to hosts on your tailnet, and to the subnets its routers advertise. Nothing on the tailnet can reach the server
+ */
+export type HostedTransportTailscale = Schema48 | null;
 
 export type OpenApiTransportConfig = {
-  type: Schema23;
-  method: Schema24;
-  specUrl?: Schema25;
-  spec?: Schema26;
-  baseUrl?: Schema27;
-  headers?: Schema28;
-};
-
-export type ServerAuthorization = {
-  method: Schema32;
-  credentialsScope: Schema33;
-  apikeys?: Schema34;
-  toolRefreshCredentialPolicy?: ToolRefreshCredentialPolicy;
+  type: Schema50;
+  method: Schema51;
+  specUrl?: Schema52;
+  spec?: Schema54;
+  baseUrl?: Schema56;
+  headers?: Schema58;
 };
 
 /**
  * Controls how tool refresh is authorized. "server-scoped" means only server-scoped credentials are required, "skip" means refresh is done without authorization, and "any" means any available credentials (server, user, profile) can be used. Defaults to "server-scoped".
  */
-export type ToolRefreshCredentialPolicy = Schema35;
+export type ToolRefreshCredentialPolicy = Schema72;
+
+export type ServerAuthorization = {
+  method: Schema66;
+  credentialsScope: Schema67;
+  apikeys?: Schema70;
+  toolRefreshCredentialPolicy?: ToolRefreshCredentialPolicy;
+};
 
 export type ServerOAuthMetadata = {
-  resource?: Schema37;
-  as?: Schema38;
+  resource?: Schema76;
+  as?: Schema81;
 };
 
 export type ServerOAuthClientConfiguration = {
-  clientId?: Schema40;
-  clientSecret?: Schema41;
-  grantType: OAuthGrantType;
-  clientAuthMethod: Schema42;
-  scopes?: Schema43;
+  clientId?: Schema99;
+  clientSecret?: Schema101;
+  grantType: Schema103;
+  clientAuthMethod: Schema104;
+  scopes?: Schema109;
 };
 
 export type OAuthGrantType = 'authorization_code' | 'device_code';
@@ -98,293 +124,797 @@ export type OAuthGrantType = 'authorization_code' | 'device_code';
 export type ServerVisibility = 'private' | 'organization';
 
 export type V2UpdateServerRequest = {
-  slug?: Schema60;
-  description?: Schema61;
-  authorization?: ServerAuthorization;
-  transportConfig?: Schema63;
-  oauthMetadata?: Schema64;
-  oauthClientConfiguration?: Schema65;
-  isEnabled?: Schema66;
-  timeoutProtocol?: Schema67;
-  timeoutTotal?: Schema68;
-  resetTimeoutOnProgressNotification?: Schema69;
-  isOutputCompressionEnabled?: Schema70;
-  isOutputCompressionTransformEnabled?: Schema71;
-  outputCompressionThresholdBytes?: Schema72;
-  firewallRules?: Schema73;
-  visibility?: ServerVisibility;
-  id?: Schema75;
-  tenantId?: Schema76;
-  name?: Schema77;
-  lastToolRefreshAt?: Schema78;
-  createdAt?: Schema79;
-  updatedAt?: Schema80;
+  slug?: Schema141;
+  description?: Schema63;
+  authorization?: Schema65;
+  transportConfig?: Schema145;
+  oauthMetadata?: Schema74;
+  oauthClientConfiguration?: Schema97;
+  isEnabled?: Schema112;
+  timeoutProtocol?: Schema114;
+  timeoutTotal?: Schema116;
+  resetTimeoutOnProgressNotification?: Schema118;
+  isOutputCompressionEnabled?: Schema120;
+  isOutputCompressionTransformEnabled?: Schema122;
+  outputCompressionThresholdBytes?: Schema124;
+  firewallRules?: Schema126;
+  visibility?: Schema129;
+  id?: Schema158;
+  tenantId?: Schema160;
+  name?: Schema162;
+  lastToolRefreshAt?: Schema164;
+  createdAt?: Schema166;
+  updatedAt?: Schema168;
 };
 
 export type V2PatchServerRequest = {
-  [key in Schema81]?: Schema82;
+  [key in Schema170]?: Schema171;
 };
 
+/**
+ * URL-friendly name of the server, unique within the tenant
+ */
 export type Schema0 = string;
 
-export type Schema1 =
+/**
+ * Transport configuration used to connect to the server
+ */
+export type Schema1 = Schema2;
+
+export type Schema2 =
   | HttpStreamingTransportConfig
   | StdioTransportConfig
   | SseTransportConfig
   | HostedTransportConfig
   | OpenApiTransportConfig;
 
-export type Schema2 = 'httpstreaming';
+/**
+ * Transport type discriminator, always "httpstreaming"
+ */
+export type Schema3 = 'httpstreaming';
 
-export type Schema3 = string;
+/**
+ * URL of the MCP streamable HTTP endpoint
+ */
+export type Schema4 = string;
 
-export type Schema4 = Array<[string, string]>;
+/**
+ * Extra HTTP headers to send with each request, as [name, value] pairs
+ */
+export type Schema5 = Schema6;
 
-export type Schema5 = 'stdio';
+export type Schema6 = Array<[string, string]>;
 
-export type Schema6 = string;
+/**
+ * Transport type discriminator, always "stdio"
+ */
+export type Schema7 = 'stdio';
 
-export type Schema7 = string;
+/**
+ * Command line that starts the MCP server process
+ */
+export type Schema8 = string;
 
-export type Schema8 = Array<[string, string]>;
+/**
+ * Docker image that the command runs in
+ */
+export type Schema9 = Schema10;
 
-export type Schema9 = 'sse' | 'httpstreaming' | 'stdio';
+export type Schema10 = string;
 
-export type Schema10 = number | null;
+/**
+ * Environment variables for the process, as [name, value] pairs
+ */
+export type Schema11 = Schema12;
 
-export type Schema11 = string | null;
+export type Schema12 = Array<[string, string]>;
 
-export type Schema12 = {
-  enabled: boolean;
-  url?: string;
-  delaySeconds: number | null;
-  intervalSeconds: number | null;
-  failureThreshold: number | null;
-};
+/**
+ * Protocol that the launched process speaks
+ */
+export type Schema13 = 'sse' | 'httpstreaming' | 'stdio';
 
-export type Schema13 = {
-  cpu?: Schema14;
-  memory?: Schema15;
-} | null;
+/**
+ * Port that the process listens on when transport is HTTP-based
+ */
+export type Schema14 = Schema15 | null;
 
-export type Schema14 = string;
+export type Schema15 = number;
 
-export type Schema15 = string;
-
-export type Schema16 = 'sse';
+/**
+ * URL path of the MCP endpoint when transport is HTTP-based
+ */
+export type Schema16 = Schema17 | null;
 
 export type Schema17 = string;
 
-export type Schema18 = Array<[string, string]>;
+/**
+ * HTTP health check configuration for the process
+ */
+export type Schema18 = Schema19;
 
-export type Schema19 = 'hosted';
+export type Schema19 = {
+  /**
+   * Whether the health check is active
+   */
+  enabled: boolean;
+  /**
+   * URL that the health check polls
+   */
+  url?: Schema20;
+  /**
+   * Seconds to wait before the first health check
+   */
+  delaySeconds: Schema21 | null;
+  /**
+   * Seconds between health checks
+   */
+  intervalSeconds: Schema22 | null;
+  /**
+   * Number of consecutive failures before the process counts as unhealthy
+   */
+  failureThreshold: Schema23 | null;
+};
 
-export type Schema20 = 'node24';
+export type Schema20 = string;
 
-export type Schema21 = Array<[string, string]>;
+export type Schema21 = number;
 
-export type Schema22 = {
-  cpu?: Schema14;
-  memory?: Schema15;
-} | null;
+export type Schema22 = number;
 
-export type Schema23 = 'openapi';
+export type Schema23 = number;
 
-export type Schema24 = 'specUrl' | 'spec';
+/**
+ * Deprecated: former resource ceiling, no longer applied to deployments. Use requests to reserve capacity instead
+ */
+export type Schema24 = Schema25 | null;
 
-export type Schema25 = string | '';
+export type Schema25 = {
+  cpu?: Schema26;
+  memory?: Schema27;
+};
 
+/**
+ * CPU limit in Kubernetes quantity format (e.g. "500m" or "1")
+ */
 export type Schema26 = string;
 
-export type Schema27 = string | '';
+/**
+ * Memory limit in Kubernetes quantity format (e.g. "512Mi" or "1Gi")
+ */
+export type Schema27 = string;
 
-export type Schema28 = Array<[string, string]>;
+/**
+ * Resources reserved for the process: the minimum it is guaranteed when the hardware is busy. Overrides the organization default
+ */
+export type Schema28 = Schema29 | null;
 
-export type Schema29 = 'httpstreaming' | 'sse' | 'stdio' | 'hosted' | 'openapi';
+export type Schema29 = {
+  cpu?: Schema30;
+  memory?: Schema31;
+};
 
+/**
+ * CPU reserved for the deployment, in Kubernetes quantity format (e.g. "250m" or "1"). This is the minimum the deployment is guaranteed when the hardware is busy; when capacity is free it may use more. Reserved capacity counts against the organization total even while the server idles, so keep it at what the server needs, not what it may burst to
+ */
 export type Schema30 = string;
 
-export type Schema31 = ServerAuthorization;
+/**
+ * Memory reserved for the deployment, in Kubernetes quantity format (e.g. "384Mi" or "1Gi"). Unlike CPU this is also the hard ceiling: a process that exceeds it is terminated
+ */
+export type Schema31 = string;
 
-export type Schema32 = 'none' | 'oauth' | 'oauth-client-credentials' | 'apikey';
-
-export type Schema33 = 'server' | 'user';
-
-export type Schema34 = Array<string>;
-
-export type Schema35 = 'server-scoped' | 'skip' | 'any';
-
-export type Schema36 = ServerOAuthMetadata | null;
-
-export type Schema37 = {
-  id?: string;
-  availableScopes?: Array<string>;
-  metadataUrl?: string;
+export type Schema32 = {
+  /**
+   * Whether the server gets a persistent volume
+   */
+  enabled: boolean;
 };
 
-export type Schema38 = {
-  issuer?: string;
-  authorizeEndpoint?: string;
-  deviceAuthorizationEndpoint?: string;
-  tokenEndpoint?: string;
-  extraAuthorizationParameters?: string;
-  registrationEndpoint?: string;
-  supportsPKCE?: boolean;
-  supportedClientAuthMethods?: Array<string>;
-  supportsDynamicClientRegistration?: boolean;
-  noDynamicClientRegistrationReason?: string | null;
-  serviceDocumentation?: string;
-  metadataUrl?: string;
-  availableScopes?: Array<string>;
+export type Schema33 = {
+  /**
+   * Whether the server joins the tailnet
+   */
+  enabled: boolean;
+  /**
+   * Tailscale auth key that registers the machine. It is spent at the first registration and the machine identity is kept across restarts, so use a tagged key and do not make it ephemeral
+   */
+  authKey: string;
+  /**
+   * Machine name on the tailnet. Defaults to gatana-<server slug>
+   */
+  hostname?: Schema34 | null;
 };
 
-export type Schema39 = ServerOAuthClientConfiguration | null;
+export type Schema34 = string;
 
-export type Schema40 = string;
+/**
+ * Transport type discriminator, always "sse"
+ */
+export type Schema35 = 'sse';
 
-export type Schema41 = string;
+/**
+ * URL of the MCP SSE endpoint
+ */
+export type Schema36 = string;
 
-export type Schema42 = 'client_secret_basic' | 'client_secret_post' | 'none' | string;
+/**
+ * Extra HTTP headers to send with each request, as [name, value] pairs
+ */
+export type Schema37 = Schema38;
 
-export type Schema43 = string;
+export type Schema38 = Array<[string, string]>;
 
-export type Schema44 = boolean;
+/**
+ * Transport type discriminator, always "hosted"
+ */
+export type Schema39 = 'hosted';
 
-export type Schema45 = number;
+/**
+ * Runtime that executes the hosted tool functions
+ */
+export type Schema40 = 'node24' | 'python313';
 
-export type Schema46 = number;
+/**
+ * Environment variables for the hosted runtime, as [name, value] pairs
+ */
+export type Schema41 = Schema42;
 
-export type Schema47 = boolean;
+export type Schema42 = Array<[string, string]>;
 
-export type Schema48 = boolean;
+/**
+ * Deprecated: former resource ceiling, no longer applied to deployments. Use requests to reserve capacity instead
+ */
+export type Schema43 = Schema44 | null;
 
-export type Schema49 = boolean;
+export type Schema44 = {
+  cpu?: Schema26;
+  memory?: Schema27;
+};
 
-export type Schema50 = number;
+/**
+ * Resources reserved for the hosted runtime: the minimum it is guaranteed when the hardware is busy. Overrides the organization default
+ */
+export type Schema45 = Schema46 | null;
 
-export type Schema51 = Array<Schema52>;
+export type Schema46 = {
+  cpu?: Schema30;
+  memory?: Schema31;
+};
 
-export type Schema52 = {
+export type Schema47 = {
+  /**
+   * Whether the server gets a persistent volume
+   */
+  enabled: boolean;
+};
+
+export type Schema48 = {
+  /**
+   * Whether the server joins the tailnet
+   */
+  enabled: boolean;
+  /**
+   * Tailscale auth key that registers the machine. It is spent at the first registration and the machine identity is kept across restarts, so use a tagged key and do not make it ephemeral
+   */
+  authKey: string;
+  /**
+   * Machine name on the tailnet. Defaults to gatana-<server slug>
+   */
+  hostname?: Schema49 | null;
+};
+
+export type Schema49 = string;
+
+/**
+ * Transport type discriminator, always "openapi"
+ */
+export type Schema50 = 'openapi';
+
+/**
+ * How the OpenAPI spec is supplied: from a URL or as inline content
+ */
+export type Schema51 = 'specUrl' | 'spec';
+
+/**
+ * URL to fetch the OpenAPI spec from, used when method is "specUrl"
+ */
+export type Schema52 = Schema53;
+
+export type Schema53 = string | '';
+
+/**
+ * Inline OpenAPI spec content, used when method is "spec"
+ */
+export type Schema54 = Schema55;
+
+export type Schema55 = string;
+
+/**
+ * Base URL for the API requests generated from the spec
+ */
+export type Schema56 = Schema57;
+
+export type Schema57 = string | '';
+
+/**
+ * Extra HTTP headers to send with each request, as [name, value] pairs
+ */
+export type Schema58 = Schema59;
+
+export type Schema59 = Array<[string, string]>;
+
+/**
+ * Transport type to create with a default configuration, used instead of transportConfig
+ */
+export type Schema60 = Schema61;
+
+export type Schema61 = 'httpstreaming' | 'sse' | 'stdio' | 'hosted' | 'openapi';
+
+export type Schema62 = Schema63;
+
+/**
+ * Human-readable description of the server
+ */
+export type Schema63 = string;
+
+export type Schema64 = Schema65;
+
+/**
+ * Authorization configuration for the server
+ */
+export type Schema65 = ServerAuthorization;
+
+/**
+ * Authorization method that the server uses
+ */
+export type Schema66 = 'none' | 'oauth' | 'oauth-client-credentials' | 'apikey';
+
+/**
+ * Whether credentials are shared for the whole server or stored per user
+ */
+export type Schema67 = Schema68 | Schema69;
+
+export type Schema68 = 'server';
+
+export type Schema69 = 'user';
+
+/**
+ * Names of the API keys that the server expects
+ */
+export type Schema70 = Schema71;
+
+export type Schema71 = Array<string>;
+
+export type Schema72 = 'server-scoped' | 'skip' | 'any';
+
+export type Schema73 = Schema74;
+
+/**
+ * Discovered OAuth metadata, or null when not discovered
+ */
+export type Schema74 = Schema75 | ServerOAuthMetadata;
+
+export type Schema75 = null;
+
+/**
+ * Discovered protected resource metadata (RFC 9728)
+ */
+export type Schema76 = Schema77;
+
+export type Schema77 = {
+  /**
+   * Resource identifier from the protected resource metadata
+   */
+  id?: Schema78;
+  /**
+   * Scopes that the protected resource supports
+   */
+  availableScopes?: Schema79;
+  /**
+   * URL where the protected resource metadata was fetched from
+   */
+  metadataUrl?: Schema80;
+};
+
+export type Schema78 = string;
+
+export type Schema79 = Array<string>;
+
+export type Schema80 = string;
+
+/**
+ * Discovered authorization server metadata (RFC 8414)
+ */
+export type Schema81 = Schema82;
+
+export type Schema82 = {
+  /**
+   * Issuer identifier of the authorization server
+   */
+  issuer?: Schema83;
+  /**
+   * URL of the authorization endpoint
+   */
+  authorizeEndpoint?: Schema84;
+  /**
+   * URL of the device authorization endpoint
+   */
+  deviceAuthorizationEndpoint?: Schema85;
+  /**
+   * URL of the token endpoint
+   */
+  tokenEndpoint?: Schema86;
+  /**
+   * Extra query parameters to add to the authorization request
+   */
+  extraAuthorizationParameters?: Schema87;
+  /**
+   * URL of the dynamic client registration endpoint
+   */
+  registrationEndpoint?: Schema88;
+  /**
+   * Whether the authorization server supports PKCE
+   */
+  supportsPKCE?: Schema89;
+  /**
+   * Client authentication methods that the token endpoint supports
+   */
+  supportedClientAuthMethods?: Schema90;
+  /**
+   * Whether the authorization server supports dynamic client registration
+   */
+  supportsDynamicClientRegistration?: Schema91;
+  /**
+   * Reason why dynamic client registration is not available
+   */
+  noDynamicClientRegistrationReason?: Schema92;
+  /**
+   * URL of the authorization server documentation
+   */
+  serviceDocumentation?: Schema93;
+  /**
+   * URL where the authorization server metadata was fetched from
+   */
+  metadataUrl?: Schema94;
+  /**
+   * Scopes that the authorization server supports
+   */
+  availableScopes?: Schema95;
+};
+
+export type Schema83 = string;
+
+export type Schema84 = string;
+
+export type Schema85 = string;
+
+export type Schema86 = string;
+
+export type Schema87 = string;
+
+export type Schema88 = string;
+
+export type Schema89 = boolean;
+
+export type Schema90 = Array<string>;
+
+export type Schema91 = boolean;
+
+export type Schema92 = string | null;
+
+export type Schema93 = string;
+
+export type Schema94 = string;
+
+export type Schema95 = Array<string>;
+
+export type Schema96 = Schema97;
+
+/**
+ * OAuth client configuration, or null when not configured
+ */
+export type Schema97 = Schema98 | ServerOAuthClientConfiguration;
+
+export type Schema98 = null;
+
+/**
+ * OAuth client ID
+ */
+export type Schema99 = Schema100;
+
+export type Schema100 = string;
+
+/**
+ * OAuth client secret
+ */
+export type Schema101 = Schema102;
+
+export type Schema102 = string;
+
+/**
+ * OAuth grant type used to obtain tokens
+ */
+export type Schema103 = OAuthGrantType;
+
+/**
+ * Client authentication method used at the token endpoint
+ */
+export type Schema104 = Schema105 | Schema106 | Schema107 | Schema108;
+
+export type Schema105 = 'client_secret_basic';
+
+export type Schema106 = 'client_secret_post';
+
+export type Schema107 = 'none';
+
+export type Schema108 = string;
+
+/**
+ * Space-separated OAuth scopes to request
+ */
+export type Schema109 = Schema110;
+
+export type Schema110 = string;
+
+export type Schema111 = Schema112;
+
+/**
+ * Whether the server is enabled
+ */
+export type Schema112 = boolean;
+
+export type Schema113 = Schema114;
+
+/**
+ * Timeout in seconds for a single protocol request to the server
+ */
+export type Schema114 = number;
+
+export type Schema115 = Schema116;
+
+/**
+ * Total timeout in seconds for a tool call, including progress notifications
+ */
+export type Schema116 = number;
+
+export type Schema117 = Schema118;
+
+/**
+ * Whether a progress notification resets the protocol timeout
+ */
+export type Schema118 = boolean;
+
+export type Schema119 = Schema120;
+
+/**
+ * Whether large tool outputs are compressed before they are returned to the client
+ */
+export type Schema120 = boolean;
+
+export type Schema121 = Schema122;
+
+/**
+ * Whether the compression transform step is applied to tool outputs
+ */
+export type Schema122 = boolean;
+
+export type Schema123 = Schema124;
+
+/**
+ * Minimum output size in bytes before compression is applied
+ */
+export type Schema124 = number;
+
+export type Schema125 = Schema126;
+
+/**
+ * Firewall rules evaluated against tool calls to the server
+ */
+export type Schema126 = Array<Schema127>;
+
+export type Schema127 = {
   /**
    * CEL representing the condition
    */
   condition: string;
+  /**
+   * Action to take when the condition matches
+   */
   action: 'deny' | 'modify' | 'log';
 };
 
-export type Schema53 = ServerVisibility;
+export type Schema128 = Schema129;
 
-export type Schema54 = string;
+/**
+ * Who can see the server: only members or the whole organization
+ */
+export type Schema129 = ServerVisibility;
 
-export type Schema55 = string;
+/**
+ * Read-only; accepted and ignored
+ */
+export type Schema130 = Schema131;
 
-export type Schema56 = string | null;
+export type Schema131 = string;
 
-export type Schema57 = string;
+/**
+ * Read-only; accepted and ignored
+ */
+export type Schema132 = Schema133;
 
-export type Schema58 = string;
+export type Schema133 = string;
 
-export type Schema59 = string;
+/**
+ * Read-only; accepted and ignored
+ */
+export type Schema134 = Schema135;
 
-export type Schema60 = string;
+export type Schema135 = string | null;
 
-export type Schema61 = string;
+/**
+ * Read-only; accepted and ignored
+ */
+export type Schema136 = Schema137;
 
-export type Schema62 = ServerAuthorization;
+export type Schema137 = string;
 
-export type Schema63 =
+/**
+ * Read-only; accepted and ignored
+ */
+export type Schema138 = Schema139;
+
+export type Schema139 = string;
+
+export type Schema140 = string;
+
+/**
+ * URL-friendly name of the server, unique within the tenant
+ */
+export type Schema141 = Schema142;
+
+export type Schema142 = string;
+
+export type Schema143 = Schema63;
+
+export type Schema144 = Schema65;
+
+/**
+ * Transport configuration used to connect to the server
+ */
+export type Schema145 =
   | HttpStreamingTransportConfig
   | StdioTransportConfig
   | SseTransportConfig
-  | {
-      type: 'self';
-      id: string;
-    }
+  | Schema146
   | HostedTransportConfig
   | OpenApiTransportConfig;
 
-export type Schema64 = ServerOAuthMetadata | null;
+export type Schema146 = {
+  /**
+   * Transport type discriminator, always "self"
+   */
+  type: 'self';
+  /**
+   * ID of the built-in server implementation
+   */
+  id: string;
+};
 
-export type Schema65 = ServerOAuthClientConfiguration | null;
+export type Schema147 = Schema74;
 
-export type Schema66 = boolean;
+export type Schema148 = Schema97;
 
-export type Schema67 = number;
+export type Schema149 = Schema112;
 
-export type Schema68 = number;
+export type Schema150 = Schema114;
 
-export type Schema69 = boolean;
+export type Schema151 = Schema116;
 
-export type Schema70 = boolean;
+export type Schema152 = Schema118;
 
-export type Schema71 = boolean;
+export type Schema153 = Schema120;
 
-export type Schema72 = number;
+export type Schema154 = Schema122;
 
-export type Schema73 = Array<Schema52>;
+export type Schema155 = Schema124;
 
-export type Schema74 = ServerVisibility;
+export type Schema156 = Schema126;
 
-export type Schema75 = string;
+export type Schema157 = Schema129;
 
-export type Schema76 = string;
+/**
+ * Read-only; accepted and ignored
+ */
+export type Schema158 = Schema159;
 
-export type Schema77 = string;
+export type Schema159 = string;
 
-export type Schema78 = string | null;
+/**
+ * Read-only; accepted and ignored
+ */
+export type Schema160 = Schema161;
 
-export type Schema79 = string;
+export type Schema161 = string;
 
-export type Schema80 = string;
+/**
+ * Deprecated; accepted and ignored
+ */
+export type Schema162 = Schema163;
 
-export type Schema81 = string;
+export type Schema163 = string;
 
-export type Schema82 = unknown;
+/**
+ * Read-only; accepted and ignored
+ */
+export type Schema164 = Schema165;
+
+export type Schema165 = string | null;
+
+/**
+ * Read-only; accepted and ignored
+ */
+export type Schema166 = Schema167;
+
+export type Schema167 = string;
+
+/**
+ * Read-only; accepted and ignored
+ */
+export type Schema168 = Schema169;
+
+export type Schema169 = string;
+
+export type Schema170 = string;
+
+export type Schema171 = unknown;
+
+export type Schema172 = string;
 
 export type V2ListServersResponse = {
-  servers: Schema83;
+  servers: Schema173;
 };
 
 export type V2ServerDto = Server;
 
 export type Server = {
-  id: Schema84;
-  slug: Schema85;
-  tenantId: Schema86;
-  description: Schema87;
-  authorization: ServerAuthorizationOutput;
-  transportConfig: Schema92;
-  oauthClientConfiguration: Schema120;
-  oauthMetadata: Schema125;
-  visibility: ServerVisibility;
-  isEnabled: Schema128;
-  lastToolRefreshAt: Schema129;
-  timeoutProtocol: Schema130;
-  timeoutTotal: Schema131;
-  resetTimeoutOnProgressNotification: Schema132;
-  isOutputCompressionEnabled: Schema133;
-  isOutputCompressionTransformEnabled: Schema134;
-  outputCompressionThresholdBytes: Schema135;
-  firewallRules: Schema136;
-  createdAt: Schema137;
-  updatedAt: Schema138;
+  id: Schema174;
+  slug: Schema175;
+  tenantId: Schema176;
+  description: Schema177;
+  authorization: Schema178;
+  transportConfig: Schema186;
+  oauthClientConfiguration: Schema245;
+  oauthMetadata: Schema259;
+  visibility: Schema281;
+  isEnabled: Schema282;
+  lastToolRefreshAt: Schema283;
+  timeoutProtocol: Schema285;
+  timeoutTotal: Schema286;
+  resetTimeoutOnProgressNotification: Schema287;
+  isOutputCompressionEnabled: Schema288;
+  isOutputCompressionTransformEnabled: Schema289;
+  outputCompressionThresholdBytes: Schema290;
+  firewallRules: Schema291;
+  createdAt: Schema293;
+  updatedAt: Schema294;
 };
 
 export type CredentialDtoV2 = {
-  id: Schema140;
-  tenantId: Schema141;
-  scope: Schema142;
-  userId: Schema143;
-  profileId: Schema144;
-  lastUsedAt: Schema145;
-  authorizedAt: Schema146;
-  type: Schema147;
-  createdAt: Schema148;
-  updatedAt: Schema149;
-  serverSlug: Schema150;
-  userEmail: Schema151;
-  userName: Schema152;
-  profileName: Schema153;
+  id: Schema296;
+  tenantId: Schema297;
+  scope: Schema298;
+  userId: Schema299;
+  profileId: Schema301;
+  lastUsedAt: Schema303;
+  authorizedAt: Schema305;
+  type: Schema306;
+  createdAt: Schema307;
+  updatedAt: Schema308;
+  serverSlug: Schema309;
+  userEmail: Schema310;
+  userName: Schema312;
+  profileName: Schema314;
 };
 
 export type ServerCredentialsCredential =
@@ -399,478 +929,1242 @@ export type ServerCredentialsCredential =
     } & ServerCredentialsOauthClientCredentials);
 
 export type ServerCredentialsApiKeys = {
-  type: Schema154;
-  apikeys: Schema155;
+  type: Schema316;
+  apikeys: Schema317;
 };
 
 export type ServerCredentialsOauthTokens = {
-  type: Schema156;
-  tokenSet: Schema157;
+  type: Schema319;
+  tokenSet: Schema320;
 };
 
 export type ServerCredentialsOauthClientCredentials = {
-  type: Schema158;
+  type: Schema329;
   clientConfig?: ServerOAuthClientConfigurationClientCredentials;
-  tokenSet?: Schema160;
+  tokenSet?: Schema331;
 };
 
 /**
  * Client configuration for OAuth client credentials
  */
-export type ServerOAuthClientConfigurationClientCredentials = Schema159;
+export type ServerOAuthClientConfigurationClientCredentials = Schema330;
 
-export type Schema83 = Array<Server>;
+export type CredentialRefreshResponse = {
+  id: Schema332;
+  accessTokenExpiresAt: Schema333;
+};
 
-export type Schema84 = string;
+export type PaginatedCredentialAuditLog = {
+  pagination: Schema335;
+  data: Schema342;
+};
 
-export type Schema85 = string;
+export type CredentialAuditLog = {
+  tenantId: Schema343;
+  id: Schema344;
+  credentialId: Schema345;
+  userId: Schema346;
+  eventName: Schema348;
+  details: Schema349;
+  createdAt: Schema352;
+  updatedAt: Schema353;
+};
 
-export type Schema86 = string;
+export type Schema173 = Array<Server>;
 
-export type Schema87 = string;
+/**
+ * Unique ID of the server
+ */
+export type Schema174 = string;
 
-export type Schema88 = 'none' | 'oauth' | 'oauth-client-credentials' | 'apikey';
+/**
+ * URL-friendly name of the server, unique within the tenant
+ */
+export type Schema175 = string;
 
-export type Schema89 = 'server' | 'user';
+/**
+ * ID of the tenant that owns the server
+ */
+export type Schema176 = string;
 
-export type Schema90 = Array<string>;
+/**
+ * Human-readable description of the server
+ */
+export type Schema177 = string;
 
-export type Schema91 = 'server-scoped' | 'skip' | 'any';
+/**
+ * Authorization configuration for the server
+ */
+export type Schema178 = ServerAuthorizationOutput;
 
-export type Schema92 =
+/**
+ * Authorization method that the server uses
+ */
+export type Schema179 = 'none' | 'oauth' | 'oauth-client-credentials' | 'apikey';
+
+/**
+ * Whether credentials are shared for the whole server or stored per user
+ */
+export type Schema180 = Schema181 | Schema182;
+
+export type Schema181 = 'server';
+
+export type Schema182 = 'user';
+
+/**
+ * Names of the API keys that the server expects
+ */
+export type Schema183 = Schema184;
+
+export type Schema184 = Array<string>;
+
+export type Schema185 = 'server-scoped' | 'skip' | 'any';
+
+/**
+ * Transport configuration used to connect to the server
+ */
+export type Schema186 =
   | HttpStreamingTransportConfigOutput
   | StdioTransportConfigOutput
   | SseTransportConfigOutput
-  | {
-      type: 'self';
-      id: string;
-    }
+  | Schema223
   | HostedTransportConfigOutput
   | OpenApiTransportConfigOutput;
 
-export type Schema93 = 'httpstreaming';
+/**
+ * Transport type discriminator, always "httpstreaming"
+ */
+export type Schema187 = 'httpstreaming';
 
-export type Schema94 = string;
+/**
+ * URL of the MCP streamable HTTP endpoint
+ */
+export type Schema188 = string;
 
-export type Schema95 = Array<[string, string]>;
+/**
+ * Extra HTTP headers to send with each request, as [name, value] pairs
+ */
+export type Schema189 = Schema190;
 
-export type Schema96 = 'stdio';
+export type Schema190 = Array<[string, string]>;
 
-export type Schema97 = string;
+/**
+ * Transport type discriminator, always "stdio"
+ */
+export type Schema191 = 'stdio';
 
-export type Schema98 = string;
+/**
+ * Command line that starts the MCP server process
+ */
+export type Schema192 = string;
 
-export type Schema99 = Array<[string, string]>;
+/**
+ * Docker image that the command runs in
+ */
+export type Schema193 = Schema194;
 
-export type Schema100 = 'sse' | 'httpstreaming' | 'stdio';
+export type Schema194 = string;
 
-export type Schema101 = number | null;
+/**
+ * Environment variables for the process, as [name, value] pairs
+ */
+export type Schema195 = Schema196;
 
-export type Schema102 = string | null;
+export type Schema196 = Array<[string, string]>;
 
-export type Schema103 = {
+/**
+ * Protocol that the launched process speaks
+ */
+export type Schema197 = 'sse' | 'httpstreaming' | 'stdio';
+
+/**
+ * Port that the process listens on when transport is HTTP-based
+ */
+export type Schema198 = Schema199 | null;
+
+export type Schema199 = number;
+
+/**
+ * URL path of the MCP endpoint when transport is HTTP-based
+ */
+export type Schema200 = Schema201 | null;
+
+export type Schema201 = string;
+
+/**
+ * HTTP health check configuration for the process
+ */
+export type Schema202 = Schema203;
+
+export type Schema203 = {
+  /**
+   * Whether the health check is active
+   */
   enabled: boolean;
-  url: string;
-  delaySeconds: number | null;
-  intervalSeconds: number | null;
-  failureThreshold: number | null;
+  /**
+   * URL that the health check polls
+   */
+  url: Schema204;
+  /**
+   * Seconds to wait before the first health check
+   */
+  delaySeconds: Schema205 | null;
+  /**
+   * Seconds between health checks
+   */
+  intervalSeconds: Schema206 | null;
+  /**
+   * Number of consecutive failures before the process counts as unhealthy
+   */
+  failureThreshold: Schema207 | null;
 };
 
-export type Schema104 = {
-  cpu?: Schema105;
-  memory?: Schema106;
-} | null;
+export type Schema204 = string;
 
-export type Schema105 = string;
+export type Schema205 = number;
 
-export type Schema106 = string;
+export type Schema206 = number;
 
-export type Schema107 = 'sse';
+export type Schema207 = number;
 
-export type Schema108 = string;
+/**
+ * Deprecated: former resource ceiling, no longer applied to deployments. Use requests to reserve capacity instead
+ */
+export type Schema208 = Schema209 | null;
 
-export type Schema109 = Array<[string, string]>;
+export type Schema209 = {
+  cpu?: Schema210;
+  memory?: Schema211;
+};
 
-export type Schema110 = 'hosted';
+/**
+ * CPU limit in Kubernetes quantity format (e.g. "500m" or "1")
+ */
+export type Schema210 = string;
 
-export type Schema111 = 'node24';
+/**
+ * Memory limit in Kubernetes quantity format (e.g. "512Mi" or "1Gi")
+ */
+export type Schema211 = string;
 
-export type Schema112 = Array<[string, string]>;
+/**
+ * Resources reserved for the process: the minimum it is guaranteed when the hardware is busy. Overrides the organization default
+ */
+export type Schema212 = Schema213 | null;
 
-export type Schema113 = {
-  cpu?: Schema105;
-  memory?: Schema106;
-} | null;
+export type Schema213 = {
+  cpu?: Schema214;
+  memory?: Schema215;
+};
 
-export type Schema114 = 'openapi';
+/**
+ * CPU reserved for the deployment, in Kubernetes quantity format (e.g. "250m" or "1"). This is the minimum the deployment is guaranteed when the hardware is busy; when capacity is free it may use more. Reserved capacity counts against the organization total even while the server idles, so keep it at what the server needs, not what it may burst to
+ */
+export type Schema214 = string;
 
-export type Schema115 = 'specUrl' | 'spec';
+/**
+ * Memory reserved for the deployment, in Kubernetes quantity format (e.g. "384Mi" or "1Gi"). Unlike CPU this is also the hard ceiling: a process that exceeds it is terminated
+ */
+export type Schema215 = string;
 
-export type Schema116 = string | '';
+export type Schema216 = {
+  /**
+   * Whether the server gets a persistent volume
+   */
+  enabled: boolean;
+};
 
-export type Schema117 = string;
+export type Schema217 = {
+  /**
+   * Whether the server joins the tailnet
+   */
+  enabled: boolean;
+  /**
+   * Tailscale auth key that registers the machine. It is spent at the first registration and the machine identity is kept across restarts, so use a tagged key and do not make it ephemeral
+   */
+  authKey: string;
+  /**
+   * Machine name on the tailnet. Defaults to gatana-<server slug>
+   */
+  hostname?: Schema218 | null;
+};
 
-export type Schema118 = string | '';
+export type Schema218 = string;
 
-export type Schema119 = Array<[string, string]>;
+/**
+ * Transport type discriminator, always "sse"
+ */
+export type Schema219 = 'sse';
 
-export type Schema120 = null | ServerOAuthClientConfigurationOutput;
+/**
+ * URL of the MCP SSE endpoint
+ */
+export type Schema220 = string;
 
-export type Schema121 = string;
+/**
+ * Extra HTTP headers to send with each request, as [name, value] pairs
+ */
+export type Schema221 = Schema222;
 
-export type Schema122 = string;
+export type Schema222 = Array<[string, string]>;
 
-export type Schema123 = 'client_secret_basic' | 'client_secret_post' | 'none' | string;
-
-export type Schema124 = string;
-
-export type Schema125 = null | ServerOAuthMetadataOutput;
-
-export type Schema126 = {
+export type Schema223 = {
+  /**
+   * Transport type discriminator, always "self"
+   */
+  type: 'self';
+  /**
+   * ID of the built-in server implementation
+   */
   id: string;
-  availableScopes: Array<string>;
-  metadataUrl: string;
 };
 
-export type Schema127 = {
-  issuer: string;
-  authorizeEndpoint: string;
-  deviceAuthorizationEndpoint: string;
-  tokenEndpoint: string;
-  extraAuthorizationParameters: string;
-  registrationEndpoint?: string;
-  supportsPKCE: boolean;
-  supportedClientAuthMethods: Array<string>;
-  supportsDynamicClientRegistration: boolean;
-  noDynamicClientRegistrationReason?: string | null;
-  serviceDocumentation: string;
-  metadataUrl: string;
-  availableScopes: Array<string>;
+/**
+ * Transport type discriminator, always "hosted"
+ */
+export type Schema224 = 'hosted';
+
+/**
+ * Runtime that executes the hosted tool functions
+ */
+export type Schema225 = 'node24' | 'python313';
+
+/**
+ * Environment variables for the hosted runtime, as [name, value] pairs
+ */
+export type Schema226 = Schema227;
+
+export type Schema227 = Array<[string, string]>;
+
+/**
+ * Deprecated: former resource ceiling, no longer applied to deployments. Use requests to reserve capacity instead
+ */
+export type Schema228 = Schema229 | null;
+
+export type Schema229 = {
+  cpu?: Schema210;
+  memory?: Schema211;
 };
 
-export type Schema128 = boolean;
+/**
+ * Resources reserved for the hosted runtime: the minimum it is guaranteed when the hardware is busy. Overrides the organization default
+ */
+export type Schema230 = Schema231 | null;
 
-export type Schema129 = string | null;
+export type Schema231 = {
+  cpu?: Schema214;
+  memory?: Schema215;
+};
 
-export type Schema130 = number;
+export type Schema232 = {
+  /**
+   * Whether the server gets a persistent volume
+   */
+  enabled: boolean;
+};
 
-export type Schema131 = number;
+export type Schema233 = {
+  /**
+   * Whether the server joins the tailnet
+   */
+  enabled: boolean;
+  /**
+   * Tailscale auth key that registers the machine. It is spent at the first registration and the machine identity is kept across restarts, so use a tagged key and do not make it ephemeral
+   */
+  authKey: string;
+  /**
+   * Machine name on the tailnet. Defaults to gatana-<server slug>
+   */
+  hostname?: Schema234 | null;
+};
 
-export type Schema132 = boolean;
+export type Schema234 = string;
 
-export type Schema133 = boolean;
+/**
+ * Transport type discriminator, always "openapi"
+ */
+export type Schema235 = 'openapi';
 
-export type Schema134 = boolean;
+/**
+ * How the OpenAPI spec is supplied: from a URL or as inline content
+ */
+export type Schema236 = 'specUrl' | 'spec';
 
-export type Schema135 = number;
+/**
+ * URL to fetch the OpenAPI spec from, used when method is "specUrl"
+ */
+export type Schema237 = Schema238;
 
-export type Schema136 = Array<{
+export type Schema238 = string | '';
+
+/**
+ * Inline OpenAPI spec content, used when method is "spec"
+ */
+export type Schema239 = Schema240;
+
+export type Schema240 = string;
+
+/**
+ * Base URL for the API requests generated from the spec
+ */
+export type Schema241 = Schema242;
+
+export type Schema242 = string | '';
+
+/**
+ * Extra HTTP headers to send with each request, as [name, value] pairs
+ */
+export type Schema243 = Schema244;
+
+export type Schema244 = Array<[string, string]>;
+
+/**
+ * OAuth client configuration, or null when not configured
+ */
+export type Schema245 = Schema246 | ServerOAuthClientConfigurationOutput;
+
+export type Schema246 = null;
+
+/**
+ * OAuth client ID
+ */
+export type Schema247 = Schema248;
+
+export type Schema248 = string;
+
+/**
+ * OAuth client secret
+ */
+export type Schema249 = Schema250;
+
+export type Schema250 = string;
+
+/**
+ * OAuth grant type used to obtain tokens
+ */
+export type Schema251 = OAuthGrantType;
+
+/**
+ * Client authentication method used at the token endpoint
+ */
+export type Schema252 = Schema253 | Schema254 | Schema255 | Schema256;
+
+export type Schema253 = 'client_secret_basic';
+
+export type Schema254 = 'client_secret_post';
+
+export type Schema255 = 'none';
+
+export type Schema256 = string;
+
+/**
+ * Space-separated OAuth scopes to request
+ */
+export type Schema257 = Schema258;
+
+export type Schema258 = string;
+
+/**
+ * Discovered OAuth metadata, or null when not discovered
+ */
+export type Schema259 = Schema260 | ServerOAuthMetadataOutput;
+
+export type Schema260 = null;
+
+/**
+ * Discovered protected resource metadata (RFC 9728)
+ */
+export type Schema261 = Schema262;
+
+export type Schema262 = {
+  /**
+   * Resource identifier from the protected resource metadata
+   */
+  id: Schema263;
+  /**
+   * Scopes that the protected resource supports
+   */
+  availableScopes: Schema264;
+  /**
+   * URL where the protected resource metadata was fetched from
+   */
+  metadataUrl: Schema265;
+};
+
+export type Schema263 = string;
+
+export type Schema264 = Array<string>;
+
+export type Schema265 = string;
+
+/**
+ * Discovered authorization server metadata (RFC 8414)
+ */
+export type Schema266 = Schema267;
+
+export type Schema267 = {
+  /**
+   * Issuer identifier of the authorization server
+   */
+  issuer: Schema268;
+  /**
+   * URL of the authorization endpoint
+   */
+  authorizeEndpoint: Schema269;
+  /**
+   * URL of the device authorization endpoint
+   */
+  deviceAuthorizationEndpoint: Schema270;
+  /**
+   * URL of the token endpoint
+   */
+  tokenEndpoint: Schema271;
+  /**
+   * Extra query parameters to add to the authorization request
+   */
+  extraAuthorizationParameters: Schema272;
+  /**
+   * URL of the dynamic client registration endpoint
+   */
+  registrationEndpoint?: Schema273;
+  /**
+   * Whether the authorization server supports PKCE
+   */
+  supportsPKCE: Schema274;
+  /**
+   * Client authentication methods that the token endpoint supports
+   */
+  supportedClientAuthMethods: Schema275;
+  /**
+   * Whether the authorization server supports dynamic client registration
+   */
+  supportsDynamicClientRegistration: Schema276;
+  /**
+   * Reason why dynamic client registration is not available
+   */
+  noDynamicClientRegistrationReason?: Schema277;
+  /**
+   * URL of the authorization server documentation
+   */
+  serviceDocumentation: Schema278;
+  /**
+   * URL where the authorization server metadata was fetched from
+   */
+  metadataUrl: Schema279;
+  /**
+   * Scopes that the authorization server supports
+   */
+  availableScopes: Schema280;
+};
+
+export type Schema268 = string;
+
+export type Schema269 = string;
+
+export type Schema270 = string;
+
+export type Schema271 = string;
+
+export type Schema272 = string;
+
+export type Schema273 = string;
+
+export type Schema274 = boolean;
+
+export type Schema275 = Array<string>;
+
+export type Schema276 = boolean;
+
+export type Schema277 = string | null;
+
+export type Schema278 = string;
+
+export type Schema279 = string;
+
+export type Schema280 = Array<string>;
+
+/**
+ * Who can see the server: only members or the whole organization
+ */
+export type Schema281 = ServerVisibility;
+
+/**
+ * Whether the server is enabled
+ */
+export type Schema282 = boolean;
+
+/**
+ * Time of the last tool refresh, or null if tools were never refreshed
+ */
+export type Schema283 = Schema284 | null;
+
+export type Schema284 = string;
+
+/**
+ * Timeout in seconds for a single protocol request to the server
+ */
+export type Schema285 = number;
+
+/**
+ * Total timeout in seconds for a tool call, including progress notifications
+ */
+export type Schema286 = number;
+
+/**
+ * Whether a progress notification resets the protocol timeout
+ */
+export type Schema287 = boolean;
+
+/**
+ * Whether large tool outputs are compressed before they are returned to the client
+ */
+export type Schema288 = boolean;
+
+/**
+ * Whether the compression transform step is applied to tool outputs
+ */
+export type Schema289 = boolean;
+
+/**
+ * Minimum output size in bytes before compression is applied
+ */
+export type Schema290 = number;
+
+/**
+ * Firewall rules evaluated against tool calls to the server
+ */
+export type Schema291 = Array<Schema292>;
+
+export type Schema292 = {
   /**
    * CEL representing the condition
    */
   condition: string;
+  /**
+   * Action to take when the condition matches
+   */
   action: 'deny' | 'modify' | 'log';
-}>;
+};
 
-export type Schema137 = string;
+/**
+ * Time when the server was created
+ */
+export type Schema293 = string;
 
-export type Schema138 = string;
+/**
+ * Time when the server was last updated
+ */
+export type Schema294 = string;
 
-export type Schema139 = {
+export type Schema295 = {
+  /**
+   * Credentials the caller can read, without secret values
+   */
   credentials: Array<CredentialDtoV2>;
 };
 
-export type Schema140 = string;
+/**
+ * Unique ID of the credential record
+ */
+export type Schema296 = string;
 
-export type Schema141 = string;
+/**
+ * ID of the tenant that owns the credential
+ */
+export type Schema297 = string;
 
-export type Schema142 = 'server' | 'user' | 'profile';
+/**
+ * Scope that the credential applies to: server, user, or profile
+ */
+export type Schema298 = 'server' | 'user' | 'profile';
 
-export type Schema143 = string | null;
+/**
+ * ID of the owning user, or null
+ */
+export type Schema299 = Schema300 | null;
 
-export type Schema144 = string | null;
+export type Schema300 = string;
 
-export type Schema145 = string | null;
+/**
+ * ID of the owning profile when scope is "profile", otherwise null
+ */
+export type Schema301 = Schema302 | null;
 
-export type Schema146 = string;
+export type Schema302 = string;
 
-export type Schema147 = 'oauth' | 'apikey' | 'oauth-client-credentials';
+/**
+ * Time when the credential was last used, or null if never used
+ */
+export type Schema303 = Schema304 | null;
 
-export type Schema148 = string;
+export type Schema304 = string;
 
-export type Schema149 = string;
+/**
+ * Time when the credential was authorized
+ */
+export type Schema305 = string;
 
-export type Schema150 = string;
+/**
+ * Authorization method that the credential was created with
+ */
+export type Schema306 = 'oauth' | 'apikey' | 'oauth-client-credentials';
 
-export type Schema151 = string | null;
+/**
+ * Time when the credential record was created
+ */
+export type Schema307 = string;
 
-export type Schema152 = string | null;
+/**
+ * Time when the credential record was last updated
+ */
+export type Schema308 = string;
 
-export type Schema153 = string | null;
+/**
+ * Slug of the server that the credential authorizes access to
+ */
+export type Schema309 = string;
 
-export type Schema154 = 'apikey';
+/**
+ * Email address of the owning user, or null
+ */
+export type Schema310 = Schema311 | null;
 
-export type Schema155 = Array<[string, string]>;
+export type Schema311 = string;
 
-export type Schema156 = 'oauth';
+/**
+ * Display name of the owning user, or null
+ */
+export type Schema312 = Schema313 | null;
 
-export type Schema157 = {
-  accessToken: string;
-  accessTokenExpiresAt?: number;
-  idToken?: string;
-  refreshToken?: string;
+export type Schema313 = string;
+
+/**
+ * Name of the owning profile, or null
+ */
+export type Schema314 = Schema315 | null;
+
+export type Schema315 = string;
+
+/**
+ * Credential type discriminator, always "apikey"
+ */
+export type Schema316 = 'apikey';
+
+/**
+ * API keys as [name, value] pairs
+ */
+export type Schema317 = Array<Schema318>;
+
+export type Schema318 = [string, string];
+
+/**
+ * Credential type discriminator, always "oauth"
+ */
+export type Schema319 = 'oauth';
+
+/**
+ * OAuth tokens obtained from the authorization flow
+ */
+export type Schema320 = Schema328;
+
+/**
+ * OAuth access token
+ */
+export type Schema321 = string;
+
+/**
+ * Expiry time of the access token, as a Unix epoch timestamp
+ */
+export type Schema322 = Schema323;
+
+export type Schema323 = number;
+
+/**
+ * OpenID Connect ID token, if the authorization server issued one
+ */
+export type Schema324 = Schema325;
+
+export type Schema325 = string;
+
+/**
+ * OAuth refresh token, if the authorization server issued one
+ */
+export type Schema326 = Schema327;
+
+export type Schema327 = string;
+
+export type Schema328 = {
+  accessToken: Schema321;
+  accessTokenExpiresAt?: Schema322;
+  idToken?: Schema324;
+  refreshToken?: Schema326;
 };
 
-export type Schema158 = 'oauth-client-credentials';
+/**
+ * Credential type discriminator, always "oauth-client-credentials"
+ */
+export type Schema329 = 'oauth-client-credentials';
 
-export type Schema159 = {
-  clientId: Schema121;
-  clientSecret: Schema122;
-  clientAuthMethod: Schema123;
-  scopes: Schema124;
+export type Schema330 = {
+  clientId: Schema247;
+  clientSecret: Schema249;
+  clientAuthMethod: Schema252;
+  scopes: Schema257;
 };
 
 /**
  * Cached tokenset for client credentials
  */
-export type Schema160 = Schema157;
+export type Schema331 = Schema328;
 
-export type ServerAuthorizationOutput = {
-  method: Schema88;
-  credentialsScope: Schema89;
-  apikeys?: Schema90;
-  toolRefreshCredentialPolicy: ToolRefreshCredentialPolicyOutput;
+/**
+ * ID of the refreshed credential
+ */
+export type Schema332 = string;
+
+/**
+ * Expiry time of the refreshed access token, as a Unix epoch timestamp, or null if unknown
+ */
+export type Schema333 = Schema334 | null;
+
+export type Schema334 = number;
+
+/**
+ * Pagination metadata
+ */
+export type Schema335 = {
+  page: Schema336;
+  limit: Schema337;
+  total: Schema338;
+  totalPages: Schema339;
+  hasNext: Schema340;
+  hasPrev: Schema341;
 };
+
+/**
+ * Current page number
+ */
+export type Schema336 = number;
+
+/**
+ * Maximum number of items per page
+ */
+export type Schema337 = number;
+
+/**
+ * Total number of items across all pages
+ */
+export type Schema338 = number;
+
+/**
+ * Total number of pages
+ */
+export type Schema339 = number;
+
+/**
+ * Whether a next page exists
+ */
+export type Schema340 = boolean;
+
+/**
+ * Whether a previous page exists
+ */
+export type Schema341 = boolean;
+
+/**
+ * Items on the current page
+ */
+export type Schema342 = Array<CredentialAuditLog>;
+
+/**
+ * ID of the tenant that owns the entry
+ */
+export type Schema343 = string;
+
+/**
+ * Unique ID of the audit log entry
+ */
+export type Schema344 = string;
+
+/**
+ * ID of the credential that the entry belongs to
+ */
+export type Schema345 = string;
+
+/**
+ * ID of the user who performed the action, or null
+ */
+export type Schema346 = Schema347 | null;
+
+export type Schema347 = string;
+
+/**
+ * Name of the audited event (e.g. "create", "update", "delete")
+ */
+export type Schema348 = string;
+
+/**
+ * Event-specific details; update events include a diff of the change
+ */
+export type Schema349 = {
+  [key in Schema350]?: Schema351;
+};
+
+export type Schema350 = string;
+
+export type Schema351 = unknown;
+
+/**
+ * Time when the entry was created
+ */
+export type Schema352 = string;
+
+/**
+ * Time when the entry was last updated
+ */
+export type Schema353 = string;
 
 /**
  * Controls how tool refresh is authorized. "server-scoped" means only server-scoped credentials are required, "skip" means refresh is done without authorization, and "any" means any available credentials (server, user, profile) can be used. Defaults to "server-scoped".
  */
-export type ToolRefreshCredentialPolicyOutput = Schema91;
+export type ToolRefreshCredentialPolicyOutput = Schema185;
+
+export type ServerAuthorizationOutput = {
+  method: Schema179;
+  credentialsScope: Schema180;
+  apikeys?: Schema183;
+  toolRefreshCredentialPolicy: ToolRefreshCredentialPolicyOutput;
+};
 
 export type HttpStreamingTransportConfigOutput = {
-  type: Schema93;
-  url: Schema94;
-  headers?: Schema95;
+  type: Schema187;
+  url: Schema188;
+  headers?: Schema189;
 };
 
 export type StdioTransportConfigOutput = {
-  type: Schema96;
-  command: Schema97;
-  dockerImage?: Schema98;
-  env?: Schema99;
-  transport: Schema100;
-  httpPort?: Schema101;
-  urlPath?: Schema102;
-  healthCheck?: Schema103;
-  limits?: Schema104;
+  type: Schema191;
+  command: Schema192;
+  dockerImage?: Schema193;
+  env?: Schema195;
+  transport: Schema197;
+  httpPort?: Schema198;
+  urlPath?: Schema200;
+  healthCheck?: Schema202;
+  limits?: Schema208;
+  requests?: Schema212;
+  storage?: StdioTransportStorageOutput;
+  tailscale?: StdioTransportTailscaleOutput;
 };
 
+/**
+ * Persistent storage for the server. When enabled the server keeps one volume, mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the deployment and counts against the organization storage quota
+ */
+export type StdioTransportStorageOutput = Schema216 | null;
+
+/**
+ * Egress-only Tailscale access. When enabled the server can open connections to hosts on your tailnet, and to the subnets its routers advertise. Nothing on the tailnet can reach the server
+ */
+export type StdioTransportTailscaleOutput = Schema217 | null;
+
 export type SseTransportConfigOutput = {
-  type: Schema107;
-  url: Schema108;
-  headers?: Schema109;
+  type: Schema219;
+  url: Schema220;
+  headers?: Schema221;
 };
 
 export type HostedTransportConfigOutput = {
-  type: Schema110;
-  runtime: Schema111;
-  env?: Schema112;
-  limits?: Schema113;
+  type: Schema224;
+  runtime: Schema225;
+  env?: Schema226;
+  limits?: Schema228;
+  requests?: Schema230;
+  storage?: HostedTransportStorageOutput;
+  tailscale?: HostedTransportTailscaleOutput;
 };
 
+/**
+ * Persistent storage for the server. When enabled the server keeps one volume, mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the deployment and counts against the organization storage quota
+ */
+export type HostedTransportStorageOutput = Schema232 | null;
+
+/**
+ * Egress-only Tailscale access. When enabled the server can open connections to hosts on your tailnet, and to the subnets its routers advertise. Nothing on the tailnet can reach the server
+ */
+export type HostedTransportTailscaleOutput = Schema233 | null;
+
 export type OpenApiTransportConfigOutput = {
-  type: Schema114;
-  method: Schema115;
-  specUrl: Schema116;
-  spec: Schema117;
-  baseUrl: Schema118;
-  headers?: Schema119;
+  type: Schema235;
+  method: Schema236;
+  specUrl: Schema237;
+  spec: Schema239;
+  baseUrl: Schema241;
+  headers?: Schema243;
 };
 
 export type ServerOAuthClientConfigurationOutput = {
-  clientId: Schema121;
-  clientSecret: Schema122;
-  grantType: OAuthGrantType;
-  clientAuthMethod: Schema123;
-  scopes: Schema124;
+  clientId: Schema247;
+  clientSecret: Schema249;
+  grantType: Schema251;
+  clientAuthMethod: Schema252;
+  scopes: Schema257;
 };
 
 export type ServerOAuthMetadataOutput = {
-  resource?: Schema126;
-  as?: Schema127;
+  resource?: Schema261;
+  as?: Schema266;
 };
 
-export type GetServersData = {
+export type ListServersV2Data = {
   body?: never;
   path?: never;
   query?: never;
   url: '/servers';
 };
 
-export type GetServersResponses = {
+export type ListServersV2Responses = {
   /**
    * Successful response
    */
   200: V2ListServersResponse;
 };
 
-export type GetServersResponse = GetServersResponses[keyof GetServersResponses];
+export type ListServersV2Response = ListServersV2Responses[keyof ListServersV2Responses];
 
-export type PostServersData = {
+export type CreateServerV2Data = {
   body?: V2CreateServerRequest;
   path?: never;
   query?: never;
   url: '/servers';
 };
 
-export type PostServersResponses = {
+export type CreateServerV2Responses = {
   /**
    * Successful response
    */
   200: Server;
 };
 
-export type PostServersResponse = PostServersResponses[keyof PostServersResponses];
+export type CreateServerV2Response = CreateServerV2Responses[keyof CreateServerV2Responses];
 
-export type DeleteServersBySlugData = {
+export type DeleteServerV2Data = {
   body?: never;
   path: {
-    slug: Schema59;
+    slug: Schema140;
   };
   query?: never;
   url: '/servers/{slug}';
 };
 
-export type DeleteServersBySlugResponses = {
+export type DeleteServerV2Responses = {
   /**
    * Successful response
    */
   200: unknown;
 };
 
-export type GetServersBySlugData = {
+export type GetServerV2Data = {
   body?: never;
   path: {
-    slug: Schema59;
+    slug: Schema140;
   };
   query?: never;
   url: '/servers/{slug}';
 };
 
-export type GetServersBySlugResponses = {
+export type GetServerV2Responses = {
   /**
    * Successful response
    */
   200: Server;
 };
 
-export type GetServersBySlugResponse = GetServersBySlugResponses[keyof GetServersBySlugResponses];
+export type GetServerV2Response = GetServerV2Responses[keyof GetServerV2Responses];
 
-export type PatchServersBySlugData = {
+export type PatchServerV2Data = {
   body?: V2PatchServerRequest;
   path: {
-    slug: Schema59;
+    slug: Schema140;
   };
   query?: never;
   url: '/servers/{slug}';
 };
 
-export type PatchServersBySlugResponses = {
+export type PatchServerV2Responses = {
   /**
    * Successful response
    */
   200: Server;
 };
 
-export type PatchServersBySlugResponse = PatchServersBySlugResponses[keyof PatchServersBySlugResponses];
+export type PatchServerV2Response = PatchServerV2Responses[keyof PatchServerV2Responses];
 
-export type PutServersBySlugData = {
+export type UpdateServerV2Data = {
   body?: V2UpdateServerRequest;
   path: {
-    slug: Schema59;
+    slug: Schema140;
   };
   query?: never;
   url: '/servers/{slug}';
 };
 
-export type PutServersBySlugResponses = {
+export type UpdateServerV2Responses = {
   /**
    * Successful response
    */
   200: Server;
 };
 
-export type PutServersBySlugResponse = PutServersBySlugResponses[keyof PutServersBySlugResponses];
+export type UpdateServerV2Response = UpdateServerV2Responses[keyof UpdateServerV2Responses];
 
-export type GetCredentialsData = {
+export type ListCredentialsV2Data = {
   body?: never;
   path?: never;
   query?: {
-    serverId?: string;
+    /**
+     * Filter to credentials of a single server, by server ID
+     */
+    serverId?: Schema172;
   };
   url: '/credentials';
 };
 
-export type GetCredentialsResponses = {
+export type ListCredentialsV2Responses = {
   /**
    * Successful response
    */
-  200: Schema139;
+  200: Schema295;
 };
 
-export type GetCredentialsResponse = GetCredentialsResponses[keyof GetCredentialsResponses];
+export type ListCredentialsV2Response = ListCredentialsV2Responses[keyof ListCredentialsV2Responses];
 
-export type DeleteCredentialsByIdData = {
+export type DeleteCredentialV2Data = {
   body?: never;
   path: {
+    /**
+     * ID of the credential
+     */
     id: string;
   };
   query?: never;
   url: '/credentials/{id}';
 };
 
-export type DeleteCredentialsByIdResponses = {
+export type DeleteCredentialV2Responses = {
   /**
    * Successful response
    */
-  200: Schema139;
+  200: Schema295;
 };
 
-export type DeleteCredentialsByIdResponse = DeleteCredentialsByIdResponses[keyof DeleteCredentialsByIdResponses];
+export type DeleteCredentialV2Response = DeleteCredentialV2Responses[keyof DeleteCredentialV2Responses];
 
-export type GetCredentialsByIdData = {
+export type GetCredentialV2Data = {
   body?: never;
   path: {
+    /**
+     * ID of the credential
+     */
     id: string;
   };
   query?: never;
   url: '/credentials/{id}';
 };
 
-export type GetCredentialsByIdResponses = {
+export type GetCredentialV2Responses = {
   /**
    * Successful response
    */
   200: CredentialDtoV2;
 };
 
-export type GetCredentialsByIdResponse = GetCredentialsByIdResponses[keyof GetCredentialsByIdResponses];
+export type GetCredentialV2Response = GetCredentialV2Responses[keyof GetCredentialV2Responses];
 
-export type GetCredentialsByIdSecretData = {
+export type GetCredentialSecretV2Data = {
   body?: never;
   path: {
+    /**
+     * ID of the credential
+     */
     id: string;
   };
   query?: never;
   url: '/credentials/{id}/secret';
 };
 
-export type GetCredentialsByIdSecretResponses = {
+export type GetCredentialSecretV2Responses = {
   /**
    * Successful response
    */
   200: ServerCredentialsCredential;
 };
 
-export type GetCredentialsByIdSecretResponse =
-  GetCredentialsByIdSecretResponses[keyof GetCredentialsByIdSecretResponses];
+export type GetCredentialSecretV2Response = GetCredentialSecretV2Responses[keyof GetCredentialSecretV2Responses];
+
+export type RefreshCredentialV2Data = {
+  body?: never;
+  path: {
+    /**
+     * ID of the credential
+     */
+    id: string;
+  };
+  query?: never;
+  url: '/credentials/{id}/refresh';
+};
+
+export type RefreshCredentialV2Responses = {
+  /**
+   * Successful response
+   */
+  200: CredentialRefreshResponse;
+};
+
+export type RefreshCredentialV2Response = RefreshCredentialV2Responses[keyof RefreshCredentialV2Responses];
+
+export type ListCredentialAuditLogsV2Data = {
+  body?: never;
+  path: {
+    /**
+     * ID of the credential
+     */
+    credentialId: string;
+  };
+  query?: never;
+  url: '/credentials/{credentialId}/audit-logs';
+};
+
+export type ListCredentialAuditLogsV2Responses = {
+  /**
+   * Successful response
+   */
+  200: PaginatedCredentialAuditLog;
+};
+
+export type ListCredentialAuditLogsV2Response =
+  ListCredentialAuditLogsV2Responses[keyof ListCredentialAuditLogsV2Responses];
+
+export type GetCredentialAuditLogV2Data = {
+  body?: never;
+  path: {
+    /**
+     * ID of the credential
+     */
+    credentialId: string;
+    /**
+     * ID of the audit log entry
+     */
+    auditLogId: string;
+  };
+  query?: never;
+  url: '/credentials/{credentialId}/audit-logs/{auditLogId}';
+};
+
+export type GetCredentialAuditLogV2Responses = {
+  /**
+   * Successful response
+   */
+  200: CredentialAuditLog;
+};
+
+export type GetCredentialAuditLogV2Response = GetCredentialAuditLogV2Responses[keyof GetCredentialAuditLogV2Responses];

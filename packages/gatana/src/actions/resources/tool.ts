@@ -1,4 +1,3 @@
-import { ServerToolDto } from 'gatana-sdk/api';
 import { Gatana } from 'gatana-sdk';
 import { output, outputError, TableColumn } from '../../output.js';
 import _ from 'lodash';
@@ -17,7 +16,7 @@ const toolTableColumns: TableColumn[] = [
 export async function getToolResource(gatana: Gatana, toolName?: string, onlyEnabled?: boolean): Promise<void> {
   try {
     if (!toolName) {
-      const { data } = await gatana.api.getTools();
+      const { data } = await gatana.api.listTools();
       if (!data) {
         outputError('No data returned');
         process.exit(1);
@@ -28,7 +27,7 @@ export async function getToolResource(gatana: Gatana, toolName?: string, onlyEna
       const splitIndex = toolName.indexOf('_');
       const serverSlug = toolName.substring(0, splitIndex);
       const name = toolName.substring(splitIndex + 1);
-      const { data } = await gatana.api.getMcpServersByServerSlugToolsByToolName({
+      const { data } = await gatana.api.getMcpServerTool({
         path: {
           serverSlug: serverSlug,
           toolName: name,
