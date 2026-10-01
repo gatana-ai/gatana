@@ -21,11 +21,10 @@ export interface SyncOptions {
   dryRun: boolean;
   prune: boolean;
   force: boolean;
-  query?: string;
   /** Add this collection or skill to the directory's subscriptions before syncing. */
   subscribe?: Subscription;
   /** Forget the subscriptions first: the directory takes every readable skill again. */
-  everything?: boolean;
+  reset?: boolean;
 }
 
 export interface SyncSummary {
@@ -47,15 +46,16 @@ export interface SyncSummary {
  * list the server gives, matched by id, so a rename on the server is followed and reported rather
  * than breaking the sync. A collection or skill that is gone, or no longer shared with the user,
  * contributes nothing and is reported; its entry stays so the user sees it in the next message and
- * can be reset with --everything.
+ * can be reset with --reset.
  */
 async function listRemote(
   api: SkillsApi,
+  dir: string,
   manifest: SkillsManifest,
   options: SyncOptions,
   warnings: string[]
 ): Promise<{ remote: SkillSummary[]; subscriptions: Subscription[] | null }> {
-  const all = await api.list(options.query);
+  const all = await api.list();
   if (manifest.subscriptions === null) {
     return { remote: all, subscriptions: null };
   }
@@ -68,13 +68,13 @@ async function listRemote(
     const current = subscription.kind === 'skill' ? skills.get(subscription.id) : collections.get(subscription.id);
     if (!current) {
       warnings.push(
-        `${subscription.kind} "${subscription.name}" is gone or no longer shared with you; ${subscription.kind === 'skill' ? 'it is' : 'its skills are'} removed. Run "gatana skills install --everything" to reset what the directory follows`
+        `${dir}: ${subscription.kind} "${subscription.name}" is gone or no longer shared with you; ${subscription.kind === 'skill' ? 'it is' : 'its skills are'} removed. Run "gatana skills install --reset" to reset what the directory follows`
       );
       subscriptions.push(subscription);
       continue;
     }
     if (current.name !== subscription.name) {
-      warnings.push(`${subscription.kind} "${subscription.name}" is now named "${current.name}"`);
+      warnings.push(`${dir}: ${subscription.kind} "${subscription.name}" is now named "${current.name}"`);
     }
     subscriptions.push({ kind: subscription.kind, id: current.id, name: current.name });
     (subscription.kind === 'skill' ? wantedSkills : wanted).add(current.id);
@@ -171,7 +171,7 @@ export async function syncDirectory(
 
   // Subscription changes ride on the sync so a dry run previews them without writing anything:
   // the changed list only reaches the manifest through the write at the end.
-  if (options.everything) {
+  if (options.reset) {
     manifest = { ...manifest, subscriptions: null };
   }
   if (options.subscribe) {
@@ -181,7 +181,7 @@ export async function syncDirectory(
     }
   }
 
-  const { remote, subscriptions } = await listRemote(api, manifest, options, warnings);
+  const { remote, subscriptions } = await listRemote(api, dir, manifest, options, warnings);
   const local = await readLocalState(dir);
   const ops = computeSyncPlan({
     remote,
@@ -278,42 +278,4 @@ export async function syncTargets(
     summaries.push(await syncDirectory(api, identity, dir, options));
   }
   return summaries;
-}
-
-function sleep(ms: number, signal: AbortSignal): Promise<void> {
-  return new Promise(resolve => {
-    if (signal.aborted) {
-      return resolve();
-    }
-    const timer = setTimeout(resolve, ms);
-    signal.addEventListener(
-      'abort',
-      () => {
-        clearTimeout(timer);
-        resolve();
-      },
-      { once: true }
-    );
-  });
-}
-
-/** Re-syncs every interval until the signal aborts. A failed pass is reported and the next one still runs. */
-export async function watchSync(
-  api: SkillsApi,
-  identity: SkillsIdentity,
-  dirs: string[],
-  options: SyncOptions,
-  intervalSeconds: number,
-  signal: AbortSignal,
-  report: (summaries: SyncSummary[]) => void,
-  reportError: (error: unknown) => void
-): Promise<void> {
-  while (!signal.aborted) {
-    try {
-      report(await syncTargets(api, identity, dirs, options));
-    } catch (error) {
-      reportError(error);
-    }
-    await sleep(intervalSeconds * 1000, signal);
-  }
 }

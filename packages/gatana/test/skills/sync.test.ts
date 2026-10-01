@@ -204,10 +204,10 @@ test('installing a name follows it: the sync is limited to it, a rename is follo
   assert.equal(moved.removed, 1);
   assert.equal(await exists(join(dir, 'deploy')), false);
 
-  // --everything forgets the subscriptions and takes every readable skill again.
-  const everything = await syncDirectory(api, identity, dir, { ...defaults, everything: true });
-  assert.equal(everything.written, 3);
-  assert.equal(everything.subscriptions, null);
+  // --reset forgets the subscriptions and takes every readable skill again.
+  const reset = await syncDirectory(api, identity, dir, { ...defaults, reset: true });
+  assert.equal(reset.written, 3);
+  assert.equal(reset.subscriptions, null);
   assert.equal((await readManifest(dir))!.subscriptions, null);
 });
 
@@ -225,7 +225,7 @@ test('a subscribed collection that disappears is reported and its skills are pru
   const summary = await syncDirectory(api, identity, dir, defaults);
   assert.equal(summary.removed, 1);
   assert.ok(summary.warnings.some(w => /gone or no longer shared/.test(w)));
-  // The entry stays and is reported until the directory is reset with --everything.
+  // The entry stays and is reported until the directory is reset with --reset.
   assert.deepEqual((await readManifest(dir))!.subscriptions, [{ kind: 'collection', id: release.id, name: 'release' }]);
 });
 

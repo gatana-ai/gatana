@@ -18,19 +18,14 @@ import {
 import { pushSkills, type PushAction, type PushResult } from '../actions/skills/push.js';
 import { getSkillCollectionResource, getSkillResource } from '../actions/skills/resource.js';
 import { describeSubscription, resolveSubscription } from '../actions/skills/subscriptions.js';
-import { syncTargets, watchSync, type SyncSummary } from '../actions/skills/sync.js';
+import { syncTargets, type SyncSummary } from '../actions/skills/sync.js';
 import { DEFAULT_TARGETS, prepareTargets, presetHelp, PRESETS, resolveTargets } from '../actions/skills/targets.js';
 import { isAbsolute } from 'path';
 
-const MIN_WATCH_SECONDS = 5;
-const DEFAULT_WATCH_SECONDS = 60;
-
 interface InstallCommandOptions {
-  watch?: true | string;
   dryRun?: boolean;
   prune: boolean;
   force?: boolean;
-  query?: string;
   quiet?: boolean;
   org?: string;
   reset?: boolean;
@@ -65,7 +60,7 @@ function describeSubscriptions(summary: SyncSummary): string {
     return '';
   }
   if (summary.subscriptions.length === 0) {
-    return ' (no subscriptions: nothing is installed here until you install a collection or skill by name, or run "gatana skills install --everything")';
+    return ' (no subscriptions: nothing is installed here until you install a collection or skill by name, or run "gatana skills install --reset")';
   }
   return ` (following: ${summary.subscriptions.map(describeSubscription).join(', ')})`;
 }
@@ -120,14 +115,6 @@ function reportPush(results: PushResult[]): void {
   console.log(
     `${count('created')} created, ${count('updated')} updated, ${count('conflict')} conflicts, ${count('error')} errors, ${count('unchanged')} unchanged`
   );
-}
-
-function parseWatch(value: string): string {
-  const seconds = Number(value);
-  if (!Number.isInteger(seconds) || seconds < MIN_WATCH_SECONDS) {
-    throw new InvalidArgumentError(`Give a whole number of seconds, at least ${MIN_WATCH_SECONDS}`);
-  }
-  return value;
 }
 
 /** One line per agent found on the machine; agents that are not installed are not mentioned. */
@@ -227,6 +214,7 @@ export function createSkillsCommand(gatana: Gatana): Command {
         'Only if name is provided: If name collision between skill and collection, use the collection'
       )
       .option('--skill', 'Only if name is provided: If name collision between skill and collection, use the skill')
+      .option('--hooks', 'Add the session-start hooks without asking')
       .option('--no-hooks', 'Do not add the session-start hooks')
       .option('--quiet', 'Print nothing on success; warnings and errors still go to stderr')
       .option('--org <id>', 'Organization from the config file, instead of the default')
@@ -258,35 +246,12 @@ export function createSkillsCommand(gatana: Gatana): Command {
           const dirs = await prepareTargets(resolveTargets(targets));
           const syncOptions = {
             dryRun: Boolean(options.dryRun),
-            prune: options.prune && !options.query,
+            prune: options.prune,
             force: Boolean(options.force),
-            query: options.query,
             subscribe: subscription,
             reset: Boolean(options.reset),
           };
           const reportOptions = { dryRun: syncOptions.dryRun, quiet: Boolean(options.quiet) };
-
-          if (options.watch !== undefined) {
-            const seconds = options.watch === true ? DEFAULT_WATCH_SECONDS : Number(options.watch);
-            const controller = new AbortController();
-            process.on('SIGINT', () => controller.abort());
-            process.on('SIGTERM', () => controller.abort());
-            if (!options.quiet) {
-              console.log(`Installing every ${seconds}s into ${dirs.join(', ')}. Press Ctrl-C to stop.`);
-            }
-            // A watch keeps the folders fresh itself, so it never offers the hooks.
-            await watchSync(
-              api,
-              { orgId, baseUrl },
-              dirs,
-              syncOptions,
-              seconds,
-              controller.signal,
-              summaries => reportSummaries(summaries, reportOptions),
-              error => console.error(`install failed: ${(error as Error).message ?? error}`)
-            );
-            return;
-          }
 
           reportSummaries(await syncTargets(api, { orgId, baseUrl }, dirs, syncOptions), reportOptions);
           if (!syncOptions.dryRun) {

@@ -4,8 +4,8 @@ set -e
 # ──────────────────────────────────────────────────────────────────────
 # Gatana Release Script
 #
-# Detects which packages have changed, asks how to bump their versions,
-# then builds, publishes to npm, and creates git tags.
+# Checks the npm login, detects which packages have changed, asks how to
+# bump their versions, then builds, publishes to npm, and creates git tags.
 #
 # Usage:
 #   ./scripts/release.sh                       Interactive mode (recommended)
@@ -167,11 +167,29 @@ step() {
   echo -e "${BOLD}▸ $1${RESET}"
 }
 
-# ── Detect changes ────────────────────────────────────────────────────
+# ── Banner ────────────────────────────────────────────────────────────
 
 echo ""
 echo -e "${BOLD}Gatana Release${RESET}"
 echo ""
+
+# ── Preflight: npm login ──────────────────────────────────────────────
+# Publishing without a valid npm login fails with a misleading E404 from
+# the registry, and only after the version bump has already changed
+# package.json. Check the login first, before anything is modified.
+
+if ! NPM_USER=$(pnpm whoami 2>/dev/null); then
+  echo -e "  ${RED}✗ npm${RESET}  not logged in (or the login has expired)"
+  echo ""
+  echo -e "${RED}Error: an npm login is required to publish.${RESET}"
+  echo -e "${DIM}  Run 'npm login' and try again.${RESET}"
+  echo ""
+  exit 1
+fi
+echo -e "  ${GREEN}✓ npm${RESET}  logged in as ${BOLD}${NPM_USER}${RESET}"
+echo ""
+
+# ── Detect changes ────────────────────────────────────────────────────
 
 SDK_TAG=$(latest_tag "gatana-sdk")
 CLI_TAG=$(latest_tag "gatana")
