@@ -1,8 +1,15 @@
 import { lstat, mkdir, readdir, readFile, rename, rm, rmdir, writeFile } from 'fs/promises';
 import { join } from 'path';
-import { SkillNotFoundError, type SkillsApi } from './api.js';
+import { SkillNotFoundError, type SkillsApi, type SkillSummary } from './api.js';
 import { frontmatterFor, renderSkillMd } from './frontmatter.js';
-import { emptyManifest, readManifest, sha256, writeManifest, type SkillsManifest } from './manifest.js';
+import {
+  emptyManifest,
+  readManifest,
+  sha256,
+  writeManifest,
+  type SkillsManifest,
+  type Subscription,
+} from './manifest.js';
 import { computeSyncPlan, type LocalState, type SyncOp } from './plan.js';
 
 export interface SkillsIdentity {
@@ -15,6 +22,10 @@ export interface SyncOptions {
   prune: boolean;
   force: boolean;
   query?: string;
+  /** Add this collection or skill to the directory's subscriptions before syncing. */
+  subscribe?: Subscription;
+  /** Forget the subscriptions first: the directory takes every readable skill again. */
+  everything?: boolean;
 }
 
 export interface SyncSummary {
@@ -25,7 +36,55 @@ export interface SyncSummary {
   skipped: number;
   /** Skills the manifest owns after the run. */
   total: number;
+  /** The collections the directory follows, or null when it takes every readable skill. */
+  subscriptions: Subscription[] | null;
   warnings: string[];
+}
+
+/**
+ * What the directory should hold. Without subscriptions: every skill the user can read. With
+ * them: the skills of the subscribed collections and the subscribed skills themselves, from the one
+ * list the server gives, matched by id, so a rename on the server is followed and reported rather
+ * than breaking the sync. A collection or skill that is gone, or no longer shared with the user,
+ * contributes nothing and is reported; its entry stays so the user sees it in the next message and
+ * can be reset with --everything.
+ */
+async function listRemote(
+  api: SkillsApi,
+  manifest: SkillsManifest,
+  options: SyncOptions,
+  warnings: string[]
+): Promise<{ remote: SkillSummary[]; subscriptions: Subscription[] | null }> {
+  const all = await api.list(options.query);
+  if (manifest.subscriptions === null) {
+    return { remote: all, subscriptions: null };
+  }
+  const collections = new Map((await api.listCollections()).map(collection => [collection.id, collection]));
+  const skills = new Map(all.map(skill => [skill.id, skill]));
+  const subscriptions: Subscription[] = [];
+  const wanted = new Set<string>();
+  const wantedSkills = new Set<string>();
+  for (const subscription of manifest.subscriptions) {
+    const current = subscription.kind === 'skill' ? skills.get(subscription.id) : collections.get(subscription.id);
+    if (!current) {
+      warnings.push(
+        `${subscription.kind} "${subscription.name}" is gone or no longer shared with you; ${subscription.kind === 'skill' ? 'it is' : 'its skills are'} removed. Run "gatana skills install --everything" to reset what the directory follows`
+      );
+      subscriptions.push(subscription);
+      continue;
+    }
+    if (current.name !== subscription.name) {
+      warnings.push(`${subscription.kind} "${subscription.name}" is now named "${current.name}"`);
+    }
+    subscriptions.push({ kind: subscription.kind, id: current.id, name: current.name });
+    (subscription.kind === 'skill' ? wantedSkills : wanted).add(current.id);
+  }
+  return {
+    remote: all.filter(
+      skill => wantedSkills.has(skill.id) || (skill.collectionId !== null && wanted.has(skill.collectionId))
+    ),
+    subscriptions,
+  };
 }
 
 const SKILL_FILE = 'SKILL.md';
@@ -110,7 +169,19 @@ export async function syncDirectory(
     manifest = emptyManifest(identity.orgId, identity.baseUrl);
   }
 
-  const remote = await api.list(options.query);
+  // Subscription changes ride on the sync so a dry run previews them without writing anything:
+  // the changed list only reaches the manifest through the write at the end.
+  if (options.everything) {
+    manifest = { ...manifest, subscriptions: null };
+  }
+  if (options.subscribe) {
+    const current = manifest.subscriptions ?? [];
+    if (!current.some(subscription => subscription.id === options.subscribe!.id)) {
+      manifest = { ...manifest, subscriptions: [...current, options.subscribe] };
+    }
+  }
+
+  const { remote, subscriptions } = await listRemote(api, manifest, options, warnings);
   const local = await readLocalState(dir);
   const ops = computeSyncPlan({
     remote,
@@ -127,6 +198,7 @@ export async function syncDirectory(
     removed: ops.filter(op => op.kind === 'remove').length,
     skipped: ops.filter(op => op.kind === 'skip').length,
     total,
+    subscriptions,
     warnings,
   });
 
@@ -157,6 +229,7 @@ export async function syncDirectory(
     ...manifest,
     syncedAt: new Date().toISOString(),
     skills: {},
+    subscriptions,
   };
   for (const op of ops) {
     if (op.kind === 'skip' && op.reason !== 'foreign-folder' && manifest.skills[op.id]) {

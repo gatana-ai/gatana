@@ -35,6 +35,8 @@ import type {
   CreateSecretStoreResponses,
   CreateSiemDestinationData,
   CreateSiemDestinationResponses,
+  CreateSkillCollectionData,
+  CreateSkillCollectionResponses,
   CreateSkillData,
   CreateSkillResponses,
   CreateTeamClaimMappingData,
@@ -87,6 +89,8 @@ import type {
   DeleteSecretStoreResponses,
   DeleteSiemDestinationData,
   DeleteSiemDestinationResponses,
+  DeleteSkillCollectionData,
+  DeleteSkillCollectionResponses,
   DeleteSkillData,
   DeleteSkillResponses,
   DeleteTeamClaimMappingData,
@@ -157,6 +161,8 @@ import type {
   GetSiemDestinationResponses,
   GetSiemDestinationSecretData,
   GetSiemDestinationSecretResponses,
+  GetSkillCollectionData,
+  GetSkillCollectionResponses,
   GetSkillData,
   GetSkillResponses,
   GetTeamData,
@@ -224,6 +230,10 @@ import type {
   ListSecretStoreMappingsResponses,
   ListSecretStoresData,
   ListSecretStoresResponses,
+  ListSkillCollectionsData,
+  ListSkillCollectionSharesData,
+  ListSkillCollectionSharesResponses,
+  ListSkillCollectionsResponses,
   ListSkillsData,
   ListSkillSharesData,
   ListSkillSharesResponses,
@@ -274,6 +284,8 @@ import type {
   SendEmailVerificationCodeResponses,
   ShareArtifactData,
   ShareArtifactResponses,
+  ShareSkillCollectionData,
+  ShareSkillCollectionResponses,
   ShareSkillData,
   ShareSkillResponses,
   StartMcpServerData,
@@ -288,6 +300,8 @@ import type {
   TestSiemDestinationResponses,
   UnshareArtifactData,
   UnshareArtifactResponses,
+  UnshareSkillCollectionData,
+  UnshareSkillCollectionResponses,
   UnshareSkillData,
   UnshareSkillResponses,
   UpdateArtifactData,
@@ -318,6 +332,8 @@ import type {
   UpdateProfileResponses,
   UpdateProfileServerToolsData,
   UpdateProfileServerToolsResponses,
+  UpdateSkillCollectionData,
+  UpdateSkillCollectionResponses,
   UpdateSkillData,
   UpdateSkillResponses,
   UpdateTeamData,
@@ -2801,7 +2817,7 @@ export const shareArtifact = <ThrowOnError extends boolean = true>(options: Opti
   });
 
 /**
- * List the skills the caller can read, optionally narrowed to those whose name or description contains a text
+ * List the skills the caller can read and the collections they can see, optionally narrowed to one collection or to a text in the name or description
  */
 export const listSkills = <ThrowOnError extends boolean = true>(options?: Options<ListSkillsData, ThrowOnError>) =>
   (options?.client ?? client).get<ListSkillsResponses, unknown, ThrowOnError>({
@@ -2814,7 +2830,7 @@ export const listSkills = <ThrowOnError extends boolean = true>(options?: Option
   });
 
 /**
- * Create a skill from a name, a one-line description of when to use it and Markdown instructions
+ * Create a skill from a SKILL.md document, or from a name, a one-line description of when to use it and Markdown instructions, at root or in a collection
  */
 export const createSkill = <ThrowOnError extends boolean = true>(options?: Options<CreateSkillData, ThrowOnError>) =>
   (options?.client ?? client).post<CreateSkillResponses, unknown, ThrowOnError>({
@@ -2844,7 +2860,7 @@ export const deleteSkill = <ThrowOnError extends boolean = true>(options: Option
   });
 
 /**
- * Get a skill with its Markdown instructions
+ * Get a skill with its Markdown instructions, also rendered as one SKILL.md document
  */
 export const getSkill = <ThrowOnError extends boolean = true>(options: Options<GetSkillData, ThrowOnError>) =>
   (options.client ?? client).get<GetSkillResponses, unknown, ThrowOnError>({
@@ -2857,7 +2873,7 @@ export const getSkill = <ThrowOnError extends boolean = true>(options: Options<G
   });
 
 /**
- * Update the name, description, instructions or visibility of a skill
+ * Update a skill from a SKILL.md document, or change its name, description, instructions, visibility or collection
  */
 export const updateSkill = <ThrowOnError extends boolean = true>(options: Options<UpdateSkillData, ThrowOnError>) =>
   (options.client ?? client).put<UpdateSkillResponses, unknown, ThrowOnError>({
@@ -2874,7 +2890,7 @@ export const updateSkill = <ThrowOnError extends boolean = true>(options: Option
   });
 
 /**
- * List the users and teams a skill is shared with
+ * List the users and teams a skill is shared with, and who has access through its collection
  */
 export const listSkillShares = <ThrowOnError extends boolean = true>(
   options: Options<ListSkillSharesData, ThrowOnError>
@@ -2902,7 +2918,7 @@ export const unshareSkill = <ThrowOnError extends boolean = true>(options: Optio
   });
 
 /**
- * Share a skill with a user or a team, giving them read access whatever its visibility, and return who it is shared with
+ * Share a skill with a user or a team as reader or maintainer, whatever its visibility, and return who it is shared with
  */
 export const shareSkill = <ThrowOnError extends boolean = true>(options: Options<ShareSkillData, ThrowOnError>) =>
   (options.client ?? client).put<ShareSkillResponses, unknown, ThrowOnError>({
@@ -2912,4 +2928,140 @@ export const shareSkill = <ThrowOnError extends boolean = true>(options: Options
     ],
     url: '/skills/{skillId}/shares/{memberType}/{memberId}',
     ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * List the skill collections the caller can see, each with how many of its skills the caller can read
+ */
+export const listSkillCollections = <ThrowOnError extends boolean = true>(
+  options?: Options<ListSkillCollectionsData, ThrowOnError>
+) =>
+  (options?.client ?? client).get<ListSkillCollectionsResponses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/skill-collections',
+    ...options,
+  });
+
+/**
+ * Create a skill collection from a name, an optional one-line description and a general access
+ */
+export const createSkillCollection = <ThrowOnError extends boolean = true>(
+  options?: Options<CreateSkillCollectionData, ThrowOnError>
+) =>
+  (options?.client ?? client).post<CreateSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/skill-collections',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+
+/**
+ * Delete a skill collection and move the skills in it to root
+ */
+export const deleteSkillCollection = <ThrowOnError extends boolean = true>(
+  options: Options<DeleteSkillCollectionData, ThrowOnError>
+) =>
+  (options.client ?? client).delete<DeleteSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/skill-collections/{collectionId}',
+    ...options,
+  });
+
+/**
+ * Get a skill collection
+ */
+export const getSkillCollection = <ThrowOnError extends boolean = true>(
+  options: Options<GetSkillCollectionData, ThrowOnError>
+) =>
+  (options.client ?? client).get<GetSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/skill-collections/{collectionId}',
+    ...options,
+  });
+
+/**
+ * Rename a skill collection, or change its description or general access
+ */
+export const updateSkillCollection = <ThrowOnError extends boolean = true>(
+  options: Options<UpdateSkillCollectionData, ThrowOnError>
+) =>
+  (options.client ?? client).put<UpdateSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/skill-collections/{collectionId}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * List the users and teams a skill collection is shared with and what each grant gives
+ */
+export const listSkillCollectionShares = <ThrowOnError extends boolean = true>(
+  options: Options<ListSkillCollectionSharesData, ThrowOnError>
+) =>
+  (options.client ?? client).get<ListSkillCollectionSharesResponses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/skill-collections/{collectionId}/shares',
+    ...options,
+  });
+
+/**
+ * Stop sharing a skill collection with a user or a team and return who it is still shared with
+ */
+export const unshareSkillCollection = <ThrowOnError extends boolean = true>(
+  options: Options<UnshareSkillCollectionData, ThrowOnError>
+) =>
+  (options.client ?? client).delete<UnshareSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/skill-collections/{collectionId}/shares/{memberType}/{memberId}',
+    ...options,
+  });
+
+/**
+ * Share a skill collection with a user or a team as reader or maintainer, which also opens every skill in it, and return who it is shared with
+ */
+export const shareSkillCollection = <ThrowOnError extends boolean = true>(
+  options: Options<ShareSkillCollectionData, ThrowOnError>
+) =>
+  (options.client ?? client).put<ShareSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/skill-collections/{collectionId}/shares/{memberType}/{memberId}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
   });

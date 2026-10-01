@@ -156,3 +156,119 @@ test('prepareTargets creates directories and collapses symlinked aliases', async
   assert.equal(dirs.length, 2);
   assert.equal(await exists(join(base, 'new')), true);
 });
+
+test('installing a name follows it: the sync is limited to it, a rename is followed, what leaves it is pruned', async () => {
+  const api = new FakeSkillsApi();
+  const release = api.seedCollection({ name: 'release' });
+  const other = api.seedCollection({ name: 'other' });
+  const inRelease = api.seed({ name: 'deploy', content: 'D\n', collectionId: release.id });
+  api.seed({ name: 'review', content: 'R\n', collectionId: other.id });
+  api.seed({ name: 'root-skill', content: 'S\n' });
+  const dir = await tmp();
+
+  const releaseSubscription = { kind: 'collection' as const, id: release.id, name: release.name };
+  const first = await syncDirectory(api, identity, dir, { ...defaults, subscribe: releaseSubscription });
+  assert.equal(first.written, 1);
+  assert.deepEqual(first.subscriptions, [{ kind: 'collection', id: release.id, name: 'release' }]);
+  assert.equal(await exists(join(dir, 'deploy', 'SKILL.md')), true);
+  assert.equal(await exists(join(dir, 'review')), false);
+  assert.equal(await exists(join(dir, 'root-skill')), false);
+  assert.equal(
+    parseSkillMd(await readFile(join(dir, 'deploy', 'SKILL.md'), 'utf8')).frontmatter.metadata['gatana-collection'],
+    'release'
+  );
+
+  // Installing the same name again keeps one manifest entry.
+  await syncDirectory(api, identity, dir, { ...defaults, subscribe: releaseSubscription });
+  assert.deepEqual((await readManifest(dir))!.subscriptions, [{ kind: 'collection', id: release.id, name: 'release' }]);
+
+  // A dry run with a name previews without writing the subscription.
+  const preview = await syncDirectory(api, identity, dir, {
+    ...defaults,
+    dryRun: true,
+    subscribe: { kind: 'collection', id: other.id, name: other.name },
+  });
+  assert.equal(preview.subscriptions!.length, 2);
+  assert.deepEqual((await readManifest(dir))!.subscriptions, [{ kind: 'collection', id: release.id, name: 'release' }]);
+
+  api.renameCollection(release.id, 'release-train');
+  const renamed = await syncDirectory(api, identity, dir, defaults);
+  assert.ok(renamed.warnings.some(w => /now named "release-train"/.test(w)));
+  assert.deepEqual((await readManifest(dir))!.subscriptions, [
+    { kind: 'collection', id: release.id, name: 'release-train' },
+  ]);
+
+  // A skill moved out of the collection is pruned like an unshared one.
+  api.change(inRelease.id, { collectionId: null });
+  const moved = await syncDirectory(api, identity, dir, defaults);
+  assert.equal(moved.removed, 1);
+  assert.equal(await exists(join(dir, 'deploy')), false);
+
+  // --everything forgets the subscriptions and takes every readable skill again.
+  const everything = await syncDirectory(api, identity, dir, { ...defaults, everything: true });
+  assert.equal(everything.written, 3);
+  assert.equal(everything.subscriptions, null);
+  assert.equal((await readManifest(dir))!.subscriptions, null);
+});
+
+test('a subscribed collection that disappears is reported and its skills are pruned', async () => {
+  const api = new FakeSkillsApi();
+  const release = api.seedCollection({ name: 'release' });
+  api.seed({ name: 'deploy', content: 'D\n', collectionId: release.id });
+  const dir = await tmp();
+  await syncDirectory(api, identity, dir, {
+    ...defaults,
+    subscribe: { kind: 'collection', id: release.id, name: release.name },
+  });
+
+  api.removeCollection(release.id);
+  const summary = await syncDirectory(api, identity, dir, defaults);
+  assert.equal(summary.removed, 1);
+  assert.ok(summary.warnings.some(w => /gone or no longer shared/.test(w)));
+  // The entry stays and is reported until the directory is reset with --everything.
+  assert.deepEqual((await readManifest(dir))!.subscriptions, [{ kind: 'collection', id: release.id, name: 'release' }]);
+});
+
+test('a single skill can be followed next to a collection; a rename is followed, a removal reported, a name in both namespaces refused', async () => {
+  const api = new FakeSkillsApi();
+  const release = api.seedCollection({ name: 'release' });
+  api.seed({ name: 'deploy', content: 'D\n', collectionId: release.id });
+  const lone = api.seed({ name: 'triage', content: 'T\n' });
+  api.seed({ name: 'other', content: 'O\n' });
+  const dir = await tmp();
+
+  const { resolveSubscription } = await import('../../src/actions/skills/subscriptions.js');
+  const skill = await resolveSubscription(api, 'triage');
+  assert.deepEqual(skill, { kind: 'skill', id: lone.id, name: 'triage' });
+  assert.deepEqual(await resolveSubscription(api, 'release'), { kind: 'collection', id: release.id, name: 'release' });
+  await assert.rejects(resolveSubscription(api, 'nothing-here'), /No collection or skill named "nothing-here"/);
+
+  const first = await syncDirectory(api, identity, dir, { ...defaults, subscribe: skill });
+  assert.equal(first.written, 1);
+  assert.equal(await exists(join(dir, 'triage', 'SKILL.md')), true);
+  assert.equal(await exists(join(dir, 'other')), false);
+
+  const both = await syncDirectory(api, identity, dir, {
+    ...defaults,
+    subscribe: await resolveSubscription(api, 'release'),
+  });
+  assert.equal(both.written, 1);
+  assert.equal(await exists(join(dir, 'deploy', 'SKILL.md')), true);
+
+  api.change(lone.id, { name: 'incident-triage' });
+  const renamed = await syncDirectory(api, identity, dir, defaults);
+  assert.ok(renamed.warnings.some(w => /skill "triage" is now named "incident-triage"/.test(w)));
+  assert.equal(await exists(join(dir, 'incident-triage', 'SKILL.md')), true);
+  assert.equal(await exists(join(dir, 'triage')), false);
+
+  api.remove(lone.id);
+  const removed = await syncDirectory(api, identity, dir, defaults);
+  assert.ok(removed.warnings.some(w => /skill "incident-triage" is gone/.test(w)));
+  assert.equal(await exists(join(dir, 'incident-triage')), false);
+
+  // A skill named like a collection needs the caller to say which.
+  api.seed({ name: 'release', content: 'R\n' });
+  await assert.rejects(resolveSubscription(api, 'release'), /both a collection and a skill/);
+  assert.equal((await resolveSubscription(api, 'release', 'collection')).kind, 'collection');
+  assert.equal((await resolveSubscription(api, 'release', 'skill')).kind, 'skill');
+});

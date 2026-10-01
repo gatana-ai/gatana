@@ -1,16 +1,20 @@
 import type { Gatana } from 'gatana-sdk';
-import type { CreateSkillBody, GetSkillResponse, SkillDto, UpdateSkillBody } from 'gatana-sdk/api';
+import type { CreateSkillBody, GetSkillResponse, SkillCollectionDto, SkillDto, UpdateSkillBody } from 'gatana-sdk/api';
 
 export type SkillSummary = SkillDto;
 export type SkillWithContent = GetSkillResponse;
+export type SkillCollectionSummary = SkillCollectionDto;
 
 /**
- * The skill operations sync and push use. An interface rather than the generated client so the
- * tests run against an in-memory implementation; the real one is a thin wrapper over `gatana.api`.
+ * The skill operations sync and push use. An interface rather than the generated client
+ * so the tests run against an in-memory implementation; the real one is a thin wrapper over
+ * `gatana.api`.
  */
 export interface SkillsApi {
-  /** Every skill the caller can read, without bodies. */
-  list(query?: string): Promise<SkillSummary[]>;
+  /** Every skill the caller can read, without bodies; narrowed by a text and/or to one collection by name. */
+  list(query?: string, collection?: string): Promise<SkillSummary[]>;
+  /** Every collection the caller can see. */
+  listCollections(): Promise<SkillCollectionSummary[]>;
   /** One skill with its Markdown body. Throws SkillNotFoundError when it is gone or not readable. */
   get(id: string): Promise<SkillWithContent>;
   create(body: CreateSkillBody): Promise<SkillSummary>;
@@ -44,23 +48,39 @@ function messageOf(error: unknown, response: Response): string {
 export function createSkillsApi(gatana: Gatana): SkillsApi {
   const fail = (error: unknown, response: Response): never => {
     // A server without the skills routes answers 404 for the collection itself.
-    if (response.status === 404 && new URL(response.url).pathname.endsWith('/skills')) {
+    const pathname = new URL(response.url).pathname;
+    if (response.status === 404 && (pathname.endsWith('/skills') || pathname.endsWith('/skill-collections'))) {
       throw new SkillsApiError(404, `Skills are not available on ${gatana.config.baseUrl}: update the server`);
     }
     throw new SkillsApiError(response.status, messageOf(error, response));
   };
 
   return {
-    async list(query) {
+    async list(query, collection) {
       const trimmed = query?.trim();
+      const params: { query?: string; collection?: string } = {};
+      if (trimmed) {
+        params.query = trimmed;
+      }
+      if (collection) {
+        params.collection = collection;
+      }
       const { data, error, response } = await gatana.api.listSkills({
-        query: trimmed ? { query: trimmed } : undefined,
+        query: Object.keys(params).length > 0 ? params : undefined,
         throwOnError: false,
       });
       if (!response.ok || !data) {
         return fail(error, response);
       }
       return data.skills;
+    },
+
+    async listCollections() {
+      const { data, error, response } = await gatana.api.listSkillCollections({ throwOnError: false });
+      if (!response.ok || !data) {
+        return fail(error, response);
+      }
+      return data.collections;
     },
 
     async get(id) {

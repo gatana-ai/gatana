@@ -38,16 +38,28 @@ export function createConfigCommand(configLoader: ConfigLoader): Command {
 
   configCommand.addCommand(
     new Command('login')
-      .description(`Login using PAT or OIDC authentication flow. Example: gatana login my-organization`)
-      .argument('<org-id>', 'Organization ID (e.g., org123)')
+      .description(
+        `Login using PAT or OIDC authentication flow. Examples: gatana config login my-organization, gatana config login https://my-organization.gatana.ai`
+      )
+      .argument(
+        '<org-id-or-url>',
+        'Organization ID (e.g., org123) or instance URL (e.g., https://org123.gatana.ai). For a URL, the org ID is the first hostname label.'
+      )
       .option('-p, --pat <pat>', 'Personal Access Token (PAT) for authentication')
       .option(
         '-b, --base-url <base-url>',
         'Base URL (default: none) - experimental - hardcodes the base URL for development purposes only'
       )
-      .action(async (orgId: string, options: { baseUrl?: string; pat?: string }) => {
+      .action(async (orgIdOrUrl: string, options: { baseUrl?: string; pat?: string }) => {
         try {
-          const baseUrl = options.baseUrl || `https://${orgId}.gatana.ai`;
+          let orgId = orgIdOrUrl;
+          let derivedBaseUrl: string | undefined;
+          if (/^https?:\/\//i.test(orgIdOrUrl)) {
+            const url = new URL(orgIdOrUrl);
+            orgId = url.hostname.split('.')[0];
+            derivedBaseUrl = url.origin;
+          }
+          const baseUrl = options.baseUrl || derivedBaseUrl || `https://${orgId}.gatana.ai`;
           if (options.pat) {
             setOrganizationConfig(orgId, {
               baseUrl,

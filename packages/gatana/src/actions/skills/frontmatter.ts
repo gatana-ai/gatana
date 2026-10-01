@@ -2,10 +2,13 @@ import yaml from 'js-yaml';
 import { z } from 'zod';
 import type { SkillSummary } from './api.js';
 
-/** Metadata keys the sync writes so a file can be traced back to its skill, organization and revision. */
+/** Metadata keys the sync writes so a file can be traced back to its skill, organization, revision and collection. */
 export const META_ID = 'gatana-id';
 export const META_ORG = 'gatana-org';
 export const META_UPDATED_AT = 'gatana-updated-at';
+/** The collection the skill is in, by name, so a push keeps it there; absent for a skill at root. */
+export const META_COLLECTION = 'gatana-collection';
+const OWN_KEYS = new Set([META_ID, META_ORG, META_UPDATED_AT, META_COLLECTION]);
 
 /** The same rule as the backend and the agentskills.io specification. */
 export const SKILL_NAME_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -49,20 +52,23 @@ function collapse(text: string): string {
 }
 
 export function frontmatterFor(
-  skill: Pick<SkillSummary, 'id' | 'name' | 'description' | 'updatedAt'>,
+  skill: Pick<SkillSummary, 'id' | 'name' | 'description' | 'updatedAt'> & { collectionName?: string | null },
   orgId: string,
   extra: Record<string, unknown> = {},
   otherMetadata: Record<string, string> = {}
 ): SkillFrontmatter {
   const metadata: Record<string, string> = {};
   for (const [key, value] of Object.entries(otherMetadata)) {
-    if (key !== META_ID && key !== META_ORG && key !== META_UPDATED_AT) {
+    if (!OWN_KEYS.has(key)) {
       metadata[key] = value;
     }
   }
   metadata[META_ID] = skill.id;
   metadata[META_ORG] = orgId;
   metadata[META_UPDATED_AT] = new Date(skill.updatedAt as unknown as string).toISOString();
+  if (skill.collectionName) {
+    metadata[META_COLLECTION] = skill.collectionName;
+  }
   return { name: skill.name, description: skill.description, metadata, extra };
 }
 

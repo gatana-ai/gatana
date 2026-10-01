@@ -1,7 +1,15 @@
-import { readdir, readFile, stat, writeFile } from 'fs/promises';
+import { readdir, readFile, realpath, stat, writeFile } from 'fs/promises';
 import { basename, dirname, join, resolve } from 'path';
 import { SkillNotFoundError, type SkillsApi, type SkillSummary, type SkillWithContent } from './api.js';
-import { frontmatterFor, META_ID, META_ORG, META_UPDATED_AT, parseSkillMd, renderSkillMd } from './frontmatter.js';
+import {
+  frontmatterFor,
+  META_COLLECTION,
+  META_ID,
+  META_ORG,
+  META_UPDATED_AT,
+  parseSkillMd,
+  renderSkillMd,
+} from './frontmatter.js';
 import { readManifest, sha256, writeManifest } from './manifest.js';
 import type { SkillsIdentity } from './sync.js';
 
@@ -10,6 +18,31 @@ const SKILL_FILE = 'SKILL.md';
 export interface PushOptions {
   force: boolean;
   dryRun: boolean;
+  /**
+   * Name of the collection to put the pushed skills in. Without it, a file that names one in its
+   * `gatana-collection` metadata goes there, so a synced file stays in its collection; a file
+   * naming none is created at root and an existing skill keeps its place.
+   */
+  collection?: string;
+  /**
+   * A path holding no skill is skipped instead of refused. Set when the paths are the default
+   * sync targets rather than something the user typed: an agent folder that does not exist yet, or
+   * holds nothing, is no mistake then.
+   */
+  skipEmpty?: boolean;
+}
+
+/** Collection ids by name, fetched once per push and only when a file or the option asks for one. */
+class CollectionResolver {
+  private byName: Promise<Map<string, string>> | undefined;
+  constructor(private readonly api: SkillsApi) {}
+
+  async idOf(name: string): Promise<string | undefined> {
+    this.byName ??= this.api
+      .listCollections()
+      .then(collections => new Map(collections.map(collection => [collection.name, collection.id])));
+    return (await this.byName).get(name);
+  }
 }
 
 export type PushAction = 'created' | 'updated' | 'unchanged' | 'conflict' | 'error';
@@ -22,9 +55,17 @@ export interface PushResult {
 }
 
 /** A SKILL.md, a folder holding one, or a directory of such folders. */
-export async function discoverSkillFiles(path: string): Promise<string[]> {
+export async function discoverSkillFiles(path: string, skipEmpty = false): Promise<string[]> {
   const target = resolve(path);
-  const info = await stat(target);
+  let info;
+  try {
+    info = await stat(target);
+  } catch (error) {
+    if (skipEmpty) {
+      return [];
+    }
+    throw error;
+  }
   if (info.isFile()) {
     return [target];
   }
@@ -50,10 +91,30 @@ export async function discoverSkillFiles(path: string): Promise<string[]> {
       // A folder without a SKILL.md is not a skill.
     }
   }
-  if (files.length === 0) {
+  if (files.length === 0 && !skipEmpty) {
     throw new Error(`No SKILL.md found at ${target}, in it, or in its sub-folders`);
   }
   return files.sort();
+}
+
+/**
+ * The files of every path, each once. Two paths may be the same folder under two names
+ * (`~/.agents/skills` is often a symlink to `~/.claude/skills`), and pushing a file twice would
+ * report the second pass as unchanged at best.
+ */
+async function discoverAll(paths: string[], skipEmpty: boolean): Promise<string[]> {
+  const seen = new Set<string>();
+  const files: string[] = [];
+  for (const path of paths) {
+    for (const file of await discoverSkillFiles(path, skipEmpty)) {
+      const real = await realpath(file);
+      if (!seen.has(real)) {
+        seen.add(real);
+        files.push(file);
+      }
+    }
+  }
+  return files;
 }
 
 function sameText(a: string, b: string): boolean {
@@ -63,16 +124,20 @@ function sameText(a: string, b: string): boolean {
 export async function pushSkills(
   api: SkillsApi,
   identity: SkillsIdentity,
-  path: string,
+  paths: string[],
   options: PushOptions
 ): Promise<PushResult[]> {
-  const files = await discoverSkillFiles(path);
+  const files = await discoverAll(paths, Boolean(options.skipEmpty));
   let listing: Promise<SkillSummary[]> | undefined;
   const list = () => (listing ??= api.list());
+  const collections = new CollectionResolver(api);
+  if (options.collection !== undefined && (await collections.idOf(options.collection)) === undefined) {
+    throw new Error(`No collection named "${options.collection}" that you can see`);
+  }
 
   const results: PushResult[] = [];
   for (const file of files) {
-    results.push(await pushOne(api, identity, file, options, list));
+    results.push(await pushOne(api, identity, file, options, list, collections));
   }
   return results;
 }
@@ -82,7 +147,8 @@ async function pushOne(
   identity: SkillsIdentity,
   file: string,
   options: PushOptions,
-  list: () => Promise<SkillSummary[]>
+  list: () => Promise<SkillSummary[]>,
+  collections: CollectionResolver
 ): Promise<PushResult> {
   let parsed;
   try {
@@ -129,6 +195,17 @@ async function pushOne(
     }
   }
 
+  // Where the skill goes: the option first, else the collection the file names. Undefined leaves an
+  // existing skill where it is and creates a new one at root.
+  let collectionId: string | undefined;
+  const collectionName = options.collection ?? frontmatter.metadata[META_COLLECTION];
+  if (collectionName !== undefined) {
+    collectionId = await collections.idOf(collectionName);
+    if (collectionId === undefined) {
+      notes.push(`collection "${collectionName}" not found; left where it is`);
+    }
+  }
+
   let result: SkillSummary;
   let action: PushAction;
   if (remote) {
@@ -140,7 +217,7 @@ async function pushOne(
           file,
           name,
           action: 'conflict',
-          detail: `a skill named ${name} exists and this file has no sync baseline; run "gatana skills sync" first, or --force to overwrite`,
+          detail: `a skill named ${name} exists and this file has no install baseline; run "gatana skills install" first, or --force to overwrite`,
         };
       }
       if (remoteUpdatedAt > baseline) {
@@ -152,21 +229,35 @@ async function pushOne(
         };
       }
     }
+    const moves = collectionId !== undefined && collectionId !== remote.collectionId;
     const unchanged =
-      remote.name === name && sameText(remote.description, frontmatter.description) && sameText(remote.content, body);
+      remote.name === name &&
+      sameText(remote.description, frontmatter.description) &&
+      sameText(remote.content, body) &&
+      !moves;
     if (unchanged) {
       result = remote;
       action = 'unchanged';
     } else if (options.dryRun) {
       return { file, name, action: 'updated', detail: ['would update', ...notes].join('; ') };
     } else {
-      result = await api.update(remote.id, { name, description: frontmatter.description, content: body });
+      result = await api.update(remote.id, {
+        name,
+        description: frontmatter.description,
+        content: body,
+        ...(moves ? { collectionId } : {}),
+      });
       action = 'updated';
     }
   } else if (options.dryRun) {
     return { file, name, action: 'created', detail: ['would create', ...notes].join('; ') };
   } else {
-    result = await api.create({ name, description: frontmatter.description, content: body });
+    result = await api.create({
+      name,
+      description: frontmatter.description,
+      content: body,
+      ...(collectionId !== undefined ? { collectionId } : {}),
+    });
     action = 'created';
   }
 
