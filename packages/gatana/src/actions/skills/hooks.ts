@@ -9,12 +9,12 @@ export const HOOK_AGENTS: HookAgent[] = ['claude', 'codex', 'hermes', 'openclaw'
 
 /**
  * What every hook runs. Claude Code, Codex and OpenClaw read the default targets (~/.claude/skills
- * and ~/.agents/skills), so their hooks install those; Hermes reads its own folder. Claude Code and
+ * and ~/.agents/skills), so their hooks sync those; Hermes reads its own folder. Claude Code and
  * Codex add the stdout of a SessionStart hook to the model's context, hence --quiet everywhere.
  */
-const INSTALL_DEFAULT = 'gatana skills install --quiet';
-const INSTALL_HERMES = 'gatana skills install hermes --quiet';
-const INSTALL_MARKER = 'gatana skills install';
+const SYNC_DEFAULT = 'gatana skills sync --quiet';
+const SYNC_HERMES = 'gatana skills sync hermes --quiet';
+const SYNC_MARKER = 'gatana skills sync';
 const OPENCLAW_HOOK = 'gatana-skills';
 
 /** The agent's home directory; its presence is how we tell the agent is installed on this machine. */
@@ -22,44 +22,44 @@ export function agentHome(agent: HookAgent, home = os.homedir()): string {
   return join(home, `.${agent}`);
 }
 
-const claudeEntry = { matcher: 'startup|resume', hooks: [{ type: 'command', command: INSTALL_DEFAULT }] };
+const claudeEntry = { matcher: 'startup|resume', hooks: [{ type: 'command', command: SYNC_DEFAULT }] };
 const codexEntry = {
   matcher: 'startup|resume',
-  hooks: [{ type: 'command', command: INSTALL_DEFAULT, statusMessage: 'Installing Gatana skills', timeout: 60 }],
+  hooks: [{ type: 'command', command: SYNC_DEFAULT, statusMessage: 'Syncing Gatana skills', timeout: 60 }],
 };
 const hermesLines = [
   'hooks:',
   '  on_session_start:',
-  `    - command: "${INSTALL_HERMES}"`,
+  `    - command: "${SYNC_HERMES}"`,
   '      timeout: 60',
   '  on_session_reset:',
-  `    - command: "${INSTALL_HERMES}"`,
+  `    - command: "${SYNC_HERMES}"`,
   '      timeout: 60',
 ];
 const openclawConfig = { hooks: { internal: { enabled: true, entries: { [OPENCLAW_HOOK]: { enabled: true } } } } };
 
 const OPENCLAW_HOOK_MD = `---
 name: ${OPENCLAW_HOOK}
-description: "Install the skills of your Gatana organization when the gateway starts and on /new and /reset"
+description: "Sync the skills of your Gatana organization when the gateway starts and on /new and /reset"
 metadata:
   { "openclaw": { "events": ["gateway:startup", "command:new", "command:reset"] } }
 ---
 
 # Gatana skills
 
-Runs \`${INSTALL_DEFAULT}\` so the skills folders OpenClaw reads follow the organization.
+Runs \`${SYNC_DEFAULT}\` so the skills folders OpenClaw reads follow the organization.
 Installed by \`gatana skills install\`; run \`gatana skills remove-hooks openclaw\` to stop.
 `;
 
 const OPENCLAW_HANDLER = `import { execFile } from 'node:child_process';
 
-// Written by "gatana skills install". Installs the Gatana skills folders; failures are logged, never thrown,
+// Written by "gatana skills install". Syncs the Gatana skills folders; failures are logged, never thrown,
 // so a missing CLI or a network problem cannot break the gateway.
 export default async function handler() {
   await new Promise(resolve => {
-    execFile('gatana', ['skills', 'install', '--quiet'], { timeout: 60_000 }, error => {
+    execFile('gatana', ['skills', 'sync', '--quiet'], { timeout: 60_000 }, error => {
       if (error) {
-        console.error(\`gatana skills install failed: \${error.message}\`);
+        console.error(\`gatana skills sync failed: \${error.message}\`);
       }
       resolve(undefined);
     });
@@ -67,7 +67,7 @@ export default async function handler() {
 }
 `;
 
-/** Configuration that runs a quiet install when an agent session starts, for pasting by hand. */
+/** Configuration that runs a quiet sync when an agent session starts, for pasting by hand. */
 export function renderHookSnippet(agent: HookAgent): { snippet: string; note: string } {
   switch (agent) {
     case 'claude':
@@ -152,8 +152,8 @@ async function writeJson(path: string, json: unknown): Promise<void> {
   await writeFile(path, `${JSON.stringify(json, null, 2)}\n`, 'utf8');
 }
 
-/** True when any command hook under SessionStart already runs a gatana install. */
-function hasInstallHook(sessionStart: unknown): boolean {
+/** True when any command hook under SessionStart already runs a gatana sync. */
+function hasSyncHook(sessionStart: unknown): boolean {
   if (!Array.isArray(sessionStart)) {
     return false;
   }
@@ -164,7 +164,7 @@ function hasInstallHook(sessionStart: unknown): boolean {
       hooks.some(
         hook =>
           typeof (hook as { command?: unknown })?.command === 'string' &&
-          (hook as { command: string }).command.includes(INSTALL_MARKER)
+          (hook as { command: string }).command.includes(SYNC_MARKER)
       )
     );
   });
@@ -183,7 +183,7 @@ async function installJsonHook(agent: 'claude' | 'codex', file: string, entry: u
   }
   const settings = json ?? {};
   const hooks = (settings.hooks && typeof settings.hooks === 'object' ? settings.hooks : {}) as Record<string, unknown>;
-  if (hasInstallHook(hooks.SessionStart)) {
+  if (hasSyncHook(hooks.SessionStart)) {
     return { agent, file, status: 'present' };
   }
   hooks.SessionStart = [...(Array.isArray(hooks.SessionStart) ? hooks.SessionStart : []), entry];
@@ -206,7 +206,7 @@ async function installHermesHook(file: string): Promise<HookInstall> {
       throw error;
     }
   }
-  if (text.includes(INSTALL_MARKER)) {
+  if (text.includes(SYNC_MARKER)) {
     return { agent, file, status: 'present' };
   }
   let config: unknown;
@@ -344,10 +344,10 @@ async function removeJsonHook(agent: 'claude' | 'codex', file: string): Promise<
     return { agent, file, status: 'absent' };
   }
   if (json === 'unparseable') {
-    return { agent, file, status: 'manual', note: `not plain JSON; remove the "${INSTALL_MARKER}" hook by hand` };
+    return { agent, file, status: 'manual', note: `not plain JSON; remove the "${SYNC_MARKER}" hook by hand` };
   }
   const hooks = (json.hooks && typeof json.hooks === 'object' ? json.hooks : {}) as Record<string, unknown>;
-  if (!hasInstallHook(hooks.SessionStart)) {
+  if (!hasSyncHook(hooks.SessionStart)) {
     return { agent, file, status: 'absent' };
   }
   const kept = (hooks.SessionStart as unknown[])
@@ -360,7 +360,7 @@ async function removeJsonHook(agent: 'claude' | 'codex', file: string): Promise<
         hook =>
           !(
             typeof (hook as { command?: unknown })?.command === 'string' &&
-            (hook as { command: string }).command.includes(INSTALL_MARKER)
+            (hook as { command: string }).command.includes(SYNC_MARKER)
           )
       );
       return remaining.length === commands.length ? entry : { ...(entry as object), hooks: remaining };
@@ -396,7 +396,7 @@ async function removeHermesHook(file: string): Promise<HookRemoval> {
     }
     throw error;
   }
-  if (!text.includes(INSTALL_MARKER)) {
+  if (!text.includes(SYNC_MARKER)) {
     return { agent, file, status: 'absent' };
   }
   const block = hermesLines.join('\n');
@@ -406,7 +406,7 @@ async function removeHermesHook(file: string): Promise<HookRemoval> {
       agent,
       file,
       status: 'manual',
-      note: `the hooks were edited; remove the "${INSTALL_MARKER}" lines by hand`,
+      note: `the hooks were edited; remove the "${SYNC_MARKER}" lines by hand`,
     };
   }
   let next = (text.slice(0, index) + text.slice(index + block.length)).replace(/\n{3,}/g, '\n\n').replace(/\n+$/, '\n');

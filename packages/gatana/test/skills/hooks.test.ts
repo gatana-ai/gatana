@@ -19,9 +19,9 @@ test('agents that are not on the machine are skipped; the ones that are get a ho
     ['claude:installed', 'codex:installed', 'hermes:skipped', 'openclaw:skipped']
   );
   const claude = JSON.parse(await readFile(join(home, '.claude', 'settings.json'), 'utf8'));
-  assert.equal(claude.hooks.SessionStart[0].hooks[0].command, 'gatana skills install --quiet');
+  assert.equal(claude.hooks.SessionStart[0].hooks[0].command, 'gatana skills sync --quiet');
   const codex = JSON.parse(await readFile(join(home, '.codex', 'hooks.json'), 'utf8'));
-  assert.equal(codex.hooks.SessionStart[0].hooks[0].command, 'gatana skills install --quiet');
+  assert.equal(codex.hooks.SessionStart[0].hooks[0].command, 'gatana skills sync --quiet');
   assert.equal(codex.hooks.SessionStart[0].hooks[0].timeout, 60);
 
   const second = await installHooks(home);
@@ -71,7 +71,7 @@ test('Hermes: the hooks block is appended to a config without one, comments inta
   assert.ok(text.startsWith('# my hermes config\nmodel: gpt\n'));
   const config = yaml.load(text) as { model: string; hooks: { on_session_start: { command: string }[] } };
   assert.equal(config.model, 'gpt');
-  assert.equal(config.hooks.on_session_start[0].command, 'gatana skills install hermes --quiet');
+  assert.equal(config.hooks.on_session_start[0].command, 'gatana skills sync hermes --quiet');
   assert.equal((await installHook('hermes', home)).status, 'present');
 
   await writeFile(file, 'hooks:\n  on_session_start:\n    - command: "echo hi"\n');
@@ -92,7 +92,7 @@ test('OpenClaw: the hook folder is written and enabled in the config; other conf
   const hookMd = await readFile(join(home, '.openclaw', 'hooks', 'gatana-skills', 'HOOK.md'), 'utf8');
   assert.ok(hookMd.includes('"events": ["gateway:startup", "command:new", "command:reset"]'));
   const handler = await readFile(join(home, '.openclaw', 'hooks', 'gatana-skills', 'handler.ts'), 'utf8');
-  assert.ok(handler.includes("execFile('gatana', ['skills', 'install', '--quiet']"));
+  assert.ok(handler.includes("execFile('gatana', ['skills', 'sync', '--quiet']"));
   const config = JSON.parse(await readFile(join(home, '.openclaw', 'openclaw.json'), 'utf8'));
   assert.deepEqual(config.agents, { list: [] });
   assert.equal(config.hooks.internal.enabled, true);
@@ -144,10 +144,10 @@ test('remove-hooks Hermes: only the exact block we appended is cut out; edited h
   assert.equal(await readFile(file, 'utf8'), '# my hermes config\nmodel: gpt\n');
   assert.equal((await removeHook('hermes', home)).status, 'absent');
 
-  await writeFile(file, 'hooks:\n  on_session_start:\n    - command: "gatana skills install hermes --quiet"\n');
+  await writeFile(file, 'hooks:\n  on_session_start:\n    - command: "gatana skills sync hermes --quiet"\n');
   const manual = await removeHook('hermes', home);
   assert.equal(manual.status, 'manual');
-  assert.ok((await readFile(file, 'utf8')).includes('gatana skills install hermes'));
+  assert.ok((await readFile(file, 'utf8')).includes('gatana skills sync hermes'));
 });
 
 test('remove-hooks OpenClaw: the hook folder goes, the config entry goes, other entries stay', async () => {

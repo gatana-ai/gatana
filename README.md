@@ -169,11 +169,12 @@ Install the skills of your organization into the folders AI agents read, and pus
 
 | Command                 | Syntax                                                                                                                                          | Description                                                                                                                                                                                                                                                 |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **skills install**      | `gatana skills install [name] [target...] [--dry-run] [--no-prune] [--force] [--reset] [--hooks\|--no-hooks] [--quiet]` | Write the skills you can read as `<dir>/<name>/SKILL.md`: every skill, what the targets follow, or one collection or skill by name, which the targets follow from then on. Offers the session-start hooks. Targets: `claude`, `agents`, `hermes`, or a path |
+| **skills install**      | `gatana skills install [name] [target...] [--dry-run] [--no-prune] [--force] [--reset] [--no-hooks] [--quiet]` | Write the skills you can read as `<dir>/<name>/SKILL.md`: every skill, what the targets follow, or one collection or skill by name, which the targets follow from then on. Installs the session-start hooks (`--no-hooks` skips them). Targets: `claude`, `agents`, `hermes`, or a path |
+| **skills sync**         | `gatana skills sync [target...] [--dry-run] [--no-prune] [--force] [--quiet]` | Refresh what each installed folder follows, as the session-start hooks do. A folder nothing was installed into is left alone |
 | **skills remove-hooks** | `gatana skills remove-hooks [agent]`                                                                                                            | Remove the session-start hooks again: every agent found on this machine, or one                                                                                                                                                                             |
 | **skills push**         | `gatana skills push [path...] [-c collection] [--force] [--dry-run]`                                                                            | Send local changes back. Default: every skill in `claude` and `agents` that changed on this machine; conflicts are printed and left alone                                                                                                                   |
 | **skills ls**           | `gatana skills ls [-q text] [-c collection] [--collections]`                                                                                    | List the skills you can read, or the collections you can see                                                                                                                                                                                                |
-| **skills hook**         | `gatana skills hook <claude\|codex\|hermes\|openclaw> [--install]`                                                                              | Print, or install, the configuration that runs a quiet install when an agent session starts                                                                                                                                                                 |
+| **skills hook**         | `gatana skills hook <claude\|codex\|hermes\|openclaw> [--install]`                                                                              | Print, or install, the configuration that runs `gatana skills sync --quiet` when an agent session starts                                                                                                                                                                 |
 | **get skill**           | `gatana get skill [name] [-q text]`                                                                                                             | List skills, or show one with its instructions                                                                                                                                                                                                              |
 | **describe skill**      | `gatana describe skill <name>`                                                                                                                  | Show a skill with its instructions                                                                                                                                                                                                                          |
 
@@ -357,14 +358,13 @@ gatana skills install ./team-skills
 gatana skills install release-engineering
 gatana skills install deploy-checklist
 
-# Every install offers the session-start hooks of the agents on this machine
-# (Claude Code, Codex, Hermes, OpenClaw) so the folders stay fresh
-gatana skills install --hooks      # add them without asking
-gatana skills install --no-hooks   # never ask
+# Every install adds the session-start hooks of the agents on this machine
+# (Claude Code, Codex, Hermes, OpenClaw); they run "gatana skills sync --quiet"
+gatana skills install --no-hooks   # skip the hooks
 gatana skills remove-hooks         # take them out again, or: remove-hooks claude
 
-# Or keep a folder fresh by hand: poll every 60 seconds, or print a hook to paste
-gatana skills install --watch
+# Refresh by hand what the folders follow, or print a hook to paste
+gatana skills sync
 gatana skills hook claude   # paste the output into .claude/settings.json
 
 # Edit any installed SKILL.md, then send everything that changed on this machine back.

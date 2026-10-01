@@ -4,10 +4,10 @@ import { mkdir, mkdtemp, readdir, readFile, stat, symlink, writeFile } from 'fs/
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { FakeSkillsApi } from './fakeApi.js';
-import { syncDirectory } from '../../src/actions/skills/sync.js';
+import { syncDirectory, syncInstalled } from '../../src/actions/skills/sync.js';
 import { readManifest } from '../../src/actions/skills/manifest.js';
 import { parseSkillMd } from '../../src/actions/skills/frontmatter.js';
-import { prepareTargets } from '../../src/actions/skills/targets.js';
+import { collapseTargets, prepareTargets } from '../../src/actions/skills/targets.js';
 
 const identity = { orgId: 'acme', baseUrl: 'https://acme.example' };
 const defaults = { dryRun: false, prune: true, force: false };
@@ -271,4 +271,25 @@ test('a single skill can be followed next to a collection; a rename is followed,
   await assert.rejects(resolveSubscription(api, 'release'), /both a collection and a skill/);
   assert.equal((await resolveSubscription(api, 'release', 'collection')).kind, 'collection');
   assert.equal((await resolveSubscription(api, 'release', 'skill')).kind, 'skill');
+});
+
+test('sync refreshes only folders an install set up; a folder without a manifest is left alone', async () => {
+  const api = new FakeSkillsApi();
+  api.seed({ name: 'deploy', content: 'D\n' });
+  const installed = await tmp();
+  const untouched = await tmp();
+  const missing = join(untouched, 'never-made');
+  await syncDirectory(api, identity, installed, defaults);
+
+  const dirs = await collapseTargets([installed, untouched, missing]);
+  assert.equal(dirs.length, 3);
+  const { summaries, notInstalled } = await syncInstalled(api, identity, dirs, defaults);
+  assert.equal(summaries.length, 1);
+  assert.equal(summaries[0].dir, dirs[0]);
+  assert.equal(summaries[0].skipped, 1);
+  assert.equal(notInstalled.length, 2);
+  assert.ok(notInstalled.includes(missing));
+  assert.equal(await exists(join(untouched, 'deploy')), false);
+  assert.equal(await exists(join(untouched, '.gatana-skills.json')), false);
+  assert.equal(await exists(missing), false);
 });

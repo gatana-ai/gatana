@@ -279,3 +279,26 @@ export async function syncTargets(
   }
   return summaries;
 }
+
+/**
+ * The refresh a session-start hook runs. Only folders an install set up are synced: a folder
+ * without a manifest was never installed into, so there is nothing to follow there, and filling it
+ * with every readable skill is a decision for "gatana skills install", not for a hook.
+ */
+export async function syncInstalled(
+  api: SkillsApi,
+  identity: SkillsIdentity,
+  dirs: string[],
+  options: SyncOptions
+): Promise<{ summaries: SyncSummary[]; notInstalled: string[] }> {
+  const summaries: SyncSummary[] = [];
+  const notInstalled: string[] = [];
+  for (const dir of dirs) {
+    if ((await readManifest(dir)) === undefined) {
+      notInstalled.push(dir);
+      continue;
+    }
+    summaries.push(await syncDirectory(api, identity, dir, options));
+  }
+  return { summaries, notInstalled };
+}

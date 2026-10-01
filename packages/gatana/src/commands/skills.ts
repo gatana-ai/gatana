@@ -1,4 +1,3 @@
-import { confirm } from '@inquirer/prompts';
 import { Command, InvalidArgumentError } from 'commander';
 import { Gatana } from 'gatana-sdk';
 import { getOutputOptions, output, outputError, TableColumn } from '../output.js';
@@ -18,8 +17,15 @@ import {
 import { pushSkills, type PushAction, type PushResult } from '../actions/skills/push.js';
 import { getSkillCollectionResource, getSkillResource } from '../actions/skills/resource.js';
 import { describeSubscription, resolveSubscription } from '../actions/skills/subscriptions.js';
-import { syncTargets, type SyncSummary } from '../actions/skills/sync.js';
-import { DEFAULT_TARGETS, prepareTargets, presetHelp, PRESETS, resolveTargets } from '../actions/skills/targets.js';
+import { syncInstalled, syncTargets, type SyncSummary } from '../actions/skills/sync.js';
+import {
+  collapseTargets,
+  DEFAULT_TARGETS,
+  prepareTargets,
+  presetHelp,
+  PRESETS,
+  resolveTargets,
+} from '../actions/skills/targets.js';
 import { isAbsolute } from 'path';
 
 interface InstallCommandOptions {
@@ -31,7 +37,15 @@ interface InstallCommandOptions {
   reset?: boolean;
   collection?: boolean;
   skill?: boolean;
-  hooks?: boolean;
+  hooks: boolean;
+}
+
+interface SyncCommandOptions {
+  dryRun?: boolean;
+  prune: boolean;
+  force?: boolean;
+  quiet?: boolean;
+  org?: string;
 }
 
 /**
@@ -65,7 +79,10 @@ function describeSubscriptions(summary: SyncSummary): string {
   return ` (following: ${summary.subscriptions.map(describeSubscription).join(', ')})`;
 }
 
-function reportSummaries(summaries: SyncSummary[], options: { dryRun: boolean; quiet: boolean }): void {
+function reportSummaries(
+  summaries: SyncSummary[],
+  options: { dryRun: boolean; quiet: boolean; notInstalled?: string[] }
+): void {
   for (const summary of summaries) {
     for (const warning of summary.warnings) {
       console.error(`warning: ${warning}`);
@@ -78,6 +95,9 @@ function reportSummaries(summaries: SyncSummary[], options: { dryRun: boolean; q
   if (formatExplicit && (format === 'json' || format === 'yaml')) {
     output(summaries.map(({ ops, ...rest }) => ({ ...rest, ops: options.dryRun ? ops : undefined })));
     return;
+  }
+  for (const dir of options.notInstalled ?? []) {
+    console.log(`${dir}: nothing installed here yet; "gatana skills install" sets it up`);
   }
   for (const summary of summaries) {
     if (options.dryRun) {
@@ -136,38 +156,10 @@ function reportHooks(results: HookInstall[]): void {
   }
 }
 
-/**
- * The hook is a change to the agent's own configuration, so it is asked for, not taken: a terminal
- * gets the question with yes as the default. Without a terminal, or with --quiet, there is nobody to
- * ask and nothing is written, so the hook's own quiet install cannot bring back a hook that
- * "gatana skills remove-hooks" removed. --hooks and --no-hooks answer the question ahead of time.
- */
-async function offerHooks(options: { hooks?: boolean; quiet?: boolean }): Promise<void> {
-  if (options.hooks === undefined && (!process.stdin.isTTY || options.quiet)) {
+/** --no-hooks is the only thing that keeps the hooks away. A quiet install reports only what needs a hand. */
+async function addHooks(options: { hooks: boolean; quiet?: boolean }): Promise<void> {
+  if (!options.hooks) {
     return;
-  }
-  if (options.hooks === false) {
-    return;
-  }
-  const agents = await findHookAgents();
-  if (agents.length === 0) {
-    return;
-  }
-  if (options.hooks === undefined) {
-    let install: boolean;
-    try {
-      install = await confirm({
-        message: `Install a session-start hook for ${agents.join(', ')} to keep skills up-to-date?`,
-        default: true,
-      });
-    } catch {
-      // Ctrl-C on the question: the skills are installed, the hook is simply not.
-      install = false;
-    }
-    if (!install) {
-      console.log('No hook installed. Pass --no-hooks to skip this question.');
-      return;
-    }
   }
   const results = await installHooks();
   reportHooks(options.quiet ? results.filter(result => result.status === 'manual') : results);
@@ -214,7 +206,6 @@ export function createSkillsCommand(gatana: Gatana): Command {
         'Only if name is provided: If name collision between skill and collection, use the collection'
       )
       .option('--skill', 'Only if name is provided: If name collision between skill and collection, use the skill')
-      .option('--hooks', 'Add the session-start hooks without asking')
       .option('--no-hooks', 'Do not add the session-start hooks')
       .option('--quiet', 'Print nothing on success; warnings and errors still go to stderr')
       .option('--org <id>', 'Organization from the config file, instead of the default')
@@ -255,8 +246,35 @@ export function createSkillsCommand(gatana: Gatana): Command {
 
           reportSummaries(await syncTargets(api, { orgId, baseUrl }, dirs, syncOptions), reportOptions);
           if (!syncOptions.dryRun) {
-            await offerHooks(options);
+            await addHooks(options);
           }
+        } catch (error) {
+          outputError(error);
+          process.exitCode = 1;
+        }
+      })
+  );
+
+  cmd.addCommand(
+    new Command('sync')
+      .description('Refresh the installed skills: what each folder follows, as the session-start hooks do.')
+      .argument('[target...]', 'Optional: Directories or preset names. Omit to refresh the default agent folders.')
+      .option('--dry-run', 'Show what would change without writing')
+      .option('--no-prune', 'Keep skills locally that are removed from Gatana')
+      .option('--force', 'Skip safe-guards: overwrite locally edited and non-Gatana skills')
+      .option('--quiet', 'Print nothing on success; warnings and errors still go to stderr')
+      .option('--org <id>', 'Organization from the config file, instead of the default')
+      .action(async (targets: string[], options: SyncCommandOptions) => {
+        try {
+          const { api, orgId, baseUrl } = resolveSkillsContext(gatana, options.org);
+          const dirs = await collapseTargets(resolveTargets(targets));
+          const dryRun = Boolean(options.dryRun);
+          const { summaries, notInstalled } = await syncInstalled(api, { orgId, baseUrl }, dirs, {
+            dryRun,
+            prune: options.prune,
+            force: Boolean(options.force),
+          });
+          reportSummaries(summaries, { dryRun, quiet: Boolean(options.quiet), notInstalled });
         } catch (error) {
           outputError(error);
           process.exitCode = 1;
