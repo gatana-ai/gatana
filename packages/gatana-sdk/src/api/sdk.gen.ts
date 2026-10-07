@@ -2,3066 +2,1770 @@
 
 import { client } from './client.gen.js';
 import { type Client, formDataBodySerializer, type Options as Options2, type TDataShape } from './client/index.js';
-import type {
-  CallMcpServerToolData,
-  CallMcpServerToolResponses,
-  CopyMcpServerCredentialsData,
-  CopyMcpServerCredentialsResponses,
-  CreateArtifactData,
-  CreateArtifactResponses,
-  CreateMcpServerData,
-  CreateMcpServerFileData,
-  CreateMcpServerFileResponses,
-  CreateMcpServerResponses,
-  CreateProfileClaimMappingData,
-  CreateProfileClaimMappingResponses,
-  CreateProfileData,
-  CreateProfileMaintainerData,
-  CreateProfileMaintainerResponses,
-  CreateProfileResponses,
-  CreateSandboxData,
-  CreateSandboxReadFileData,
-  CreateSandboxReadFileResponses,
-  CreateSandboxResponses,
-  CreateSandboxSshSessionData,
-  CreateSandboxSshSessionResponses,
-  CreateSandboxWriteFileData,
-  CreateSandboxWriteFileResponses,
-  CreateScimConfigTokenData,
-  CreateScimConfigTokenResponses,
-  CreateSecretStoreData,
-  CreateSecretStoreMappingData,
-  CreateSecretStoreMappingResponses,
-  CreateSecretStoreResponses,
-  CreateSiemDestinationData,
-  CreateSiemDestinationResponses,
-  CreateSkillCollectionData,
-  CreateSkillCollectionResponses,
-  CreateSkillData,
-  CreateSkillResponses,
-  CreateTeamClaimMappingData,
-  CreateTeamClaimMappingResponses,
-  CreateTeamData,
-  CreateTeamInvitationData,
-  CreateTeamInvitationResponses,
-  CreateTeamMemberData,
-  CreateTeamMemberResponses,
-  CreateTeamProfileData,
-  CreateTeamProfileResponses,
-  CreateTeamResponses,
-  CreateUserData,
-  CreateUserPersonalAccessTokenData,
-  CreateUserPersonalAccessTokenResponses,
-  CreateUserProfileData,
-  CreateUserProfileResponses,
-  CreateUserResponses,
-  DeleteArtifactData,
-  DeleteArtifactResponses,
-  DeleteConnectedClientData,
-  DeleteConnectedClientResponses,
-  DeleteMcpServerCredentialData,
-  DeleteMcpServerCredentialResponses,
-  DeleteMcpServerCredentialsProfileData,
-  DeleteMcpServerCredentialsProfileResponses,
-  DeleteMcpServerCredentialsServerData,
-  DeleteMcpServerCredentialsServerResponses,
-  DeleteMcpServerCredentialsUserData,
-  DeleteMcpServerCredentialsUserResponses,
-  DeleteMcpServerData,
-  DeleteMcpServerFileData,
-  DeleteMcpServerFileResponses,
-  DeleteMcpServerMemberData,
-  DeleteMcpServerMemberResponses,
-  DeleteMcpServerResponses,
-  DeleteProfileClaimMappingData,
-  DeleteProfileClaimMappingResponses,
-  DeleteProfileData,
-  DeleteProfileMaintainerData,
-  DeleteProfileMaintainerResponses,
-  DeleteProfileResponses,
-  DeleteSandboxData,
-  DeleteSandboxResponses,
-  DeleteScimConfigTokenData,
-  DeleteScimConfigTokenResponses,
-  DeleteSecretStoreData,
-  DeleteSecretStoreMappingData,
-  DeleteSecretStoreMappingResponses,
-  DeleteSecretStoreResponses,
-  DeleteSiemDestinationData,
-  DeleteSiemDestinationResponses,
-  DeleteSkillCollectionData,
-  DeleteSkillCollectionResponses,
-  DeleteSkillData,
-  DeleteSkillResponses,
-  DeleteTeamClaimMappingData,
-  DeleteTeamClaimMappingResponses,
-  DeleteTeamData,
-  DeleteTeamInvitationData,
-  DeleteTeamInvitationResponses,
-  DeleteTeamMemberData,
-  DeleteTeamMemberResponses,
-  DeleteTeamProfileData,
-  DeleteTeamProfileResponses,
-  DeleteTeamResponses,
-  DeleteUserData,
-  DeleteUserPersonalAccessTokenData,
-  DeleteUserPersonalAccessTokenResponses,
-  DeleteUserProfileData,
-  DeleteUserProfileResponses,
-  DeleteUserResponses,
-  DiscoverMcpServerOauthData,
-  DiscoverMcpServerOauthResponses,
-  ExecSandboxData,
-  ExecSandboxResponses,
-  GetArtifactContentData,
-  GetArtifactContentResponses,
-  GetArtifactData,
-  GetArtifactResponses,
-  GetAuditLogData,
-  GetAuditLogResponses,
-  GetAuditLogsSummaryData,
-  GetAuditLogsSummaryResponses,
-  GetAuthMeData,
-  GetAuthMeResponses,
-  GetDeploymentsStatusData,
-  GetDeploymentsStatusResponses,
-  GetMcpServerCredentialsAuthorizeUrlData,
-  GetMcpServerCredentialsAuthorizeUrlResponses,
-  GetMcpServerCredentialsProfileData,
-  GetMcpServerCredentialsProfileResponses,
-  GetMcpServerCredentialsServerData,
-  GetMcpServerCredentialsServerResponses,
-  GetMcpServerCredentialsTokenData,
-  GetMcpServerCredentialsTokenResponses,
-  GetMcpServerCredentialsUserData,
-  GetMcpServerCredentialsUserResponses,
-  GetMcpServerData,
-  GetMcpServerFileData,
-  GetMcpServerFileResponses,
-  GetMcpServerResponses,
-  GetMcpServerRunningStatusData,
-  GetMcpServerRunningStatusResponses,
-  GetMcpServersAccessPreviewData,
-  GetMcpServersAccessPreviewResponses,
-  GetMcpServerSourceCodeData,
-  GetMcpServerSourceCodeResponses,
-  GetMcpServerToolData,
-  GetMcpServerToolResponses,
-  GetProfileData,
-  GetProfileResponses,
-  GetSandboxAuditLogData,
-  GetSandboxAuditLogResponses,
-  GetSandboxData,
-  GetSandboxResponses,
-  GetScimConfigTokenSecretData,
-  GetScimConfigTokenSecretResponses,
-  GetSecretStoreData,
-  GetSecretStoreResponses,
-  GetSiemDestinationData,
-  GetSiemDestinationResponses,
-  GetSiemDestinationSecretData,
-  GetSiemDestinationSecretResponses,
-  GetSkillCollectionData,
-  GetSkillCollectionResponses,
-  GetSkillData,
-  GetSkillResponses,
-  GetTeamData,
-  GetTeamResponses,
-  GetTenantData,
-  GetTenantResponses,
-  GetTenantSubscriptionData,
-  GetTenantSubscriptionResponses,
-  GetToolsSearchData,
-  GetToolsSearchResponses,
-  GetUserData,
-  GetUserResponses,
-  GetUsersMeData,
-  GetUsersMeResponses,
-  InstallPredefinedBuiltInServerData,
-  InstallPredefinedBuiltInServerResponses,
-  ListArtifactsData,
-  ListArtifactSharesData,
-  ListArtifactSharesResponses,
-  ListArtifactsResponses,
-  ListAuditLogsData,
-  ListAuditLogsFilterOptionsData,
-  ListAuditLogsFilterOptionsResponses,
-  ListAuditLogsResponses,
-  ListConnectedClientsData,
-  ListConnectedClientsResponses,
-  ListDeploymentsDeploymentLogsData,
-  ListDeploymentsDeploymentLogsResponse,
-  ListDeploymentsDeploymentLogsResponses,
-  ListDeploymentsLogsData,
-  ListDeploymentsLogsResponses,
-  ListDeploymentsMetricsData,
-  ListDeploymentsMetricsResponses,
-  ListMcpServerCredentialsProfileApikeysData,
-  ListMcpServerCredentialsProfileApikeysResponses,
-  ListMcpServerCredentialsServerApikeysData,
-  ListMcpServerCredentialsServerApikeysResponses,
-  ListMcpServerCredentialsUserApikeysData,
-  ListMcpServerCredentialsUserApikeysResponses,
-  ListMcpServerFilesData,
-  ListMcpServerFilesResponses,
-  ListMcpServerMembersData,
-  ListMcpServerMembersResponses,
-  ListMcpServersData,
-  ListMcpServersResponses,
-  ListMcpServerToolsData,
-  ListMcpServerToolsResponses,
-  ListProfileClaimMappingsData,
-  ListProfileClaimMappingsResponses,
-  ListProfileDirectAssignmentsData,
-  ListProfileDirectAssignmentsResponses,
-  ListProfileMaintainersData,
-  ListProfileMaintainersResponses,
-  ListProfilesData,
-  ListProfilesResponses,
-  ListProfileToolsData,
-  ListProfileToolsResponses,
-  ListSandboxAuditLogsData,
-  ListSandboxAuditLogsResponses,
-  ListSandboxesData,
-  ListSandboxesResponses,
-  ListScimConfigTokensData,
-  ListScimConfigTokensResponses,
-  ListSecretStoreMappingsData,
-  ListSecretStoreMappingsResponses,
-  ListSecretStoresData,
-  ListSecretStoresResponses,
-  ListSkillCollectionsData,
-  ListSkillCollectionSharesData,
-  ListSkillCollectionSharesResponses,
-  ListSkillCollectionsResponses,
-  ListSkillsData,
-  ListSkillSharesData,
-  ListSkillSharesResponses,
-  ListSkillsResponses,
-  ListTeamClaimMappingsData,
-  ListTeamClaimMappingsResponses,
-  ListTeamInvitationsData,
-  ListTeamInvitationsResponses,
-  ListTeamMembersData,
-  ListTeamMembersResponses,
-  ListTeamProfilesData,
-  ListTeamProfilesResponses,
-  ListTeamsData,
-  ListTeamServersData,
-  ListTeamServersResponses,
-  ListTeamsResponses,
-  ListToolsData,
-  ListToolsResponses,
-  ListUserPersonalAccessTokensData,
-  ListUserPersonalAccessTokensResponses,
-  ListUserProfilesData,
-  ListUserProfilesResponses,
-  ListUsersData,
-  ListUsersResponses,
-  PatchArtifactData,
-  PatchArtifactResponses,
-  PatchConnectedClientData,
-  PatchConnectedClientResponses,
-  PatchMcpServerToolData,
-  PatchMcpServerToolResponses,
-  PatchSecretStoreData,
-  PatchSecretStoreMappingData,
-  PatchSecretStoreMappingResponses,
-  PatchSecretStoreResponses,
-  PatchSiemDestinationData,
-  PatchSiemDestinationResponses,
-  PatchUserPersonalAccessTokenData,
-  PatchUserPersonalAccessTokenResponses,
-  PatchUserProfileData,
-  PatchUserProfileResponses,
-  RefreshToolsData,
-  RefreshToolsResponses,
-  RequestOwnEmailVerificationData,
-  RequestOwnEmailVerificationResponses,
-  RotateSiemDestinationSecretData,
-  RotateSiemDestinationSecretResponses,
-  SendEmailVerificationCodeData,
-  SendEmailVerificationCodeResponses,
-  ShareArtifactData,
-  ShareArtifactResponses,
-  ShareSkillCollectionData,
-  ShareSkillCollectionResponses,
-  ShareSkillData,
-  ShareSkillResponses,
-  StartMcpServerData,
-  StartMcpServerResponses,
-  StopMcpServerData,
-  StopMcpServerResponses,
-  TestMcpServerOpenapiData,
-  TestMcpServerOpenapiResponses,
-  TestSecretStoreData,
-  TestSecretStoreResponses,
-  TestSiemDestinationData,
-  TestSiemDestinationResponses,
-  UnshareArtifactData,
-  UnshareArtifactResponses,
-  UnshareSkillCollectionData,
-  UnshareSkillCollectionResponses,
-  UnshareSkillData,
-  UnshareSkillResponses,
-  UpdateArtifactData,
-  UpdateArtifactResponses,
-  UpdateMcpServerAllToolsIsEnabledData,
-  UpdateMcpServerAllToolsIsEnabledResponses,
-  UpdateMcpServerCredentialsProfileData,
-  UpdateMcpServerCredentialsProfileResponses,
-  UpdateMcpServerCredentialsServerData,
-  UpdateMcpServerCredentialsServerResponses,
-  UpdateMcpServerCredentialsUserData,
-  UpdateMcpServerCredentialsUserResponses,
-  UpdateMcpServerData,
-  UpdateMcpServerFileData,
-  UpdateMcpServerFileNameData,
-  UpdateMcpServerFileNameResponses,
-  UpdateMcpServerFileResponses,
-  UpdateMcpServerIsEnabledData,
-  UpdateMcpServerIsEnabledResponses,
-  UpdateMcpServerMemberData,
-  UpdateMcpServerMemberResponses,
-  UpdateMcpServerResponses,
-  UpdateMcpServerSourceCodeData,
-  UpdateMcpServerSourceCodeResponses,
-  UpdateMcpServerToolIsEnabledData,
-  UpdateMcpServerToolIsEnabledResponses,
-  UpdateProfileData,
-  UpdateProfileResponses,
-  UpdateProfileServerToolsData,
-  UpdateProfileServerToolsResponses,
-  UpdateSkillCollectionData,
-  UpdateSkillCollectionResponses,
-  UpdateSkillData,
-  UpdateSkillResponses,
-  UpdateTeamData,
-  UpdateTeamMemberData,
-  UpdateTeamMemberResponses,
-  UpdateTeamResponses,
-  UpdateUserData,
-  UpdateUserResponses,
-  UpdateUsersMeData,
-  UpdateUsersMeResponses,
-} from './types.gen.js';
+import type { CallMcpServerToolData, CallMcpServerToolResponses, CopyMcpServerCredentialsData, CopyMcpServerCredentialsResponses, CreateArtifactData, CreateArtifactResponses, CreateMcpServerData, CreateMcpServerFileData, CreateMcpServerFileResponses, CreateMcpServerResponses, CreateProfileClaimMappingData, CreateProfileClaimMappingResponses, CreateProfileData, CreateProfileMaintainerData, CreateProfileMaintainerResponses, CreateProfileResponses, CreateSandboxData, CreateSandboxReadFileData, CreateSandboxReadFileResponses, CreateSandboxResponses, CreateSandboxSshSessionData, CreateSandboxSshSessionResponses, CreateSandboxWriteFileData, CreateSandboxWriteFileResponses, CreateScimConfigTokenData, CreateScimConfigTokenResponses, CreateSecretStoreData, CreateSecretStoreMappingData, CreateSecretStoreMappingResponses, CreateSecretStoreResponses, CreateSiemDestinationData, CreateSiemDestinationResponses, CreateSkillCollectionData, CreateSkillCollectionResponses, CreateSkillData, CreateSkillResponses, CreateTeamClaimMappingData, CreateTeamClaimMappingResponses, CreateTeamData, CreateTeamInvitationData, CreateTeamInvitationResponses, CreateTeamMemberData, CreateTeamMemberResponses, CreateTeamProfileData, CreateTeamProfileResponses, CreateTeamResponses, CreateUserData, CreateUserPersonalAccessTokenData, CreateUserPersonalAccessTokenResponses, CreateUserProfileData, CreateUserProfileResponses, CreateUserResponses, DeleteArtifactData, DeleteArtifactResponses, DeleteConnectedClientData, DeleteConnectedClientResponses, DeleteMcpServerCredentialData, DeleteMcpServerCredentialResponses, DeleteMcpServerCredentialsProfileData, DeleteMcpServerCredentialsProfileResponses, DeleteMcpServerCredentialsServerData, DeleteMcpServerCredentialsServerResponses, DeleteMcpServerCredentialsUserData, DeleteMcpServerCredentialsUserResponses, DeleteMcpServerData, DeleteMcpServerFileData, DeleteMcpServerFileResponses, DeleteMcpServerMemberData, DeleteMcpServerMemberResponses, DeleteMcpServerResponses, DeleteProfileClaimMappingData, DeleteProfileClaimMappingResponses, DeleteProfileData, DeleteProfileMaintainerData, DeleteProfileMaintainerResponses, DeleteProfileResponses, DeleteSandboxData, DeleteSandboxResponses, DeleteScimConfigTokenData, DeleteScimConfigTokenResponses, DeleteSecretStoreData, DeleteSecretStoreMappingData, DeleteSecretStoreMappingResponses, DeleteSecretStoreResponses, DeleteSiemDestinationData, DeleteSiemDestinationResponses, DeleteSkillCollectionData, DeleteSkillCollectionResponses, DeleteSkillData, DeleteSkillResponses, DeleteTeamClaimMappingData, DeleteTeamClaimMappingResponses, DeleteTeamData, DeleteTeamInvitationData, DeleteTeamInvitationResponses, DeleteTeamMemberData, DeleteTeamMemberResponses, DeleteTeamProfileData, DeleteTeamProfileResponses, DeleteTeamResponses, DeleteUserData, DeleteUserPersonalAccessTokenData, DeleteUserPersonalAccessTokenResponses, DeleteUserProfileData, DeleteUserProfileResponses, DeleteUserResponses, DiscoverMcpServerOauthData, DiscoverMcpServerOauthResponses, ExecSandboxData, ExecSandboxResponses, GetArtifactContentData, GetArtifactContentResponses, GetArtifactData, GetArtifactResponses, GetAuditLogData, GetAuditLogResponses, GetAuditLogsSummaryData, GetAuditLogsSummaryResponses, GetAuthMeData, GetAuthMeResponses, GetDeploymentsStatusData, GetDeploymentsStatusResponses, GetMcpServerCredentialsAuthorizeUrlData, GetMcpServerCredentialsAuthorizeUrlResponses, GetMcpServerCredentialsProfileData, GetMcpServerCredentialsProfileResponses, GetMcpServerCredentialsServerData, GetMcpServerCredentialsServerResponses, GetMcpServerCredentialsTokenData, GetMcpServerCredentialsTokenResponses, GetMcpServerCredentialsUserData, GetMcpServerCredentialsUserResponses, GetMcpServerData, GetMcpServerFileData, GetMcpServerFileResponses, GetMcpServerResponses, GetMcpServerRunningStatusData, GetMcpServerRunningStatusResponses, GetMcpServersAccessPreviewData, GetMcpServersAccessPreviewResponses, GetMcpServerSourceCodeData, GetMcpServerSourceCodeResponses, GetMcpServerToolData, GetMcpServerToolResponses, GetProfileData, GetProfileResponses, GetSandboxAuditLogData, GetSandboxAuditLogResponses, GetSandboxData, GetSandboxResponses, GetScimConfigTokenSecretData, GetScimConfigTokenSecretResponses, GetSecretStoreData, GetSecretStoreResponses, GetSiemDestinationData, GetSiemDestinationResponses, GetSiemDestinationSecretData, GetSiemDestinationSecretResponses, GetSkillCollectionData, GetSkillCollectionResponses, GetSkillData, GetSkillResponses, GetTeamData, GetTeamResponses, GetTenantData, GetTenantResponses, GetTenantSubscriptionData, GetTenantSubscriptionResponses, GetToolsSearchData, GetToolsSearchResponses, GetUserData, GetUserResponses, GetUsersMeData, GetUsersMeResponses, InstallPredefinedBuiltInServerData, InstallPredefinedBuiltInServerResponses, ListArtifactsData, ListArtifactSharesData, ListArtifactSharesResponses, ListArtifactsResponses, ListAuditLogsData, ListAuditLogsFilterOptionsData, ListAuditLogsFilterOptionsResponses, ListAuditLogsResponses, ListConnectedClientsData, ListConnectedClientsResponses, ListDeploymentsDeploymentLogsData, ListDeploymentsDeploymentLogsResponse, ListDeploymentsDeploymentLogsResponses, ListDeploymentsLogsData, ListDeploymentsLogsResponses, ListDeploymentsMetricsData, ListDeploymentsMetricsResponses, ListMcpServerCredentialsProfileApikeysData, ListMcpServerCredentialsProfileApikeysResponses, ListMcpServerCredentialsServerApikeysData, ListMcpServerCredentialsServerApikeysResponses, ListMcpServerCredentialsUserApikeysData, ListMcpServerCredentialsUserApikeysResponses, ListMcpServerFilesData, ListMcpServerFilesResponses, ListMcpServerMembersData, ListMcpServerMembersResponses, ListMcpServersData, ListMcpServersResponses, ListMcpServerToolsData, ListMcpServerToolsResponses, ListProfileClaimMappingsData, ListProfileClaimMappingsResponses, ListProfileDirectAssignmentsData, ListProfileDirectAssignmentsResponses, ListProfileMaintainersData, ListProfileMaintainersResponses, ListProfilesData, ListProfilesResponses, ListProfileToolsData, ListProfileToolsResponses, ListSandboxAuditLogsData, ListSandboxAuditLogsResponses, ListSandboxesData, ListSandboxesResponses, ListScimConfigTokensData, ListScimConfigTokensResponses, ListSecretStoreMappingsData, ListSecretStoreMappingsResponses, ListSecretStoresData, ListSecretStoresResponses, ListSkillCollectionsData, ListSkillCollectionSharesData, ListSkillCollectionSharesResponses, ListSkillCollectionsResponses, ListSkillsData, ListSkillSharesData, ListSkillSharesResponses, ListSkillsResponses, ListTeamClaimMappingsData, ListTeamClaimMappingsResponses, ListTeamInvitationsData, ListTeamInvitationsResponses, ListTeamMembersData, ListTeamMembersResponses, ListTeamProfilesData, ListTeamProfilesResponses, ListTeamsData, ListTeamServersData, ListTeamServersResponses, ListTeamsResponses, ListToolsData, ListToolsResponses, ListUserPersonalAccessTokensData, ListUserPersonalAccessTokensResponses, ListUserProfilesData, ListUserProfilesResponses, ListUsersData, ListUsersResponses, PatchArtifactData, PatchArtifactResponses, PatchConnectedClientData, PatchConnectedClientResponses, PatchMcpServerToolData, PatchMcpServerToolResponses, PatchSecretStoreData, PatchSecretStoreMappingData, PatchSecretStoreMappingResponses, PatchSecretStoreResponses, PatchSiemDestinationData, PatchSiemDestinationResponses, PatchUserPersonalAccessTokenData, PatchUserPersonalAccessTokenResponses, PatchUserProfileData, PatchUserProfileResponses, RefreshToolsData, RefreshToolsResponses, RequestOwnEmailVerificationData, RequestOwnEmailVerificationResponses, RotateSiemDestinationSecretData, RotateSiemDestinationSecretResponses, SendEmailVerificationCodeData, SendEmailVerificationCodeResponses, ShareArtifactData, ShareArtifactResponses, ShareSkillCollectionData, ShareSkillCollectionResponses, ShareSkillData, ShareSkillResponses, StartMcpServerData, StartMcpServerResponses, StopMcpServerData, StopMcpServerResponses, TestMcpServerOpenapiData, TestMcpServerOpenapiResponses, TestSecretStoreData, TestSecretStoreResponses, TestSiemDestinationData, TestSiemDestinationResponses, UnshareArtifactData, UnshareArtifactResponses, UnshareSkillCollectionData, UnshareSkillCollectionResponses, UnshareSkillData, UnshareSkillResponses, UpdateArtifactData, UpdateArtifactResponses, UpdateMcpServerAllToolsIsEnabledData, UpdateMcpServerAllToolsIsEnabledResponses, UpdateMcpServerCredentialsProfileData, UpdateMcpServerCredentialsProfileResponses, UpdateMcpServerCredentialsServerData, UpdateMcpServerCredentialsServerResponses, UpdateMcpServerCredentialsUserData, UpdateMcpServerCredentialsUserResponses, UpdateMcpServerData, UpdateMcpServerFileData, UpdateMcpServerFileNameData, UpdateMcpServerFileNameResponses, UpdateMcpServerFileResponses, UpdateMcpServerIsEnabledData, UpdateMcpServerIsEnabledResponses, UpdateMcpServerMemberData, UpdateMcpServerMemberResponses, UpdateMcpServerResponses, UpdateMcpServerSourceCodeData, UpdateMcpServerSourceCodeResponses, UpdateMcpServerToolIsEnabledData, UpdateMcpServerToolIsEnabledResponses, UpdateProfileData, UpdateProfileResponses, UpdateProfileServerToolsData, UpdateProfileServerToolsResponses, UpdateSkillCollectionData, UpdateSkillCollectionResponses, UpdateSkillData, UpdateSkillResponses, UpdateTeamData, UpdateTeamMemberData, UpdateTeamMemberResponses, UpdateTeamResponses, UpdateUserData, UpdateUserResponses, UpdateUsersMeData, UpdateUsersMeResponses } from './types.gen.js';
 
-export type Options<
-  TData extends TDataShape = TDataShape,
-  ThrowOnError extends boolean = boolean,
-  TResponse = unknown,
-> = Options2<TData, ThrowOnError, TResponse> & {
-  /**
-   * You can provide a client instance returned by `createClient()` instead of
-   * individual options. This might be also useful if you want to implement a
-   * custom client.
-   */
-  client?: Client;
-  /**
-   * You can pass arbitrary values through the `meta` object. This can be
-   * used to access values that aren't defined as part of the SDK function.
-   */
-  meta?: Record<string, unknown>;
+export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
+    /**
+     * You can provide a client instance returned by `createClient()` instead of
+     * individual options. This might be also useful if you want to implement a
+     * custom client.
+     */
+    client?: Client;
+    /**
+     * You can pass arbitrary values through the `meta` object. This can be
+     * used to access values that aren't defined as part of the SDK function.
+     */
+    meta?: Record<string, unknown>;
 };
 
 /**
  * Get metadata about the authenticated user
  */
-export const getAuthMe = <ThrowOnError extends boolean = true>(options?: Options<GetAuthMeData, ThrowOnError>) =>
-  (options?.client ?? client).get<GetAuthMeResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getAuthMe = <ThrowOnError extends boolean = true>(options?: Options<GetAuthMeData, ThrowOnError>) => (options?.client ?? client).get<GetAuthMeResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/me',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the values a caller may filter the audit log by, for each field that has a known set
  */
-export const listAuditLogsFilterOptions = <ThrowOnError extends boolean = true>(
-  options?: Options<ListAuditLogsFilterOptionsData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<ListAuditLogsFilterOptionsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listAuditLogsFilterOptions = <ThrowOnError extends boolean = true>(options?: Options<ListAuditLogsFilterOptionsData, ThrowOnError>) => (options?.client ?? client).get<ListAuditLogsFilterOptionsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/audit-logs/filter-options',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Summarize the tool calls the caller made over a recent window, as a count per day plus the servers and clients they went through
  */
-export const getAuditLogsSummary = <ThrowOnError extends boolean = true>(
-  options?: Options<GetAuditLogsSummaryData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<GetAuditLogsSummaryResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getAuditLogsSummary = <ThrowOnError extends boolean = true>(options?: Options<GetAuditLogsSummaryData, ThrowOnError>) => (options?.client ?? client).get<GetAuditLogsSummaryResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/audit-logs/summary',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get a single audit log entry. Callers without full access can only read their own entries
  */
-export const getAuditLog = <ThrowOnError extends boolean = true>(options: Options<GetAuditLogData, ThrowOnError>) =>
-  (options.client ?? client).get<GetAuditLogResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getAuditLog = <ThrowOnError extends boolean = true>(options: Options<GetAuditLogData, ThrowOnError>) => (options.client ?? client).get<GetAuditLogResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/audit-logs/{id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List audit log entries page by page. Callers without full access only see their own entries
  */
-export const listAuditLogs = <ThrowOnError extends boolean = true>(
-  options?: Options<ListAuditLogsData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<ListAuditLogsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listAuditLogs = <ThrowOnError extends boolean = true>(options?: Options<ListAuditLogsData, ThrowOnError>) => (options?.client ?? client).get<ListAuditLogsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/audit-logs',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get the current authenticated user
  */
-export const getUsersMe = <ThrowOnError extends boolean = true>(options?: Options<GetUsersMeData, ThrowOnError>) =>
-  (options?.client ?? client).get<GetUsersMeResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getUsersMe = <ThrowOnError extends boolean = true>(options?: Options<GetUsersMeData, ThrowOnError>) => (options?.client ?? client).get<GetUsersMeResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/me',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update the current authenticated user
  */
-export const updateUsersMe = <ThrowOnError extends boolean = true>(
-  options?: Options<UpdateUsersMeData, ThrowOnError>
-) =>
-  (options?.client ?? client).put<UpdateUsersMeResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateUsersMe = <ThrowOnError extends boolean = true>(options?: Options<UpdateUsersMeData, ThrowOnError>) => (options?.client ?? client).put<UpdateUsersMeResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/me',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Send a verification code to a new email address before changing it
  */
-export const requestOwnEmailVerification = <ThrowOnError extends boolean = true>(
-  options?: Options<RequestOwnEmailVerificationData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<RequestOwnEmailVerificationResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const requestOwnEmailVerification = <ThrowOnError extends boolean = true>(options?: Options<RequestOwnEmailVerificationData, ThrowOnError>) => (options?.client ?? client).post<RequestOwnEmailVerificationResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/me/request-email-verification',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * List the users and service accounts the caller can read, optionally filtered by type
  */
-export const listUsers = <ThrowOnError extends boolean = true>(options?: Options<ListUsersData, ThrowOnError>) =>
-  (options?.client ?? client).get<ListUsersResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listUsers = <ThrowOnError extends boolean = true>(options?: Options<ListUsersData, ThrowOnError>) => (options?.client ?? client).get<ListUsersResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Invite a new user by email, or create a service account
  */
-export const createUser = <ThrowOnError extends boolean = true>(options?: Options<CreateUserData, ThrowOnError>) =>
-  (options?.client ?? client).post<CreateUserResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createUser = <ThrowOnError extends boolean = true>(options?: Options<CreateUserData, ThrowOnError>) => (options?.client ?? client).post<CreateUserResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Delete a user permanently
  */
-export const deleteUser = <ThrowOnError extends boolean = true>(options: Options<DeleteUserData, ThrowOnError>) =>
-  (options.client ?? client).delete<DeleteUserResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteUser = <ThrowOnError extends boolean = true>(options: Options<DeleteUserData, ThrowOnError>) => (options.client ?? client).delete<DeleteUserResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get one user by ID
  */
-export const getUser = <ThrowOnError extends boolean = true>(options: Options<GetUserData, ThrowOnError>) =>
-  (options.client ?? client).get<GetUserResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getUser = <ThrowOnError extends boolean = true>(options: Options<GetUserData, ThrowOnError>) => (options.client ?? client).get<GetUserResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update a user; callers who are not the organization owner can change only the name
  */
-export const updateUser = <ThrowOnError extends boolean = true>(options: Options<UpdateUserData, ThrowOnError>) =>
-  (options.client ?? client).put<UpdateUserResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateUser = <ThrowOnError extends boolean = true>(options: Options<UpdateUserData, ThrowOnError>) => (options.client ?? client).put<UpdateUserResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List the profiles assigned to a user
  */
-export const listUserProfiles = <ThrowOnError extends boolean = true>(
-  options: Options<ListUserProfilesData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListUserProfilesResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listUserProfiles = <ThrowOnError extends boolean = true>(options: Options<ListUserProfilesData, ThrowOnError>) => (options.client ?? client).get<ListUserProfilesResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}/profiles',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Assign a profile to a user; only organization owners can lock the assignment
  */
-export const createUserProfile = <ThrowOnError extends boolean = true>(
-  options: Options<CreateUserProfileData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateUserProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createUserProfile = <ThrowOnError extends boolean = true>(options: Options<CreateUserProfileData, ThrowOnError>) => (options.client ?? client).post<CreateUserProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}/profiles',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Remove a profile assignment; only organization owners can remove locked assignments
  */
-export const deleteUserProfile = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteUserProfileData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteUserProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteUserProfile = <ThrowOnError extends boolean = true>(options: Options<DeleteUserProfileData, ThrowOnError>) => (options.client ?? client).delete<DeleteUserProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}/profiles/{profileId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Change the lock status of a profile assignment; organization owners only
  */
-export const patchUserProfile = <ThrowOnError extends boolean = true>(
-  options: Options<PatchUserProfileData, ThrowOnError>
-) =>
-  (options.client ?? client).patch<PatchUserProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const patchUserProfile = <ThrowOnError extends boolean = true>(options: Options<PatchUserProfileData, ThrowOnError>) => (options.client ?? client).patch<PatchUserProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}/profiles/{profileId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List the personal access tokens of the user; allowed for yourself or a managed service account
  */
-export const listUserPersonalAccessTokens = <ThrowOnError extends boolean = true>(
-  options: Options<ListUserPersonalAccessTokensData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListUserPersonalAccessTokensResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listUserPersonalAccessTokens = <ThrowOnError extends boolean = true>(options: Options<ListUserPersonalAccessTokensData, ThrowOnError>) => (options.client ?? client).get<ListUserPersonalAccessTokensResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}/personal-access-tokens',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a personal access token for the user and return its API key
  */
-export const createUserPersonalAccessToken = <ThrowOnError extends boolean = true>(
-  options: Options<CreateUserPersonalAccessTokenData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateUserPersonalAccessTokenResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createUserPersonalAccessToken = <ThrowOnError extends boolean = true>(options: Options<CreateUserPersonalAccessTokenData, ThrowOnError>) => (options.client ?? client).post<CreateUserPersonalAccessTokenResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}/personal-access-tokens',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete a personal access token
  */
-export const deleteUserPersonalAccessToken = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteUserPersonalAccessTokenData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteUserPersonalAccessTokenResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteUserPersonalAccessToken = <ThrowOnError extends boolean = true>(options: Options<DeleteUserPersonalAccessTokenData, ThrowOnError>) => (options.client ?? client).delete<DeleteUserPersonalAccessTokenResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}/personal-access-tokens/{patId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update the name or the assigned profiles of a personal access token
  */
-export const patchUserPersonalAccessToken = <ThrowOnError extends boolean = true>(
-  options: Options<PatchUserPersonalAccessTokenData, ThrowOnError>
-) =>
-  (options.client ?? client).patch<PatchUserPersonalAccessTokenResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const patchUserPersonalAccessToken = <ThrowOnError extends boolean = true>(options: Options<PatchUserPersonalAccessTokenData, ThrowOnError>) => (options.client ?? client).patch<PatchUserPersonalAccessTokenResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/users/{userId}/personal-access-tokens/{patId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Preview which servers a specific user or team can access
  */
-export const getMcpServersAccessPreview = <ThrowOnError extends boolean = true>(
-  options?: Options<GetMcpServersAccessPreviewData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<GetMcpServersAccessPreviewResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServersAccessPreview = <ThrowOnError extends boolean = true>(options?: Options<GetMcpServersAccessPreviewData, ThrowOnError>) => (options?.client ?? client).get<GetMcpServersAccessPreviewResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/access-preview',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List all MCP servers the caller has access to
  */
-export const listMcpServers = <ThrowOnError extends boolean = true>(
-  options?: Options<ListMcpServersData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<ListMcpServersResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listMcpServers = <ThrowOnError extends boolean = true>(options?: Options<ListMcpServersData, ThrowOnError>) => (options?.client ?? client).get<ListMcpServersResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a new MCP server
  */
-export const createMcpServer = <ThrowOnError extends boolean = true>(
-  options?: Options<CreateMcpServerData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<CreateMcpServerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createMcpServer = <ThrowOnError extends boolean = true>(options?: Options<CreateMcpServerData, ThrowOnError>) => (options?.client ?? client).post<CreateMcpServerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Delete an MCP server
  */
-export const deleteMcpServer = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteMcpServerData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteMcpServerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteMcpServer = <ThrowOnError extends boolean = true>(options: Options<DeleteMcpServerData, ThrowOnError>) => (options.client ?? client).delete<DeleteMcpServerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get a single MCP server together with its files
  */
-export const getMcpServer = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerData, ThrowOnError>) =>
-  (options.client ?? client).get<GetMcpServerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServer = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerData, ThrowOnError>) => (options.client ?? client).get<GetMcpServerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update an MCP server. The slug can be changed, which also changes the URL of the server
  */
-export const updateMcpServer = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateMcpServer = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Get the running status of an MCP server. Servers with transport type "stdio" or "hosted" report the status of their containers. All other servers always report as running
  */
-export const getMcpServerRunningStatus = <ThrowOnError extends boolean = true>(
-  options: Options<GetMcpServerRunningStatusData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetMcpServerRunningStatusResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServerRunningStatus = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerRunningStatusData, ThrowOnError>) => (options.client ?? client).get<GetMcpServerRunningStatusResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/running-status',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Starts a stopped MCP server. Only usable if the server has transport type "stdio" or "hosted"
  */
-export const startMcpServer = <ThrowOnError extends boolean = true>(
-  options: Options<StartMcpServerData, ThrowOnError>
-) =>
-  (options.client ?? client).post<StartMcpServerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const startMcpServer = <ThrowOnError extends boolean = true>(options: Options<StartMcpServerData, ThrowOnError>) => (options.client ?? client).post<StartMcpServerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/start',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Stops a running MCP server. Only usable if the server has transport type "stdio" or "hosted"
  */
-export const stopMcpServer = <ThrowOnError extends boolean = true>(options: Options<StopMcpServerData, ThrowOnError>) =>
-  (options.client ?? client).post<StopMcpServerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const stopMcpServer = <ThrowOnError extends boolean = true>(options: Options<StopMcpServerData, ThrowOnError>) => (options.client ?? client).post<StopMcpServerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/stop',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Enable or disable an MCP server. Enabling fails if the organization has no subscription which permits more enabled servers
  */
-export const updateMcpServerIsEnabled = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerIsEnabledData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerIsEnabledResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateMcpServerIsEnabled = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerIsEnabledData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerIsEnabledResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/isEnabled',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Discover OAuth metadata from the given URL or from the remote MCP server URL
  */
-export const discoverMcpServerOauth = <ThrowOnError extends boolean = true>(
-  options: Options<DiscoverMcpServerOauthData, ThrowOnError>
-) =>
-  (options.client ?? client).get<DiscoverMcpServerOauthResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const discoverMcpServerOauth = <ThrowOnError extends boolean = true>(options: Options<DiscoverMcpServerOauthData, ThrowOnError>) => (options.client ?? client).get<DiscoverMcpServerOauthResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/oauth/discover',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Fetch a remote OpenAPI/Swagger specification from the given URL and validate that it is a valid spec
  */
-export const testMcpServerOpenapi = <ThrowOnError extends boolean = true>(
-  options: Options<TestMcpServerOpenapiData, ThrowOnError>
-) =>
-  (options.client ?? client).post<TestMcpServerOpenapiResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const testMcpServerOpenapi = <ThrowOnError extends boolean = true>(options: Options<TestMcpServerOpenapiData, ThrowOnError>) => (options.client ?? client).post<TestMcpServerOpenapiResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/openapi/test',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List all cached tools of an MCP server, including the disabled ones
  */
-export const listMcpServerTools = <ThrowOnError extends boolean = true>(
-  options: Options<ListMcpServerToolsData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListMcpServerToolsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listMcpServerTools = <ThrowOnError extends boolean = true>(options: Options<ListMcpServerToolsData, ThrowOnError>) => (options.client ?? client).get<ListMcpServerToolsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/tools',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get a single tool of an MCP server
  */
-export const getMcpServerTool = <ThrowOnError extends boolean = true>(
-  options: Options<GetMcpServerToolData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetMcpServerToolResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServerTool = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerToolData, ThrowOnError>) => (options.client ?? client).get<GetMcpServerToolResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/tools/{toolName}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update a single tool of an MCP server
  */
-export const patchMcpServerTool = <ThrowOnError extends boolean = true>(
-  options: Options<PatchMcpServerToolData, ThrowOnError>
-) =>
-  (options.client ?? client).patch<PatchMcpServerToolResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const patchMcpServerTool = <ThrowOnError extends boolean = true>(options: Options<PatchMcpServerToolData, ThrowOnError>) => (options.client ?? client).patch<PatchMcpServerToolResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/tools/{toolName}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Enable or disable all tools of an MCP server. Tells the connected MCP clients that the tool list changed
  */
-export const updateMcpServerAllToolsIsEnabled = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerAllToolsIsEnabledData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerAllToolsIsEnabledResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateMcpServerAllToolsIsEnabled = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerAllToolsIsEnabledData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerAllToolsIsEnabledResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/all-tools-isEnabled',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Enable or disable a single tool of an MCP server. Tells the connected MCP clients that the tool list changed
  */
-export const updateMcpServerToolIsEnabled = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerToolIsEnabledData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerToolIsEnabledResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateMcpServerToolIsEnabled = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerToolIsEnabledData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerToolIsEnabledResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/tools/{toolName}/isEnabled',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Call a tool on an MCP server. The tool must be enabled, the arguments are validated against the tool schema, and the call is written to the audit log
  */
-export const callMcpServerTool = <ThrowOnError extends boolean = true>(
-  options: Options<CallMcpServerToolData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CallMcpServerToolResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const callMcpServerTool = <ThrowOnError extends boolean = true>(options: Options<CallMcpServerToolData, ThrowOnError>) => (options.client ?? client).post<CallMcpServerToolResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/tools/{toolName}/call',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List all cached tools of every MCP server the caller has access to, including the disabled ones
  */
-export const listTools = <ThrowOnError extends boolean = true>(options?: Options<ListToolsData, ThrowOnError>) =>
-  (options?.client ?? client).get<ListToolsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listTools = <ThrowOnError extends boolean = true>(options?: Options<ListToolsData, ThrowOnError>) => (options?.client ?? client).get<ListToolsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/tools',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Search the cached tools of every MCP server the caller has access to, page by page, including the disabled ones. Returns a list of tools paginated.
  */
-export const getToolsSearch = <ThrowOnError extends boolean = true>(
-  options?: Options<GetToolsSearchData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<GetToolsSearchResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getToolsSearch = <ThrowOnError extends boolean = true>(options?: Options<GetToolsSearchData, ThrowOnError>) => (options?.client ?? client).get<GetToolsSearchResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/tools/search',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Refresh the tool cache of one MCP server, or of all enabled servers when serverSlug is omitted. Streams the progress as server-sent events, so the Accept header must be text/event-stream
  */
-export const refreshTools = <ThrowOnError extends boolean = true>(options?: Options<RefreshToolsData, ThrowOnError>) =>
-  (options?.client ?? client).post<RefreshToolsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const refreshTools = <ThrowOnError extends boolean = true>(options?: Options<RefreshToolsData, ThrowOnError>) => (options?.client ?? client).post<RefreshToolsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/tools/refresh',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the users and teams which are members of an MCP server, with their roles
  */
-export const listMcpServerMembers = <ThrowOnError extends boolean = true>(
-  options: Options<ListMcpServerMembersData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListMcpServerMembersResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listMcpServerMembers = <ThrowOnError extends boolean = true>(options: Options<ListMcpServerMembersData, ThrowOnError>) => (options.client ?? client).get<ListMcpServerMembersResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/members/',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Remove a user or a team from the members of an MCP server
  */
-export const deleteMcpServerMember = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteMcpServerMemberData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteMcpServerMemberResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteMcpServerMember = <ThrowOnError extends boolean = true>(options: Options<DeleteMcpServerMemberData, ThrowOnError>) => (options.client ?? client).delete<DeleteMcpServerMemberResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/members/{memberType}/{memberId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Add a user or a team as a member of an MCP server, or change the role of an existing member
  */
-export const updateMcpServerMember = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerMemberData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerMemberResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateMcpServerMember = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerMemberData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerMemberResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/members/{memberType}/{memberId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete the credentials of the authenticated user for an MCP server
  */
-export const deleteMcpServerCredentialsUser = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteMcpServerCredentialsUserData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteMcpServerCredentialsUserResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteMcpServerCredentialsUser = <ThrowOnError extends boolean = true>(options: Options<DeleteMcpServerCredentialsUserData, ThrowOnError>) => (options.client ?? client).delete<DeleteMcpServerCredentialsUserResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/user',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get the user-scoped credentials of the authenticated user for an MCP server. Secret values are not included
  */
-export const getMcpServerCredentialsUser = <ThrowOnError extends boolean = true>(
-  options: Options<GetMcpServerCredentialsUserData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetMcpServerCredentialsUserResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServerCredentialsUser = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerCredentialsUserData, ThrowOnError>) => (options.client ?? client).get<GetMcpServerCredentialsUserResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/user',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create or replace the credentials of the authenticated user for an MCP server. The credential type must match the authorization method of the server. Servers with transport type "stdio" or "hosted" are restarted to apply the new credentials
  */
-export const updateMcpServerCredentialsUser = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerCredentialsUserData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerCredentialsUserResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateMcpServerCredentialsUser = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerCredentialsUserData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerCredentialsUserResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/user',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete the server-scoped credentials of an MCP server
  */
-export const deleteMcpServerCredentialsServer = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteMcpServerCredentialsServerData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteMcpServerCredentialsServerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteMcpServerCredentialsServer = <ThrowOnError extends boolean = true>(options: Options<DeleteMcpServerCredentialsServerData, ThrowOnError>) => (options.client ?? client).delete<DeleteMcpServerCredentialsServerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/server',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get the server-scoped credentials of an MCP server. Secret values are not included
  */
-export const getMcpServerCredentialsServer = <ThrowOnError extends boolean = true>(
-  options: Options<GetMcpServerCredentialsServerData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetMcpServerCredentialsServerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServerCredentialsServer = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerCredentialsServerData, ThrowOnError>) => (options.client ?? client).get<GetMcpServerCredentialsServerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/server',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create or replace the server-scoped credentials of an MCP server. The credential type must match the authorization method of the server. Servers with transport type "stdio" or "hosted" are restarted to apply the new credentials
  */
-export const updateMcpServerCredentialsServer = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerCredentialsServerData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerCredentialsServerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateMcpServerCredentialsServer = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerCredentialsServerData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerCredentialsServerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/server',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Get the credentials of an MCP server which are scoped to the profile given in the profileId query parameter. Secret values are not included
  */
-export const getMcpServerCredentialsProfile = <ThrowOnError extends boolean = true>(
-  options: Options<GetMcpServerCredentialsProfileData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetMcpServerCredentialsProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServerCredentialsProfile = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerCredentialsProfileData, ThrowOnError>) => (options.client ?? client).get<GetMcpServerCredentialsProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/profile',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get the plaintext API keys of the authenticated user for an MCP server. Only usable if the server uses API key authorization
  */
-export const listMcpServerCredentialsUserApikeys = <ThrowOnError extends boolean = true>(
-  options: Options<ListMcpServerCredentialsUserApikeysData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListMcpServerCredentialsUserApikeysResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listMcpServerCredentialsUserApikeys = <ThrowOnError extends boolean = true>(options: Options<ListMcpServerCredentialsUserApikeysData, ThrowOnError>) => (options.client ?? client).get<ListMcpServerCredentialsUserApikeysResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/user/apikeys',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get the plaintext API keys of the server-scoped credentials of an MCP server. Only usable if the server uses API key authorization
  */
-export const listMcpServerCredentialsServerApikeys = <ThrowOnError extends boolean = true>(
-  options: Options<ListMcpServerCredentialsServerApikeysData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListMcpServerCredentialsServerApikeysResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listMcpServerCredentialsServerApikeys = <ThrowOnError extends boolean = true>(options: Options<ListMcpServerCredentialsServerApikeysData, ThrowOnError>) => (options.client ?? client).get<ListMcpServerCredentialsServerApikeysResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/server/apikeys',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get the plaintext API keys of the profile-scoped credentials of an MCP server. Only usable if the server uses API key authorization
  */
-export const listMcpServerCredentialsProfileApikeys = <ThrowOnError extends boolean = true>(
-  options: Options<ListMcpServerCredentialsProfileApikeysData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListMcpServerCredentialsProfileApikeysResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listMcpServerCredentialsProfileApikeys = <ThrowOnError extends boolean = true>(options: Options<ListMcpServerCredentialsProfileApikeysData, ThrowOnError>) => (options.client ?? client).get<ListMcpServerCredentialsProfileApikeysResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/profile/{profileId}/apikeys',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Delete the profile-scoped credentials of an MCP server for the given profile
  */
-export const deleteMcpServerCredentialsProfile = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteMcpServerCredentialsProfileData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteMcpServerCredentialsProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteMcpServerCredentialsProfile = <ThrowOnError extends boolean = true>(options: Options<DeleteMcpServerCredentialsProfileData, ThrowOnError>) => (options.client ?? client).delete<DeleteMcpServerCredentialsProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/profiles/{profileId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create or replace the profile-scoped credentials of an MCP server. The credential type must match the authorization method of the server. Servers with transport type "stdio" or "hosted" are restarted to apply the new credentials
  */
-export const updateMcpServerCredentialsProfile = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerCredentialsProfileData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerCredentialsProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateMcpServerCredentialsProfile = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerCredentialsProfileData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerCredentialsProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/profiles/{profileId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Copy credentials to another scope
  */
-export const copyMcpServerCredentials = <ThrowOnError extends boolean = true>(
-  options: Options<CopyMcpServerCredentialsData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CopyMcpServerCredentialsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const copyMcpServerCredentials = <ThrowOnError extends boolean = true>(options: Options<CopyMcpServerCredentialsData, ThrowOnError>) => (options.client ?? client).post<CopyMcpServerCredentialsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/copy',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get an out-of-band OAuth URL which can be opened in any browser on any device to provide authorization credentials for this request's authenticated user. The generated URL will not require user to sign-in to Gatana; instead it will directly start the OAuth authorization flow with the remote MCP server.
  */
-export const getMcpServerCredentialsAuthorizeUrl = <ThrowOnError extends boolean = true>(
-  options: Options<GetMcpServerCredentialsAuthorizeUrlData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetMcpServerCredentialsAuthorizeUrlResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServerCredentialsAuthorizeUrl = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerCredentialsAuthorizeUrlData, ThrowOnError>) => (options.client ?? client).get<GetMcpServerCredentialsAuthorizeUrlResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/authorize-url',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Delete one specific credential of an MCP server by its ID, whatever its scope is
  */
-export const deleteMcpServerCredential = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteMcpServerCredentialData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteMcpServerCredentialResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteMcpServerCredential = <ThrowOnError extends boolean = true>(options: Options<DeleteMcpServerCredentialData, ThrowOnError>) => (options.client ?? client).delete<DeleteMcpServerCredentialResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/{credentialsId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get the usable token for a credential. For API key credentials, returns the API keys. For OAuth credentials, returns the access token, refreshing it first if possible and necessary. When credentialsId is omitted, resolves the effective credentials for the current user
  */
-export const getMcpServerCredentialsToken = <ThrowOnError extends boolean = true>(
-  options: Options<GetMcpServerCredentialsTokenData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetMcpServerCredentialsTokenResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServerCredentialsToken = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerCredentialsTokenData, ThrowOnError>) => (options.client ?? client).get<GetMcpServerCredentialsTokenResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/credentials/token',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Download the source code of the MCP server as a zip file
  */
-export const getMcpServerSourceCode = <ThrowOnError extends boolean = true>(
-  options: Options<GetMcpServerSourceCodeData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetMcpServerSourceCodeResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServerSourceCode = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerSourceCodeData, ThrowOnError>) => (options.client ?? client).get<GetMcpServerSourceCodeResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/source-code',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Upload source code zip file to update the MCP server source code
  */
-export const updateMcpServerSourceCode = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerSourceCodeData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerSourceCodeResponses, unknown, ThrowOnError>({
+export const updateMcpServerSourceCode = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerSourceCodeData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerSourceCodeResponses, unknown, ThrowOnError>({
     ...formDataBodySerializer,
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/source-code',
     ...options,
     headers: {
-      'Content-Type': null,
-      ...options.headers,
-    },
-  });
+        'Content-Type': null,
+        ...options.headers
+    }
+});
 
 /**
  * List the files of an MCP server. Only usable if the server has transport type "stdio" or "hosted"
  */
-export const listMcpServerFiles = <ThrowOnError extends boolean = true>(
-  options: Options<ListMcpServerFilesData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListMcpServerFilesResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listMcpServerFiles = <ThrowOnError extends boolean = true>(options: Options<ListMcpServerFilesData, ThrowOnError>) => (options.client ?? client).get<ListMcpServerFilesResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/files',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Upload a new file for an MCP server. Only usable if the server has transport type "stdio" or "hosted"
  */
-export const createMcpServerFile = <ThrowOnError extends boolean = true>(
-  options: Options<CreateMcpServerFileData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateMcpServerFileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createMcpServerFile = <ThrowOnError extends boolean = true>(options: Options<CreateMcpServerFileData, ThrowOnError>) => (options.client ?? client).post<CreateMcpServerFileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/files',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Rename a file of an MCP server
  */
-export const updateMcpServerFileName = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerFileNameData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerFileNameResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateMcpServerFileName = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerFileNameData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerFileNameResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/files/{fileId}/name',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete a file of an MCP server. The file is also removed from the storage bucket
  */
-export const deleteMcpServerFile = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteMcpServerFileData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteMcpServerFileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteMcpServerFile = <ThrowOnError extends boolean = true>(options: Options<DeleteMcpServerFileData, ThrowOnError>) => (options.client ?? client).delete<DeleteMcpServerFileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/files/{fileId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Download the content of a file
  */
-export const getMcpServerFile = <ThrowOnError extends boolean = true>(
-  options: Options<GetMcpServerFileData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetMcpServerFileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getMcpServerFile = <ThrowOnError extends boolean = true>(options: Options<GetMcpServerFileData, ThrowOnError>) => (options.client ?? client).get<GetMcpServerFileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/files/{fileId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Replace the contents of an existing file of an MCP server with the uploaded file
  */
-export const updateMcpServerFile = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateMcpServerFileData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateMcpServerFileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateMcpServerFile = <ThrowOnError extends boolean = true>(options: Options<UpdateMcpServerFileData, ThrowOnError>) => (options.client ?? client).put<UpdateMcpServerFileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/mcp-servers/{serverSlug}/files/{fileId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get tenant details
  */
-export const getTenant = <ThrowOnError extends boolean = true>(options: Options<GetTenantData, ThrowOnError>) =>
-  (options.client ?? client).get<GetTenantResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getTenant = <ThrowOnError extends boolean = true>(options: Options<GetTenantData, ThrowOnError>) => (options.client ?? client).get<GetTenantResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/tenants/{tenantId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get tenant subscription details
  */
-export const getTenantSubscription = <ThrowOnError extends boolean = true>(
-  options: Options<GetTenantSubscriptionData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetTenantSubscriptionResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getTenantSubscription = <ThrowOnError extends boolean = true>(options: Options<GetTenantSubscriptionData, ThrowOnError>) => (options.client ?? client).get<GetTenantSubscriptionResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/tenants/{tenantId}/subscription',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Install a predefined built-in MCP server for the current tenant and refresh its tool cache. Fails if the server is already installed. Requires manage permission on the tenant
  */
-export const installPredefinedBuiltInServer = <ThrowOnError extends boolean = true>(
-  options: Options<InstallPredefinedBuiltInServerData, ThrowOnError>
-) =>
-  (options.client ?? client).post<InstallPredefinedBuiltInServerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const installPredefinedBuiltInServer = <ThrowOnError extends boolean = true>(options: Options<InstallPredefinedBuiltInServerData, ThrowOnError>) => (options.client ?? client).post<InstallPredefinedBuiltInServerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/install-predefined/{id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get the deployment status of an MCP server or a sandbox. Provide either serverSlug or sandboxId; requires read permission on the server
  */
-export const getDeploymentsStatus = <ThrowOnError extends boolean = true>(
-  options?: Options<GetDeploymentsStatusData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<GetDeploymentsStatusResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getDeploymentsStatus = <ThrowOnError extends boolean = true>(options?: Options<GetDeploymentsStatusData, ThrowOnError>) => (options?.client ?? client).get<GetDeploymentsStatusResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/deployments/status',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get the logs of a container of a pod, or stream them when the Accept header is text/event-stream. Defaults to the server container; set previous=true for the logs of the previous container instance
  */
-export const listDeploymentsLogs = <ThrowOnError extends boolean = true>(
-  options: Options<ListDeploymentsLogsData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListDeploymentsLogsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listDeploymentsLogs = <ThrowOnError extends boolean = true>(options: Options<ListDeploymentsLogsData, ThrowOnError>) => (options.client ?? client).get<ListDeploymentsLogsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/deployments/logs',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get historical CPU, memory and storage usage metrics for a deployment. Provide either serverSlug or sandboxId; requires read permission on the server
  */
-export const listDeploymentsMetrics = <ThrowOnError extends boolean = true>(
-  options?: Options<ListDeploymentsMetricsData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<ListDeploymentsMetricsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listDeploymentsMetrics = <ThrowOnError extends boolean = true>(options?: Options<ListDeploymentsMetricsData, ThrowOnError>) => (options?.client ?? client).get<ListDeploymentsMetricsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/deployments/metrics',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Stream the deployment and pod events of an MCP server as server-sent events. Requires read permission on the server and the Accept header text/event-stream; hostedFunctionId is no longer supported
  */
-export const listDeploymentsDeploymentLogs = <ThrowOnError extends boolean = true>(
-  options?: Options<ListDeploymentsDeploymentLogsData, ThrowOnError, ListDeploymentsDeploymentLogsResponse>
-) =>
-  (options?.client ?? client).sse.get<ListDeploymentsDeploymentLogsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listDeploymentsDeploymentLogs = <ThrowOnError extends boolean = true>(options?: Options<ListDeploymentsDeploymentLogsData, ThrowOnError, ListDeploymentsDeploymentLogsResponse>) => (options?.client ?? client).sse.get<ListDeploymentsDeploymentLogsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/deployments/deployment-logs',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the teams the caller can read, optionally only those a given user is a member of
  */
-export const listTeams = <ThrowOnError extends boolean = true>(options?: Options<ListTeamsData, ThrowOnError>) =>
-  (options?.client ?? client).get<ListTeamsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listTeams = <ThrowOnError extends boolean = true>(options?: Options<ListTeamsData, ThrowOnError>) => (options?.client ?? client).get<ListTeamsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a new team. The name must be unique in the organization
  */
-export const createTeam = <ThrowOnError extends boolean = true>(options?: Options<CreateTeamData, ThrowOnError>) =>
-  (options?.client ?? client).post<CreateTeamResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createTeam = <ThrowOnError extends boolean = true>(options?: Options<CreateTeamData, ThrowOnError>) => (options?.client ?? client).post<CreateTeamResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Delete a team
  */
-export const deleteTeam = <ThrowOnError extends boolean = true>(options: Options<DeleteTeamData, ThrowOnError>) =>
-  (options.client ?? client).delete<DeleteTeamResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteTeam = <ThrowOnError extends boolean = true>(options: Options<DeleteTeamData, ThrowOnError>) => (options.client ?? client).delete<DeleteTeamResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get a single team
  */
-export const getTeam = <ThrowOnError extends boolean = true>(options: Options<GetTeamData, ThrowOnError>) =>
-  (options.client ?? client).get<GetTeamResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getTeam = <ThrowOnError extends boolean = true>(options: Options<GetTeamData, ThrowOnError>) => (options.client ?? client).get<GetTeamResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update a team
  */
-export const updateTeam = <ThrowOnError extends boolean = true>(options: Options<UpdateTeamData, ThrowOnError>) =>
-  (options.client ?? client).put<UpdateTeamResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateTeam = <ThrowOnError extends boolean = true>(options: Options<UpdateTeamData, ThrowOnError>) => (options.client ?? client).put<UpdateTeamResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List the members of a team with their user records. Only organization owners and members of the team can read this
  */
-export const listTeamMembers = <ThrowOnError extends boolean = true>(
-  options: Options<ListTeamMembersData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListTeamMembersResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listTeamMembers = <ThrowOnError extends boolean = true>(options: Options<ListTeamMembersData, ThrowOnError>) => (options.client ?? client).get<ListTeamMembersResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/members',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Add a user to a team with the given role
  */
-export const createTeamMember = <ThrowOnError extends boolean = true>(
-  options: Options<CreateTeamMemberData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateTeamMemberResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createTeamMember = <ThrowOnError extends boolean = true>(options: Options<CreateTeamMemberData, ThrowOnError>) => (options.client ?? client).post<CreateTeamMemberResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/members',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Remove a member from a team
  */
-export const deleteTeamMember = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteTeamMemberData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteTeamMemberResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteTeamMember = <ThrowOnError extends boolean = true>(options: Options<DeleteTeamMemberData, ThrowOnError>) => (options.client ?? client).delete<DeleteTeamMemberResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/members/{userId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Change the role of a team member
  */
-export const updateTeamMember = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateTeamMemberData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateTeamMemberResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateTeamMember = <ThrowOnError extends boolean = true>(options: Options<UpdateTeamMemberData, ThrowOnError>) => (options.client ?? client).put<UpdateTeamMemberResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/members/{userId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List the invitations of a team
  */
-export const listTeamInvitations = <ThrowOnError extends boolean = true>(
-  options: Options<ListTeamInvitationsData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListTeamInvitationsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listTeamInvitations = <ThrowOnError extends boolean = true>(options: Options<ListTeamInvitationsData, ThrowOnError>) => (options.client ?? client).get<ListTeamInvitationsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/invitations',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Invite a person to a team by email. The invitation expires after 7 days and an email is sent to the address
  */
-export const createTeamInvitation = <ThrowOnError extends boolean = true>(
-  options: Options<CreateTeamInvitationData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateTeamInvitationResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createTeamInvitation = <ThrowOnError extends boolean = true>(options: Options<CreateTeamInvitationData, ThrowOnError>) => (options.client ?? client).post<CreateTeamInvitationResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/invitations',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete a team invitation
  */
-export const deleteTeamInvitation = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteTeamInvitationData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteTeamInvitationResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteTeamInvitation = <ThrowOnError extends boolean = true>(options: Options<DeleteTeamInvitationData, ThrowOnError>) => (options.client ?? client).delete<DeleteTeamInvitationResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/invitations/{invitationId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the MCP server permissions granted to a team
  */
-export const listTeamServers = <ThrowOnError extends boolean = true>(
-  options: Options<ListTeamServersData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListTeamServersResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listTeamServers = <ThrowOnError extends boolean = true>(options: Options<ListTeamServersData, ThrowOnError>) => (options.client ?? client).get<ListTeamServersResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/servers',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the identity provider claim mappings that give membership of a team at sign-in
  */
-export const listTeamClaimMappings = <ThrowOnError extends boolean = true>(
-  options: Options<ListTeamClaimMappingsData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListTeamClaimMappingsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listTeamClaimMappings = <ThrowOnError extends boolean = true>(options: Options<ListTeamClaimMappingsData, ThrowOnError>) => (options.client ?? client).get<ListTeamClaimMappingsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/claim-mappings',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a claim mapping that gives membership of a team to users with a matching identity provider claim
  */
-export const createTeamClaimMapping = <ThrowOnError extends boolean = true>(
-  options: Options<CreateTeamClaimMappingData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateTeamClaimMappingResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createTeamClaimMapping = <ThrowOnError extends boolean = true>(options: Options<CreateTeamClaimMappingData, ThrowOnError>) => (options.client ?? client).post<CreateTeamClaimMappingResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/claim-mappings',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete a team claim mapping
  */
-export const deleteTeamClaimMapping = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteTeamClaimMappingData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteTeamClaimMappingResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteTeamClaimMapping = <ThrowOnError extends boolean = true>(options: Options<DeleteTeamClaimMappingData, ThrowOnError>) => (options.client ?? client).delete<DeleteTeamClaimMappingResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/claim-mappings/{mappingId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the profiles assigned to a team
  */
-export const listTeamProfiles = <ThrowOnError extends boolean = true>(
-  options: Options<ListTeamProfilesData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListTeamProfilesResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listTeamProfiles = <ThrowOnError extends boolean = true>(options: Options<ListTeamProfilesData, ThrowOnError>) => (options.client ?? client).get<ListTeamProfilesResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/profiles',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Assign a profile to a team. Only organization owners can lock the assignment
  */
-export const createTeamProfile = <ThrowOnError extends boolean = true>(
-  options: Options<CreateTeamProfileData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateTeamProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createTeamProfile = <ThrowOnError extends boolean = true>(options: Options<CreateTeamProfileData, ThrowOnError>) => (options.client ?? client).post<CreateTeamProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/profiles',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Remove a profile assignment from a team. Only organization owners can remove a locked assignment
  */
-export const deleteTeamProfile = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteTeamProfileData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteTeamProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteTeamProfile = <ThrowOnError extends boolean = true>(options: Options<DeleteTeamProfileData, ThrowOnError>) => (options.client ?? client).delete<DeleteTeamProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/teams/{teamId}/profiles/{profileId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List all secret stores for the tenant
  */
-export const listSecretStores = <ThrowOnError extends boolean = true>(
-  options?: Options<ListSecretStoresData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<ListSecretStoresResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listSecretStores = <ThrowOnError extends boolean = true>(options?: Options<ListSecretStoresData, ThrowOnError>) => (options?.client ?? client).get<ListSecretStoresResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/secret-stores',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a new secret store
  */
-export const createSecretStore = <ThrowOnError extends boolean = true>(
-  options?: Options<CreateSecretStoreData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<CreateSecretStoreResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createSecretStore = <ThrowOnError extends boolean = true>(options?: Options<CreateSecretStoreData, ThrowOnError>) => (options?.client ?? client).post<CreateSecretStoreResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/secret-stores',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Delete a secret store
  */
-export const deleteSecretStore = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteSecretStoreData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteSecretStoreResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteSecretStore = <ThrowOnError extends boolean = true>(options: Options<DeleteSecretStoreData, ThrowOnError>) => (options.client ?? client).delete<DeleteSecretStoreResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/secret-stores/{id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get a secret store by ID
  */
-export const getSecretStore = <ThrowOnError extends boolean = true>(
-  options: Options<GetSecretStoreData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetSecretStoreResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getSecretStore = <ThrowOnError extends boolean = true>(options: Options<GetSecretStoreData, ThrowOnError>) => (options.client ?? client).get<GetSecretStoreResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/secret-stores/{id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update a secret store
  */
-export const patchSecretStore = <ThrowOnError extends boolean = true>(
-  options: Options<PatchSecretStoreData, ThrowOnError>
-) =>
-  (options.client ?? client).patch<PatchSecretStoreResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const patchSecretStore = <ThrowOnError extends boolean = true>(options: Options<PatchSecretStoreData, ThrowOnError>) => (options.client ?? client).patch<PatchSecretStoreResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/secret-stores/{id}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List all secret mappings for a store
  */
-export const listSecretStoreMappings = <ThrowOnError extends boolean = true>(
-  options: Options<ListSecretStoreMappingsData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListSecretStoreMappingsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listSecretStoreMappings = <ThrowOnError extends boolean = true>(options: Options<ListSecretStoreMappingsData, ThrowOnError>) => (options.client ?? client).get<ListSecretStoreMappingsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/secret-stores/{storeId}/mappings',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a new secret mapping
  */
-export const createSecretStoreMapping = <ThrowOnError extends boolean = true>(
-  options: Options<CreateSecretStoreMappingData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateSecretStoreMappingResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createSecretStoreMapping = <ThrowOnError extends boolean = true>(options: Options<CreateSecretStoreMappingData, ThrowOnError>) => (options.client ?? client).post<CreateSecretStoreMappingResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/secret-stores/{storeId}/mappings',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Delete a secret mapping
  */
-export const deleteSecretStoreMapping = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteSecretStoreMappingData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteSecretStoreMappingResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteSecretStoreMapping = <ThrowOnError extends boolean = true>(options: Options<DeleteSecretStoreMappingData, ThrowOnError>) => (options.client ?? client).delete<DeleteSecretStoreMappingResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/secret-stores/{storeId}/mappings/{mappingName}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update a secret mapping
  */
-export const patchSecretStoreMapping = <ThrowOnError extends boolean = true>(
-  options: Options<PatchSecretStoreMappingData, ThrowOnError>
-) =>
-  (options.client ?? client).patch<PatchSecretStoreMappingResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const patchSecretStoreMapping = <ThrowOnError extends boolean = true>(options: Options<PatchSecretStoreMappingData, ThrowOnError>) => (options.client ?? client).patch<PatchSecretStoreMappingResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/secret-stores/{storeId}/mappings/{mappingName}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Test fetching a secret from the store using a secret identifier (e.g., AWS ARN, GCP secret path)
  */
-export const testSecretStore = <ThrowOnError extends boolean = true>(
-  options: Options<TestSecretStoreData, ThrowOnError>
-) =>
-  (options.client ?? client).post<TestSecretStoreResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const testSecretStore = <ThrowOnError extends boolean = true>(options: Options<TestSecretStoreData, ThrowOnError>) => (options.client ?? client).post<TestSecretStoreResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/secret-stores/{storeId}/test',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Remove the SIEM streaming destination
  */
-export const deleteSiemDestination = <ThrowOnError extends boolean = true>(
-  options?: Options<DeleteSiemDestinationData, ThrowOnError>
-) =>
-  (options?.client ?? client).delete<DeleteSiemDestinationResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteSiemDestination = <ThrowOnError extends boolean = true>(options?: Options<DeleteSiemDestinationData, ThrowOnError>) => (options?.client ?? client).delete<DeleteSiemDestinationResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/siem-destination',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get the SIEM streaming destination of the organization, or null when none is configured
  */
-export const getSiemDestination = <ThrowOnError extends boolean = true>(
-  options?: Options<GetSiemDestinationData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<GetSiemDestinationResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getSiemDestination = <ThrowOnError extends boolean = true>(options?: Options<GetSiemDestinationData, ThrowOnError>) => (options?.client ?? client).get<GetSiemDestinationResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/siem-destination',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update the SIEM streaming destination
  */
-export const patchSiemDestination = <ThrowOnError extends boolean = true>(
-  options?: Options<PatchSiemDestinationData, ThrowOnError>
-) =>
-  (options?.client ?? client).patch<PatchSiemDestinationResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const patchSiemDestination = <ThrowOnError extends boolean = true>(options?: Options<PatchSiemDestinationData, ThrowOnError>) => (options?.client ?? client).patch<PatchSiemDestinationResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/siem-destination',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Configure SIEM streaming. The signing secret is returned once and cannot be retrieved later
  */
-export const createSiemDestination = <ThrowOnError extends boolean = true>(
-  options?: Options<CreateSiemDestinationData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<CreateSiemDestinationResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createSiemDestination = <ThrowOnError extends boolean = true>(options?: Options<CreateSiemDestinationData, ThrowOnError>) => (options?.client ?? client).post<CreateSiemDestinationResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/siem-destination',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Reveal the signing secret used to sign delivered batches
  */
-export const getSiemDestinationSecret = <ThrowOnError extends boolean = true>(
-  options?: Options<GetSiemDestinationSecretData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<GetSiemDestinationSecretResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getSiemDestinationSecret = <ThrowOnError extends boolean = true>(options?: Options<GetSiemDestinationSecretData, ThrowOnError>) => (options?.client ?? client).get<GetSiemDestinationSecretResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/siem-destination/secret',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Generate a new signing secret. Batches are signed with it immediately
  */
-export const rotateSiemDestinationSecret = <ThrowOnError extends boolean = true>(
-  options?: Options<RotateSiemDestinationSecretData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<RotateSiemDestinationSecretResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const rotateSiemDestinationSecret = <ThrowOnError extends boolean = true>(options?: Options<RotateSiemDestinationSecretData, ThrowOnError>) => (options?.client ?? client).post<RotateSiemDestinationSecretResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/siem-destination/rotate-secret',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Send a single test event to the destination and report what it answered
  */
-export const testSiemDestination = <ThrowOnError extends boolean = true>(
-  options?: Options<TestSiemDestinationData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<TestSiemDestinationResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const testSiemDestination = <ThrowOnError extends boolean = true>(options?: Options<TestSiemDestinationData, ThrowOnError>) => (options?.client ?? client).post<TestSiemDestinationResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/siem-destination/test',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the profiles the caller can read, optionally filtered to one MCP server
  */
-export const listProfiles = <ThrowOnError extends boolean = true>(options?: Options<ListProfilesData, ThrowOnError>) =>
-  (options?.client ?? client).get<ListProfilesResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listProfiles = <ThrowOnError extends boolean = true>(options?: Options<ListProfilesData, ThrowOnError>) => (options?.client ?? client).get<ListProfilesResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a new profile without any MCP servers attached
  */
-export const createProfile = <ThrowOnError extends boolean = true>(
-  options?: Options<CreateProfileData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<CreateProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createProfile = <ThrowOnError extends boolean = true>(options?: Options<CreateProfileData, ThrowOnError>) => (options?.client ?? client).post<CreateProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Delete a profile. Only callers who can manage the profile are permitted
  */
-export const deleteProfile = <ThrowOnError extends boolean = true>(options: Options<DeleteProfileData, ThrowOnError>) =>
-  (options.client ?? client).delete<DeleteProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteProfile = <ThrowOnError extends boolean = true>(options: Options<DeleteProfileData, ThrowOnError>) => (options.client ?? client).delete<DeleteProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get one profile with its MCP servers and server credentials
  */
-export const getProfile = <ThrowOnError extends boolean = true>(options: Options<GetProfileData, ThrowOnError>) =>
-  (options.client ?? client).get<GetProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getProfile = <ThrowOnError extends boolean = true>(options: Options<GetProfileData, ThrowOnError>) => (options.client ?? client).get<GetProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update a profile. Closing a profile that was open to all users also removes it from all personal access tokens
  */
-export const updateProfile = <ThrowOnError extends boolean = true>(options: Options<UpdateProfileData, ThrowOnError>) =>
-  (options.client ?? client).put<UpdateProfileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateProfile = <ThrowOnError extends boolean = true>(options: Options<UpdateProfileData, ThrowOnError>) => (options.client ?? client).put<UpdateProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List the identity claim mappings that give access to the profile
  */
-export const listProfileClaimMappings = <ThrowOnError extends boolean = true>(
-  options: Options<ListProfileClaimMappingsData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListProfileClaimMappingsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listProfileClaimMappings = <ThrowOnError extends boolean = true>(options: Options<ListProfileClaimMappingsData, ThrowOnError>) => (options.client ?? client).get<ListProfileClaimMappingsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}/claim-mappings',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Add an identity claim mapping that gives all users with the matching claim access to the profile
  */
-export const createProfileClaimMapping = <ThrowOnError extends boolean = true>(
-  options: Options<CreateProfileClaimMappingData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateProfileClaimMappingResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createProfileClaimMapping = <ThrowOnError extends boolean = true>(options: Options<CreateProfileClaimMappingData, ThrowOnError>) => (options.client ?? client).post<CreateProfileClaimMappingResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}/claim-mappings',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Remove an identity claim mapping from the profile
  */
-export const deleteProfileClaimMapping = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteProfileClaimMappingData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteProfileClaimMappingResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteProfileClaimMapping = <ThrowOnError extends boolean = true>(options: Options<DeleteProfileClaimMappingData, ThrowOnError>) => (options.client ?? client).delete<DeleteProfileClaimMappingResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}/claim-mappings/{mappingId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the accounts and teams that are assigned directly to the profile
  */
-export const listProfileDirectAssignments = <ThrowOnError extends boolean = true>(
-  options: Options<ListProfileDirectAssignmentsData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListProfileDirectAssignmentsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listProfileDirectAssignments = <ThrowOnError extends boolean = true>(options: Options<ListProfileDirectAssignmentsData, ThrowOnError>) => (options.client ?? client).get<ListProfileDirectAssignmentsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}/direct-assignments',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the users who maintain the profile
  */
-export const listProfileMaintainers = <ThrowOnError extends boolean = true>(
-  options: Options<ListProfileMaintainersData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListProfileMaintainersResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listProfileMaintainers = <ThrowOnError extends boolean = true>(options: Options<ListProfileMaintainersData, ThrowOnError>) => (options.client ?? client).get<ListProfileMaintainersResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}/maintainers',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Add a user as a maintainer of the profile. Only callers who can manage the profile are permitted
  */
-export const createProfileMaintainer = <ThrowOnError extends boolean = true>(
-  options: Options<CreateProfileMaintainerData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateProfileMaintainerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createProfileMaintainer = <ThrowOnError extends boolean = true>(options: Options<CreateProfileMaintainerData, ThrowOnError>) => (options.client ?? client).post<CreateProfileMaintainerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}/maintainers',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Remove a maintainer from the profile. The last remaining maintainer cannot be removed
  */
-export const deleteProfileMaintainer = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteProfileMaintainerData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteProfileMaintainerResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteProfileMaintainer = <ThrowOnError extends boolean = true>(options: Options<DeleteProfileMaintainerData, ThrowOnError>) => (options.client ?? client).delete<DeleteProfileMaintainerResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}/maintainers/{userId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the tool configuration of the profile for each of its MCP servers
  */
-export const listProfileTools = <ThrowOnError extends boolean = true>(
-  options: Options<ListProfileToolsData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListProfileToolsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listProfileTools = <ThrowOnError extends boolean = true>(options: Options<ListProfileToolsData, ThrowOnError>) => (options.client ?? client).get<ListProfileToolsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}/tools',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Replace the tool configuration that the profile uses for one of its MCP servers. The server must be attached to the profile
  */
-export const updateProfileServerTools = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateProfileServerToolsData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateProfileServerToolsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateProfileServerTools = <ThrowOnError extends boolean = true>(options: Options<UpdateProfileServerToolsData, ThrowOnError>) => (options.client ?? client).put<UpdateProfileServerToolsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/profiles/{profileId}/servers/{serverSlug}/tools',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List the sandboxes the caller can read. Set all=true to also include archived sandboxes
  */
-export const listSandboxes = <ThrowOnError extends boolean = true>(
-  options?: Options<ListSandboxesData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<ListSandboxesResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listSandboxes = <ThrowOnError extends boolean = true>(options?: Options<ListSandboxesData, ThrowOnError>) => (options?.client ?? client).get<ListSandboxesResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/sandboxes',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a new sandbox for the authenticated user. Requires a paid subscription and is limited to 10 concurrent sandboxes per organization
  */
-export const createSandbox = <ThrowOnError extends boolean = true>(
-  options?: Options<CreateSandboxData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<CreateSandboxResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createSandbox = <ThrowOnError extends boolean = true>(options?: Options<CreateSandboxData, ThrowOnError>) => (options?.client ?? client).post<CreateSandboxResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/sandboxes',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Destroy the sandbox, delete its Kubernetes resources, and archive it
  */
-export const deleteSandbox = <ThrowOnError extends boolean = true>(options: Options<DeleteSandboxData, ThrowOnError>) =>
-  (options.client ?? client).delete<DeleteSandboxResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteSandbox = <ThrowOnError extends boolean = true>(options: Options<DeleteSandboxData, ThrowOnError>) => (options.client ?? client).delete<DeleteSandboxResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/sandboxes/{sandboxId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get a single sandbox by ID
  */
-export const getSandbox = <ThrowOnError extends boolean = true>(options: Options<GetSandboxData, ThrowOnError>) =>
-  (options.client ?? client).get<GetSandboxResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getSandbox = <ThrowOnError extends boolean = true>(options: Options<GetSandboxData, ThrowOnError>) => (options.client ?? client).get<GetSandboxResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/sandboxes/{sandboxId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Issue a short-lived token that opens an SSH session to the sandbox through the SSH proxy. The token expires after 5 minutes
  */
-export const createSandboxSshSession = <ThrowOnError extends boolean = true>(
-  options: Options<CreateSandboxSshSessionData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateSandboxSshSessionResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createSandboxSshSession = <ThrowOnError extends boolean = true>(options: Options<CreateSandboxSshSessionData, ThrowOnError>) => (options.client ?? client).post<CreateSandboxSshSessionResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/sandboxes/{sandboxId}/ssh-session',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Run a command in the sandbox and stream the output back as NDJSON. The command and its result are written to the sandbox audit log
  */
-export const execSandbox = <ThrowOnError extends boolean = true>(options: Options<ExecSandboxData, ThrowOnError>) =>
-  (options.client ?? client).post<ExecSandboxResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const execSandbox = <ThrowOnError extends boolean = true>(options: Options<ExecSandboxData, ThrowOnError>) => (options.client ?? client).post<ExecSandboxResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/sandboxes/{sandboxId}/exec',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Write the raw request body to the given file path in the sandbox
  */
-export const createSandboxWriteFile = <ThrowOnError extends boolean = true>(
-  options: Options<CreateSandboxWriteFileData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateSandboxWriteFileResponses, unknown, ThrowOnError>({
+export const createSandboxWriteFile = <ThrowOnError extends boolean = true>(options: Options<CreateSandboxWriteFileData, ThrowOnError>) => (options.client ?? client).post<CreateSandboxWriteFileResponses, unknown, ThrowOnError>({
     bodySerializer: null,
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/sandboxes/{sandboxId}/write-file',
     ...options,
     headers: {
-      'Content-Type': 'application/octet-stream',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/octet-stream',
+        ...options.headers
+    }
+});
 
 /**
  * Read the file at the given path in the sandbox and stream its content back
  */
-export const createSandboxReadFile = <ThrowOnError extends boolean = true>(
-  options: Options<CreateSandboxReadFileData, ThrowOnError>
-) =>
-  (options.client ?? client).post<CreateSandboxReadFileResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createSandboxReadFile = <ThrowOnError extends boolean = true>(options: Options<CreateSandboxReadFileData, ThrowOnError>) => (options.client ?? client).post<CreateSandboxReadFileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/sandboxes/{sandboxId}/read-file',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the audit log entries of the sandbox, paginated and optionally filtered by date range
  */
-export const listSandboxAuditLogs = <ThrowOnError extends boolean = true>(
-  options: Options<ListSandboxAuditLogsData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListSandboxAuditLogsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listSandboxAuditLogs = <ThrowOnError extends boolean = true>(options: Options<ListSandboxAuditLogsData, ThrowOnError>) => (options.client ?? client).get<ListSandboxAuditLogsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/sandboxes/{sandboxId}/audit-logs',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get a single audit log entry of the sandbox by ID
  */
-export const getSandboxAuditLog = <ThrowOnError extends boolean = true>(
-  options: Options<GetSandboxAuditLogData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetSandboxAuditLogResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getSandboxAuditLog = <ThrowOnError extends boolean = true>(options: Options<GetSandboxAuditLogData, ThrowOnError>) => (options.client ?? client).get<GetSandboxAuditLogResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/sandboxes/{sandboxId}/audit-logs/{id}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Send an email verification code
  */
-export const sendEmailVerificationCode = <ThrowOnError extends boolean = true>(
-  options?: Options<SendEmailVerificationCodeData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<SendEmailVerificationCodeResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const sendEmailVerificationCode = <ThrowOnError extends boolean = true>(options?: Options<SendEmailVerificationCodeData, ThrowOnError>) => (options?.client ?? client).post<SendEmailVerificationCodeResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/email-verification/send-code',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * List the SCIM tokens of the organization. Requires permission to manage the organization
  */
-export const listScimConfigTokens = <ThrowOnError extends boolean = true>(
-  options?: Options<ListScimConfigTokensData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<ListScimConfigTokensResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listScimConfigTokens = <ThrowOnError extends boolean = true>(options?: Options<ListScimConfigTokensData, ThrowOnError>) => (options?.client ?? client).get<ListScimConfigTokensResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/scim-config/tokens',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a SCIM token for identity provider provisioning. The raw token is returned in the response. Requires permission to manage the organization
  */
-export const createScimConfigToken = <ThrowOnError extends boolean = true>(
-  options?: Options<CreateScimConfigTokenData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<CreateScimConfigTokenResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createScimConfigToken = <ThrowOnError extends boolean = true>(options?: Options<CreateScimConfigTokenData, ThrowOnError>) => (options?.client ?? client).post<CreateScimConfigTokenResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/scim-config/tokens',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Reveal the raw secret of a SCIM token. Requires permission to manage the organization
  */
-export const getScimConfigTokenSecret = <ThrowOnError extends boolean = true>(
-  options: Options<GetScimConfigTokenSecretData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetScimConfigTokenSecretResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getScimConfigTokenSecret = <ThrowOnError extends boolean = true>(options: Options<GetScimConfigTokenSecretData, ThrowOnError>) => (options.client ?? client).get<GetScimConfigTokenSecretResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/scim-config/tokens/{tokenId}/secret',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Delete a SCIM token and revoke access for every client that uses it. Requires permission to manage the organization
  */
-export const deleteScimConfigToken = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteScimConfigTokenData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteScimConfigTokenResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteScimConfigToken = <ThrowOnError extends boolean = true>(options: Options<DeleteScimConfigTokenData, ThrowOnError>) => (options.client ?? client).delete<DeleteScimConfigTokenResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/scim-config/tokens/{tokenId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the OAuth clients the signed-in user has authorized
  */
-export const listConnectedClients = <ThrowOnError extends boolean = true>(
-  options?: Options<ListConnectedClientsData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<ListConnectedClientsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listConnectedClients = <ThrowOnError extends boolean = true>(options?: Options<ListConnectedClientsData, ThrowOnError>) => (options?.client ?? client).get<ListConnectedClientsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/connected-clients',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Disconnect a client, revoking its grants and every token issued under them
  */
-export const deleteConnectedClient = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteConnectedClientData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteConnectedClientResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteConnectedClient = <ThrowOnError extends boolean = true>(options: Options<DeleteConnectedClientData, ThrowOnError>) => (options.client ?? client).delete<DeleteConnectedClientResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/connected-clients/{clientId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update the name or the attached profiles of a connected client
  */
-export const patchConnectedClient = <ThrowOnError extends boolean = true>(
-  options: Options<PatchConnectedClientData, ThrowOnError>
-) =>
-  (options.client ?? client).patch<PatchConnectedClientResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const patchConnectedClient = <ThrowOnError extends boolean = true>(options: Options<PatchConnectedClientData, ThrowOnError>) => (options.client ?? client).patch<PatchConnectedClientResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/connected-clients/{clientId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List the artifacts the caller can read: their own, the ones shared with them or one of their teams, and the ones shared with the organization
  */
-export const listArtifacts = <ThrowOnError extends boolean = true>(
-  options?: Options<ListArtifactsData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<ListArtifactsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listArtifacts = <ThrowOnError extends boolean = true>(options?: Options<ListArtifactsData, ThrowOnError>) => (options?.client ?? client).get<ListArtifactsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/artifacts',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create an artifact from a Markdown or HTML document and return its viewer URL
  */
-export const createArtifact = <ThrowOnError extends boolean = true>(
-  options?: Options<CreateArtifactData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<CreateArtifactResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createArtifact = <ThrowOnError extends boolean = true>(options?: Options<CreateArtifactData, ThrowOnError>) => (options?.client ?? client).post<CreateArtifactResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/artifacts',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Delete an artifact with all of its versions and stored content
  */
-export const deleteArtifact = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteArtifactData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteArtifactResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteArtifact = <ThrowOnError extends boolean = true>(options: Options<DeleteArtifactData, ThrowOnError>) => (options.client ?? client).delete<DeleteArtifactResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/artifacts/{artifactId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get an artifact with its version history and a frame URL for the requested or current version, honoring its visibility for anonymous callers
  */
-export const getArtifact = <ThrowOnError extends boolean = true>(options: Options<GetArtifactData, ThrowOnError>) =>
-  (options.client ?? client).get<GetArtifactResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getArtifact = <ThrowOnError extends boolean = true>(options: Options<GetArtifactData, ThrowOnError>) => (options.client ?? client).get<GetArtifactResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/artifacts/{artifactId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Change the title, visibility or theme of an artifact without touching its content
  */
-export const patchArtifact = <ThrowOnError extends boolean = true>(options: Options<PatchArtifactData, ThrowOnError>) =>
-  (options.client ?? client).patch<PatchArtifactResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const patchArtifact = <ThrowOnError extends boolean = true>(options: Options<PatchArtifactData, ThrowOnError>) => (options.client ?? client).patch<PatchArtifactResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/artifacts/{artifactId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Update an artifact in place, storing new Markdown or HTML as a new version behind the same URL, or change its title or theme
  */
-export const updateArtifact = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateArtifactData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateArtifactResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateArtifact = <ThrowOnError extends boolean = true>(options: Options<UpdateArtifactData, ThrowOnError>) => (options.client ?? client).put<UpdateArtifactResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/artifacts/{artifactId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Get the served HTML of an artifact version as JSON, rendered and themed, plus the Markdown source when there is one
  */
-export const getArtifactContent = <ThrowOnError extends boolean = true>(
-  options: Options<GetArtifactContentData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetArtifactContentResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getArtifactContent = <ThrowOnError extends boolean = true>(options: Options<GetArtifactContentData, ThrowOnError>) => (options.client ?? client).get<GetArtifactContentResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/artifacts/{artifactId}/content',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the users and teams an artifact is shared with
  */
-export const listArtifactShares = <ThrowOnError extends boolean = true>(
-  options: Options<ListArtifactSharesData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListArtifactSharesResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listArtifactShares = <ThrowOnError extends boolean = true>(options: Options<ListArtifactSharesData, ThrowOnError>) => (options.client ?? client).get<ListArtifactSharesResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/artifacts/{artifactId}/shares',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Stop sharing an artifact with a user or a team and return who it is still shared with
  */
-export const unshareArtifact = <ThrowOnError extends boolean = true>(
-  options: Options<UnshareArtifactData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<UnshareArtifactResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const unshareArtifact = <ThrowOnError extends boolean = true>(options: Options<UnshareArtifactData, ThrowOnError>) => (options.client ?? client).delete<UnshareArtifactResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/artifacts/{artifactId}/shares/{memberType}/{memberId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Share an artifact with a user or a team, giving them read access whatever its visibility, and return who it is shared with
  */
-export const shareArtifact = <ThrowOnError extends boolean = true>(options: Options<ShareArtifactData, ThrowOnError>) =>
-  (options.client ?? client).put<ShareArtifactResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const shareArtifact = <ThrowOnError extends boolean = true>(options: Options<ShareArtifactData, ThrowOnError>) => (options.client ?? client).put<ShareArtifactResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/artifacts/{artifactId}/shares/{memberType}/{memberId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * List the skills the caller can read and the collections they can see, optionally narrowed to one collection or to a text in the name or description
  */
-export const listSkills = <ThrowOnError extends boolean = true>(options?: Options<ListSkillsData, ThrowOnError>) =>
-  (options?.client ?? client).get<ListSkillsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listSkills = <ThrowOnError extends boolean = true>(options?: Options<ListSkillsData, ThrowOnError>) => (options?.client ?? client).get<ListSkillsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skills',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a skill from a SKILL.md document, or from a name, a one-line description of when to use it and Markdown instructions, at root or in a collection
  */
-export const createSkill = <ThrowOnError extends boolean = true>(options?: Options<CreateSkillData, ThrowOnError>) =>
-  (options?.client ?? client).post<CreateSkillResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createSkill = <ThrowOnError extends boolean = true>(options?: Options<CreateSkillData, ThrowOnError>) => (options?.client ?? client).post<CreateSkillResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skills',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Delete a skill and its shares
  */
-export const deleteSkill = <ThrowOnError extends boolean = true>(options: Options<DeleteSkillData, ThrowOnError>) =>
-  (options.client ?? client).delete<DeleteSkillResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteSkill = <ThrowOnError extends boolean = true>(options: Options<DeleteSkillData, ThrowOnError>) => (options.client ?? client).delete<DeleteSkillResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skills/{skillId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get a skill with its Markdown instructions, also rendered as one SKILL.md document
  */
-export const getSkill = <ThrowOnError extends boolean = true>(options: Options<GetSkillData, ThrowOnError>) =>
-  (options.client ?? client).get<GetSkillResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getSkill = <ThrowOnError extends boolean = true>(options: Options<GetSkillData, ThrowOnError>) => (options.client ?? client).get<GetSkillResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skills/{skillId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Update a skill from a SKILL.md document, or change its name, description, instructions, visibility or collection
  */
-export const updateSkill = <ThrowOnError extends boolean = true>(options: Options<UpdateSkillData, ThrowOnError>) =>
-  (options.client ?? client).put<UpdateSkillResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateSkill = <ThrowOnError extends boolean = true>(options: Options<UpdateSkillData, ThrowOnError>) => (options.client ?? client).put<UpdateSkillResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skills/{skillId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List the users and teams a skill is shared with, and who has access through its collection
  */
-export const listSkillShares = <ThrowOnError extends boolean = true>(
-  options: Options<ListSkillSharesData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListSkillSharesResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listSkillShares = <ThrowOnError extends boolean = true>(options: Options<ListSkillSharesData, ThrowOnError>) => (options.client ?? client).get<ListSkillSharesResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skills/{skillId}/shares',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Stop sharing a skill with a user or a team and return who it is still shared with
  */
-export const unshareSkill = <ThrowOnError extends boolean = true>(options: Options<UnshareSkillData, ThrowOnError>) =>
-  (options.client ?? client).delete<UnshareSkillResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const unshareSkill = <ThrowOnError extends boolean = true>(options: Options<UnshareSkillData, ThrowOnError>) => (options.client ?? client).delete<UnshareSkillResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skills/{skillId}/shares/{memberType}/{memberId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Share a skill with a user or a team as reader or maintainer, whatever its visibility, and return who it is shared with
  */
-export const shareSkill = <ThrowOnError extends boolean = true>(options: Options<ShareSkillData, ThrowOnError>) =>
-  (options.client ?? client).put<ShareSkillResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const shareSkill = <ThrowOnError extends boolean = true>(options: Options<ShareSkillData, ThrowOnError>) => (options.client ?? client).put<ShareSkillResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skills/{skillId}/shares/{memberType}/{memberId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List the skill collections the caller can see, each with how many of its skills the caller can read
  */
-export const listSkillCollections = <ThrowOnError extends boolean = true>(
-  options?: Options<ListSkillCollectionsData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<ListSkillCollectionsResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listSkillCollections = <ThrowOnError extends boolean = true>(options?: Options<ListSkillCollectionsData, ThrowOnError>) => (options?.client ?? client).get<ListSkillCollectionsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skill-collections',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Create a skill collection from a name, an optional one-line description and a general access
  */
-export const createSkillCollection = <ThrowOnError extends boolean = true>(
-  options?: Options<CreateSkillCollectionData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<CreateSkillCollectionResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const createSkillCollection = <ThrowOnError extends boolean = true>(options?: Options<CreateSkillCollectionData, ThrowOnError>) => (options?.client ?? client).post<CreateSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skill-collections',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Delete a skill collection and move the skills in it to root
  */
-export const deleteSkillCollection = <ThrowOnError extends boolean = true>(
-  options: Options<DeleteSkillCollectionData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<DeleteSkillCollectionResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const deleteSkillCollection = <ThrowOnError extends boolean = true>(options: Options<DeleteSkillCollectionData, ThrowOnError>) => (options.client ?? client).delete<DeleteSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skill-collections/{collectionId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Get a skill collection
  */
-export const getSkillCollection = <ThrowOnError extends boolean = true>(
-  options: Options<GetSkillCollectionData, ThrowOnError>
-) =>
-  (options.client ?? client).get<GetSkillCollectionResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const getSkillCollection = <ThrowOnError extends boolean = true>(options: Options<GetSkillCollectionData, ThrowOnError>) => (options.client ?? client).get<GetSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skill-collections/{collectionId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Rename a skill collection, or change its description or general access
  */
-export const updateSkillCollection = <ThrowOnError extends boolean = true>(
-  options: Options<UpdateSkillCollectionData, ThrowOnError>
-) =>
-  (options.client ?? client).put<UpdateSkillCollectionResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const updateSkillCollection = <ThrowOnError extends boolean = true>(options: Options<UpdateSkillCollectionData, ThrowOnError>) => (options.client ?? client).put<UpdateSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skill-collections/{collectionId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List the users and teams a skill collection is shared with and what each grant gives
  */
-export const listSkillCollectionShares = <ThrowOnError extends boolean = true>(
-  options: Options<ListSkillCollectionSharesData, ThrowOnError>
-) =>
-  (options.client ?? client).get<ListSkillCollectionSharesResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const listSkillCollectionShares = <ThrowOnError extends boolean = true>(options: Options<ListSkillCollectionSharesData, ThrowOnError>) => (options.client ?? client).get<ListSkillCollectionSharesResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skill-collections/{collectionId}/shares',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Stop sharing a skill collection with a user or a team and return who it is still shared with
  */
-export const unshareSkillCollection = <ThrowOnError extends boolean = true>(
-  options: Options<UnshareSkillCollectionData, ThrowOnError>
-) =>
-  (options.client ?? client).delete<UnshareSkillCollectionResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const unshareSkillCollection = <ThrowOnError extends boolean = true>(options: Options<UnshareSkillCollectionData, ThrowOnError>) => (options.client ?? client).delete<UnshareSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skill-collections/{collectionId}/shares/{memberType}/{memberId}',
-    ...options,
-  });
+    ...options
+});
 
 /**
  * Share a skill collection with a user or a team as reader or maintainer, which also opens every skill in it, and return who it is shared with
  */
-export const shareSkillCollection = <ThrowOnError extends boolean = true>(
-  options: Options<ShareSkillCollectionData, ThrowOnError>
-) =>
-  (options.client ?? client).put<ShareSkillCollectionResponses, unknown, ThrowOnError>({
-    security: [
-      { scheme: 'bearer', type: 'http' },
-      { scheme: 'bearer', type: 'http' },
-    ],
+export const shareSkillCollection = <ThrowOnError extends boolean = true>(options: Options<ShareSkillCollectionData, ThrowOnError>) => (options.client ?? client).put<ShareSkillCollectionResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
     url: '/skill-collections/{collectionId}/shares/{memberType}/{memberId}',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
