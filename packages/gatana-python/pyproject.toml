@@ -1,6 +1,6 @@
 [project]
 name = "gatana-client"
-version = "2.0.2"
+version = "2.0.3"
 description = "A client library for accessing Gatana"
 requires-python = ">=3.10"
 dependencies = [
