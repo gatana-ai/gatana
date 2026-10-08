@@ -31,13 +31,17 @@ fmt:
 fmt-check:
     pnpm exec prettier --check .
 
-# Release the SDK with change detection
+# Release every package with changes since its last release; --dry-run stops after the summary
 release *ARGS:
     ./scripts/release.sh {{ARGS}}
 
-# Release the SDK even without changes
+# Release, also offering the packages without changes
 release-force *ARGS:
     ./scripts/release.sh --force {{ARGS}}
+
+# Release only the JS SDK (gatana-sdk)
+js-release *ARGS:
+    packages/gatana-js/scripts/release.sh {{ARGS}}
 
 # Dry-run: build and pack the SDK without publishing
 pack:

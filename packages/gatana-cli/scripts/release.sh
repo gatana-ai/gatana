@@ -19,7 +19,7 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-REPO=gatana-ai/gatana-js
+REPO=gatana-ai/gatana
 TAP_REPO=gatana-ai/homebrew-tap
 NPM_SCOPE=@gatana
 # Rust target, npm os, npm cpu. The targets must match the ones scripts/dist.sh builds.
@@ -92,7 +92,7 @@ for platform in "${PLATFORMS[@]}"; do
       name,
       version,
       description: `The gatana CLI binary for ${os} ${cpu}. Install the gatana package, not this one.`,
-      repository: { type: "git", url: "git+https://github.com/gatana-ai/gatana-js.git", directory: "packages/gatana-cli" },
+      repository: { type: "git", url: "git+https://github.com/gatana-ai/gatana.git", directory: "packages/gatana-cli" },
       license: "MIT",
       os: [os],
       cpu: [cpu],

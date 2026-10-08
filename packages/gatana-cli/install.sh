@@ -1,7 +1,7 @@
 #!/bin/sh
 # Installs the gatana CLI from its GitHub release:
 #
-#   curl -fsSL https://github.com/gatana-ai/gatana-js/releases/latest/download/install.sh | sh
+#   curl -fsSL https://github.com/gatana-ai/gatana/releases/latest/download/install.sh | sh
 #
 # Environment:
 #   GATANA_VERSION       the version to install, e.g. 4.0.0 (default: the latest release)
@@ -12,7 +12,7 @@
 set -eu
 
 main() {
-  repo=https://github.com/gatana-ai/gatana-js
+  repo=https://github.com/gatana-ai/gatana
   dir=${GATANA_INSTALL_DIR:-$HOME/.local/bin}
 
   os=$(uname -s)
