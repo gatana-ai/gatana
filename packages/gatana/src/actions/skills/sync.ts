@@ -267,6 +267,12 @@ export async function syncDirectory(
   return summary(Object.keys(next.skills).length);
 }
 
+/**
+ * What "gatana skills install" and the session-start hooks both run. A folder without a manifest
+ * was never installed into and takes every skill the user can read: that is what the empty manifest
+ * says, so a hook alone sets up a new machine, and the first prompt of the first session already
+ * has the skills. What a folder follows is only ever narrowed by an install with a name.
+ */
 export async function syncTargets(
   api: SkillsApi,
   identity: SkillsIdentity,
@@ -278,27 +284,4 @@ export async function syncTargets(
     summaries.push(await syncDirectory(api, identity, dir, options));
   }
   return summaries;
-}
-
-/**
- * The refresh a session-start hook runs. Only folders an install set up are synced: a folder
- * without a manifest was never installed into, so there is nothing to follow there, and filling it
- * with every readable skill is a decision for "gatana skills install", not for a hook.
- */
-export async function syncInstalled(
-  api: SkillsApi,
-  identity: SkillsIdentity,
-  dirs: string[],
-  options: SyncOptions
-): Promise<{ summaries: SyncSummary[]; notInstalled: string[] }> {
-  const summaries: SyncSummary[] = [];
-  const notInstalled: string[] = [];
-  for (const dir of dirs) {
-    if ((await readManifest(dir)) === undefined) {
-      notInstalled.push(dir);
-      continue;
-    }
-    summaries.push(await syncDirectory(api, identity, dir, options));
-  }
-  return { summaries, notInstalled };
 }

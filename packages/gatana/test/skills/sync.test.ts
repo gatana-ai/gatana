@@ -4,10 +4,10 @@ import { mkdir, mkdtemp, readdir, readFile, stat, symlink, writeFile } from 'fs/
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { FakeSkillsApi } from './fakeApi.js';
-import { syncDirectory, syncInstalled } from '../../src/actions/skills/sync.js';
+import { syncDirectory, syncTargets } from '../../src/actions/skills/sync.js';
 import { readManifest } from '../../src/actions/skills/manifest.js';
 import { parseSkillMd } from '../../src/actions/skills/frontmatter.js';
-import { collapseTargets, prepareTargets } from '../../src/actions/skills/targets.js';
+import { prepareTargets } from '../../src/actions/skills/targets.js';
 
 const identity = { orgId: 'acme', baseUrl: 'https://acme.example' };
 const defaults = { dryRun: false, prune: true, force: false };
@@ -273,23 +273,23 @@ test('a single skill can be followed next to a collection; a rename is followed,
   assert.equal((await resolveSubscription(api, 'release', 'skill')).kind, 'skill');
 });
 
-test('sync refreshes only folders an install set up; a folder without a manifest is left alone', async () => {
+test('sync sets up a folder that was never installed into: it takes every readable skill', async () => {
   const api = new FakeSkillsApi();
   api.seed({ name: 'deploy', content: 'D\n' });
   const installed = await tmp();
-  const untouched = await tmp();
-  const missing = join(untouched, 'never-made');
+  const fresh = await tmp();
+  const missing = join(fresh, 'never-made');
   await syncDirectory(api, identity, installed, defaults);
 
-  const dirs = await collapseTargets([installed, untouched, missing]);
+  // The hook path: the same targets as install, nothing special for a first run.
+  const dirs = await prepareTargets([installed, fresh, missing]);
   assert.equal(dirs.length, 3);
-  const { summaries, notInstalled } = await syncInstalled(api, identity, dirs, defaults);
-  assert.equal(summaries.length, 1);
-  assert.equal(summaries[0].dir, dirs[0]);
+  const summaries = await syncTargets(api, identity, dirs, defaults);
+  assert.equal(summaries.length, 3);
   assert.equal(summaries[0].skipped, 1);
-  assert.equal(notInstalled.length, 2);
-  assert.ok(notInstalled.includes(missing));
-  assert.equal(await exists(join(untouched, 'deploy')), false);
-  assert.equal(await exists(join(untouched, '.gatana-skills.json')), false);
-  assert.equal(await exists(missing), false);
+  assert.equal(summaries[1].written, 1);
+  assert.equal(summaries[2].written, 1);
+  assert.equal((await readManifest(fresh))!.subscriptions, null);
+  assert.equal(await exists(join(fresh, 'deploy', 'SKILL.md')), true);
+  assert.equal(await exists(join(missing, 'deploy', 'SKILL.md')), true);
 });

@@ -51,25 +51,3 @@ export async function prepareTargets(dirs: string[]): Promise<string[]> {
   }
   return result;
 }
-
-/**
- * Collapses aliases like prepareTargets, but creates nothing: a folder that does not exist is kept
- * under its given path, so the caller can report it as not installed.
- */
-export async function collapseTargets(dirs: string[]): Promise<string[]> {
-  const seen = new Set<string>();
-  const result: string[] = [];
-  for (const dir of dirs) {
-    let real = dir;
-    try {
-      real = await realpath(dir);
-    } catch {
-      // Not there: nothing to collapse.
-    }
-    if (!seen.has(real)) {
-      seen.add(real);
-      result.push(real);
-    }
-  }
-  return result;
-}

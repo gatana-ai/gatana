@@ -17,15 +17,8 @@ import {
 import { pushSkills, type PushAction, type PushResult } from '../actions/skills/push.js';
 import { getSkillCollectionResource, getSkillResource } from '../actions/skills/resource.js';
 import { describeSubscription, resolveSubscription } from '../actions/skills/subscriptions.js';
-import { syncInstalled, syncTargets, type SyncSummary } from '../actions/skills/sync.js';
-import {
-  collapseTargets,
-  DEFAULT_TARGETS,
-  prepareTargets,
-  presetHelp,
-  PRESETS,
-  resolveTargets,
-} from '../actions/skills/targets.js';
+import { syncTargets, type SyncSummary } from '../actions/skills/sync.js';
+import { DEFAULT_TARGETS, prepareTargets, presetHelp, PRESETS, resolveTargets } from '../actions/skills/targets.js';
 import { isAbsolute } from 'path';
 
 interface InstallCommandOptions {
@@ -79,10 +72,7 @@ function describeSubscriptions(summary: SyncSummary): string {
   return ` (following: ${summary.subscriptions.map(describeSubscription).join(', ')})`;
 }
 
-function reportSummaries(
-  summaries: SyncSummary[],
-  options: { dryRun: boolean; quiet: boolean; notInstalled?: string[] }
-): void {
+function reportSummaries(summaries: SyncSummary[], options: { dryRun: boolean; quiet: boolean }): void {
   for (const summary of summaries) {
     for (const warning of summary.warnings) {
       console.error(`warning: ${warning}`);
@@ -95,9 +85,6 @@ function reportSummaries(
   if (formatExplicit && (format === 'json' || format === 'yaml')) {
     output(summaries.map(({ ops, ...rest }) => ({ ...rest, ops: options.dryRun ? ops : undefined })));
     return;
-  }
-  for (const dir of options.notInstalled ?? []) {
-    console.log(`${dir}: nothing installed here yet; "gatana skills install" sets it up`);
   }
   for (const summary of summaries) {
     if (options.dryRun) {
@@ -257,7 +244,9 @@ export function createSkillsCommand(gatana: Gatana): Command {
 
   cmd.addCommand(
     new Command('sync')
-      .description('Refresh the installed skills: what each folder follows, as the session-start hooks do.')
+      .description(
+        'Refresh the skills in each folder, as the session-start hooks do. A folder nothing was installed into gets every skill you can read.'
+      )
       .argument('[target...]', 'Optional: Directories or preset names. Omit to refresh the default agent folders.')
       .option('--dry-run', 'Show what would change without writing')
       .option('--no-prune', 'Keep skills locally that are removed from Gatana')
@@ -267,14 +256,14 @@ export function createSkillsCommand(gatana: Gatana): Command {
       .action(async (targets: string[], options: SyncCommandOptions) => {
         try {
           const { api, orgId, baseUrl } = resolveSkillsContext(gatana, options.org);
-          const dirs = await collapseTargets(resolveTargets(targets));
+          const dirs = await prepareTargets(resolveTargets(targets));
           const dryRun = Boolean(options.dryRun);
-          const { summaries, notInstalled } = await syncInstalled(api, { orgId, baseUrl }, dirs, {
+          const summaries = await syncTargets(api, { orgId, baseUrl }, dirs, {
             dryRun,
             prune: options.prune,
             force: Boolean(options.force),
           });
-          reportSummaries(summaries, { dryRun, quiet: Boolean(options.quiet), notInstalled });
+          reportSummaries(summaries, { dryRun, quiet: Boolean(options.quiet) });
         } catch (error) {
           outputError(error);
           process.exitCode = 1;
