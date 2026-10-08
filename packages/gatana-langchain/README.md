@@ -1,7 +1,5 @@
 # gatana-langchain
 
-Current version: **v1.0.2**
-
 [![PyPI](https://img.shields.io/pypi/v/gatana-langchain)](https://pypi.org/project/gatana-langchain/)
 [![Python](https://img.shields.io/pypi/pyversions/gatana-langchain)](https://pypi.org/project/gatana-langchain/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -65,7 +63,7 @@ with GatanaSandbox(client=client) as backend:
 # Sandbox is automatically deleted when the `with` block exits.
 ```
 
-See [`gatana-client` configuration docs](../gatana-python/README.md#configuration) for details on environment variables and the `~/.gatana.config` file. You can also pass credentials explicitly:
+See the [`gatana-client` configuration](https://github.com/gatana-ai/gatana/tree/main/packages/gatana-python#configuration) for the environment variables and the `~/.gatana.config` file. You can also pass credentials explicitly:
 
 ```python
 client = GatanaClient(org_id="YOUR_ORG_ID", token="your-gatana-pat")
@@ -120,8 +118,37 @@ with GatanaSandbox(client=client) as backend:
 
 ## Development
 
-This package is part of the [gatana-python](https://github.com/gatana-ai/gatana-langchain-sandbox) monorepo. See the root [CONTRIBUTING.md](../../CONTRIBUTING.md) for setup instructions.
+This package holds the Python dev setup for both Python packages in this repository: the dev
+dependency groups, the ruff, mypy and pytest config, the pre-commit hook and the tests. It installs
+`gatana-client` from `packages/gatana-python` in editable mode. You need
+[uv](https://docs.astral.sh/uv/) and [just](https://github.com/casey/just).
+
+Run these from the repository root:
+
+```bash
+just py-init        # install the dependencies and the pre-commit hook
+just py-install     # install the dependencies only
+just py-lint        # ruff check and format check
+just py-format      # format and fix lint issues
+just py-typecheck   # mypy on gatana_langchain
+just py-test        # pytest
+just py-test-cov    # pytest with a coverage report
+just py-build gatana-langchain   # build the sdist and wheel into dist/
+just py-clean       # remove build artifacts and caches
+```
+
+### Releasing
+
+`just release` in the repository root releases every package with changes, this one included. To
+release only this package:
+
+```bash
+just py-release gatana-langchain patch           # checks, tag and GitHub release
+just py-release gatana-langchain patch publish   # also publish to PyPI
+```
+
+`py-release` runs the lint, type check and tests first. It needs a clean package folder.
 
 ## License
 
-[MIT](../../LICENSE) — Copyright (c) 2026 Gatana
+[MIT](https://github.com/gatana-ai/gatana/blob/main/LICENSE). Copyright (c) 2026 Gatana.

@@ -5,7 +5,7 @@ members = ["crates/gatana-api", "crates/gatana-cli", "crates/gatana-codegen"]
 [workspace.package]
 edition = "2024"
 license = "MIT"
-repository = "https://github.com/gatana-ai/gatana-js"
+repository = "https://github.com/gatana-ai/gatana"
 
 [workspace.dependencies]
 anyhow = "1"

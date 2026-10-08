@@ -26,10 +26,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/gatana-ai/gatana-langchain-sandbox"
-Repository = "https://github.com/gatana-ai/gatana-langchain-sandbox"
-Issues = "https://github.com/gatana-ai/gatana-langchain-sandbox/issues"
-Changelog = "https://github.com/gatana-ai/gatana-langchain-sandbox/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/gatana-ai/gatana/tree/main/packages/gatana-langchain"
+Repository = "https://github.com/gatana-ai/gatana"
+Issues = "https://github.com/gatana-ai/gatana/issues"
+Changelog = "https://github.com/gatana-ai/gatana/releases?q=gatana-langchain"
 
 [build-system]
 requires = ["hatchling"]

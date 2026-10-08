@@ -9,6 +9,12 @@ dependencies = [
     "python-dateutil>=2.8.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/gatana-ai/gatana/tree/main/packages/gatana-python"
+Repository = "https://github.com/gatana-ai/gatana"
+Issues = "https://github.com/gatana-ai/gatana/issues"
+Changelog = "https://github.com/gatana-ai/gatana/releases?q=gatana-client"
+
 [tool.poetry]
 name = "gatana-client"
 version = "0.0.0"

@@ -39,7 +39,7 @@ Options:
 #[command(
     name = "gatana",
     version,
-    about = "CLI tool for Gatana - AI agent management and querying",
+    about = "Gatana CLI",
     help_template = ROOT_HELP,
     propagate_version = true
 )]

@@ -2,13 +2,13 @@
   "name": "gatana-monorepo",
   "private": true,
   "description": "Gatana SDK and CLI monorepo",
-  "homepage": "https://github.com/gatana-ai/gatana-js#readme",
+  "homepage": "https://github.com/gatana-ai/gatana#readme",
   "bugs": {
-    "url": "https://github.com/gatana-ai/gatana-js/issues"
+    "url": "https://github.com/gatana-ai/gatana/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gatana-ai/gatana-js.git"
+    "url": "git+https://github.com/gatana-ai/gatana.git"
   },
   "license": "MIT",
   "type": "module",

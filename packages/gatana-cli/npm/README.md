@@ -16,8 +16,9 @@ Other ways to install it:
 
 ```sh
 brew install gatana-ai/tap/gatana
-curl -fsSL https://github.com/gatana-ai/gatana-js/releases/latest/download/install.sh | sh
+curl -fsSL https://github.com/gatana-ai/gatana/releases/latest/download/install.sh | sh
 ```
 
 Documentation: [docs.gatana.ai](https://docs.gatana.ai) and the
-[README](https://github.com/gatana-ai/gatana-js#readme) of the repository.
+[CLI README](https://github.com/gatana-ai/gatana/tree/main/packages/gatana-cli#readme), which lists
+every command.
