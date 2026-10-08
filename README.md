@@ -28,7 +28,11 @@ This monorepo contains two packages:
 | Package                             | npm                      | Description                                  |
 | ----------------------------------- | ------------------------ | -------------------------------------------- |
 | [`gatana-sdk`](packages/gatana-sdk) | `npm install gatana-sdk` | JavaScript/TypeScript SDK for the Gatana API |
-| [`gatana`](packages/gatana)         | `npm install -g gatana`  | CLI tool for managing Gatana                 |
+| [`gatana`](packages/gatana-cli)     | `npm install -g gatana`  | CLI tool for managing Gatana                 |
+
+The CLI source in this repository is a Rust port (`packages/gatana-cli`) and is not released yet.
+`npm install -g gatana` installs the last TypeScript release (3.4.3), whose source was removed from
+this repository.
 
 For configuration, you can prepare a file at `~/.gatana.config`, see [Config File](#config-file) for details. You can override configuration using environment variables or by passing options directly in the SDK.
 
@@ -501,22 +505,25 @@ import { Gatana2 } from 'gatana-sdk';
 This is a pnpm monorepo. Use [just](https://github.com/casey/just) to run common tasks:
 
 ```bash
-just build          # Build all packages (SDK first, then CLI)
-just build-sdk      # Build only the SDK
-just build-cli      # Build only the CLI
-just dev            # Watch both packages for changes
-just test           # Run all tests
+just build          # Build the SDK
+just dev            # Watch the SDK for changes
+just test           # Run the SDK tests
 just generate       # Regenerate API clients from OpenAPI specs
 just fmt            # Format code with prettier
-just release        # Interactive release with change detection
+just release        # Interactive SDK release with change detection
+just rs-build       # Build the Rust CLI
+just rs-test        # Test, lint and format-check the Rust CLI
+just rs-release     # Release the Rust CLI to GitHub, npm and Homebrew
 ```
+
+See [packages/gatana-cli/README.md](packages/gatana-cli/README.md) for the Rust CLI.
 
 ### Project Structure
 
 ```
 packages/
   gatana-sdk/   # JavaScript/TypeScript SDK (npm: gatana-sdk)
-  gatana/       # CLI tool (npm: gatana)
+  gatana-cli/   # CLI, written in Rust (not released yet)
 scripts/
   release.sh    # Interactive release script
 ```

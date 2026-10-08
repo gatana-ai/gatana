@@ -1,0 +1,29 @@
+#!/bin/sh
+# Starts the gatana binary from the platform package (@gatana/cli-<os>-<cpu>) that npm installed with
+# this one. npm installs only the package whose os and cpu match the machine, so the first match is
+# the right one.
+#
+# A shell script, not Node: the skills hooks run gatana at the start of every agent session, and
+# Node's startup would be added to each of those runs.
+
+self=$0
+case $self in */*) ;; *) self=./$self ;; esac
+# npm links the bin folder to this file through a symlink; the platform package is found from the
+# file's own folder.
+while [ -L "$self" ]; do
+  link=$(readlink "$self")
+  case $link in
+    /*) self=$link ;;
+    *) self=${self%/*}/$link ;;
+  esac
+done
+pkg=${self%/*}/..
+
+# Nested under this package (npm install -g), or next to it (a project's node_modules, pnpm, npx).
+for bin in "$pkg"/node_modules/@gatana/cli-*/bin/gatana "$pkg"/../@gatana/cli-*/bin/gatana; do
+  [ -x "$bin" ] && exec "$bin" "$@"
+done
+
+echo "gatana: the binary for $(uname -s) $(uname -m) is missing. It comes in an optional dependency," >&2
+echo "so reinstall without --omit=optional or --no-optional." >&2
+exit 1

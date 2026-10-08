@@ -1,0 +1,13 @@
+//! The Gatana CLI. `main.rs` parses the command line and hands it to `commands::run`.
+
+pub mod cli;
+pub mod commands;
+pub mod config;
+pub mod context;
+pub mod hosted;
+pub mod oidc;
+pub mod output;
+pub mod skills;
+pub mod sse;
+pub mod util;
+pub mod yaml;
