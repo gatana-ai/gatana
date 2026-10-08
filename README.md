@@ -36,10 +36,15 @@ Each package folder has its own README with usage, examples and development step
 
 ---
 
-## Quick start
+## CLI Quick start
 
 ```bash
 npm install -g gatana
+brew install gatana-ai/tap/gatana
+curl -fsSL https://github.com/gatana-ai/gatana/releases/latest/download/install.sh | sh
+```
+
+```bash
 gatana config login my-org
 gatana get servers
 ```
