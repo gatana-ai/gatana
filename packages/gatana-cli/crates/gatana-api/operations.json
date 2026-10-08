@@ -1,0 +1,53 @@
+{
+  "defaultBaseUrl": "https://hello.gatana.ai",
+  "specs": [
+    {
+      "name": "v1",
+      "path": "/api/v1/openapi.json",
+      "operations": [
+        "getAuthMe",
+        "getMcpServer",
+        "createMcpServer",
+        "deleteMcpServer",
+        "startMcpServer",
+        "stopMcpServer",
+        "refreshTools",
+        "listTools",
+        "listMcpServerTools",
+        "getMcpServerTool",
+        "callMcpServerTool",
+        "getDeploymentsStatus",
+        "listDeploymentsLogs",
+        "getMcpServerCredentialsToken",
+        "getMcpServerCredentialsAuthorizeUrl",
+        "updateMcpServerCredentialsUser",
+        "updateMcpServerCredentialsServer",
+        "deleteMcpServerCredential",
+        "listAuditLogs",
+        "listSandboxes",
+        "getSandbox",
+        "createSandbox",
+        "deleteSandbox",
+        "createSandboxSshSession",
+        "listSkills",
+        "getSkill",
+        "createSkill",
+        "updateSkill",
+        "listSkillCollections"
+      ],
+      "schemas": ["DeploymentLogPayload"]
+    },
+    {
+      "name": "v2",
+      "path": "/api/v2/openapi.json",
+      "operations": [
+        "listServersV2",
+        "getServerV2",
+        "createServerV2",
+        "patchServerV2",
+        "listCredentialsV2",
+        "getCredentialSecretV2"
+      ]
+    }
+  ]
+}

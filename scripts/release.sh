@@ -4,13 +4,13 @@ set -e
 # ──────────────────────────────────────────────────────────────────────
 # Gatana Release Script
 #
-# Checks the npm login, detects which packages have changed, asks how to
-# bump their versions, then builds, publishes to npm, and creates git tags.
+# Checks the npm login, detects whether gatana-sdk has changed, asks how to
+# bump its version, then builds, publishes to npm, and creates a git tag.
+# The Rust CLI (packages/gatana-cli) is not released by this script.
 #
 # Usage:
 #   ./scripts/release.sh                       Interactive mode (recommended)
 #   ./scripts/release.sh --sdk-bump patch       Non-interactive SDK bump
-#   ./scripts/release.sh --cli-bump minor       Non-interactive CLI bump
 #   ./scripts/release.sh --force                Release even without changes
 # ──────────────────────────────────────────────────────────────────────
 
@@ -24,7 +24,6 @@ RESET="\033[0m"
 
 FORCE=false
 SDK_BUMP=""
-CLI_BUMP=""
 
 usage() {
   echo ""
@@ -35,10 +34,9 @@ usage() {
   echo "Options:"
   echo "  --force                Release even if no changes detected"
   echo "  --sdk-bump <level>     Set gatana-sdk bump level: patch, minor, or major"
-  echo "  --cli-bump <level>     Set gatana CLI bump level: patch, minor, or major"
   echo "  -h, --help             Show this help"
   echo ""
-  echo "If bump levels are not specified, the script will ask interactively."
+  echo "If the bump level is not specified, the script will ask interactively."
   echo ""
   exit 1
 }
@@ -47,18 +45,15 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --force) FORCE=true; shift ;;
     --sdk-bump) SDK_BUMP="$2"; shift 2 ;;
-    --cli-bump) CLI_BUMP="$2"; shift 2 ;;
     -h|--help) usage ;;
     *) echo -e "${RED}Unknown option: $1${RESET}"; usage ;;
   esac
 done
 
-for b in "$SDK_BUMP" "$CLI_BUMP"; do
-  if [[ -n "$b" && "$b" != "patch" && "$b" != "minor" && "$b" != "major" ]]; then
-    echo -e "${RED}Error: bump level must be patch, minor, or major (got '$b')${RESET}"
-    exit 1
-  fi
-done
+if [[ -n "$SDK_BUMP" && "$SDK_BUMP" != "patch" && "$SDK_BUMP" != "minor" && "$SDK_BUMP" != "major" ]]; then
+  echo -e "${RED}Error: bump level must be patch, minor, or major (got '$SDK_BUMP')${RESET}"
+  exit 1
+fi
 
 # ── Helpers ───────────────────────────────────────────────────────────
 
@@ -103,11 +98,7 @@ ask_bump() {
     current_version=$(version_from_tag "$current_tag")
   else
     # Read from package.json
-    if [[ "$pkg" == "gatana-sdk" ]]; then
-      current_version=$(node -p "require('./packages/gatana-sdk/package.json').version")
-    else
-      current_version=$(node -p "require('./packages/gatana/package.json').version")
-    fi
+    current_version=$(node -p "require('./packages/${pkg}/package.json').version")
   fi
 
   echo "" >&2
@@ -139,22 +130,14 @@ confirm_release() {
   echo -e "${BOLD}  Release Summary${RESET}"
   echo -e "${BOLD}────────────────────────────────────────${RESET}"
 
-  if [[ "$RELEASE_SDK" == true ]]; then
-    local sdk_cur sdk_next
-    sdk_cur=$(node -p "require('./packages/gatana-sdk/package.json').version")
-    sdk_next=$(next_version "$sdk_cur" "$SDK_BUMP")
-    echo -e "  ${CYAN}gatana-sdk${RESET}  ${sdk_cur} → ${GREEN}${sdk_next}${RESET}  (${SDK_BUMP})"
-  fi
-  if [[ "$RELEASE_CLI" == true ]]; then
-    local cli_cur cli_next
-    cli_cur=$(node -p "require('./packages/gatana/package.json').version")
-    cli_next=$(next_version "$cli_cur" "$CLI_BUMP")
-    echo -e "  ${CYAN}gatana${RESET}      ${cli_cur} → ${GREEN}${cli_next}${RESET}  (${CLI_BUMP})"
-  fi
+  local sdk_cur sdk_next
+  sdk_cur=$(node -p "require('./packages/gatana-sdk/package.json').version")
+  sdk_next=$(next_version "$sdk_cur" "$SDK_BUMP")
+  echo -e "  ${CYAN}gatana-sdk${RESET}  ${sdk_cur} → ${GREEN}${sdk_next}${RESET}  (${SDK_BUMP})"
 
   echo -e "${BOLD}────────────────────────────────────────${RESET}"
   echo ""
-  echo "  This will: bump versions, build, publish to npm, commit & tag."
+  echo "  This will: bump the version, build, publish to npm, commit & tag."
   echo ""
   read -rp "  Proceed? [Y/n]: " confirm
   case "$confirm" in
@@ -192,51 +175,22 @@ echo ""
 # ── Detect changes ────────────────────────────────────────────────────
 
 SDK_TAG=$(latest_tag "gatana-sdk")
-CLI_TAG=$(latest_tag "gatana")
-
-SDK_CHANGED=false
-CLI_CHANGED=false
 
 if has_changes "$SDK_TAG" "packages/gatana-sdk"; then
-  SDK_CHANGED=true
   echo -e "  ${GREEN}●${RESET} ${BOLD}gatana-sdk${RESET}  has changes since ${DIM}${SDK_TAG:-first release}${RESET}"
+elif [[ "$FORCE" == true ]]; then
+  echo -e "  ${DIM}○ gatana-sdk  no changes since ${SDK_TAG} (--force)${RESET}"
 else
   echo -e "  ${DIM}○ gatana-sdk  no changes since ${SDK_TAG}${RESET}"
+  echo ""
+  echo "Nothing to release."
+  exit 0
 fi
 
-if has_changes "$CLI_TAG" "packages/gatana"; then
-  CLI_CHANGED=true
-  echo -e "  ${GREEN}●${RESET} ${BOLD}gatana${RESET}      has changes since ${DIM}${CLI_TAG:-first release}${RESET}"
-else
-  echo -e "  ${DIM}○ gatana      no changes since ${CLI_TAG}${RESET}"
+if [[ -z "$SDK_BUMP" ]]; then
+  SDK_BUMP=$(ask_bump "gatana-sdk" "$SDK_TAG")
 fi
-
-# ── Determine what to release ─────────────────────────────────────────
-
-RELEASE_SDK=false
-RELEASE_CLI=false
-
-if [[ "$SDK_CHANGED" == true || "$FORCE" == true ]]; then
-  RELEASE_SDK=true
-  if [[ -z "$SDK_BUMP" ]]; then
-    SDK_BUMP=$(ask_bump "gatana-sdk" "$SDK_TAG")
-  fi
-  if [[ "$SDK_BUMP" == "skip" ]]; then
-    RELEASE_SDK=false
-  fi
-fi
-
-if [[ "$CLI_CHANGED" == true || "$FORCE" == true ]]; then
-  RELEASE_CLI=true
-  if [[ -z "$CLI_BUMP" ]]; then
-    CLI_BUMP=$(ask_bump "gatana" "$CLI_TAG")
-  fi
-  if [[ "$CLI_BUMP" == "skip" ]]; then
-    RELEASE_CLI=false
-  fi
-fi
-
-if [[ "$RELEASE_SDK" == false && "$RELEASE_CLI" == false ]]; then
+if [[ "$SDK_BUMP" == "skip" ]]; then
   echo ""
   echo "Nothing to release."
   exit 0
@@ -246,68 +200,31 @@ fi
 
 confirm_release
 
-# ── Bump versions ─────────────────────────────────────────────────────
+# ── Bump version ──────────────────────────────────────────────────────
 
-if [[ "$RELEASE_SDK" == true ]]; then
-  step "Bumping gatana-sdk version (${SDK_BUMP})..."
-  pnpm --filter gatana-sdk exec pnpm version "$SDK_BUMP" --no-git-tag-version --no-git-checks
-fi
-
-if [[ "$RELEASE_CLI" == true ]]; then
-  step "Bumping gatana version (${CLI_BUMP})..."
-  pnpm --filter gatana exec pnpm version "$CLI_BUMP" --no-git-tag-version --no-git-checks
-fi
+step "Bumping gatana-sdk version (${SDK_BUMP})..."
+pnpm --filter gatana-sdk exec pnpm version "$SDK_BUMP" --no-git-tag-version --no-git-checks
 
 SDK_VERSION=$(node -p "require('./packages/gatana-sdk/package.json').version")
-CLI_VERSION=$(node -p "require('./packages/gatana/package.json').version")
+TAG="gatana-sdk@$SDK_VERSION"
 
 # ── Build ─────────────────────────────────────────────────────────────
 
-if [[ "$RELEASE_SDK" == true ]]; then
-  step "Building gatana-sdk..."
-  pnpm --filter gatana-sdk build
-fi
-if [[ "$RELEASE_CLI" == true ]]; then
-  step "Building gatana..."
-  pnpm --filter gatana build
-fi
+step "Building gatana-sdk..."
+pnpm --filter gatana-sdk build
 
 # ── Publish ───────────────────────────────────────────────────────────
 
-if [[ "$RELEASE_SDK" == true ]]; then
-  step "Publishing gatana-sdk@${SDK_VERSION} to npm..."
-  pnpm --filter gatana-sdk publish --access public --no-git-checks
-fi
-if [[ "$RELEASE_CLI" == true ]]; then
-  step "Publishing gatana@${CLI_VERSION} to npm..."
-  pnpm --filter gatana publish --access public --no-git-checks
-fi
+step "Publishing ${TAG} to npm..."
+pnpm --filter gatana-sdk publish --access public --no-git-checks
 
 # ── Git commit & tag ──────────────────────────────────────────────────
 
-step "Creating git commit and tags..."
+step "Creating git commit and tag..."
 
-FILES_TO_ADD=()
-TAGS=()
-MSG_PARTS=()
-
-if [[ "$RELEASE_SDK" == true ]]; then
-  FILES_TO_ADD+=(packages/gatana-sdk/package.json)
-  TAGS+=("gatana-sdk@$SDK_VERSION")
-  MSG_PARTS+=("gatana-sdk@$SDK_VERSION")
-fi
-if [[ "$RELEASE_CLI" == true ]]; then
-  FILES_TO_ADD+=(packages/gatana/package.json)
-  TAGS+=("gatana@$CLI_VERSION")
-  MSG_PARTS+=("gatana@$CLI_VERSION")
-fi
-
-git add "${FILES_TO_ADD[@]}"
-git commit -S -m "release: ${MSG_PARTS[*]}"
-
-for tag in "${TAGS[@]}"; do
-  git tag -s "$tag" -m "Release ${tag}"
-done
+git add packages/gatana-sdk/package.json
+git commit -S -m "release: ${TAG}"
+git tag -s "$TAG" -m "Release ${TAG}"
 
 # ── Push ──────────────────────────────────────────────────────────────
 
@@ -315,50 +232,28 @@ step "Pushing to remote..."
 git push
 git push --tags
 
-# ── GitHub Releases ───────────────────────────────────────────────────
+# ── GitHub Release ────────────────────────────────────────────────────
 
 if ! command -v gh &>/dev/null; then
   echo ""
   echo -e "${YELLOW}Warning: 'gh' CLI not found — skipping GitHub release creation.${RESET}"
   echo -e "${DIM}  Install it with: brew install gh${RESET}"
 else
-  step "Creating GitHub releases..."
+  step "Creating GitHub release..."
 
-  generate_notes() {
-    local tag="$1"
-    local prev_tag="$2"
-    local pkg_dir="$3"
-
-    if [[ -n "$prev_tag" ]]; then
-      # Get commits between the two tags scoped to the package directory
-      git log --pretty=format:"- %s (%h)" "${prev_tag}..${tag}" -- "$pkg_dir"
-    else
-      # First release — list all commits touching this package
-      git log --pretty=format:"- %s (%h)" "${tag}" -- "$pkg_dir" | head -20
-    fi
-  }
-
-  if [[ "$RELEASE_SDK" == true ]]; then
-    SDK_NOTES=$(generate_notes "gatana-sdk@$SDK_VERSION" "$SDK_TAG" "packages/gatana-sdk")
-    if [[ -z "$SDK_NOTES" ]]; then
-      SDK_NOTES="Release gatana-sdk@${SDK_VERSION}"
-    fi
-    echo -e "  Creating release for ${CYAN}gatana-sdk@${SDK_VERSION}${RESET}..."
-    gh release create "gatana-sdk@$SDK_VERSION" \
-      --title "gatana-sdk@$SDK_VERSION" \
-      --notes "$SDK_NOTES"
+  if [[ -n "$SDK_TAG" ]]; then
+    # Commits between the two tags, scoped to the package directory
+    SDK_NOTES=$(git log --pretty=format:"- %s (%h)" "${SDK_TAG}..${TAG}" -- packages/gatana-sdk)
+  else
+    # First release: list the commits that touch the package
+    SDK_NOTES=$(git log --pretty=format:"- %s (%h)" "${TAG}" -- packages/gatana-sdk | head -20)
   fi
-
-  if [[ "$RELEASE_CLI" == true ]]; then
-    CLI_NOTES=$(generate_notes "gatana@$CLI_VERSION" "$CLI_TAG" "packages/gatana")
-    if [[ -z "$CLI_NOTES" ]]; then
-      CLI_NOTES="Release gatana@${CLI_VERSION}"
-    fi
-    echo -e "  Creating release for ${CYAN}gatana@${CLI_VERSION}${RESET}..."
-    gh release create "gatana@$CLI_VERSION" \
-      --title "gatana@$CLI_VERSION" \
-      --notes "$CLI_NOTES"
+  if [[ -z "$SDK_NOTES" ]]; then
+    SDK_NOTES="Release ${TAG}"
   fi
+  echo -e "  Creating release for ${CYAN}${TAG}${RESET}..."
+  # Not marked as latest: releases/latest belongs to the CLI, whose install.sh downloads from it.
+  gh release create "$TAG" --title "$TAG" --notes "$SDK_NOTES" --latest=false
 fi
 
 # ── Done ──────────────────────────────────────────────────────────────
@@ -366,7 +261,5 @@ fi
 echo ""
 echo -e "${GREEN}${BOLD}✓ Release complete!${RESET}"
 echo ""
-for tag in "${TAGS[@]}"; do
-  echo -e "  ${CYAN}${tag}${RESET}"
-done
+echo -e "  ${CYAN}${TAG}${RESET}"
 echo ""

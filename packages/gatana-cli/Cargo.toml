@@ -1,0 +1,26 @@
+[workspace]
+resolver = "3"
+members = ["crates/gatana-api", "crates/gatana-cli", "crates/gatana-codegen"]
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/gatana-ai/gatana-js"
+
+[workspace.dependencies]
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+# preserve_order keeps object keys in the order the server or the user wrote them: output and rewritten
+# agent config files keep their layout.
+serde_json = { version = "1", features = ["preserve_order"] }
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "http2", "system-proxy", "json", "stream", "multipart"] }
+tokio = { version = "1", features = ["rt", "macros", "time", "fs", "process", "io-util", "io-std"] }
+futures-util = "0.3"
+thiserror = "2"
+percent-encoding = "2"
+url = "2"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

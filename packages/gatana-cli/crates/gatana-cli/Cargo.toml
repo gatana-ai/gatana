@@ -1,0 +1,38 @@
+[package]
+name = "gatana-cli"
+description = "CLI for Gatana: manage servers, tools, credentials and skills"
+version = "4.0.0-alpha.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+name = "gatana_cli"
+path = "src/lib.rs"
+
+[[bin]]
+name = "gatana"
+path = "src/main.rs"
+
+[dependencies]
+gatana-api = { path = "../gatana-api" }
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+reqwest.workspace = true
+tokio.workspace = true
+futures-util.workspace = true
+url.workspace = true
+thiserror.workspace = true
+indexmap = { version = "2", features = ["serde"] }
+clap = { version = "4", features = ["derive", "wrap_help"] }
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+yaml-rust2 = { version = "0.13", default-features = false }
+regex-lite = "0.1"
+sha2 = "0.10"
+zip = { version = "8", default-features = false, features = ["deflate-flate2-zlib-rs"] }
+walkdir = "2"
+dialoguer = { version = "0.12", default-features = false }
+open = "5"
+tempfile = "3"
+

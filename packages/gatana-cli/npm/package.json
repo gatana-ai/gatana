@@ -1,0 +1,30 @@
+{
+  "name": "gatana",
+  "version": "0.0.0",
+  "description": "CLI for Gatana: manage servers, tools, credentials and skills",
+  "homepage": "https://github.com/gatana-ai/gatana-js#readme",
+  "bugs": {
+    "url": "https://github.com/gatana-ai/gatana-js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gatana-ai/gatana-js.git",
+    "directory": "packages/gatana-cli"
+  },
+  "license": "MIT",
+  "bin": {
+    "gatana": "bin/gatana"
+  },
+  "files": [
+    "bin"
+  ],
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "cpu": [
+    "arm64",
+    "x64"
+  ],
+  "optionalDependencies": {}
+}

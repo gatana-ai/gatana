@@ -18,8 +18,7 @@
     "test": "pnpm -r test",
     "generate": "pnpm --filter gatana-sdk generate",
     "release": "pnpm -r build && pnpm -r publish --access public",
-    "release:sdk": "pnpm --filter gatana-sdk build && pnpm --filter gatana-sdk publish --access public",
-    "release:cli": "pnpm --filter gatana build && pnpm --filter gatana publish --access public"
+    "release:sdk": "pnpm --filter gatana-sdk build && pnpm --filter gatana-sdk publish --access public"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

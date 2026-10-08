@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "packages/gatana-sdk" }, { "path": "packages/gatana" }]
+  "references": [{ "path": "packages/gatana-sdk" }]
 }

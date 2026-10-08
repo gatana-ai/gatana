@@ -1,0 +1,32 @@
+#!/bin/sh
+# Starts the gatana binary from the platform package (@gatana/cli-<os>-<cpu>) that npm installed with
+# this one. npm installs only the package whose os and cpu match the machine, so the first match is
+# the right one.
+#
+# A shell script, not Node: the skills hooks run gatana at the start of every agent session, and
+# Node's startup would be added to each of those runs.
+
+self=$0
+case $self in */*) ;; *) self=./$self ;; esac
+# npm links the bin folder to this file through a symlink; the platform package is found from the
+# file's own folder.
+while [ -L "$self" ]; do
+  link=$(readlink "$self")
+  case $link in
+    /*) self=$link ;;
+    *) self=${self%/*}/$link ;;
+  esac
+done
+pkg=${self%/*}/..
+
+# Nested under this package (npm install -g), or next to it (a project's node_modules, pnpm, npx).
+for bin in "$pkg"/node_modules/@gatana/cli-*/bin/gatana "$pkg"/../@gatana/cli-*/bin/gatana; do
+  [ -x "$bin" ] && exec "$bin" "$@"
+done
+
+case $(uname -s) in Darwin) os=darwin ;; Linux) os=linux ;; *) os=$(uname -s) ;; esac
+case $(uname -m) in arm64 | aarch64) cpu=arm64 ;; x86_64 | amd64) cpu=x64 ;; *) cpu=$(uname -m) ;; esac
+echo "gatana: the package @gatana/cli-$os-$cpu, which holds the binary, is not installed." >&2
+echo "npm skips an optional dependency that it cannot install, and shows no error." >&2
+echo "Install gatana again, and do not omit optional dependencies (--omit=optional)." >&2
+exit 1
