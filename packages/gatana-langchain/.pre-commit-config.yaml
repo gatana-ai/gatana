@@ -1,0 +1,25 @@
+# Paths are relative to the repository root, where pre-commit runs.
+# Install with `just py-init`; the hook only touches the Python packages.
+files: ^packages/gatana-(langchain|python)/
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.0
+    hooks:
+      # gatana-python is generated code with its own ruff config
+      - id: ruff
+        args: [--fix]
+        files: ^packages/gatana-langchain/
+      - id: ruff-format
+        files: ^packages/gatana-langchain/
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: \.bumpsemver\.cfg$
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+        exclude: ^packages/gatana-python/openapi\.json$

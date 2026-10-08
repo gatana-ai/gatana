@@ -27,7 +27,7 @@ This monorepo contains two packages:
 
 | Package                             | npm                      | Description                                  |
 | ----------------------------------- | ------------------------ | -------------------------------------------- |
-| [`gatana-sdk`](packages/gatana-sdk) | `npm install gatana-sdk` | JavaScript/TypeScript SDK for the Gatana API |
+| [`gatana-sdk`](packages/gatana-js) | `npm install gatana-sdk` | JavaScript/TypeScript SDK for the Gatana API |
 | [`gatana`](packages/gatana-cli)     | `npm install -g gatana`  | CLI tool for managing Gatana                 |
 
 The CLI source in this repository is a Rust port (`packages/gatana-cli`) and is not released yet.

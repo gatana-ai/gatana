@@ -131,7 +131,7 @@ confirm_release() {
   echo -e "${BOLD}────────────────────────────────────────${RESET}"
 
   local sdk_cur sdk_next
-  sdk_cur=$(node -p "require('./packages/gatana-sdk/package.json').version")
+  sdk_cur=$(node -p "require('./packages/gatana-js/package.json').version")
   sdk_next=$(next_version "$sdk_cur" "$SDK_BUMP")
   echo -e "  ${CYAN}gatana-sdk${RESET}  ${sdk_cur} → ${GREEN}${sdk_next}${RESET}  (${SDK_BUMP})"
 
@@ -176,7 +176,7 @@ echo ""
 
 SDK_TAG=$(latest_tag "gatana-sdk")
 
-if has_changes "$SDK_TAG" "packages/gatana-sdk"; then
+if has_changes "$SDK_TAG" "packages/gatana-js"; then
   echo -e "  ${GREEN}●${RESET} ${BOLD}gatana-sdk${RESET}  has changes since ${DIM}${SDK_TAG:-first release}${RESET}"
 elif [[ "$FORCE" == true ]]; then
   echo -e "  ${DIM}○ gatana-sdk  no changes since ${SDK_TAG} (--force)${RESET}"
@@ -205,7 +205,7 @@ confirm_release
 step "Bumping gatana-sdk version (${SDK_BUMP})..."
 pnpm --filter gatana-sdk exec pnpm version "$SDK_BUMP" --no-git-tag-version --no-git-checks
 
-SDK_VERSION=$(node -p "require('./packages/gatana-sdk/package.json').version")
+SDK_VERSION=$(node -p "require('./packages/gatana-js/package.json').version")
 TAG="gatana-sdk@$SDK_VERSION"
 
 # ── Build ─────────────────────────────────────────────────────────────
@@ -222,7 +222,7 @@ pnpm --filter gatana-sdk publish --access public --no-git-checks
 
 step "Creating git commit and tag..."
 
-git add packages/gatana-sdk/package.json
+git add packages/gatana-js/package.json
 git commit -S -m "release: ${TAG}"
 git tag -s "$TAG" -m "Release ${TAG}"
 
@@ -243,10 +243,10 @@ else
 
   if [[ -n "$SDK_TAG" ]]; then
     # Commits between the two tags, scoped to the package directory
-    SDK_NOTES=$(git log --pretty=format:"- %s (%h)" "${SDK_TAG}..${TAG}" -- packages/gatana-sdk)
+    SDK_NOTES=$(git log --pretty=format:"- %s (%h)" "${SDK_TAG}..${TAG}" -- packages/gatana-js)
   else
     # First release: list the commits that touch the package
-    SDK_NOTES=$(git log --pretty=format:"- %s (%h)" "${TAG}" -- packages/gatana-sdk | head -20)
+    SDK_NOTES=$(git log --pretty=format:"- %s (%h)" "${TAG}" -- packages/gatana-js | head -20)
   fi
   if [[ -z "$SDK_NOTES" ]]; then
     SDK_NOTES="Release ${TAG}"
