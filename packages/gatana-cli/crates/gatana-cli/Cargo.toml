@@ -30,9 +30,12 @@ chrono = { version = "0.4", default-features = false, features = ["std", "clock"
 yaml-rust2 = { version = "0.13", default-features = false }
 regex-lite = "0.1"
 sha2 = "0.10"
+base64 = "0.23"
+getrandom = "0.4"
 zip = { version = "8", default-features = false, features = ["deflate-flate2-zlib-rs"] }
 walkdir = "2"
 dialoguer = { version = "0.12", default-features = false }
+console = "0.16"
 open = "5"
 tempfile = "3"
 

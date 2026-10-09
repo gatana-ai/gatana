@@ -4,9 +4,15 @@
 //!
 //! ```json
 //! { "orgs": { "acme": { "baseUrl": "https://acme.gatana.ai", "pat": "gk_...",
-//!                       "tokens": { "access_token": "...", "refresh_token": "...", "expires_at": 1760000000 } } },
-//!   "defaultOrgId": "acme" }
+//!                       "tokens": { "access_token": "...", "refresh_token": "...", "expires_at": 1760000000 },
+//!                       "clientId": "apx_..." } },
+//!   "defaultOrgId": "acme",
+//!   "apexClients": { "https://gatana.ai": "apx_..." } }
 //! ```
+//!
+//! `clientId` is set when the tokens came from a sign-in through the base domain (apex.rs): they
+//! were issued to that client and refresh with it. Without it they belong to `<org>-cli`.
+//! `apexClients` keeps the client the CLI registered at each base domain.
 
 use crate::util::deep_merge;
 use anyhow::{Context, Result, anyhow, bail};
@@ -55,6 +61,25 @@ pub fn tenant_from_url(base_url: &str) -> String {
 /// there is none yet.
 pub fn set_organization_config(org_id: &str, update: Value) -> Result<()> {
     let mut config = read_config();
+    merge_organization(&mut config, org_id, &update)?;
+    write_config(&config)
+}
+
+/// What a login writes. The credentials of the organization are replaced, not merged: a personal
+/// access token wins over OIDC tokens, and tokens refresh with `clientId`, so either one left over
+/// from an earlier login would outlive this one.
+pub fn set_organization_login(org_id: &str, login: Value) -> Result<()> {
+    let mut config = read_config();
+    if let Some(org) = config.get_mut("orgs").and_then(|orgs| orgs.get_mut(org_id)).and_then(Value::as_object_mut) {
+        for key in ["pat", "tokens", "clientId"] {
+            org.shift_remove(key);
+        }
+    }
+    merge_organization(&mut config, org_id, &login)?;
+    write_config(&config)
+}
+
+fn merge_organization(config: &mut Value, org_id: &str, update: &Value) -> Result<()> {
     let root = config.as_object_mut().ok_or_else(|| anyhow!("config is not an object"))?;
     let orgs = root.entry("orgs").or_insert_with(|| Value::Object(Map::new()));
     if !orgs.is_object() {
@@ -64,6 +89,22 @@ pub fn set_organization_config(org_id: &str, update: Value) -> Result<()> {
     if root.get("defaultOrgId").and_then(Value::as_str).is_none_or(str::is_empty) {
         root.insert("defaultOrgId".into(), Value::String(org_id.to_string()));
     }
+    Ok(())
+}
+
+/// The client this CLI registered at a base domain, by its origin (`https://gatana.ai`).
+pub fn apex_client(origin: &str) -> Option<String> {
+    read_config().get("apexClients")?.get(origin)?.as_str().filter(|id| !id.is_empty()).map(str::to_string)
+}
+
+pub fn set_apex_client(origin: &str, client_id: &str) -> Result<()> {
+    let mut config = read_config();
+    let root = config.as_object_mut().ok_or_else(|| anyhow!("config is not an object"))?;
+    let clients = root.entry("apexClients").or_insert_with(|| Value::Object(Map::new()));
+    if !clients.is_object() {
+        *clients = Value::Object(Map::new());
+    }
+    clients[origin] = Value::String(client_id.to_string());
     write_config(&config)
 }
 
@@ -161,7 +202,11 @@ impl ResolvedConfig {
             bail!("No valid API key, access token or refresh token available.");
         };
         gatana_api::debug!("gatana", "Access token expired or about to expire, attempting to refresh");
-        let client_id = format!("{}-cli", self.org_id);
+        let client_id = org
+            .get("clientId")
+            .and_then(Value::as_str)
+            .filter(|id| !id.is_empty())
+            .map_or_else(|| format!("{}-cli", self.org_id), str::to_string);
         let fresh = crate::oidc::refresh(http, &self.base_url, &client_id, refresh)
             .await
             .map_err(|error| anyhow!("Failed to refresh access token. Please log in again. ({error})"))?;
@@ -228,7 +273,7 @@ impl Strategy {
 }
 
 pub const NO_CONFIGURATION: &str =
-    "No valid configuration found. Run \"gatana config login <org-id-or-url>\" to set up your credentials.";
+    "No valid configuration found. Run \"gatana config login\" to set up your credentials.";
 
 pub fn resolve(strategies: &[Strategy]) -> Result<ResolvedConfig> {
     strategies.iter().find_map(Strategy::resolve).ok_or_else(|| anyhow!(NO_CONFIGURATION))

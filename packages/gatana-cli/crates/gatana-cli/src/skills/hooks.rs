@@ -26,6 +26,16 @@ impl HookAgent {
             HookAgent::Openclaw => "openclaw",
         }
     }
+
+    /// The product name, for menus and messages.
+    pub fn label(self) -> &'static str {
+        match self {
+            HookAgent::Claude => "Claude Code",
+            HookAgent::Codex => "Codex",
+            HookAgent::Hermes => "Hermes",
+            HookAgent::Openclaw => "OpenClaw",
+        }
+    }
 }
 
 /// What every hook runs. Claude Code, Codex and OpenClaw read the default targets (~/.claude/skills
@@ -160,17 +170,17 @@ pub struct HookResult {
 }
 
 impl HookResult {
-    fn new(agent: HookAgent, file: PathBuf, status: HookStatus) -> Self {
+    pub(crate) fn new(agent: HookAgent, file: PathBuf, status: HookStatus) -> Self {
         Self { agent, file, status, note: None }
     }
 
-    fn with_note(mut self, note: impl Into<String>) -> Self {
+    pub(crate) fn with_note(mut self, note: impl Into<String>) -> Self {
         self.note = Some(note.into());
         self
     }
 }
 
-enum JsonFile {
+pub(crate) enum JsonFile {
     Missing,
     Unparseable,
     Object(Map<String, Value>),
@@ -178,7 +188,7 @@ enum JsonFile {
 
 /// Strict JSON only. A file with comments or trailing commas is not rewritten: a round trip would
 /// drop them.
-fn read_json_object(path: &Path) -> Result<JsonFile> {
+pub(crate) fn read_json_object(path: &Path) -> Result<JsonFile> {
     let text = match std::fs::read_to_string(path) {
         Ok(text) => text,
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(JsonFile::Missing),
@@ -193,7 +203,7 @@ fn read_json_object(path: &Path) -> Result<JsonFile> {
     })
 }
 
-fn write_json(path: &Path, value: &Value) -> Result<()> {
+pub(crate) fn write_json(path: &Path, value: &Value) -> Result<()> {
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent)?;
     }

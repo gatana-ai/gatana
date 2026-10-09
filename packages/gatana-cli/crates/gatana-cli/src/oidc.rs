@@ -1,5 +1,6 @@
 //! The OAuth parts of `gatana config login`: OpenID discovery, the device authorization grant
-//! (RFC 8628) and the refresh token grant. The CLI is a public client named `<org>-cli`.
+//! (RFC 8628) and the refresh token grant. The CLI is a public client named `<org>-cli`, or the
+//! client it registered at the base domain when it signed in there (apex.rs).
 
 use anyhow::{Context, Result, anyhow, bail};
 use serde::Deserialize;
@@ -54,7 +55,11 @@ async fn discover(http: &reqwest::Client, base_url: &str) -> Result<Discovery> {
     response.json().await.with_context(|| format!("OpenID discovery at {url} returned an unexpected document"))
 }
 
-async fn post_form(http: &reqwest::Client, url: &str, fields: &[(&str, &str)]) -> Result<(reqwest::StatusCode, Value)> {
+pub(crate) async fn post_form(
+    http: &reqwest::Client,
+    url: &str,
+    fields: &[(&str, &str)],
+) -> Result<(reqwest::StatusCode, Value)> {
     let body = url::form_urlencoded::Serializer::new(String::new()).extend_pairs(fields).finish();
     let response = http
         .post(url)
@@ -70,7 +75,7 @@ async fn post_form(http: &reqwest::Client, url: &str, fields: &[(&str, &str)]) -
     Ok((status, value))
 }
 
-fn oauth_error(value: &Value) -> String {
+pub(crate) fn oauth_error(value: &Value) -> String {
     let code = value.get("error").and_then(Value::as_str);
     let description = value.get("error_description").and_then(Value::as_str);
     match (code, description) {

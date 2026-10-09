@@ -11,6 +11,8 @@ export interface OrganizationConfig {
     refresh_token: string;
     expires_at: number; // Unix timestamp
   };
+  /** The client the tokens were issued to, when the CLI signed in through the base domain (gatana.ai). Otherwise `<org>-cli`. */
+  clientId?: string;
 }
 
 type OrgId = string;

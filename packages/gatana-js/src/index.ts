@@ -117,7 +117,7 @@ export class FileConfigStrategy extends ConfigStrategy {
           // Try to refresh the token
           const config = await openidClient.discovery(
             new URL(`/.well-known/openid-configuration`, tenantConfig.baseUrl),
-            `${orgId}-cli`
+            tenantConfig.clientId || `${orgId}-cli`
           );
           try {
             const token = await openidClient.refreshTokenGrant(config, tenantConfig.tokens.refresh_token);

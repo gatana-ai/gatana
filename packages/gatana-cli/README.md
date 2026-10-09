@@ -41,13 +41,29 @@ and `GATANA_VERSION` to install a given version.
 ## Quick start
 
 ```bash
-gatana config login my-org
+gatana install
+```
+
+`install` signs you in (it opens the browser when you are not signed in yet), asks which AI agents
+on this machine to connect, and gives each one the Gatana gateway as an MCP server, the skills of
+your organization, and the hook that keeps the skills current. Then sign in from the agent: for
+Claude Code, run `/mcp`, select `gatana` and Authenticate. The agents it knows are Claude Code,
+Codex, Hermes and OpenClaw; name them to skip the menu: `gatana install claude codex`.
+
+For the rest of the CLI:
+
+```bash
+gatana config login
 gatana auth-info
 gatana get servers
 ```
 
-`config login` opens the browser. Add `--pat <token>` to log in with a personal access token, or
-`--no-browser` to print the link, for example over SSH.
+`config login` opens the browser, where you choose your organization and sign in. To skip the
+choice, name the organization: `gatana config login my-org`. That login uses a code, so it also
+works on a machine without a browser, for example over SSH (add `--no-browser` to only print the
+link). Add `--pat <token>` to log in with a personal access token: `gatana config login my-org --pat gk_...`.
+
+On-premise, give the address of the install: `gatana config login --base-url https://gatana.example.com`.
 
 The CLI also reads `GATANA_API_KEY` and `GATANA_ORG_ID`. See
 [Configuration](../../README.md#configuration) for the order in which it reads the credentials.
@@ -85,6 +101,18 @@ The table format has uppercase headers, no borders and columns as wide as their 
 ---
 
 ## Commands
+
+### Get started
+
+| Command     | Syntax                                     | Description                                                                                                                                                                                             |
+| ----------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **install** | `gatana install [agent...] [--no-browser]` | Sign in when needed, choose the agents to connect (`claude`, `codex`, `hermes`, `openclaw`), and give each one the gateway as an MCP server, the skills of your organization and the session-start hook |
+
+> `install` writes the gateway URL of your organization into the agent's own configuration:
+> `~/.claude.json` (Claude Code), `~/.codex/config.toml`, `~/.hermes/config.yaml` or
+> `~/.openclaw/openclaw.json`. It holds no token: each agent signs in by itself, in the browser, the
+> first time it connects. An entry named `gatana` that is already there is left as it is. The skills
+> and the hook are what `skills install` writes, for the folders of the chosen agents.
 
 ### Basic commands
 
@@ -181,7 +209,7 @@ Configuration, authentication and schemas.
 | ---------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
 | **config current**     | `gatana config current`                                       | Show the resolved organization and configuration      |
 | **config token**       | `gatana config token`                                         | Print the token that requests use                     |
-| **config login**       | `gatana config login <org-id-or-url> [-p pat] [--no-browser]` | Log in with a personal access token or in the browser |
+| **config login**       | `gatana config login [org-id-or-url] [-p pat] [--no-browser]` | Log in in the browser or with a personal access token |
 | **config ls**          | `gatana config ls`                                            | List all configured organizations                     |
 | **config set-default** | `gatana config set-default <org-id>`                          | Set the default organization                          |
 | **config remove**      | `gatana config remove <org-id>`                               | Remove an organization from the config file           |
@@ -207,9 +235,12 @@ Configuration, authentication and schemas.
 ### Get started
 
 ```bash
-# Install and log in
+# Install, sign in and connect the agents on this machine
 npm install -g gatana
-gatana config login my-org
+gatana install
+
+# Or only sign in
+gatana config login
 
 # Verify your identity
 gatana auth-info
@@ -330,7 +361,7 @@ gatana delete sandbox <id>
 
 ```bash
 # Log in to two organizations
-gatana config login org-one
+gatana config login                       # choose org-one in the browser
 gatana config login org-two --pat gk_...
 
 # List the configured organizations

@@ -117,6 +117,40 @@ pub fn eprintln(text: &str) {
     write_stderr(&format!("{text}\n"));
 }
 
+// Emphasis for a terminal. `console` leaves the text plain when the stream is not a terminal, when
+// NO_COLOR is set, or when TERM is dumb; stderr is checked on its own.
+
+pub fn bold(text: &str) -> String {
+    console::style(text).bold().to_string()
+}
+
+pub fn dim(text: &str) -> String {
+    console::style(text).dim().to_string()
+}
+
+pub fn green(text: &str) -> String {
+    console::style(text).green().to_string()
+}
+
+/// For warnings, which go to stderr.
+pub fn yellow(text: &str) -> String {
+    console::style(text).yellow().for_stderr().to_string()
+}
+
+/// For errors, which go to stderr.
+pub fn red(text: &str) -> String {
+    console::style(text).red().for_stderr().to_string()
+}
+
+/// A path with the home directory as `~`, for messages.
+pub fn tilde(path: &std::path::Path) -> String {
+    let home = std::env::home_dir().unwrap_or_default();
+    match path.strip_prefix(&home) {
+        Ok(rest) if !home.as_os_str().is_empty() => format!("~/{}", rest.display()),
+        _ => path.display().to_string(),
+    }
+}
+
 /// Prints a result in the chosen format.
 pub fn output(data: &Value, options: Options) {
     let format = match options.default_format {
@@ -141,14 +175,14 @@ pub fn print(data: &Value) {
 
 pub fn success(message: &str) {
     match format() {
-        Format::Table => println(message),
+        Format::Table => println(&green(message)),
         _ => print(&json!({ "success": true, "message": message })),
     }
 }
 
 pub fn error(message: &str) {
     match format() {
-        Format::Table => eprintln(message),
+        Format::Table => eprintln(&red(message)),
         Format::Json => eprintln(&json!({ "success": false, "error": message }).to_string()),
         Format::Yaml => write_stderr(&crate::yaml::dump(&json!({ "success": false, "error": message }))),
     }

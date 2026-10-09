@@ -67,7 +67,10 @@ fn org_context(org: Option<&str>) -> Result<Option<Context>> {
 /// The skills API and the organization the files are stamped with. The organization id is
 /// recorded in every manifest and SKILL.md, so it must be known even when only a base URL is: the
 /// first host label is the tenant.
-async fn connect<'a>(context: &'a Context, org: Option<&str>) -> Result<(HttpSkillsApi<'a>, SkillsIdentity)> {
+pub(super) async fn connect<'a>(
+    context: &'a Context,
+    org: Option<&str>,
+) -> Result<(HttpSkillsApi<'a>, SkillsIdentity)> {
     let config = context.config().map_err(|error| match org {
         Some(org) => anyhow!("Organization {org} is not configured. Run \"gatana config login {org}\" first"),
         None => error,
@@ -168,9 +171,9 @@ fn describe_subscriptions(summary: &SyncSummary) -> String {
     }
 }
 
-fn report_summaries(summaries: &[SyncSummary], dry_run: bool, quiet: bool) {
+pub(super) fn report_summaries(summaries: &[SyncSummary], dry_run: bool, quiet: bool) {
     for warning in summaries.iter().flat_map(|summary| &summary.warnings) {
-        output::eprintln(&format!("warning: {warning}"));
+        output::eprintln(&format!("{} {warning}", output::yellow("warning:")));
     }
     if quiet {
         return;
@@ -184,7 +187,7 @@ fn report_summaries(summaries: &[SyncSummary], dry_run: bool, quiet: bool) {
         return;
     }
     for summary in summaries {
-        let dir = summary.dir.display();
+        let dir = output::bold(&output::tilde(&summary.dir));
         if dry_run {
             let changes: Vec<Value> = summary
                 .ops()
@@ -242,15 +245,20 @@ fn note(result: &HookResult) -> String {
 }
 
 /// One line per agent found on the machine; agents that are not installed are not mentioned.
-fn report_hooks(results: &[HookResult]) {
+pub(super) fn report_hooks(results: &[HookResult]) {
     for result in results {
-        let (agent, file) = (result.agent.as_str(), result.file.display());
+        let (agent, file) = (result.agent.as_str(), output::tilde(&result.file));
         match result.status {
-            HookStatus::Installed => output::println(&format!("hook installed for {agent}: {file}{}", note(result))),
-            HookStatus::Present => output::println(&format!("hook already installed for {agent}: {file}")),
+            HookStatus::Installed => {
+                output::println(&format!("hook {} for {agent}: {file}{}", output::green("installed"), note(result)))
+            }
+            HookStatus::Present => {
+                output::println(&output::dim(&format!("hook already installed for {agent}: {file}")))
+            }
             HookStatus::Manual => output::eprintln(
                 format!(
-                    "warning: hook for {agent} not installed: {file} {}",
+                    "{} hook for {agent} not installed: {file} {}",
+                    output::yellow("warning:"),
                     result.note.as_deref().unwrap_or_default()
                 )
                 .trim_end(),
@@ -262,13 +270,19 @@ fn report_hooks(results: &[HookResult]) {
 
 fn report_hook_removals(results: &[HookResult]) {
     for result in results {
-        let (agent, file) = (result.agent.as_str(), result.file.display());
+        let (agent, file) = (result.agent.as_str(), output::tilde(&result.file));
         match result.status {
-            HookStatus::Removed => output::println(&format!("hook removed for {agent}: {file}{}", note(result))),
-            HookStatus::Absent => output::println(&format!("no hook installed for {agent}: {file}")),
+            HookStatus::Removed => {
+                output::println(&format!("hook {} for {agent}: {file}{}", output::green("removed"), note(result)))
+            }
+            HookStatus::Absent => output::println(&output::dim(&format!("no hook installed for {agent}: {file}"))),
             HookStatus::Manual => output::eprintln(
-                format!("warning: hook for {agent} not removed: {file} {}", result.note.as_deref().unwrap_or_default())
-                    .trim_end(),
+                format!(
+                    "{} hook for {agent} not removed: {file} {}",
+                    output::yellow("warning:"),
+                    result.note.as_deref().unwrap_or_default()
+                )
+                .trim_end(),
             ),
             _ => {}
         }

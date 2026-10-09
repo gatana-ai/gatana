@@ -1,6 +1,7 @@
 //! What each command does.
 
 mod config;
+mod install;
 mod resources;
 mod servers;
 mod skills;
@@ -39,6 +40,7 @@ pub async fn run(cli: Cli) -> Result<()> {
         Command::Config { command } => config::run(&context, command).await,
         Command::AuthInfo => config::auth_info(&context).await,
         Command::Schema { command } => config::schema(&context, command).await,
+        Command::Install(args) => install::run(context, args).await,
     }
 }
 

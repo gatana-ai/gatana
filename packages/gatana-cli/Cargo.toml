@@ -14,7 +14,7 @@ serde = { version = "1", features = ["derive"] }
 # agent config files keep their layout.
 serde_json = { version = "1", features = ["preserve_order"] }
 reqwest = { version = "0.13", default-features = false, features = ["rustls", "http2", "system-proxy", "json", "stream", "multipart"] }
-tokio = { version = "1", features = ["rt", "macros", "time", "fs", "process", "io-util", "io-std"] }
+tokio = { version = "1", features = ["rt", "macros", "time", "fs", "process", "io-util", "io-std", "net"] }
 futures-util = "0.3"
 thiserror = "2"
 percent-encoding = "2"

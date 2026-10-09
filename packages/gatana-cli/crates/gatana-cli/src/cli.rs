@@ -9,6 +9,9 @@ const ROOT_HELP: &str = "\
 {about-with-newline}
 {usage-heading} {usage}
 
+Get Started:
+  install       Sign in and connect the AI agents on this machine: gateway, skills and hooks
+
 Basic Commands:
   get           Display one or many resources
   describe      Show details of a specific resource
@@ -114,6 +117,10 @@ pub enum Command {
     },
     /// Display info about the authenticated user
     AuthInfo,
+    /// Sign in, then connect the AI agents on this machine to Gatana: the gateway as an MCP server,
+    /// the skills of your organization, and the hook that keeps the skills current
+    #[command(after_help = INSTALL_EXAMPLES)]
+    Install(InstallAgentsArgs),
     /// Print OpenAPI resource schemas
     Schema {
         #[command(subcommand)]
@@ -572,20 +579,22 @@ pub enum ConfigCommand {
     Current,
     /// Print the token which would be used for any request
     Token,
-    /// Log in with a personal access token or in the browser. Examples: gatana config login
-    /// my-organization, gatana config login https://my-organization.gatana.ai
+    /// Log in in the browser or with a personal access token. Examples: gatana config login,
+    /// gatana config login my-organization, gatana config login my-organization --pat gk_...
     Login {
         /// Organization ID (e.g., org123) or instance URL (e.g., https://org123.gatana.ai). For a
-        /// URL, the org ID is the first hostname label.
+        /// URL, the org ID is the first hostname label. Leave it out to choose the organization in
+        /// the browser; name it to log in with a code instead, e.g. over SSH.
         #[arg(value_name = "ORG_ID_OR_URL")]
-        org_id_or_url: String,
-        /// Personal Access Token (PAT) for authentication
+        org_id_or_url: Option<String>,
+        /// Personal Access Token (PAT) for authentication. Needs the organization
         #[arg(short = 'p', long = "pat")]
         pat: Option<String>,
-        /// Base URL (default: none) - experimental - hardcodes the base URL for development purposes only
+        /// With an organization: its base URL, for development. Without one: the base domain to
+        /// sign in at (default: https://gatana.ai), e.g. the address of an on-premise install
         #[arg(short = 'b', long = "base-url")]
         base_url: Option<String>,
-        /// Print the login link without opening a browser, e.g. over SSH
+        /// Print the login link without opening a browser
         #[arg(long = "no-browser")]
         no_browser: bool,
     },
@@ -601,6 +610,23 @@ pub enum ConfigCommand {
         /// ID of the organization to remove
         org_id: String,
     },
+}
+
+const INSTALL_EXAMPLES: &str = r#"Examples:
+  # Choose the agents in a menu
+  $ gatana install
+
+  # Name them, for example in a script
+  $ gatana install claude codex"#;
+
+#[derive(Args, Debug)]
+pub struct InstallAgentsArgs {
+    /// The agents to connect. Omit to choose from a menu
+    #[arg(value_enum, value_name = "AGENT")]
+    pub agents: Vec<HookAgent>,
+    /// When a sign-in is needed: print the link without opening a browser
+    #[arg(long = "no-browser")]
+    pub no_browser: bool,
 }
 
 #[derive(Subcommand, Debug)]

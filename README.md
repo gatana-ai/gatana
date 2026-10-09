@@ -45,11 +45,19 @@ curl -fsSL https://github.com/gatana-ai/gatana/releases/latest/download/install.
 ```
 
 ```bash
-gatana config login my-org
+gatana install
+```
+
+`install` signs you in and connects the AI agents on this machine (Claude Code, Codex, Hermes,
+OpenClaw) to Gatana: the gateway as an MCP server, the skills of your organization and the hook
+that keeps them current. See the [CLI README](packages/gatana-cli/README.md#quick-start).
+
+```bash
+gatana config login
 gatana get servers
 ```
 
-The login writes `~/.gatana.config`. The SDKs read the same file, see [Configuration](#configuration).
+The login opens the browser, where you choose your organization. It writes `~/.gatana.config`. The SDKs read the same file, see [Configuration](#configuration).
 
 ---
 
@@ -83,16 +91,22 @@ The config file `~/.gatana.config` holds one entry for each organization:
         "access_token": "...",
         "refresh_token": "...",
         "expires_at": 1760000000
-      }
+      },
+      "clientId": "apx_..."
     }
   },
-  "defaultOrgId": "my-org"
+  "defaultOrgId": "my-org",
+  "apexClients": { "https://gatana.ai": "apx_..." }
 }
 ```
 
 - **`pat`**: a personal access token. `gatana config login my-org --pat <token>` writes it.
-- **`tokens`**: OIDC tokens from a login in the browser. `gatana config login my-org` writes them.
+- **`tokens`**: OIDC tokens from a login in the browser. `gatana config login` writes them.
   The CLI and the JavaScript SDK refresh them when they expire.
+- **`clientId`**: the OAuth client the tokens belong to, when the login went through gatana.ai
+  (`gatana config login` without an organization). Without it, the tokens belong to `<org-id>-cli`.
+- **`apexClients`**: the client the CLI registered at gatana.ai (or at the address given with
+  `--base-url`). The CLI uses it again at the next login, so you approve the CLI only once.
 - **`defaultOrgId`**: the organization to use when `GATANA_ORG_ID` is not set.
   `gatana config set-default` changes it.
 

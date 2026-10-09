@@ -2,7 +2,7 @@
 
 use super::{Silent, text_at};
 use crate::cli::{ConfigCommand, SchemaCommand};
-use crate::config::{self, get_organization, list_organizations, set_organization_config};
+use crate::config::{self, get_organization, list_organizations, set_organization_login};
 use crate::context::Context;
 use crate::output::{self, Format, Options};
 use crate::util::get_path;
@@ -22,7 +22,14 @@ pub async fn run(context: &Context, command: ConfigCommand) -> Result<()> {
             output::print(&Value::String(token));
         }
         ConfigCommand::Login { org_id_or_url, pat, base_url, no_browser } => {
-            if let Err(error) = login(context, &org_id_or_url, pat, base_url, !no_browser).await {
+            let result = match org_id_or_url {
+                Some(org_id_or_url) => login(context, &org_id_or_url, pat, base_url, !no_browser).await,
+                None if pat.is_some() => Err(anyhow!(
+                    "A personal access token belongs to one organization. Name it: gatana config login <org-id> --pat <token>"
+                )),
+                None => apex_login(context, base_url, !no_browser).await,
+            };
+            if let Err(error) = result {
                 output::error(&format!("Error during login: {error:#}"));
                 return Err(Silent.into());
             }
@@ -64,7 +71,7 @@ async fn login(
     };
     let base_url = base_url.or(derived_base_url).unwrap_or_else(|| format!("https://{org_id}.gatana.ai"));
     match pat {
-        Some(pat) => set_organization_config(&org_id, json!({ "baseUrl": base_url, "pat": pat }))?,
+        Some(pat) => set_organization_login(&org_id, json!({ "baseUrl": base_url, "pat": pat }))?,
         None => {
             let scope = "openid profile email offline_access gatana.selfservice";
             let device =
@@ -84,11 +91,31 @@ async fn login(
                 "refresh_token": tokens.refresh_token.as_deref().unwrap_or_default(),
                 "expires_at": tokens.expires_at(),
             });
-            set_organization_config(&org_id, json!({ "baseUrl": base_url, "tokens": stored }))?;
+            set_organization_login(&org_id, json!({ "baseUrl": base_url, "tokens": stored }))?;
         }
     }
+    logged_in(&org_id)
+}
+
+/// The browser login without an organization: the person chooses it at the base domain (apex.rs).
+pub(super) async fn apex_login(context: &Context, apex_url: Option<String>, browser: bool) -> Result<()> {
+    let apex_url = apex_url.as_deref().unwrap_or(crate::apex::DEFAULT_APEX_URL);
+    let signed_in = crate::apex::login(context.http(), apex_url, browser).await?;
+    let stored = json!({
+        "access_token": signed_in.tokens.access_token,
+        "refresh_token": signed_in.tokens.refresh_token.as_deref().unwrap_or_default(),
+        "expires_at": signed_in.tokens.expires_at(),
+    });
+    set_organization_login(
+        &signed_in.org_id,
+        json!({ "baseUrl": signed_in.base_url, "clientId": signed_in.client_id, "tokens": stored }),
+    )?;
+    logged_in(&signed_in.org_id)
+}
+
+fn logged_in(org_id: &str) -> Result<()> {
     output::println("Login successful! You can now use the CLI commands.");
-    config::set_default_organization(&org_id)?;
+    config::set_default_organization(org_id)?;
     output::println(&format!("{org_id} is now the active organization."));
     Ok(())
 }

@@ -29,7 +29,7 @@ and throws when the response is an error.
 
 The SDK finds the credentials in the same way as the CLI. See
 [Configuration](https://github.com/gatana-ai/gatana#configuration) for the environment variables and
-the config file. Run `gatana config login <org>` to write the config file. The SDK refreshes expired
+the config file. Run `gatana config login` to write the config file. The SDK refreshes expired
 OIDC tokens from that file and writes the new tokens back.
 
 ### Custom authentication

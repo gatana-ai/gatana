@@ -525,11 +525,14 @@ name = "gatana-cli"
 version = "4.0.1"
 dependencies = [
  "anyhow",
+ "base64",
  "chrono",
  "clap",
+ "console",
  "dialoguer",
  "futures-util",
  "gatana-api",
+ "getrandom 0.4.3",
  "indexmap",
  "open",
  "regex-lite",
