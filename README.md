@@ -25,12 +25,12 @@
 
 This monorepo holds the Gatana CLI and the Gatana SDKs for JavaScript and Python.
 
-| Package                                         | Install                                                                             | What it is                                                     |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------- |
-| [`gatana`](packages/gatana-cli)                 | `curl -fsSL https://github.com/gatana-ai/gatana/releases/latest/download/install.sh | sh`                                                            | CLI for servers, tools, credentials and skills. Written in Rust |
-| [`gatana-sdk`](packages/gatana-js)              | `npm install gatana-sdk`                                                            | JavaScript and TypeScript SDK for the Gatana API               |
-| [`gatana-client`](packages/gatana-python)       | `pip install gatana-client`                                                         | Python client for the Gatana API, generated from OpenAPI       |
-| [`gatana-langchain`](packages/gatana-langchain) | `pip install gatana-langchain`                                                      | LangChain sandbox backend that runs agents in Gatana sandboxes |
+| Package                                         | Install                             | What it is                                                      |
+| ----------------------------------------------- | ----------------------------------- | --------------------------------------------------------------- |
+| [`gatana`](packages/gatana-cli)                 | [CLI Quick start](#cli-quick-start) | CLI for servers, tools, credentials and skills. Written in Rust |
+| [`gatana-sdk`](packages/gatana-js)              | `npm install gatana-sdk`            | JavaScript and TypeScript SDK for the Gatana API                |
+| [`gatana-client`](packages/gatana-python)       | `pip install gatana-client`         | Python client for the Gatana API, generated from OpenAPI        |
+| [`gatana-langchain`](packages/gatana-langchain) | `pip install gatana-langchain`      | LangChain sandbox backend that runs agents in Gatana sandboxes  |
 
 Each package folder has its own README with usage, examples and development steps.
 
@@ -40,7 +40,9 @@ Each package folder has its own README with usage, examples and development step
 
 ```bash
 npm install -g gatana
+# or
 brew install gatana-ai/tap/gatana
+# or
 curl -fsSL https://github.com/gatana-ai/gatana/releases/latest/download/install.sh | sh
 ```
 
