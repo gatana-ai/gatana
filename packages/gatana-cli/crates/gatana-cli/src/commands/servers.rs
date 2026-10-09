@@ -1,10 +1,10 @@
-//! Tool calls, deployments, effective credentials, hosted servers and sandboxes.
+//! Tool calls, deployments, effective credentials, FaaS servers and sandboxes.
 
 use super::resources::split_tool_name;
 use super::{Silent, text_at};
-use crate::cli::{CredsArgs, DeploymentCommand, HostedCommand, SandboxCommand, ToolArgs, ToolPart};
+use crate::cli::{CredsArgs, DeploymentCommand, FaasCommand, SandboxCommand, ToolArgs, ToolPart};
 use crate::context::Context;
-use crate::hosted::{self, deployment};
+use crate::faas::{self, deployment};
 use crate::output::{self, Options};
 use crate::sse::EventStream;
 use crate::util::{from_age, parse_inline_object, read_piped_stdin};
@@ -201,19 +201,19 @@ async fn follow_logs(api: &gatana_api::Client, pod: &str, previous: bool) -> Res
     Ok(())
 }
 
-pub async fn hosted(context: &Context, command: HostedCommand) -> Result<()> {
+pub async fn faas(context: &Context, command: FaasCommand) -> Result<()> {
     match command {
-        HostedCommand::Init { path } => hosted::init(&path),
-        HostedCommand::Verify { path } => hosted::print_verification(&path).await,
-        HostedCommand::Run { path, tool_name, input, file, param } => {
-            let input = hosted::tool_input(input.as_deref(), file.as_deref(), &param)?;
-            hosted::run_tool(&path, &tool_name, &input).await
+        FaasCommand::Init { path } => faas::init(&path),
+        FaasCommand::Verify { path } => faas::print_verification(&path).await,
+        FaasCommand::Run { path, tool_name, input, file, param } => {
+            let input = faas::tool_input(input.as_deref(), file.as_deref(), &param)?;
+            faas::run_tool(&path, &tool_name, &input).await
         }
-        HostedCommand::Upload { name, path, create, no_logs, no_wait, force } => {
+        FaasCommand::Upload { name, path, create, no_logs, no_wait, force } => {
             upload(context, &name, &path, UploadOptions { create, no_logs, no_wait, force }).await
         }
-        HostedCommand::Download { name, out_file } => {
-            hosted::download(context.api().await?, &name, out_file.as_deref()).await
+        FaasCommand::Download { name, out_file } => {
+            faas::download(context.api().await?, &name, out_file.as_deref()).await
         }
     }
 }
@@ -229,7 +229,7 @@ struct UploadOptions {
 /// refreshes its tools.
 async fn upload(context: &Context, slug: &str, path: &Path, options: UploadOptions) -> Result<()> {
     output::info("Verifying deployment package...");
-    match hosted::verify(path).await {
+    match faas::verify(path).await {
         Ok(result) => {
             for tool in result.get("tools").and_then(Value::as_array).into_iter().flatten() {
                 if tool.get("valid") != Some(&Value::Bool(true)) {
@@ -244,7 +244,7 @@ async fn upload(context: &Context, slug: &str, path: &Path, options: UploadOptio
                 }
             }
         }
-        Err(error) if hosted::runner::is_node_missing(&error) && hosted::check_index_js(path)?.has_schema => {
+        Err(error) if faas::runner::is_node_missing(&error) && faas::check_index_js(path)?.has_schema => {
             output::info("Node.js not found: index.js was checked for a schema export only.");
         }
         Err(error) if options.force => {
@@ -254,7 +254,7 @@ async fn upload(context: &Context, slug: &str, path: &Path, options: UploadOptio
     }
 
     output::info("Creating deployment package...");
-    let archive = hosted::create_zip(path)?;
+    let archive = faas::create_zip(path)?;
 
     let api = context.api().await?;
     let servers = api.v2().list_servers_v2().value().await?;
@@ -267,11 +267,11 @@ async fn upload(context: &Context, slug: &str, path: &Path, options: UploadOptio
             bail!("Server '{slug}' not found. Use --create to create a new server if it does not exist.");
         }
         output::info(&format!("Server '{slug}' not found. Creating new server..."));
-        api.v2().create_server_v2(&new_hosted_server(slug)).send().await?;
+        api.v2().create_server_v2(&new_faas_server(slug)).send().await?;
     }
 
     output::info("Deploying...");
-    hosted::upload(api, slug, archive.path()).await?;
+    faas::upload(api, slug, archive.path()).await?;
     api.v1().start_mcp_server(slug).send().await?;
     if options.no_wait {
         output::success(&format!(
@@ -297,8 +297,8 @@ async fn upload(context: &Context, slug: &str, path: &Path, options: UploadOptio
     Ok(())
 }
 
-/// A hosted server on the Node 24 runtime, everything else at the server's defaults.
-fn new_hosted_server(slug: &str) -> v2::types::V2CreateServerRequest {
+/// A FaaS server on the Node 24 runtime, everything else at the server's defaults.
+fn new_faas_server(slug: &str) -> v2::types::V2CreateServerRequest {
     use v2::types::{
         V2CreateServerRequest, V2CreateServerRequestTransportConfig, V2CreateServerRequestTransportConfigRuntime,
     };

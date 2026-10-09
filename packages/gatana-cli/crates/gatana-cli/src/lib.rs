@@ -6,7 +6,7 @@ pub mod commands;
 pub mod config;
 pub mod connect;
 pub mod context;
-pub mod hosted;
+pub mod faas;
 pub mod oidc;
 pub mod output;
 pub mod skills;

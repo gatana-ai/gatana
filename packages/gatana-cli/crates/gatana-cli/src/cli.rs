@@ -23,7 +23,7 @@ Server Management:
   tools         Call a tool (alias: tool)
   deployment    Manage server deployments (alias: deploy)
   creds         Get the effective credentials for a server
-  hosted        Manage hosted servers (FaaS)
+  faas          Manage FaaS servers (hosted source code)
   sandbox       Manage sandboxes (requires early access)
 
 Skills:
@@ -93,10 +93,10 @@ pub enum Command {
     },
     /// Get the effective credentials for a server
     Creds(CredsArgs),
-    /// Manage hosted servers (FaaS)
-    Hosted {
+    /// Manage FaaS servers (hosted source code)
+    Faas {
         #[command(subcommand)]
-        command: HostedCommand,
+        command: FaasCommand,
     },
     /// Manage sandboxes (requires early access)
     Sandbox {
@@ -389,8 +389,8 @@ pub struct CredsArgs {
 }
 
 #[derive(Subcommand, Debug)]
-pub enum HostedCommand {
-    /// Initialize a new hosted server source-code directory with a template
+pub enum FaasCommand {
+    /// Initialize a new FaaS server source-code directory with a template
     Init {
         /// Path to the source-code directory
         #[arg(default_value = ".")]

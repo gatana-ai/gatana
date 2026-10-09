@@ -34,7 +34,7 @@ pub async fn run(cli: Cli) -> Result<()> {
         Command::Tools(args) => servers::call_tool(&context, args).await,
         Command::Deployment { command } => servers::deployment(&context, command).await,
         Command::Creds(args) => servers::effective_credentials(&context, args).await,
-        Command::Hosted { command } => servers::hosted(&context, command).await,
+        Command::Faas { command } => servers::faas(&context, command).await,
         Command::Sandbox { command } => servers::sandbox(&context, command).await,
         Command::Skills { command } => skills::run(&context, command).await,
         Command::Config { command } => config::run(&context, command).await,

@@ -1,5 +1,5 @@
 //! The organization and API client a command works against, resolved on first use: commands that
-//! do not talk to Gatana (`config ls`, `hosted run`, `skills hook`) never need a configuration.
+//! do not talk to Gatana (`config ls`, `faas run`, `skills hook`) never need a configuration.
 
 use crate::config::{self, ResolvedConfig, Strategy};
 use anyhow::{Context as _, Result, anyhow};

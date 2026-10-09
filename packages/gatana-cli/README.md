@@ -138,22 +138,22 @@ Operations on servers and credentials.
 
 ### Server management
 
-Deployments, tool calls, hosted servers and effective credentials.
+Deployments, tool calls, FaaS servers and effective credentials.
 
-| Command             | Syntax                                                                            | Description                                                            |
-| ------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **tool**            | `gatana tool <name> [-a kv...] [-f file] [-p part]`                               | Call a tool by its universal name (`serverSlug_toolName`)              |
-| **deploy get**      | `gatana deploy get <name>`                                                        | Get the deployment status of a server                                  |
-| **deploy logs**     | `gatana deploy logs <name> [-f] [-p] [--id <deploymentId>]`                       | Show the logs of a stdio or hosted server                              |
-| **deploy wait**     | `gatana deploy wait <name> [--timeout 10m]`                                       | Wait until the deployment is ready                                     |
-| **deploy stop**     | `gatana deploy stop <name>`                                                       | Stop a deployment. The next tool call starts it again, if enabled      |
-| **deploy start**    | `gatana deploy start <name> [--wait]`                                             | Start a deployment                                                     |
-| **hosted init**     | `gatana hosted init [path]`                                                       | Make a new hosted server folder from a template                        |
-| **hosted verify**   | `gatana hosted verify <path>`                                                     | Verify the local source code (needs Node.js)                           |
-| **hosted run**      | `gatana hosted run <path> <tool> [-i json] [-f file] [-p k=v]`                    | Call a tool in the local source code, without a deploy (needs Node.js) |
-| **hosted upload**   | `gatana hosted upload <name> [path] [--create] [--no-wait] [--no-logs] [--force]` | Upload the source code, deploy it and wait until it is ready           |
-| **hosted download** | `gatana hosted download <name> [-O file]`                                         | Download the deployed source code as a zip file                        |
-| **creds**           | `gatana creds <slug> [--cred-id <id>]`                                            | Get the effective credentials or token of a server                     |
+| Command           | Syntax                                                                          | Description                                                            |
+| ----------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **tool**          | `gatana tool <name> [-a kv...] [-f file] [-p part]`                             | Call a tool by its universal name (`serverSlug_toolName`)              |
+| **deploy get**    | `gatana deploy get <name>`                                                      | Get the deployment status of a server                                  |
+| **deploy logs**   | `gatana deploy logs <name> [-f] [-p] [--id <deploymentId>]`                     | Show the logs of a stdio or hosted server                              |
+| **deploy wait**   | `gatana deploy wait <name> [--timeout 10m]`                                     | Wait until the deployment is ready                                     |
+| **deploy stop**   | `gatana deploy stop <name>`                                                     | Stop a deployment. The next tool call starts it again, if enabled      |
+| **deploy start**  | `gatana deploy start <name> [--wait]`                                           | Start a deployment                                                     |
+| **faas init**     | `gatana faas init [path]`                                                       | Make a new FaaS server folder from a template                          |
+| **faas verify**   | `gatana faas verify <path>`                                                     | Verify the local source code (needs Node.js)                           |
+| **faas run**      | `gatana faas run <path> <tool> [-i json] [-f file] [-p k=v]`                    | Call a tool in the local source code, without a deploy (needs Node.js) |
+| **faas upload**   | `gatana faas upload <name> [path] [--create] [--no-wait] [--no-logs] [--force]` | Upload the source code, deploy it and wait until it is ready           |
+| **faas download** | `gatana faas download <name> [-O file]`                                         | Download the deployed source code as a zip file                        |
+| **creds**         | `gatana creds <slug> [--cred-id <id>]`                                          | Get the effective credentials or token of a server                     |
 
 > `tool` reads its arguments from stdin when you give neither `-a` nor `-f`. `-p` selects the part
 > of the response to print: `text` (default), `structured` or `unstructured`.
@@ -236,7 +236,7 @@ Configuration, authentication and schemas.
 
 ```bash
 # Install, sign in and connect the agents on this machine
-npm install -g gatana
+curl -fsSL https://github.com/gatana-ai/gatana/releases/latest/download/install.sh | sh
 gatana install
 
 # Or only sign in
@@ -275,20 +275,20 @@ echo '{"description": "Piped"}' | gatana patch server my-server
 gatana delete server my-server
 ```
 
-### Develop a hosted server
+### Develop a FaaS server
 
 ```bash
 # Make a new server folder
-gatana hosted init ./my-server
+gatana faas init ./my-server
 
 # Verify the source code locally
-gatana hosted verify ./my-server
+gatana faas verify ./my-server
 
 # Call a tool locally before you deploy
-gatana hosted run ./my-server my_tool -p input="hello"
+gatana faas run ./my-server my_tool -p input="hello"
 
 # Upload, deploy and wait until it is ready
-gatana hosted upload my-server ./my-server --create
+gatana faas upload my-server ./my-server --create
 
 # Show and follow the deployment logs
 gatana deploy logs my-server -f
@@ -297,7 +297,7 @@ gatana deploy logs my-server -f
 gatana deploy wait my-server --timeout 5m
 
 # Download the deployed source code
-gatana hosted download my-server -O my-server.zip
+gatana faas download my-server -O my-server.zip
 
 # Stop and start the deployment
 gatana deploy stop my-server
@@ -480,11 +480,11 @@ Fixes:
   exited with 0.
 - With `-o json` or `-o yaml`, progress lines go to stderr, so stdout holds only the result.
 - `-o` accepts only `json`, `yaml` and `table`.
-- `hosted download` writes to `-O, --out-file`. Its old `-o` never worked, because the global `-o`
+- `faas download` writes to `-O, --out-file`. Its old `-o` never worked, because the global `-o`
   took the value.
-- `hosted verify` prints its result and exits with 1 when a tool is not valid. Before, it printed
+- `faas verify` prints its result and exits with 1 when a tool is not valid. Before, it printed
   nothing.
-- `hosted upload` fails, with the container's logs, when the deployment does not become ready.
+- `faas upload` fails, with the container's logs, when the deployment does not become ready.
   Before, it reported success. `--no-logs` now skips those logs. `--force` now also covers a module
   that does not import. Tools that fail the check are listed as warnings.
 - An image pull failure during a deployment is reported with its reason. Before, it was ignored and
@@ -495,14 +495,15 @@ Fixes:
 
 Changes:
 
-- `hosted local-verify` and `hosted local-run` are now `hosted verify` and `hosted run`.
+- The `hosted` command group is now `faas`. `hosted local-verify` and `hosted local-run` are now
+  `faas verify` and `faas run`.
 - `config show` is now `config current`. `config set-api-key` is gone: use
   `config login <org> --pat <token>`.
 - `create server` takes the slug with `-s, --slug`.
 - `delete creds` deletes one credential by its ID. It has no `--all`.
-- `hosted verify` and `hosted run` start `node` to load the source code. When the source folder
+- `faas verify` and `faas run` start `node` to load the source code. When the source folder
   cannot resolve `zod`, the CLI installs it once into its cache folder with npm and links it in for
-  the run. `hosted upload` without Node.js checks `index.js` for a schema export only.
+  the run. `faas upload` without Node.js checks `index.js` for a schema export only.
 - `create server` without `--transport-type` shows a list to pick from, not a text prompt.
 - `config login --no-browser` prints the link without opening a browser.
 - `-o yaml` does not fold long strings at 80 columns. Tables have no trailing spaces.

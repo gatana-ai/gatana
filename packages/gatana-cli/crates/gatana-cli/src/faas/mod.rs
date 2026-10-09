@@ -1,4 +1,4 @@
-//! Hosted servers: JavaScript source code that Gatana runs as an MCP server.
+//! FaaS servers: JavaScript source code that Gatana runs as an MCP server.
 
 pub mod deployment;
 pub mod runner;
@@ -57,7 +57,7 @@ pub async fn verify(source: &Path) -> Result<Value> {
     Ok(Value::Object(result))
 }
 
-/// The input of `hosted run`: `--input` JSON, else `--file`, then `-p key=value` on top.
+/// The input of `faas run`: `--input` JSON, else `--file`, then `-p key=value` on top.
 pub fn tool_input(input: Option<&str>, file: Option<&Path>, params: &[String]) -> Result<Value> {
     let mut data = if let Some(input) = input {
         serde_json::from_str(input).map_err(|error| anyhow!("Failed to parse inline JSON: {error}"))?
@@ -156,7 +156,7 @@ pub fn init(target: &Path) -> Result<()> {
         std::fs::create_dir_all(&path)?;
     }
     std::fs::write(path.join("index.js"), TEMPLATE)?;
-    output::info(&format!("Initialized hosted server source code template at {}", path.display()));
+    output::info(&format!("Initialized FaaS server source code template at {}", path.display()));
     Ok(())
 }
 
@@ -201,7 +201,7 @@ fn zip_time(time: std::time::SystemTime) -> Option<zip::DateTime> {
 
 /// Zips the folder into a temporary file, removed when the handle drops.
 pub fn create_zip(source: &Path) -> Result<tempfile::NamedTempFile> {
-    let mut archive_file = tempfile::Builder::new().prefix("hosted-function-").suffix(".zip").tempfile()?;
+    let mut archive_file = tempfile::Builder::new().prefix("faas-function-").suffix(".zip").tempfile()?;
     {
         let mut zip = zip::ZipWriter::new(archive_file.as_file_mut());
         for (path, name) in deployment_files(source)? {

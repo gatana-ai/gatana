@@ -1,7 +1,7 @@
-//! Runs hosted server source code on this machine with Node.js, for `hosted verify` and
-//! `hosted run`. The code is JavaScript, so this is the one part of the CLI that needs `node`.
+//! Runs FaaS server source code on this machine with Node.js, for `faas verify` and
+//! `faas run`. The code is JavaScript, so this is the one part of the CLI that needs `node`.
 //!
-//! The hosted runtime provides `zod`. When the source folder cannot resolve it, the CLI installs
+//! The FaaS runtime provides `zod`. When the source folder cannot resolve it, the CLI installs
 //! it once into its cache folder with npm and links it into the source folder for the run, as the
 //! TypeScript CLI did with its own copy.
 
@@ -12,13 +12,13 @@ use std::process::Stdio;
 use tokio::process::Command;
 
 const RUNNER: &str = include_str!("runner.mjs");
-/// Dependencies the hosted runtime has pre-installed.
+/// Dependencies the FaaS runtime has pre-installed.
 const RUNTIME_DEPS: [&str; 1] = ["zod"];
 
 /// `node` is not on the PATH.
 #[derive(Debug, thiserror::Error)]
 #[error(
-    "Node.js is needed to run hosted server code on this machine. Install it from https://nodejs.org and try again."
+    "Node.js is needed to run FaaS server code on this machine. Install it from https://nodejs.org and try again."
 )]
 pub struct NodeMissing;
 
@@ -78,7 +78,7 @@ fn resolvable(source: &Path, package: &str) -> bool {
 
 /// The cached copy of a runtime dependency, installed on first use.
 async fn cached_dependency(package: &str) -> Result<PathBuf> {
-    let root = cache_dir().join("hosted-runtime");
+    let root = cache_dir().join("faas-runtime");
     let path = root.join("node_modules").join(package);
     if path.join("package.json").is_file() {
         return Ok(path);

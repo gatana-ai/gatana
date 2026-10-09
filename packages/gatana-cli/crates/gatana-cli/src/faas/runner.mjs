@@ -1,4 +1,4 @@
-// Runs a hosted server's index.js for `gatana hosted verify` and `gatana hosted run`. The gatana
+// Runs a FaaS server's index.js for `gatana faas verify` and `gatana faas run`. The gatana
 // binary writes this file to a temporary folder and starts it with the local `node`.
 //
 //   node runner.mjs verify <sourceDir> <resultFile>
