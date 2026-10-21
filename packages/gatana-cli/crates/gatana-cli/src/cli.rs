@@ -33,17 +33,35 @@ Utility Commands:
   config        Show and change the configuration; log in
   auth-info     Display info about the authenticated user
   schema        Print OpenAPI resource schemas
+  upgrade       Upgrade gatana to the latest release, the same way it was installed
   help          Print this message or the help of the given subcommand(s)
 
 Options:
 {options}{after-help}";
+
+/// `ROOT_HELP` with every heading in clap's header style, so they look like "Usage:". clap removes
+/// the style when the output is not a terminal or NO_COLOR is set.
+fn root_help() -> String {
+    let header = *clap::builder::Styles::default().get_header();
+    ROOT_HELP
+        .lines()
+        .map(|line| {
+            if line.ends_with(':') && !line.starts_with(' ') {
+                format!("{header}{line}{header:#}")
+            } else {
+                line.to_string()
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
 
 #[derive(Parser, Debug)]
 #[command(
     name = "gatana",
     version,
     about = "Gatana CLI",
-    help_template = ROOT_HELP,
+    help_template = root_help(),
     propagate_version = true
 )]
 pub struct Cli {
@@ -126,6 +144,9 @@ pub enum Command {
         #[command(subcommand)]
         command: SchemaCommand,
     },
+    /// Upgrade gatana to the latest release, the same way it was installed: install.sh, npm, pnpm,
+    /// bun or Homebrew
+    Upgrade(UpgradeArgs),
 }
 
 const CONFIG_ABOUT: &str = "Show configuration requirements and current status. Available configuration strategies:
@@ -627,6 +648,13 @@ pub struct InstallAgentsArgs {
     /// When a sign-in is needed: print the link without opening a browser
     #[arg(long = "no-browser")]
     pub no_browser: bool,
+}
+
+#[derive(Args, Debug)]
+pub struct UpgradeArgs {
+    /// Show how this gatana was installed and what the upgrade would do, without changing anything
+    #[arg(long = "dry-run")]
+    pub dry_run: bool,
 }
 
 #[derive(Subcommand, Debug)]

@@ -38,6 +38,10 @@ npm installs the binary for your machine from an optional dependency, `@gatana/c
 `install.sh` puts the binary in `~/.local/bin`. Set `GATANA_INSTALL_DIR` to use a different folder,
 and `GATANA_VERSION` to install a given version.
 
+To get a new release, run `gatana upgrade`. It finds out from the path of the binary how gatana was
+installed (install.sh, npm, pnpm, bun or Homebrew) and upgrades it the same way. `gatana upgrade
+--dry-run` only shows the install method and what the upgrade would do.
+
 ## Quick start
 
 ```bash
@@ -205,16 +209,17 @@ changes back. See the [skills documentation](https://docs.gatana.ai/skills) for 
 
 Configuration, authentication and schemas.
 
-| Command                | Syntax                                                        | Description                                           |
-| ---------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
-| **config current**     | `gatana config current`                                       | Show the resolved organization and configuration      |
-| **config token**       | `gatana config token`                                         | Print the token that requests use                     |
-| **config login**       | `gatana config login [org-id-or-url] [-p pat] [--no-browser]` | Log in in the browser or with a personal access token |
-| **config ls**          | `gatana config ls`                                            | List all configured organizations                     |
-| **config set-default** | `gatana config set-default <org-id>`                          | Set the default organization                          |
-| **config remove**      | `gatana config remove <org-id>`                               | Remove an organization from the config file           |
-| **auth-info**          | `gatana auth-info`                                            | Show the authenticated user and organization          |
-| **schema server**      | `gatana schema server`                                        | Print the resolved OpenAPI schema of the Server DTO   |
+| Command                | Syntax                                                        | Description                                             |
+| ---------------------- | ------------------------------------------------------------- | ------------------------------------------------------- |
+| **config current**     | `gatana config current`                                       | Show the resolved organization and configuration        |
+| **config token**       | `gatana config token`                                         | Print the token that requests use                       |
+| **config login**       | `gatana config login [org-id-or-url] [-p pat] [--no-browser]` | Log in in the browser or with a personal access token   |
+| **config ls**          | `gatana config ls`                                            | List all configured organizations                       |
+| **config set-default** | `gatana config set-default <org-id>`                          | Set the default organization                            |
+| **config remove**      | `gatana config remove <org-id>`                               | Remove an organization from the config file             |
+| **auth-info**          | `gatana auth-info`                                            | Show the authenticated user and organization            |
+| **schema server**      | `gatana schema server`                                        | Print the resolved OpenAPI schema of the Server DTO     |
+| **upgrade**            | `gatana upgrade [--dry-run]`                                  | Upgrade to the latest release, the way it was installed |
 
 ---
 

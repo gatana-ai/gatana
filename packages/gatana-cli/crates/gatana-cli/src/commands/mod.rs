@@ -5,6 +5,7 @@ mod install;
 mod resources;
 mod servers;
 mod skills;
+mod upgrade;
 
 use crate::cli::{Cli, Command};
 use crate::context::Context;
@@ -40,6 +41,7 @@ pub async fn run(cli: Cli) -> Result<()> {
         Command::Config { command } => config::run(&context, command).await,
         Command::AuthInfo => config::auth_info(&context).await,
         Command::Schema { command } => config::schema(&context, command).await,
+        Command::Upgrade(args) => upgrade::run(&context, args).await,
         // It signs in by itself when the saved credentials do not work.
         Command::Install(args) => return install::run(context, args).await,
     };
