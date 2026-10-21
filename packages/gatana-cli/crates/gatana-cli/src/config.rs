@@ -184,18 +184,21 @@ impl ResolvedConfig {
             Credentials::ApiKey(key) => return Ok(key.clone()),
             Credentials::File { org } => org,
         };
-        if let Some(pat) = org.get("pat").and_then(Value::as_str).filter(|pat| !pat.is_empty()) {
-            return Ok(pat.to_string());
+        let now = chrono::Utc::now().timestamp();
+        if let Some(token) = usable_token(org, now) {
+            return Ok(token);
+        }
+        // The server rotates the refresh token on every use and revokes the whole login when a used
+        // one comes back. Agents run their session-start hooks side by side, so two processes would
+        // refresh with the same token at once, and the one that came second would revoke the tokens
+        // the first had just saved. One process refreshes at a time; the next one reads its tokens.
+        let _lock = lock_config().await?;
+        let org = get_organization(&self.org_id).unwrap_or_else(|| org.clone());
+        if let Some(token) = usable_token(&org, chrono::Utc::now().timestamp()) {
+            gatana_api::debug!("gatana", "Using the access token another process saved");
+            return Ok(token);
         }
         let tokens = org.get("tokens");
-        let access = tokens.and_then(|t| t.get("access_token")).and_then(Value::as_str).filter(|t| !t.is_empty());
-        let expires_at = tokens.and_then(|t| t.get("expires_at")).and_then(Value::as_f64).unwrap_or(0.0);
-        let now = chrono::Utc::now().timestamp() as f64;
-        if let Some(access) = access
-            && expires_at > now + 60.0
-        {
-            return Ok(access.to_string());
-        }
         let Some(refresh) =
             tokens.and_then(|t| t.get("refresh_token")).and_then(Value::as_str).filter(|t| !t.is_empty())
         else {
@@ -219,6 +222,32 @@ impl ResolvedConfig {
         gatana_api::debug!("gatana", "Token refreshed successfully");
         Ok(fresh.access_token)
     }
+}
+
+/// The personal access token, or the OIDC access token while it is valid for at least another minute.
+fn usable_token(org: &Value, now: i64) -> Option<String> {
+    if let Some(pat) = org.get("pat").and_then(Value::as_str).filter(|pat| !pat.is_empty()) {
+        return Some(pat.to_string());
+    }
+    let tokens = org.get("tokens")?;
+    let access = tokens.get("access_token").and_then(Value::as_str).filter(|t| !t.is_empty())?;
+    let expires_at = tokens.get("expires_at").and_then(Value::as_f64).unwrap_or(0.0);
+    (expires_at > (now + 60) as f64).then(|| access.to_string())
+}
+
+/// An exclusive lock, held until the file is dropped. It is taken on a file of its own because
+/// `write_config` replaces the config file, and a lock on the replaced file would guard nothing.
+/// The system releases it when the process ends, so a crash leaves no stale lock behind.
+async fn lock_config() -> Result<std::fs::File> {
+    let path = config_file_path().with_extension("config.lock");
+    let mut options = std::fs::OpenOptions::new();
+    options.write(true).create(true).truncate(false);
+    #[cfg(unix)]
+    std::os::unix::fs::OpenOptionsExt::mode(&mut options, 0o600);
+    let file = options.open(&path).with_context(|| format!("Failed to open lock file {}", path.display()))?;
+    tokio::task::spawn_blocking(move || file.lock().map(|()| file))
+        .await?
+        .with_context(|| format!("Failed to lock {}", path.display()))
 }
 
 /// A source of configuration, tried in order.
@@ -288,5 +317,17 @@ mod tests {
         assert_eq!(tenant_from_url("https://acme.gatana.ai"), "acme");
         assert_eq!(tenant_from_url("https://acme.local.gatana.ai/x"), "acme");
         assert_eq!(tenant_from_url("not a url"), "");
+    }
+
+    #[test]
+    fn usable_token_needs_a_minute_of_validity_left() {
+        let tokens = |expires_at: i64| json!({ "tokens": { "access_token": "at", "refresh_token": "rt", "expires_at": expires_at } });
+        assert_eq!(usable_token(&tokens(1_000), 900).as_deref(), Some("at"));
+        assert_eq!(usable_token(&tokens(1_000), 940), None);
+        assert_eq!(usable_token(&json!({ "tokens": { "refresh_token": "rt" } }), 0), None);
+        assert_eq!(
+            usable_token(&json!({ "pat": "gk_1", "tokens": { "access_token": "at" } }), 0).as_deref(),
+            Some("gk_1")
+        );
     }
 }

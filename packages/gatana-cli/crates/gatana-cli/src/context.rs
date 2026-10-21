@@ -1,7 +1,7 @@
 //! The organization and API client a command works against, resolved on first use: commands that
 //! do not talk to Gatana (`config ls`, `faas run`, `skills hook`) never need a configuration.
 
-use crate::config::{self, ResolvedConfig, Strategy};
+use crate::config::{self, Credentials, ResolvedConfig, Strategy};
 use anyhow::{Context as _, Result, anyhow};
 use std::time::Duration;
 use tokio::sync::OnceCell;
@@ -61,5 +61,30 @@ impl Context {
                 Ok(gatana_api::Client::new(self.http.clone(), &config.base_url, token)?)
             })
             .await
+    }
+
+    /// Gatana answers a revoked or unknown token with a bare "Unauthorized". When the error is that
+    /// answer to this context's credentials, it says which credentials they are and how to replace them.
+    pub fn explain_unauthorized(&self, error: anyhow::Error) -> anyhow::Error {
+        let Some(Ok(config)) = self.config.get() else {
+            return error;
+        };
+        let base = url::Url::parse(&config.base_url).ok();
+        let refused = error.chain().filter_map(|cause| cause.downcast_ref::<gatana_api::Error>()).any(|cause| {
+            matches!(cause, gatana_api::Error::Status { status, url, .. }
+                if *status == reqwest::StatusCode::UNAUTHORIZED
+                    && base.as_ref().is_some_and(|base| base.origin() == url.origin()))
+        });
+        if !refused {
+            return error;
+        }
+        let org = &config.org_id;
+        let advice = match config.credentials {
+            Credentials::ApiKey(_) => "Gatana does not accept the key in GATANA_API_KEY".to_string(),
+            Credentials::File { .. } => {
+                format!("The login saved for {org} no longer works. Run \"gatana config login {org}\" to sign in again")
+            }
+        };
+        anyhow!("{error:#}. {advice}")
     }
 }

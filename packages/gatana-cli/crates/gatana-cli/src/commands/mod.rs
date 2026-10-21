@@ -25,7 +25,7 @@ impl std::error::Error for Silent {}
 
 pub async fn run(cli: Cli) -> Result<()> {
     let context = Context::new()?;
-    match cli.command {
+    let result = match cli.command {
         Command::Get { resource } => resources::get(&context, resource).await,
         Command::Describe { resource } => resources::describe(&context, resource).await,
         Command::Create { resource } => resources::create(&context, resource).await,
@@ -40,8 +40,10 @@ pub async fn run(cli: Cli) -> Result<()> {
         Command::Config { command } => config::run(&context, command).await,
         Command::AuthInfo => config::auth_info(&context).await,
         Command::Schema { command } => config::schema(&context, command).await,
-        Command::Install(args) => install::run(context, args).await,
-    }
+        // It signs in by itself when the saved credentials do not work.
+        Command::Install(args) => return install::run(context, args).await,
+    };
+    result.map_err(|error| context.explain_unauthorized(error))
 }
 
 /// A string at a JSON pointer, for the few fields read from responses kept raw.

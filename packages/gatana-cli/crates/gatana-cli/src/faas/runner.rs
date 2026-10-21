@@ -17,9 +17,7 @@ const RUNTIME_DEPS: [&str; 1] = ["zod"];
 
 /// `node` is not on the PATH.
 #[derive(Debug, thiserror::Error)]
-#[error(
-    "Node.js is needed to run FaaS server code on this machine. Install it from https://nodejs.org and try again."
-)]
+#[error("Node.js is needed to run FaaS server code on this machine. Install it from https://nodejs.org and try again.")]
 pub struct NodeMissing;
 
 pub fn is_node_missing(error: &anyhow::Error) -> bool {
