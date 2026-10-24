@@ -57,14 +57,14 @@ pub async fn login(http: &reqwest::Client, apex_url: &str, browser: bool) -> Res
 
     let client_id = client_id(http, &origin, &metadata, &redirect_uri, &challenge, &state).await?;
     let authorize = authorize_url(&metadata, &client_id, &redirect_uri, &challenge, &state)?;
-    crate::output::println(&format!("Please open {authorize} to sign in and choose your organization."));
+    crate::output::println(&format!("Open {authorize} to sign in and choose your organization."));
     if browser {
         let _ = open::that_detached(authorize.as_str());
     }
 
     let code = tokio::time::timeout(LOGIN_TIMEOUT, wait_for_code(&listener, &state, &metadata.issuer))
         .await
-        .map_err(|_| anyhow!("The sign-in did not finish in time. Run the login again."))??;
+        .map_err(|_| anyhow!("Sign-in timed out. Run gatana config login again."))??;
 
     let fields = [
         ("grant_type", "authorization_code"),
@@ -75,16 +75,16 @@ pub async fn login(http: &reqwest::Client, apex_url: &str, browser: bool) -> Res
     ];
     let (status, value) = post_form(http, &metadata.token_endpoint, &fields).await?;
     if !status.is_success() {
-        bail!("Failed with message: {}", oauth_error(&value));
+        bail!("Sign-in failed: {}", oauth_error(&value));
     }
     let mut tokens: Tokens = serde_json::from_value(value).context("unexpected token response")?;
     let (org_id, access_token) =
-        split_token(&tokens.access_token).ok_or_else(|| anyhow!("the access token names no organization"))?;
+        split_token(&tokens.access_token).ok_or_else(|| anyhow!("the access token has no organization ID"))?;
     tokens.access_token = access_token;
     if let Some(refresh) = tokens.refresh_token.take() {
         match split_token(&refresh) {
             Some((org, token)) if org == org_id => tokens.refresh_token = Some(token),
-            _ => bail!("the refresh token does not name the organization of the access token"),
+            _ => bail!("the refresh token must contain the same organization ID as the access token"),
         }
     }
     let base_url = organization_url(&apex, &org_id)?;
@@ -185,7 +185,7 @@ async fn wait_for_code(listener: &TcpListener, state: &str, issuer: &str) -> Res
         let answer = callback_answer(&target, state, issuer);
         let (status, page) = match &answer {
             Callback::Code(_) => ("200 OK", "Signed in to Gatana. You can close this tab and go back to the terminal."),
-            Callback::Failed(_) => ("400 Bad Request", "The sign-in failed. The terminal says why."),
+            Callback::Failed(_) => ("400 Bad Request", "Sign-in failed. See the error in the terminal."),
             Callback::Ignored => ("404 Not Found", "Not found."),
         };
         let html = format!(
@@ -246,7 +246,7 @@ fn callback_answer(target: &str, state: &str, issuer: &str) -> Callback {
     }
     // RFC 9207: an answer that names another server is not the answer to this request.
     if query.get("iss").is_some_and(|iss| iss != issuer) {
-        return Callback::Failed(format!("The answer came from {}, not from {issuer}.", query["iss"]));
+        return Callback::Failed(format!("The sign-in response came from {}. Expected {issuer}.", query["iss"]));
     }
     if let Some(error) = query.get("error") {
         let description = query.get("error_description").map(|d| format!(": {d}")).unwrap_or_default();
@@ -254,7 +254,7 @@ fn callback_answer(target: &str, state: &str, issuer: &str) -> Callback {
     }
     match query.get("code") {
         Some(code) if !code.is_empty() => Callback::Code(code.clone()),
-        _ => Callback::Failed("The answer carried no code.".to_string()),
+        _ => Callback::Failed("The sign-in response has no authorization code.".to_string()),
     }
 }
 

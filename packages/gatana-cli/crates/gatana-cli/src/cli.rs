@@ -13,7 +13,7 @@ Get Started:
   install       Sign in and connect the AI agents on this machine: gateway, skills and hooks
 
 Basic Commands:
-  get           Display one or many resources
+  get           List resources or show one resource
   describe      Show details of a specific resource
   create        Create a resource
   delete        Delete resources
@@ -31,10 +31,10 @@ Skills:
 
 Utility Commands:
   config        Show and change the configuration; log in
-  auth-info     Display info about the authenticated user
+  auth-info     Show the signed-in user
   schema        Print OpenAPI resource schemas
-  upgrade       Upgrade gatana to the latest release, the same way it was installed
-  help          Print this message or the help of the given subcommand(s)
+  upgrade       Upgrade gatana to the latest release, using the original installation method
+  help          Show help for this command or a subcommand
 
 Options:
 {options}{after-help}";
@@ -75,7 +75,7 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Command {
-    /// Display one or many resources
+    /// List resources or show one resource
     Get {
         #[command(subcommand)]
         resource: GetCommand,
@@ -121,8 +121,7 @@ pub enum Command {
         #[command(subcommand)]
         command: SandboxCommand,
     },
-    /// Install the skills of your organization into the folders AI agents read, follow collections,
-    /// and push local changes back
+    /// Install skills for AI agents, follow collections, and push local changes to Gatana
     Skills {
         #[command(subcommand)]
         command: SkillsCommand,
@@ -133,10 +132,10 @@ pub enum Command {
         #[command(subcommand)]
         command: ConfigCommand,
     },
-    /// Display info about the authenticated user
+    /// Show the signed-in user
     AuthInfo,
-    /// Sign in, then connect the AI agents on this machine to Gatana: the gateway as an MCP server,
-    /// the skills of your organization, and the hook that keeps the skills current
+    /// Sign in and connect AI agents to Gatana. Add the MCP gateway, organization skills,
+    /// and hooks that update skills when a session starts
     #[command(after_help = INSTALL_EXAMPLES)]
     Install(InstallAgentsArgs),
     /// Print OpenAPI resource schemas
@@ -144,25 +143,32 @@ pub enum Command {
         #[command(subcommand)]
         command: SchemaCommand,
     },
-    /// Upgrade gatana to the latest release, the same way it was installed: install.sh, npm, pnpm,
+    /// Upgrade gatana to the latest release, using the original installation method: install.sh, npm, pnpm,
     /// bun or Homebrew
     Upgrade(UpgradeArgs),
 }
 
-const CONFIG_ABOUT: &str = "Show configuration requirements and current status. Available configuration strategies:
+const CONFIG_ABOUT: &str = "Show and change the configuration. The CLI checks these sources in order:
 
-* EnvConfigStrategy: Provide configuration via environment variables. Required: GATANA_API_KEY and either GATANA_ORG_ID or GATANA_BASE_URL. Example: export GATANA_API_KEY=your_api_key; export GATANA_ORG_ID=your_org_id
-* FileConfigStrategy: Provide configuration via a local config file (~/.gatana.config). Use the \"gatana config\" commands to manage this configuration. The CLI will look for the default organization in the config file or use the org specified by GATANA_ORG_ID env var.";
+1. Environment variables
+   Set GATANA_API_KEY and either GATANA_ORG_ID or GATANA_BASE_URL.
+   Example:
+     export GATANA_API_KEY=your_api_key
+     export GATANA_ORG_ID=your_org_id
+
+2. Saved settings in ~/.gatana.config
+   Use \"gatana config\" commands to change these settings.
+   GATANA_ORG_ID selects a saved organization. If unset, the CLI uses the default organization.";
 
 #[derive(Subcommand, Debug)]
 pub enum GetCommand {
-    /// Get server(s)
+    /// List servers or show one server
     #[command(visible_alias = "servers")]
     Server {
         /// Server slug (omit to list all)
         name: Option<String>,
     },
-    /// Get tool(s)
+    /// List tools or show one tool
     #[command(visible_alias = "tools")]
     Tool {
         /// Tool name (omit to list all). Use "gatana tool <name>" to call the tool
@@ -179,11 +185,11 @@ pub enum GetCommand {
         /// Server slug
         #[arg(short = 's', long = "server", value_name = "SLUG")]
         server: Option<String>,
-        /// Resolve effective credentials (e.g. using refresh token)
+        /// Resolve credentials, using a refresh token if needed
         #[arg(short = 'e', long = "with-effective")]
         with_effective: bool,
     },
-    /// Get sandbox(es)
+    /// List sandboxes or show one sandbox
     #[command(visible_alias = "sandboxes")]
     Sandbox {
         /// Sandbox ID (omit to list all)
@@ -192,12 +198,12 @@ pub enum GetCommand {
         #[arg(long)]
         all: bool,
     },
-    /// Get skill(s)
+    /// List skills or show one skill
     #[command(visible_alias = "skills")]
     Skill {
         /// Skill name (omit to list all)
         name: Option<String>,
-        /// Only skills whose name or description contains the text
+        /// Filter skills by text in their name or description
         #[arg(short = 'q', long = "query", value_name = "TEXT")]
         query: Option<String>,
     },
@@ -242,10 +248,9 @@ pub enum CreateCommand {
         #[arg(short = 't', long = "transport-type", value_enum, value_name = "TYPE")]
         transport_type: Option<TransportType>,
     },
-    /// Create or replace credentials for a server. The credential type (oauth/apikey) is inferred from
-    /// the server config. For OAuth, omit -f to get an authorize URL, or provide -f to file upload a
-    /// token-set, or use stdin as JSON. For API keys, provide keys via -f or stdin as JSON:
-    /// [["header","value"], …]
+    /// Create or replace server credentials. The server configuration selects OAuth or API keys.
+    /// For OAuth, omit input to get an authorization URL, or provide tokens as JSON with -f or stdin.
+    /// For API keys, provide JSON with -f or stdin: [["header","value"], …]
     #[command(visible_alias = "creds")]
     Credentials {
         /// Server slug
@@ -253,7 +258,7 @@ pub enum CreateCommand {
         /// JSON file with credentials
         #[arg(short = 'f', long = "file", value_name = "PATH")]
         file: Option<PathBuf>,
-        /// Credential scope. If omitted will default to servers default credential scope
+        /// Credential scope (defaults to the server setting)
         #[arg(long, value_enum)]
         scope: Option<CredentialScope>,
     },
@@ -343,10 +348,10 @@ pub struct ToolArgs {
     /// Name of the tool to call. See "gatana get tools" for the list of available tools
     #[arg(value_name = "TOOL_NAME")]
     pub tool_name: String,
-    /// JSON file with argument (omit to read from stdin)
+    /// JSON file with tool arguments (omit to read from stdin)
     #[arg(short = 'f', long = "file", value_name = "PATH")]
     pub file: Option<PathBuf>,
-    /// Inline argument: JSON string or dot-notation key=value pairs
+    /// Tool arguments: JSON string or dot-notation key=value pairs
     #[arg(short = 'a', long = "arg", value_name = "KV", num_args = 1.., action = clap::ArgAction::Append)]
     pub arg: Vec<String>,
     /// Output part of the raw response
@@ -356,7 +361,7 @@ pub struct ToolArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum DeploymentCommand {
-    /// Gets the deployment status of a server
+    /// Show server deployment status
     Get {
         /// Server slug
         name: String,
@@ -379,17 +384,16 @@ pub enum DeploymentCommand {
     Wait {
         /// Server slug
         name: String,
-        /// The length of time to wait before giving up, like 1m30s
+        /// Maximum wait time, for example 1m30s
         #[arg(long, value_name = "DURATION", default_value = "10m")]
         timeout: String,
     },
-    /// Stops a server's deployment. Unless disabled, Gatana will start it automatically again if a
-    /// tool call comes in
+    /// Stop a server. Unless disabled, it starts again when a tool is called
     Stop {
         /// Server slug
         name: String,
     },
-    /// Starts a server's deployment
+    /// Start a server
     Start {
         /// Server slug
         name: String,
@@ -411,20 +415,20 @@ pub struct CredsArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum FaasCommand {
-    /// Initialize a new FaaS server source-code directory with a template
+    /// Create a FaaS server source directory from a template
     Init {
-        /// Path to the source-code directory
+        /// Path to the source code directory
         #[arg(default_value = ".")]
         path: PathBuf,
     },
-    /// Verify local source-code (needs Node.js)
+    /// Verify local source code (requires Node.js)
     Verify {
-        /// Path to the source-code directory
+        /// Path to the source code directory
         path: PathBuf,
     },
-    /// Call a tool in the local source-code for testing (needs Node.js)
+    /// Call a tool in the local source code for testing (requires Node.js)
     Run {
-        /// Path to the source-code directory. Use . for current directory
+        /// Path to the source code directory. Use . for current directory
         path: PathBuf,
         /// Name of the tool to run
         #[arg(value_name = "TOOL_NAME")]
@@ -439,7 +443,7 @@ pub enum FaasCommand {
         #[arg(short = 'p', long = "param", value_name = "KEY=VALUE")]
         param: Vec<String>,
     },
-    /// Upload new source-code
+    /// Upload new source code
     Upload {
         /// Server slug
         name: String,
@@ -459,7 +463,7 @@ pub enum FaasCommand {
         #[arg(long)]
         force: bool,
     },
-    /// Download the deployed source-code as a zip file
+    /// Download the deployed source code as a zip file
     Download {
         /// Server slug
         name: String,
@@ -471,7 +475,7 @@ pub enum FaasCommand {
 
 #[derive(Subcommand, Debug)]
 pub enum SandboxCommand {
-    /// Open an interactive SSH shell into a sandbox
+    /// Open an interactive SSH shell in a sandbox
     Shell {
         /// Sandbox ID
         id: String,
@@ -482,10 +486,10 @@ pub enum SandboxCommand {
 pub enum SkillsCommand {
     /// Download and install one or more skills
     Install(InstallArgs),
-    /// Refresh the skills in each folder, as the session-start hooks do. A folder nothing was
-    /// installed into gets every skill you can read.
+    /// Update the skills in each folder. If the folder has no saved sync settings, install all
+    /// skills you can access
     Sync(SyncArgs),
-    /// Uninstall any hooks that keep your local skills up-to-date
+    /// Remove the hooks that update local skills
     RemoveHooks {
         /// The agent. Omit to remove the hook from every agent
         #[arg(value_enum)]
@@ -509,12 +513,12 @@ pub enum SkillsCommand {
         #[arg(long = "org", value_name = "ID")]
         org: Option<String>,
     },
-    /// List the skills you can read
+    /// List the skills you can access
     Ls {
-        /// Only skills whose name or description contains the text
+        /// Filter skills by text in their name or description
         #[arg(short = 'q', long = "query", value_name = "TEXT")]
         query: Option<String>,
-        /// Only the skills in this collection
+        /// Show only skills in this collection
         #[arg(short = 'c', long = "collection", value_name = "NAME")]
         collection: Option<String>,
         /// List the collections instead of the skills
@@ -548,17 +552,17 @@ pub struct InstallArgs {
     /// Keep skills locally that are removed from Gatana
     #[arg(long = "no-prune")]
     pub no_prune: bool,
-    /// Skip safe-guards: overwrite non-Gatana skills, and install into a directory that is not empty
-    /// or is synced from another organization
+    /// Overwrite local edits and skills not tracked by Gatana. Allow installation into a nonempty directory
+    /// or one synced from another organization
     #[arg(long)]
     pub force: bool,
-    /// Forget any previous state. Download and re-install every skill you can read again
+    /// Clear the selected skills and collections, then sync all skills you can access
     #[arg(long)]
     pub reset: bool,
-    /// Only if name is provided: if a skill and a collection share the name, use the collection
+    /// Treat the name as a collection if a skill has the same name
     #[arg(long, conflicts_with = "skill")]
     pub collection: bool,
-    /// Only if name is provided: if a skill and a collection share the name, use the skill
+    /// Treat the name as a skill if a collection has the same name
     #[arg(long)]
     pub skill: bool,
     /// Do not add the session-start hooks
@@ -583,7 +587,7 @@ pub struct SyncArgs {
     /// Keep skills locally that are removed from Gatana
     #[arg(long = "no-prune")]
     pub no_prune: bool,
-    /// Skip safe-guards: overwrite locally edited and non-Gatana skills
+    /// Overwrite local edits and skills not tracked by Gatana. Allow syncing from a different organization
     #[arg(long)]
     pub force: bool,
     /// Print nothing on success; warnings and errors still go to stderr
@@ -596,11 +600,11 @@ pub struct SyncArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum ConfigCommand {
-    /// Show resolved organization and configuration
+    /// Show the organization and configuration in use
     Current,
-    /// Print the token which would be used for any request
+    /// Print the token used for requests
     Token,
-    /// Log in in the browser or with a personal access token. Examples: gatana config login,
+    /// Sign in with a browser or personal access token. Examples: gatana config login,
     /// gatana config login my-organization, gatana config login my-organization --pat gk_...
     Login {
         /// Organization ID (e.g., org123) or instance URL (e.g., https://org123.gatana.ai). For a
@@ -608,7 +612,7 @@ pub enum ConfigCommand {
         /// the browser; name it to log in with a code instead, e.g. over SSH.
         #[arg(value_name = "ORG_ID_OR_URL")]
         org_id_or_url: Option<String>,
-        /// Personal Access Token (PAT) for authentication. Needs the organization
+        /// Personal access token (PAT). Requires an organization
         #[arg(short = 'p', long = "pat")]
         pat: Option<String>,
         /// With an organization: its base URL, for development. Without one: the base domain to
@@ -645,21 +649,24 @@ pub struct InstallAgentsArgs {
     /// The agents to connect. Omit to choose from a menu
     #[arg(value_enum, value_name = "AGENT")]
     pub agents: Vec<HookAgent>,
-    /// When a sign-in is needed: print the link without opening a browser
+    /// Print the sign-in link without opening a browser
     #[arg(long = "no-browser")]
     pub no_browser: bool,
+    /// Overwrite local edits and skills not tracked by Gatana. Allow syncing from a different organization
+    #[arg(long)]
+    pub force: bool,
 }
 
 #[derive(Args, Debug)]
 pub struct UpgradeArgs {
-    /// Show how this gatana was installed and what the upgrade would do, without changing anything
+    /// Show the installation method and planned upgrade without making changes
     #[arg(long = "dry-run")]
     pub dry_run: bool,
 }
 
 #[derive(Subcommand, Debug)]
 pub enum SchemaCommand {
-    /// Server DTO
+    /// Server data schema
     Server,
 }
 

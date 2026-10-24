@@ -82,7 +82,7 @@ fn own_tool(prefix: &Path, tool: &str) -> PathBuf {
 pub async fn run(context: &Context, args: UpgradeArgs) -> Result<()> {
     let binary = std::env::current_exe()
         .and_then(std::fs::canonicalize)
-        .context("could not find the file of the running gatana")?;
+        .context("could not find the running gatana executable")?;
     let install = detect(&binary);
     output::info(&format!("gatana {CURRENT} at {}, {}", output::tilde(&binary), install.describe()));
     if let Install::Unmanaged(advice) = install {
@@ -292,7 +292,7 @@ fn unpack(archive: &[u8]) -> Result<Vec<u8>> {
             return Ok(bytes);
         }
     }
-    bail!("the release archive holds no gatana binary")
+    bail!("the release archive contains no gatana binary")
 }
 
 fn write_executable(path: &Path, bytes: &[u8]) -> std::io::Result<()> {

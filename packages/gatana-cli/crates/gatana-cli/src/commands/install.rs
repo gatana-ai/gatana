@@ -16,7 +16,7 @@ use serde_json::Value;
 use std::io::IsTerminal;
 
 pub async fn run(context: Context, args: InstallAgentsArgs) -> Result<()> {
-    let InstallAgentsArgs { agents, no_browser } = args;
+    let InstallAgentsArgs { agents, no_browser, force } = args;
     let context = signed_in(context, !no_browser).await?;
     let agents = choose_agents(agents)?;
     let home = home();
@@ -38,7 +38,7 @@ pub async fn run(context: Context, args: InstallAgentsArgs) -> Result<()> {
         }
     }
     let dirs = prepare_targets(&resolve_targets(&targets, &home))?;
-    let options = SyncOptions { prune: true, ..SyncOptions::default() };
+    let options = SyncOptions { prune: true, force, ..SyncOptions::default() };
     let summaries = sync_targets(&api, &identity, &dirs, &options).await?;
     skills::report_summaries(&summaries, false, false);
 
@@ -46,7 +46,7 @@ pub async fn run(context: Context, args: InstallAgentsArgs) -> Result<()> {
     let results = agents.iter().map(|agent| hooks::install_hook(*agent, &home)).collect::<Result<Vec<HookResult>>>()?;
     skills::report_hooks(&results);
 
-    output::println(&format!("\n{}", output::bold("Next, sign in from each agent:")));
+    output::println(&format!("\n{}", output::bold("Next steps for each agent:")));
     for agent in &agents {
         output::println(&format!("  {}: {}", output::bold(agent.label()), connect::next_step(*agent)));
     }
@@ -76,7 +76,9 @@ async fn signed_in(context: Context, browser: bool) -> Result<Context> {
             Ok(context)
         }
         None => {
-            bail!("The sign-in did not give working credentials. Run \"gatana config current\" to see what is used.")
+            bail!(
+                "Sign-in completed, but the credentials did not work. Run \"gatana config current\" to check the configuration in use."
+            )
         }
     }
 }
@@ -104,12 +106,12 @@ fn choose_agents(given: Vec<HookAgent>) -> Result<Vec<HookAgent>> {
         .map(|(agent, found)| if *found { agent.label().to_string() } else { format!("{} (not found)", agent.label()) })
         .collect();
     let picked = dialoguer::MultiSelect::new()
-        .with_prompt("Where to install? Space selects, Enter confirms")
+        .with_prompt("Select agents. Press Space to select and Enter to confirm")
         .items(&labels)
         .defaults(&found)
         .interact()?;
     if picked.is_empty() {
-        bail!("Nothing selected.");
+        bail!("No agents selected.");
     }
     Ok(picked.into_iter().map(|index| HOOK_AGENTS[index]).collect())
 }

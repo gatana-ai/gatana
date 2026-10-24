@@ -80,7 +80,7 @@ pub fn set_organization_login(org_id: &str, login: Value) -> Result<()> {
 }
 
 fn merge_organization(config: &mut Value, org_id: &str, update: &Value) -> Result<()> {
-    let root = config.as_object_mut().ok_or_else(|| anyhow!("config is not an object"))?;
+    let root = config.as_object_mut().ok_or_else(|| anyhow!("the configuration must be a JSON object"))?;
     let orgs = root.entry("orgs").or_insert_with(|| Value::Object(Map::new()));
     if !orgs.is_object() {
         *orgs = Value::Object(Map::new());
@@ -99,7 +99,7 @@ pub fn apex_client(origin: &str) -> Option<String> {
 
 pub fn set_apex_client(origin: &str, client_id: &str) -> Result<()> {
     let mut config = read_config();
-    let root = config.as_object_mut().ok_or_else(|| anyhow!("config is not an object"))?;
+    let root = config.as_object_mut().ok_or_else(|| anyhow!("the configuration must be a JSON object"))?;
     let clients = root.entry("apexClients").or_insert_with(|| Value::Object(Map::new()));
     if !clients.is_object() {
         *clients = Value::Object(Map::new());
@@ -210,9 +210,9 @@ impl ResolvedConfig {
             .and_then(Value::as_str)
             .filter(|id| !id.is_empty())
             .map_or_else(|| format!("{}-cli", self.org_id), str::to_string);
-        let fresh = crate::oidc::refresh(http, &self.base_url, &client_id, refresh)
-            .await
-            .map_err(|error| anyhow!("Failed to refresh access token. Please log in again. ({error})"))?;
+        let fresh = crate::oidc::refresh(http, &self.base_url, &client_id, refresh).await.map_err(|error| {
+            anyhow!("Could not refresh the access token. Sign in again with gatana config login. ({error})")
+        })?;
         let tokens = json!({
             "access_token": fresh.access_token,
             "refresh_token": fresh.refresh_token.as_deref().unwrap_or(refresh),
@@ -262,14 +262,10 @@ pub enum Strategy {
 impl Strategy {
     pub fn help(&self) -> &'static str {
         match self {
-            Strategy::Env => {
-                "EnvConfigStrategy: Provide configuration via environment variables. Required: GATANA_API_KEY and either \
-                 GATANA_ORG_ID or GATANA_BASE_URL. Example: export GATANA_API_KEY=your_api_key; export GATANA_ORG_ID=your_org_id"
-            }
+            Strategy::Env => "Environment variables: set GATANA_API_KEY and either GATANA_ORG_ID or GATANA_BASE_URL.",
             Strategy::File { .. } => {
-                "FileConfigStrategy: Provide configuration via a local config file. Use the \"gatana config\" commands to \
-                 manage this configuration. The CLI will look for the default organization in the config file or use the org \
-                 specified by GATANA_ORG_ID env var."
+                "Saved settings: use \"gatana config\" commands to change them. GATANA_ORG_ID selects a saved \
+                 organization. If unset, the CLI uses the default organization."
             }
         }
     }

@@ -113,7 +113,7 @@ async fn a_new_file_whose_name_exists_on_the_server_needs_a_baseline() {
     let file = write_skill(dir.path(), "taken", "local\n", None);
     let conflict = push_skills(&api, &identity(), std::slice::from_ref(&file), &push_defaults()).await.unwrap();
     assert_eq!(conflict[0].action, PushAction::Conflict);
-    assert!(conflict[0].detail.contains("no install baseline"));
+    assert!(conflict[0].detail.contains("no saved version to compare"));
     let forced =
         push_skills(&api, &identity(), std::slice::from_ref(&file), &PushOptions { force: true, ..push_defaults() })
             .await
@@ -191,7 +191,7 @@ async fn collection_places_a_new_skill_a_synced_file_keeps_its_collection_and_th
     assert_eq!(stamped(&file).meta("gatana-collection"), Some("other"));
 
     let missing = push_skills(&api, &identity(), std::slice::from_ref(&file), &into("missing")).await.unwrap_err();
-    assert!(missing.to_string().contains("No collection named \"missing\""));
+    assert!(missing.to_string().contains("No accessible collection named \"missing\""));
 }
 
 #[tokio::test]

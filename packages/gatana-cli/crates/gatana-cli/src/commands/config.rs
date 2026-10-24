@@ -14,7 +14,7 @@ pub async fn run(context: &Context, command: ConfigCommand) -> Result<()> {
         ConfigCommand::Current => {
             output::print(&context.config()?.describe());
             output::info(
-                "Note: This is the resolved configuration after applying all strategies (env vars, config file, etc). For more info, run with DEBUG=gatana",
+                "This is the configuration in use, including environment variables and saved settings. Run with DEBUG=gatana for details.",
             );
         }
         ConfigCommand::Token => {
@@ -25,27 +25,27 @@ pub async fn run(context: &Context, command: ConfigCommand) -> Result<()> {
             let result = match org_id_or_url {
                 Some(org_id_or_url) => login(context, &org_id_or_url, pat, base_url, !no_browser).await,
                 None if pat.is_some() => Err(anyhow!(
-                    "A personal access token belongs to one organization. Name it: gatana config login <org-id> --pat <token>"
+                    "A personal access token requires an organization. Use: gatana config login <org-id> --pat <token>"
                 )),
                 None => apex_login(context, base_url, !no_browser).await,
             };
             if let Err(error) = result {
-                output::error(&format!("Error during login: {error:#}"));
+                output::error(&format!("Sign-in failed: {error:#}"));
                 return Err(Silent.into());
             }
         }
         ConfigCommand::Ls => list(),
         ConfigCommand::SetDefault { org_id } => match config::set_default_organization(&org_id) {
-            Ok(()) => output::println(&format!("✅ Set {org_id} as default organization")),
+            Ok(()) => output::println(&format!("Set {org_id} as the default organization.")),
             Err(error) => {
-                output::error(&format!("❌ Error setting default organization: {error}"));
+                output::error(&format!("Could not set the default organization: {error}"));
                 return Err(Silent.into());
             }
         },
         ConfigCommand::Remove { org_id } => match config::remove_organization(&org_id) {
-            Ok(()) => output::println(&format!("✅ Removed organization {org_id}")),
+            Ok(()) => output::println(&format!("Removed organization {org_id}.")),
             Err(error) => {
-                output::error(&format!("❌ Error removing organization: {error}"));
+                output::error(&format!("Could not remove the organization: {error}"));
                 return Err(Silent.into());
             }
         },
@@ -77,10 +77,7 @@ async fn login(
             let device =
                 crate::oidc::start_device_login(context.http(), &base_url, &format!("{org_id}-cli"), scope).await?;
             let url = device.authorization.url().to_string();
-            output::println(&format!(
-                "Please open {url} to complete the login. If required enter {}",
-                device.authorization.user_code
-            ));
+            output::println(&format!("Open {url} to sign in. If asked, enter code {}", device.authorization.user_code));
             // A machine without a browser still has the link above.
             if browser {
                 let _ = open::that_detached(&url);
@@ -114,7 +111,7 @@ pub(super) async fn apex_login(context: &Context, apex_url: Option<String>, brow
 }
 
 fn logged_in(org_id: &str) -> Result<()> {
-    output::println("Login successful! You can now use the CLI commands.");
+    output::println("Signed in.");
     config::set_default_organization(org_id)?;
     output::println(&format!("{org_id} is now the active organization."));
     Ok(())
@@ -124,14 +121,14 @@ fn list() {
     let orgs = list_organizations();
     let default = config::default_organization();
     if orgs.is_empty() {
-        output::println("No orgs configured.");
+        output::println("No organizations configured.");
         return;
     }
-    output::println("Configured orgs:");
+    output::println("Configured organizations:");
     for org in &orgs {
         let entry = get_organization(org).unwrap_or_default();
         let marker = if default.as_deref() == Some(org.as_str()) { "* " } else { "  " };
-        output::println(&format!("  {marker}Org ID: {org}"));
+        output::println(&format!("  {marker}Organization ID: {org}"));
         if let Some(base_url) = text_at(&entry, "/baseUrl") {
             output::println(&format!("    Base URL: {base_url}"));
         }

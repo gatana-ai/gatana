@@ -110,7 +110,7 @@ The table format has uppercase headers, no borders and columns as wide as their 
 
 | Command     | Syntax                                     | Description                                                                                                                                                                                             |
 | ----------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **install** | `gatana install [agent...] [--no-browser]` | Sign in when needed, choose the agents to connect (`claude`, `codex`, `hermes`, `openclaw`), and give each one the gateway as an MCP server, the skills of your organization and the session-start hook |
+| **install** | `gatana install [agent...] [--no-browser] [--force]` | Sign in if needed and choose agents (`claude`, `codex`, `hermes`, `openclaw`). Add the gateway as an MCP server, your organization's skills, and the session-start hook to each agent. `--force` allows a skill folder to sync from a different organization and overwrites locally edited and non-Gatana skills. |
 
 > `install` writes the gateway URL of your organization into the agent's own configuration:
 > `~/.claude.json` (Claude Code), `~/.codex/config.toml`, `~/.hermes/config.yaml` or

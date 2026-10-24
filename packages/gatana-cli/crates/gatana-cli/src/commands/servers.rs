@@ -46,7 +46,7 @@ pub async fn call_tool(context: &Context, args: ToolArgs) -> Result<()> {
     // The result is read raw: MCP keeps adding content types, and printing one must not need a
     // new CLI.
     let Some(result) = response.get("result").filter(|result| !result.is_null()) else {
-        bail!("Gatana returned success but no result was returned! Please contact Gatana support.");
+        bail!("Gatana returned success without a result. Contact Gatana support.");
     };
     if result.get("isError") == Some(&Value::Bool(true)) {
         output::error(&result.to_string());
@@ -248,9 +248,9 @@ async fn upload(context: &Context, slug: &str, path: &Path, options: UploadOptio
             output::info("Node.js not found: index.js was checked for a schema export only.");
         }
         Err(error) if options.force => {
-            output::info(&format!("Source code verification failed, but proceeding due to --force flag: {error}"));
+            output::info(&format!("Source code verification failed. Continuing because --force is set: {error}"));
         }
-        Err(error) => bail!("{error}\nSource code verification failed. Use --force to proceed with deployment anyway."),
+        Err(error) => bail!("{error}\nSource code verification failed. Use --force to deploy despite this error."),
     }
 
     output::info("Creating deployment package...");
@@ -264,7 +264,7 @@ async fn upload(context: &Context, slug: &str, path: &Path, options: UploadOptio
         .is_some_and(|servers| servers.iter().any(|server| text_at(server, "/slug") == Some(slug)));
     if !exists {
         if !options.create {
-            bail!("Server '{slug}' not found. Use --create to create a new server if it does not exist.");
+            bail!("Server '{slug}' not found. Use --create to create it.");
         }
         output::info(&format!("Server '{slug}' not found. Creating new server..."));
         api.v2().create_server_v2(&new_faas_server(slug)).send().await?;
@@ -274,9 +274,7 @@ async fn upload(context: &Context, slug: &str, path: &Path, options: UploadOptio
     faas::upload(api, slug, archive.path()).await?;
     api.v1().start_mcp_server(slug).send().await?;
     if options.no_wait {
-        output::success(&format!(
-            "Deployment started. You can use \"gatana deploy wait {slug}\" to wait for deployment to finish."
-        ));
+        output::success(&format!("Deployment started. Run \"gatana deploy wait {slug}\" to wait for it to finish."));
         return Ok(());
     }
     let result = deployment::wait_for_deployment_done(api, slug, Duration::from_secs(600)).await?;
@@ -345,6 +343,6 @@ pub async fn sandbox(context: &Context, command: SandboxCommand) -> Result<()> {
         .args(["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null", "-p", &port.to_string()])
         .arg(format!("{}@{}", session.token, session.host))
         .status()
-        .map_err(|error| anyhow!("Failed to spawn ssh: {error}"))?;
+        .map_err(|error| anyhow!("Could not start SSH: {error}"))?;
     std::process::exit(status.code().unwrap_or(1));
 }

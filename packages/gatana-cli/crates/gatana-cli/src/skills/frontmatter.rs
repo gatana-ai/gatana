@@ -130,21 +130,21 @@ fn type_name(value: Option<&Value>) -> &'static str {
 fn check_string(loaded: &Map<String, Value>, key: &str, max: usize) -> Result<String, SkillMdError> {
     let invalid = |detail: String| SkillMdError(format!("Invalid frontmatter: {key} {detail}"));
     let Some(Value::String(text)) = loaded.get(key) else {
-        return Err(invalid(format!("Invalid input: expected string, received {}", type_name(loaded.get(key)))));
+        return Err(invalid(format!("must be text; received {}", type_name(loaded.get(key)))));
     };
     let length = text.encode_utf16().count();
     if length < 1 {
-        return Err(invalid("Too small: expected string to have >=1 characters".into()));
+        return Err(invalid("must not be empty".into()));
     }
     if length > max {
-        return Err(invalid(format!("Too big: expected string to have <={max} characters")));
+        return Err(invalid(format!("must be at most {max} UTF-16 code units")));
     }
     Ok(text.clone())
 }
 
 pub fn parse_skill_md(text: &str) -> Result<(SkillFrontmatter, String), SkillMdError> {
     let captures = frontmatter_re().captures(text).ok_or_else(|| {
-        SkillMdError("No frontmatter: the file must start with a --- block holding name and description".into())
+        SkillMdError("Missing YAML header. Start the file with a --- block containing name and description".into())
     })?;
     let loaded =
         crate::yaml::load(&captures[1]).map_err(|error| SkillMdError(format!("Invalid frontmatter YAML: {error}")))?;
@@ -155,7 +155,8 @@ pub fn parse_skill_md(text: &str) -> Result<(SkillFrontmatter, String), SkillMdE
     let name = check_string(&loaded, "name", 64)?;
     if !is_valid_skill_name(&name) {
         return Err(SkillMdError(
-            "Invalid frontmatter: name lowercase letters, digits and single dashes, 1-64 characters".into(),
+            "Invalid frontmatter: name must be 1-64 characters. Use lowercase letters or digits, with single dashes between groups"
+                .into(),
         ));
     }
     let description = check_string(&loaded, "description", 1024)?;
@@ -168,13 +169,17 @@ pub fn parse_skill_md(text: &str) -> Result<(SkillFrontmatter, String), SkillMdE
                     Value::String(_) | Value::Number(_) | Value::Bool(_) => {
                         metadata.insert(key.clone(), Value::String(js_string(value)));
                     }
-                    _ => return Err(SkillMdError(format!("Invalid frontmatter: metadata.{key} Invalid input"))),
+                    _ => {
+                        return Err(SkillMdError(format!(
+                            "Invalid frontmatter: metadata.{key} must be text, a number, or a boolean"
+                        )));
+                    }
                 }
             }
         }
         Some(other) => {
             return Err(SkillMdError(format!(
-                "Invalid frontmatter: metadata Invalid input: expected record, received {}",
+                "Invalid frontmatter: metadata must be a YAML mapping; received {}",
                 type_name(Some(other))
             )));
         }

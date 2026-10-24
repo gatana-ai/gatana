@@ -100,8 +100,12 @@ pub fn read_manifest(dir: &Path) -> anyhow::Result<Option<SkillsManifest>> {
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(anyhow::Error::new(error).context(format!("reading {}", path.display()))),
     };
-    let shape_error =
-        || ManifestError(format!("{} has an unexpected shape. Fix or delete it, then sync again", path.display()));
+    let shape_error = || {
+        ManifestError(format!(
+            "{} has an invalid format or unsupported version. Fix or delete it, then sync again",
+            path.display()
+        ))
+    };
     let value: Value = serde_json::from_str(&text).map_err(|_| {
         ManifestError(format!("{} is not valid JSON. Fix or delete it, then sync again", path.display()))
     })?;

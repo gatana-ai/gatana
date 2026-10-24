@@ -156,7 +156,7 @@ fn remove_skill_folder(dir: &Path, name: &str, warnings: &mut Vec<String>) -> Re
         Err(error) => return Err(error.into()),
     }
     if std::fs::remove_dir(&folder).is_err() {
-        warnings.push(format!("{} kept: it holds files the sync did not write", folder.display()));
+        warnings.push(format!("{} kept: it contains files that Gatana did not create", folder.display()));
     }
     Ok(())
 }
@@ -174,7 +174,7 @@ pub async fn sync_directory(
     if manifest.org_id != identity.org_id || manifest.base_url != identity.base_url {
         if !options.force {
             bail!(
-                "{} is synced from {} ({}). Pass --force to switch it to {} ({}); the old folders stay and become foreign",
+                "{} syncs skills from {} ({}).\nUse --force to switch to {} ({}).\nExisting skill folders will stay, but Gatana will stop tracking them. Skills with the same name in the new organization will overwrite the local SKILL.md files.",
                 dir.display(),
                 manifest.org_id,
                 manifest.base_url,
@@ -183,7 +183,7 @@ pub async fn sync_directory(
             );
         }
         warnings.push(format!(
-            "{}: switched from {} to {}; the earlier folders are no longer owned",
+            "{}: switched from {} to {}. Existing skill folders are no longer tracked unless the new organization has a skill with the same name",
             dir.display(),
             manifest.org_id,
             identity.org_id
@@ -216,11 +216,11 @@ pub async fn sync_directory(
     for op in &ops {
         match (op.kind, op.reason) {
             (OpKind::Skip, Reason::ForeignFolder) => warnings.push(format!(
-                "{} exists but was not created by this sync; skipped (use --force to take it over)",
+                "{} is not tracked by Gatana. Skipped. Use --force to overwrite its SKILL.md file",
                 dir.join(&op.name).display()
             )),
             (OpKind::Skip, Reason::LocalEdits) => warnings.push(format!(
-                "{} was edited locally; skipped (push it, or use --force to overwrite)",
+                "{} has local edits. Skipped. Push the changes with gatana skills push, or use --force to overwrite them",
                 dir.join(&op.name).join(SKILL_FILE).display()
             )),
             _ => {}

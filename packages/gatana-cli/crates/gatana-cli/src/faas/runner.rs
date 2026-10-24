@@ -166,7 +166,7 @@ pub async fn run(source: &Path, mode: Mode<'_>) -> Result<Outcome> {
 
     let text = std::fs::read_to_string(&result_file)
         .map_err(|_| anyhow!("node exited ({status}) without a result; the module may have crashed while loading"))?;
-    let value: Value = serde_json::from_str(&text).context("the runner wrote an unreadable result")?;
+    let value: Value = serde_json::from_str(&text).context("the local tool runner returned invalid JSON")?;
     let issues = value
         .get("issues")
         .and_then(Value::as_array)

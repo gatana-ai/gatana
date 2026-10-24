@@ -106,10 +106,10 @@ async fn install(context: &Context, args: InstallArgs) -> Result<()> {
         name = None;
     }
     if named && name.is_none() {
-        bail!("--collection and --skill need a name");
+        bail!("--collection and --skill require a skill or collection name");
     }
     if name.is_some() && reset {
-        bail!("--reset and a name exclude each other");
+        bail!("Cannot use --reset with a skill or collection name");
     }
     let org_context = org_context(org.as_deref())?;
     let context = org_context.as_ref().unwrap_or(context);
@@ -152,8 +152,17 @@ async fn sync(context: &Context, args: SyncArgs) -> Result<()> {
     Ok(())
 }
 
-const OP_COLUMNS: [Column; 3] =
-    [Column::path("Action", "kind"), Column::path("Skill", "name"), Column::path("Reason", "reason")];
+const OP_COLUMNS: [Column; 3] = [
+    Column::path("Action", "kind"),
+    Column::path("Skill", "name"),
+    Column::computed("Reason", |row| match row.get("reason").and_then(Value::as_str) {
+        Some("foreign-folder") => json!("not tracked by Gatana"),
+        Some("missing-locally") => json!("missing locally"),
+        Some("local-edits") => json!("local edits"),
+        Some("pruned") => json!("no longer selected or available"),
+        _ => row.get("reason").cloned().unwrap_or(Value::Null),
+    }),
+];
 
 const PUSH_COLUMNS: [Column; 3] = [
     Column::path("Skill", "name"),
@@ -166,8 +175,13 @@ const PUSH_COLUMNS: [Column; 3] = [
 fn describe_subscriptions(summary: &SyncSummary) -> String {
     match &summary.subscriptions {
         None => String::new(),
-        Some(list) if list.is_empty() => " (no subscriptions: nothing is installed here until you install a collection or skill by name, or run \"gatana skills install --reset\")".to_string(),
-        Some(list) => format!(" (following: {})", list.iter().map(describe_subscription).collect::<Vec<_>>().join(", ")),
+        Some(list) if list.is_empty() => {
+            " (no skills selected. Install a collection or skill by name, or run \"gatana skills install --reset\")"
+                .to_string()
+        }
+        Some(list) => {
+            format!(" (following: {})", list.iter().map(describe_subscription).collect::<Vec<_>>().join(", "))
+        }
     }
 }
 

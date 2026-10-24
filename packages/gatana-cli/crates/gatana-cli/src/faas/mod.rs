@@ -74,7 +74,7 @@ pub fn tool_input(input: Option<&str>, file: Option<&Path>, params: &[String]) -
         }
         for param in params {
             let Some((key, value)) = param.split_once('=') else {
-                bail!("Invalid param format: \"{param}\". Expected key=value");
+                bail!("Invalid parameter format: \"{param}\". Expected key=value");
             };
             // Numbers, booleans, arrays and objects as JSON; anything else stays a string.
             let value = serde_json::from_str(value).unwrap_or_else(|_| Value::String(value.to_string()));
@@ -142,7 +142,7 @@ pub fn init(target: &Path) -> Result<()> {
         if has_files {
             let proceed = dialoguer::Confirm::new()
                 .with_prompt(format!(
-                    "The directory {} is not empty. Do you want to initialize the source code template here?",
+                    "Directory {} is not empty. Create the source code template here?",
                     path.display()
                 ))
                 .default(false)
@@ -156,7 +156,7 @@ pub fn init(target: &Path) -> Result<()> {
         std::fs::create_dir_all(&path)?;
     }
     std::fs::write(path.join("index.js"), TEMPLATE)?;
-    output::info(&format!("Initialized FaaS server source code template at {}", path.display()));
+    output::info(&format!("Created FaaS server source files at {}", path.display()));
     Ok(())
 }
 

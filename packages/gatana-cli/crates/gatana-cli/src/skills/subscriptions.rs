@@ -28,7 +28,7 @@ pub async fn resolve_subscription(
     };
     match (collection, skill) {
         (Some(_), Some(_)) => {
-            bail!("\"{wanted}\" is both a collection and a skill. Say which: --collection or --skill")
+            bail!("\"{wanted}\" is both a collection and a skill. Choose one with --collection or --skill")
         }
         (Some(collection), None) => {
             Ok(Subscription { kind: SubscriptionKind::Collection, id: collection.id, name: collection.name })
@@ -45,7 +45,7 @@ pub async fn resolve_subscription(
                 bail!("No {what} named \"{wanted}\". See \"gatana skills ls\" and \"gatana skills ls --collections\"");
             }
             bail!(
-                "No {what} named \"{wanted}\". Collections you can see: {}. Skills: \"gatana skills ls\"",
+                "No {what} named \"{wanted}\". Available collections: {}. Skills: \"gatana skills ls\"",
                 collections.join(", ")
             )
         }

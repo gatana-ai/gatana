@@ -76,7 +76,7 @@ pub fn discover_skill_files(path: &Path, skip_empty: bool) -> Result<Vec<PathBuf
         }
     }
     if files.is_empty() && !skip_empty {
-        bail!("No SKILL.md found at {}, in it, or in its sub-folders", target.display());
+        bail!("No SKILL.md found at {} or in its subfolders", target.display());
     }
     files.sort();
     Ok(files)
@@ -127,7 +127,7 @@ pub async fn push_skills(
     if let Some(name) = &options.collection
         && collections.id_of(name).await?.is_none()
     {
-        bail!("No collection named \"{name}\" that you can see");
+        bail!("No accessible collection named \"{name}\"");
     }
     let mut results = Vec::new();
     for file in files {
@@ -162,7 +162,7 @@ async fn push_one<A: SkillsApi>(
     let name = frontmatter.name.clone();
     let mut notes = Vec::new();
     if folder_name(file) != name {
-        notes.push(format!("folder is named {}, the skill {name}", folder_name(file)));
+        notes.push(format!("folder name is {}; skill name is {name}", folder_name(file)));
     }
 
     let meta_org = frontmatter.meta(META_ORG).filter(|org| !org.is_empty());
@@ -206,7 +206,7 @@ async fn push_one<A: SkillsApi>(
     if let Some(collection_name) = options.collection.as_deref().or(frontmatter.meta(META_COLLECTION)) {
         collection_id = collections.id_of(collection_name).await?;
         if collection_id.is_none() {
-            notes.push(format!("collection \"{collection_name}\" not found; left where it is"));
+            notes.push(format!("collection \"{collection_name}\" not found; kept the current collection"));
         }
     }
 
@@ -226,7 +226,7 @@ async fn push_one<A: SkillsApi>(
                         &name,
                         PushAction::Conflict,
                         format!(
-                            "a skill named {name} exists and this file has no install baseline; run \"gatana skills install\" first, or --force to overwrite"
+                            "a skill named {name} exists, but this file has no saved version to compare. Run \"gatana skills install\" first, or use --force to overwrite"
                         ),
                     ));
                 };

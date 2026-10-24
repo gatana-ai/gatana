@@ -457,7 +457,7 @@ fn remove_openclaw_hook(home: &Path) -> Result<HookResult> {
     hooks.insert("internal".into(), Value::Object(internal));
     config.insert("hooks".into(), Value::Object(hooks));
     write_json(&config_file, &Value::Object(config))?;
-    Ok(HookResult::new(agent, config_file, HookStatus::Removed).with_note("restart the gateway to drop it"))
+    Ok(HookResult::new(agent, config_file, HookStatus::Removed).with_note("restart the gateway to stop using the hook"))
 }
 
 /// Removes the hook of one agent; skipped when the agent is not on this machine.

@@ -50,7 +50,7 @@ async fn discover(http: &reqwest::Client, base_url: &str) -> Result<Discovery> {
         .with_context(|| format!("invalid base URL {base_url}"))?;
     let response = http.get(url.clone()).send().await.context("OpenID discovery failed")?;
     if !response.status().is_success() {
-        bail!("OpenID discovery at {url} answered {}", response.status());
+        bail!("OpenID discovery at {url} returned HTTP {}", response.status());
     }
     response.json().await.with_context(|| format!("OpenID discovery at {url} returned an unexpected document"))
 }
@@ -104,7 +104,7 @@ pub async fn start_device_login(
         .ok_or_else(|| anyhow!("{base_url} does not offer device authorization"))?;
     let (status, value) = post_form(http, &endpoint, &[("client_id", client_id), ("scope", scope)]).await?;
     if !status.is_success() {
-        bail!("Failed with message: {}", oauth_error(&value));
+        bail!("Sign-in failed: {}", oauth_error(&value));
     }
     let authorization = serde_json::from_value(value).context("unexpected device authorization response")?;
     Ok(DeviceLogin { token_endpoint: discovery.token_endpoint, client_id: client_id.to_string(), authorization })
@@ -118,7 +118,7 @@ impl DeviceLogin {
         loop {
             tokio::time::sleep(interval).await;
             if std::time::Instant::now() > deadline {
-                bail!("The login code expired before it was approved. Run the login again.");
+                bail!("The sign-in code expired before approval. Run gatana config login again.");
             }
             let fields = [
                 ("grant_type", "urn:ietf:params:oauth:grant-type:device_code"),
@@ -132,7 +132,7 @@ impl DeviceLogin {
             match value.get("error").and_then(Value::as_str) {
                 Some("authorization_pending") => {}
                 Some("slow_down") => interval += Duration::from_secs(5),
-                _ => bail!("Failed with message: {}", oauth_error(&value)),
+                _ => bail!("Sign-in failed: {}", oauth_error(&value)),
             }
         }
     }

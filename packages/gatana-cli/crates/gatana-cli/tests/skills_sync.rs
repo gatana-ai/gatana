@@ -88,7 +88,7 @@ async fn a_foreign_folder_is_left_alone_and_reported_and_force_adopts_it() {
     let summary = sync_directory(&api, &identity(), dir.path(), &defaults()).await.unwrap();
     assert_eq!(summary.written, 0);
     assert_eq!(read(&dir.path().join("mine/SKILL.md")), "hand written\n");
-    assert!(summary.warnings[0].contains("not created by this sync"));
+    assert!(summary.warnings[0].contains("not tracked by Gatana"));
 
     sync_directory(&api, &identity(), dir.path(), &SyncOptions { force: true, ..defaults() }).await.unwrap();
     assert_eq!(body_of(&dir.path().join("mine/SKILL.md")), "remote\n");
@@ -105,7 +105,7 @@ async fn local_edits_are_kept_until_force_and_a_managed_folder_with_extra_files_
 
     let skipped = sync_directory(&api, &identity(), dir.path(), &defaults()).await.unwrap();
     assert_eq!(skipped.written, 0);
-    assert!(skipped.warnings[0].contains("edited locally"));
+    assert!(skipped.warnings[0].contains("local edits"));
     assert_eq!(read(&dir.path().join("alpha/SKILL.md")), "edited locally\n");
 
     sync_directory(&api, &identity(), dir.path(), &SyncOptions { force: true, ..defaults() }).await.unwrap();
@@ -127,7 +127,7 @@ async fn a_directory_synced_from_another_organization_is_refused_without_force()
     sync_directory(&api, &identity(), dir.path(), &defaults()).await.unwrap();
     let other = SkillsIdentity { org_id: "other".into(), base_url: "https://other.example".into() };
     let refused = sync_directory(&api, &other, dir.path(), &defaults()).await.unwrap_err();
-    assert!(refused.to_string().contains("synced from acme"));
+    assert!(refused.to_string().contains("syncs skills from acme"));
     let switched = sync_directory(&api, &other, dir.path(), &SyncOptions { force: true, ..defaults() }).await.unwrap();
     assert_eq!(read_manifest(dir.path()).unwrap().unwrap().org_id, "other");
     assert!(switched.warnings.iter().any(|warning| warning.contains("switched")));

@@ -235,7 +235,7 @@ pub async fn create(context: &Context, resource: CreateCommand) -> Result<()> {
             let slug = match slug {
                 Some(slug) => slug,
                 None => dialoguer::Input::<String>::new()
-                    .with_prompt("Enter the slug for the server")
+                    .with_prompt("Enter the server slug")
                     .validate_with(|value: &String| match value.trim() {
                         "" => Err("Server slug is required"),
                         text if text.len() < 3 => Err("Server slug must be at least 3 characters long"),
@@ -250,7 +250,7 @@ pub async fn create(context: &Context, resource: CreateCommand) -> Result<()> {
                         [TransportType::Httpstreaming, TransportType::Sse, TransportType::Stdio, TransportType::Hosted];
                     let labels = ["httpstreaming", "sse", "stdio", "hosted"];
                     let index = dialoguer::Select::new()
-                        .with_prompt("Select the transport type for the server")
+                        .with_prompt("Select the server transport type")
                         .items(labels)
                         .default(0)
                         .interact()?;
@@ -307,7 +307,7 @@ async fn create_credentials(
             let response = api.v1().get_mcp_server_credentials_authorize_url(slug, &query).send().await?;
             match response.typed()?.url {
                 Some(url) => output::success(&format!(
-                    "Open this URL to authorize (you can also provide token set directly via -f <file> or stdin):\n{url}"
+                    "Open this URL to authorize. You can also provide OAuth tokens as JSON with -f <file> or stdin:\n{url}"
                 )),
                 None => output::output(&response.value, Options::yaml()),
             }
@@ -348,7 +348,7 @@ pub async fn delete(context: &Context, resource: DeleteCommand) -> Result<()> {
     match resource {
         DeleteCommand::Server { name } => {
             api.v1().delete_mcp_server(&name).send().await?;
-            output::success(&format!("Server '{name}' deleted successfully."));
+            output::success(&format!("Deleted server '{name}'."));
         }
         DeleteCommand::Credentials { id, server } => {
             api.v1().delete_mcp_server_credential(&server, &id).send().await?;
@@ -356,7 +356,7 @@ pub async fn delete(context: &Context, resource: DeleteCommand) -> Result<()> {
         }
         DeleteCommand::Sandbox { id } => {
             api.v1().delete_sandbox(&id).send().await?;
-            output::success(&format!("Sandbox '{id}' deleted successfully."));
+            output::success(&format!("Deleted sandbox '{id}'."));
         }
     }
     Ok(())
@@ -367,7 +367,7 @@ pub async fn patch(context: &Context, resource: PatchCommand) -> Result<()> {
     let body = if !patch.is_empty() {
         let body = parse_inline_object(&patch)?;
         if !patch.join(" ").trim_start().starts_with('{') {
-            output::info(&format!("Constructed patch object from key=value pairs: {body}"));
+            output::info(&format!("Patch from key=value pairs: {body}"));
         }
         body
     } else {
@@ -379,7 +379,7 @@ pub async fn patch(context: &Context, resource: PatchCommand) -> Result<()> {
     };
     // A merge patch is whatever the user wrote; the server validates it.
     context.api().await?.v2().patch_server_v2_raw(&server_slug, body).send().await?;
-    output::success(&format!("Server '{server_slug}' patched successfully."));
+    output::success(&format!("Updated server '{server_slug}'."));
     Ok(())
 }
 
