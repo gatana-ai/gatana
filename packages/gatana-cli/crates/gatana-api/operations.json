@@ -3,12 +3,14 @@
   "specs": [
     {
       "name": "v1",
-      "path": "/api/v1/openapi.json",
+      "path": "/api/v1/openapi.json?private=true",
       "operations": [
         "getAuthMe",
         "getMcpServer",
-        "createMcpServer",
         "deleteMcpServer",
+        "discoverMcpServerOauth",
+        "registerMcpServerOauthClientWithoutSaving",
+        "installPredefinedBuiltInServer",
         "startMcpServer",
         "stopMcpServer",
         "refreshTools",

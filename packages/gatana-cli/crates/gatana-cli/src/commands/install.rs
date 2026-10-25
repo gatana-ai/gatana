@@ -1,4 +1,4 @@
-//! `gatana install`: sign in when needed, choose the agents on this machine, and give each one the
+//! `gatana install`: sign in when needed, find the agents on this machine, and give each one the
 //! gateway as an MCP server, the skills of the organization, and the session-start hook that keeps
 //! the skills current.
 
@@ -7,19 +7,20 @@ use crate::cli::InstallAgentsArgs;
 use crate::connect;
 use crate::context::Context;
 use crate::output;
-use crate::skills::hooks::{self, HOOK_AGENTS, HookAgent, HookResult, HookStatus, agent_home};
+use crate::skills::hooks::{self, HOOK_AGENTS, HookAgent, HookResult, HookStatus, agent_home, find_hook_agents};
 use crate::skills::sync::{SyncOptions, sync_targets};
 use crate::skills::targets::{home, prepare_targets, resolve_targets};
 use crate::util::get_path;
 use anyhow::{Result, bail};
 use serde_json::Value;
-use std::io::IsTerminal;
+use std::path::Path;
 
 pub async fn run(context: Context, args: InstallAgentsArgs) -> Result<()> {
     let InstallAgentsArgs { agents, no_browser, force } = args;
-    let context = signed_in(context, !no_browser).await?;
-    let agents = choose_agents(agents)?;
     let home = home();
+    // Before the sign-in, so that a machine without agents does not open the browser for nothing.
+    let agents = choose_agents(agents, &home)?;
+    let context = signed_in(context, !no_browser).await?;
     let url = connect::mcp_url(&context.config()?.base_url);
 
     // The gateway first: it creates the agent's folder when the agent is not on the machine yet,
@@ -83,9 +84,9 @@ async fn signed_in(context: Context, browser: bool) -> Result<Context> {
     }
 }
 
-/// The agents named on the command line, or chosen in a menu where the agents found on this
-/// machine are checked already.
-fn choose_agents(given: Vec<HookAgent>) -> Result<Vec<HookAgent>> {
+/// The agents named on the command line, or else every agent found on this machine, without a
+/// question.
+fn choose_agents(given: Vec<HookAgent>, home: &Path) -> Result<Vec<HookAgent>> {
     if !given.is_empty() {
         let mut agents: Vec<HookAgent> = Vec::new();
         for agent in given {
@@ -95,25 +96,17 @@ fn choose_agents(given: Vec<HookAgent>) -> Result<Vec<HookAgent>> {
         }
         return Ok(agents);
     }
-    if !std::io::stdin().is_terminal() {
-        bail!("Name the agents to connect, for example: gatana install claude codex");
+    let found = find_hook_agents(home);
+    if found.is_empty() {
+        let looked: Vec<String> = HOOK_AGENTS.iter().map(|agent| output::tilde(&agent_home(*agent, home))).collect();
+        bail!(
+            "No agents found on this machine. The CLI looked for {}. Name the agents to connect, for example: gatana install claude",
+            looked.join(", ")
+        );
     }
-    let home = home();
-    let found: Vec<bool> = HOOK_AGENTS.iter().map(|agent| agent_home(*agent, &home).exists()).collect();
-    let labels: Vec<String> = HOOK_AGENTS
-        .iter()
-        .zip(&found)
-        .map(|(agent, found)| if *found { agent.label().to_string() } else { format!("{} (not found)", agent.label()) })
-        .collect();
-    let picked = dialoguer::MultiSelect::new()
-        .with_prompt("Select agents. Press Space to select and Enter to confirm")
-        .items(&labels)
-        .defaults(&found)
-        .interact()?;
-    if picked.is_empty() {
-        bail!("No agents selected.");
-    }
-    Ok(picked.into_iter().map(|index| HOOK_AGENTS[index]).collect())
+    let labels: Vec<&str> = found.iter().map(|agent| agent.label()).collect();
+    output::println(&format!("{} {}", output::bold("Agents found:"), labels.join(", ")));
+    Ok(found)
 }
 
 fn report_connection(result: &HookResult, url: &str) {

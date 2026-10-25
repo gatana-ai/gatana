@@ -6,7 +6,8 @@ use clap::{Args, Parser, Subcommand, ValueEnum};
 use std::path::PathBuf;
 
 const ROOT_HELP: &str = "\
-{about-with-newline}
+{about} {version}
+
 {usage-heading} {usage}
 
 Get Started:
@@ -16,7 +17,7 @@ Get Started:
 Basic Commands:
   get           List resources or show one resource
   describe      Show details of a specific resource
-  create        Create a resource
+  create        Create a resource: a server, credentials or a sandbox
   delete        Delete resources
   patch         Patch a resource
 
@@ -38,7 +39,10 @@ Utility Commands:
   help          Show help for this command or a subcommand
 
 Options:
-{options}{after-help}";
+{options}{after-help}
+
+Learn More:
+  https://github.com/gatana-ai/gatana/tree/main/packages/gatana-cli";
 
 /// `ROOT_HELP` with every heading in clap's header style, so they look like "Usage:". clap removes
 /// the style when the output is not a terminal or NO_COLOR is set.
@@ -228,14 +232,6 @@ pub enum DescribeCommand {
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
-pub enum TransportType {
-    Hosted,
-    Stdio,
-    Httpstreaming,
-    Sse,
-}
-
-#[derive(Clone, Copy, Debug, ValueEnum)]
 pub enum CredentialScope {
     User,
     Server,
@@ -243,14 +239,12 @@ pub enum CredentialScope {
 
 #[derive(Subcommand, Debug)]
 pub enum CreateCommand {
-    /// Create a new server
+    /// Create an MCP server, as the Add Server page of the dashboard does. Omit the kind to choose it
+    /// from a menu
+    #[command(after_help = CREATE_SERVER_EXAMPLES)]
     Server {
-        /// Server slug
-        #[arg(short = 's', long = "slug")]
-        slug: Option<String>,
-        /// Transport type
-        #[arg(short = 't', long = "transport-type", value_enum, value_name = "TYPE")]
-        transport_type: Option<TransportType>,
+        #[command(subcommand)]
+        kind: Option<ServerKind>,
     },
     /// Create or replace server credentials. The server configuration selects OAuth or API keys.
     /// For OAuth, omit input to get an authorization URL, or provide tokens as JSON with -f or stdin.
@@ -268,6 +262,149 @@ pub enum CreateCommand {
     },
     /// Create a new sandbox
     Sandbox,
+}
+
+const CREATE_SERVER_EXAMPLES: &str = r#"Examples:
+  # Choose the kind of server in a menu, then answer the questions
+  $ gatana create server
+
+  # A remote MCP server. The CLI looks for its OAuth and registers a client when it can
+  $ gatana create server remote https://mcp.example.com/mcp
+
+  # A remote that uses server-sent events (legacy), with a slug of your choice
+  $ gatana create server remote https://mcp.example.com/sse --sse --slug example
+
+  # Tools made from an OpenAPI specification
+  $ gatana create server openapi https://api.example.com/openapi.json
+
+  # A command that Gatana runs in a container of its own. Put the options before the command
+  $ gatana create server local --slug github npx -y @modelcontextprotocol/server-github
+
+  # Your own code, in Python
+  $ gatana create server code --slug my-tools --runtime python313
+
+  # A server that Gatana provides itself
+  $ gatana create server built-in artifacts"#;
+
+#[derive(Subcommand, Debug)]
+pub enum ServerKind {
+    /// A remote MCP server at a URL. The CLI looks for its OAuth and registers a client when it can
+    Remote(RemoteServerArgs),
+    /// Tools made from an OpenAPI or Swagger specification at a URL
+    #[command(name = "openapi")]
+    Openapi(OpenApiServerArgs),
+    /// A command such as npx or uvx. Gatana runs it in a container of its own
+    #[command(visible_alias = "stdio")]
+    Local(LocalServerArgs),
+    /// Tools that you write yourself in Node.js or Python, AWS Lambda-style
+    #[command(visible_alias = "hosted")]
+    Code(CodeServerArgs),
+    /// A server that Gatana provides itself, with nothing to host
+    #[command(name = "built-in", visible_alias = "builtin")]
+    BuiltIn(BuiltInServerArgs),
+}
+
+/// The settings that every new server takes.
+#[derive(Args, Debug, Default)]
+pub struct NewServerArgs {
+    /// The server slug: 1 to 20 lowercase letters, digits and hyphens. Tool names start with it.
+    /// Omit to choose it, with a default made from the URL or the command
+    #[arg(short = 's', long)]
+    pub slug: Option<String>,
+    /// Who can see and use the server
+    #[arg(long, value_enum, default_value_t)]
+    pub visibility: Visibility,
+    /// Compress large tool results, so that they use fewer tokens
+    #[arg(long = "output-compression")]
+    pub output_compression: bool,
+}
+
+#[derive(Clone, Copy, Debug, Default, ValueEnum)]
+pub enum Visibility {
+    /// Only members with access through a team or a direct assignment
+    #[default]
+    Private,
+    /// All members of the organization
+    Organization,
+}
+
+#[derive(Args, Debug, Default)]
+pub struct RemoteServerArgs {
+    /// The URL of the MCP endpoint. Omit to type it at a prompt
+    pub url: Option<String>,
+    /// The server uses server-sent events (legacy) instead of HTTP streaming
+    #[arg(long)]
+    pub sse: bool,
+    #[command(flatten)]
+    pub server: NewServerArgs,
+}
+
+#[derive(Args, Debug, Default)]
+pub struct OpenApiServerArgs {
+    /// The URL of the OpenAPI or Swagger document. Omit to type it at a prompt
+    pub url: Option<String>,
+    #[command(flatten)]
+    pub server: NewServerArgs,
+}
+
+#[derive(Args, Debug, Default)]
+pub struct LocalServerArgs {
+    /// The command that starts the server, for example: npx -y @modelcontextprotocol/server-github.
+    /// Omit to type it at a prompt
+    #[arg(value_name = "COMMAND", trailing_var_arg = true, allow_hyphen_values = true)]
+    pub command: Vec<String>,
+    /// Attach a persistent volume
+    #[arg(long)]
+    pub storage: bool,
+    #[command(flatten)]
+    pub server: NewServerArgs,
+}
+
+#[derive(Args, Debug, Default)]
+pub struct CodeServerArgs {
+    /// The runtime of the code. Omit to choose it from a menu
+    #[arg(long, value_enum)]
+    pub runtime: Option<Runtime>,
+    /// Attach a persistent volume
+    #[arg(long)]
+    pub storage: bool,
+    #[command(flatten)]
+    pub server: NewServerArgs,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
+pub enum Runtime {
+    /// Node.js 24. The source code exports its tools from index.js
+    Node24,
+    /// Python 3.13. The source code exports its tools from main.py; Gatana installs requirements.txt on start
+    Python313,
+}
+
+#[derive(Args, Debug, Default)]
+pub struct BuiltInServerArgs {
+    /// The built-in server. Omit to choose from the servers that are not installed
+    #[arg(value_enum, value_name = "ID")]
+    pub id: Option<BuiltIn>,
+}
+
+/// The servers that Gatana provides itself. The value is the ID of the install-predefined route in
+/// the backend, and the slug the server gets.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
+pub enum BuiltIn {
+    /// Create and share generated content (Markdown or HTML) as artifacts, stored on Gatana
+    Artifacts,
+    /// A registry of reusable instructions that agents find at the start of a task
+    Skills,
+    /// The search_tools and execute_code tools, to find other MCP tools and use them together in TypeScript
+    Codemode,
+    /// The full Gatana API over MCP
+    GatanaApi,
+    /// Tools for debugging, such as slow responses and the authorization data of the caller
+    GatanaDebug,
+    /// Gets the main content of a web page
+    Fetch,
+    /// Searches the full content of large tool results that Gatana compressed
+    Compression,
 }
 
 #[derive(Subcommand, Debug)]
@@ -642,15 +779,15 @@ pub enum ConfigCommand {
 }
 
 const INSTALL_EXAMPLES: &str = r#"Examples:
-  # Choose the agents in a menu
+  # Connect every agent found on this machine
   $ gatana install
 
-  # Name them, for example in a script
+  # Connect only the agents you name
   $ gatana install claude codex"#;
 
 #[derive(Args, Debug)]
 pub struct InstallAgentsArgs {
-    /// The agents to connect. Omit to choose from a menu
+    /// The agents to connect. Omit to connect every agent found on this machine
     #[arg(value_enum, value_name = "AGENT")]
     pub agents: Vec<HookAgent>,
     /// Print the sign-in link without opening a browser
@@ -737,5 +874,31 @@ mod tests {
         assert_eq!(args.targets, vec!["hermes"]);
         assert!(args.no_hooks);
         assert!(Cli::try_parse_from(["gatana", "skills", "install", "x", "--collection", "--skill"]).is_err());
+    }
+
+    #[test]
+    fn create_server_takes_the_command_after_its_options() {
+        let kind = |args: &[&str]| {
+            let cli = Cli::try_parse_from(["gatana", "create", "server"].iter().chain(args)).unwrap();
+            let Command::Create { resource: CreateCommand::Server { kind } } = cli.command else {
+                panic!("not create server")
+            };
+            kind
+        };
+        let Some(ServerKind::Local(args)) = kind(&["local", "--slug", "gh", "npx", "-y", "@x/server", "--slug"]) else {
+            panic!("not local")
+        };
+        assert_eq!(args.server.slug.as_deref(), Some("gh"));
+        // After the command starts, every word is part of it
+        assert_eq!(args.command, vec!["npx", "-y", "@x/server", "--slug"]);
+        let Some(ServerKind::Remote(args)) = kind(&["remote", "mcp.example.com", "--sse"]) else {
+            panic!("not remote")
+        };
+        assert_eq!(args.url.as_deref(), Some("mcp.example.com"));
+        assert!(args.sse);
+        let Some(ServerKind::BuiltIn(args)) = kind(&["built-in", "gatana-api"]) else { panic!("not built-in") };
+        assert_eq!(args.id, Some(BuiltIn::GatanaApi));
+        assert!(kind(&[]).is_none());
+        assert!(Cli::try_parse_from(["gatana", "create", "server", "code", "--runtime", "ruby"]).is_err());
     }
 }

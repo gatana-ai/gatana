@@ -34,7 +34,7 @@ This skill has four jobs:
 Use the first surface that is available:
 
 1. **Gatana MCP tools.** Look for tools that start with `gatana-api_`, for example `gatana-api_createServerV2`. If the gateway runs in Code Mode, you see only `codemode_search_tools` and `codemode_execute_code`. Then search first, and call `codemode.gatanaApi.<operation>({ ... })` from code.
-2. **The `gatana` CLI.** Run `gatana auth-info`. The CLI can create servers, patch them, set server and user credentials, and upload hosted code. It has no profile commands. See [references/api.md](references/api.md).
+2. **The `gatana` CLI.** Run `gatana auth-info`. The CLI can create servers and set up their OAuth, patch them, set server and user credentials, and upload hosted code. It has no profile commands. See [references/api.md](references/api.md).
 3. **The REST API.** Use it only when the user gives you a personal access token in an environment variable. Base URLs: `https://<org>.gatana.ai/api/v1` and `/api/v2`. See [Public API](https://docs.gatana.ai/public-api-introduction/).
 
 If none of these is available, give the user the dashboard steps. Each reference file has them. If the user has no organization yet, see [Create an organization](#create-an-organization). If the user has one but is not connected to it, see [Connecting to Gatana](https://docs.gatana.ai/connecting-to-gatana/).
@@ -85,7 +85,7 @@ For an on-premise install, add `--base-url https://<address of the install>`.
 After the sign-up:
 
 - `gatana auth-info` shows the new organization.
-- `gatana install claude` (or `codex`, `hermes`, `openclaw`) connects an AI agent on the machine to the gateway. Name the agents: without them, the command asks a question.
+- `gatana install` connects every AI agent it finds on the machine (Claude Code, Codex, Hermes, OpenClaw) to the gateway, without a question. To connect only some agents, name them: `gatana install claude` (or `codex`, `hermes`, `openclaw`).
 - In the cloud, a new organization starts with a 14-day trial. Plans: [www.gatana.ai/pricing](https://www.gatana.ai/pricing).
 - An owner who signed up in the terminal has no password for the dashboard yet. On the sign-in page, the owner clicks **Forgot your password?** and sets one from the email.
 
@@ -98,6 +98,7 @@ Do these steps in order. Details and full examples are in [references/servers.md
 - Prefer the vendor's official server. A server from another publisher can look official. When there are several candidates, show them and let the user choose.
 - Prefer a remote endpoint. Many vendors publish an `npx` or `uvx` package and also run a remote MCP endpoint. A remote server needs no hosting and supports per-user OAuth.
 - For popular services (GitHub, Linear, Notion, Slack, Google Workspace and more), the dashboard has **Add Server > Popular servers**. It installs the official server and sets up OAuth in one click. Recommend it when it fits. There is no API for it.
+- For a remote server that signs users in with OAuth, `gatana create server remote <url> --slug <slug>` does the OAuth setup too: it finds the OAuth metadata, registers a client when the provider permits it, and sets per-user OAuth. Prefer it to the steps below when you have the CLI.
 
 ### 2. Choose the transport
 
@@ -177,7 +178,7 @@ Over plain MCP, call the tool `gatana-api_createServerV2` with the same `{ "body
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `server` + `apikey` | Get a link with `getMcpServerCredentialsAuthorizeUrl({ serverSlug, scope: 'server', returnTo: 'thank-you-page' })`. Give the link to the user. The user types the key into Gatana. |
 | `user` + any method | Do nothing now. Each user gets a link on their first tool call. To set up the current user now, get a link with `scope: 'user'`.                                                   |
-| `oauth`             | The server needs OAuth metadata and an OAuth client first. See [references/credentials.md](references/credentials.md#oauth-setup).                                                 |
+| `oauth`             | The server needs OAuth metadata and an OAuth client first. `gatana create server remote` sets up both. Or see [references/credentials.md](references/credentials.md#oauth-setup).  |
 
 Setting credentials on a `stdio` or `hosted` server restarts it.
 

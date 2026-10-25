@@ -198,6 +198,30 @@ pub fn clear_lines(count: usize) {
     write_stdout(&"\x1b[1A\x1b[2K".repeat(count));
 }
 
+/// Waits for `work` with a spinner and `message` on stderr, and clears the line when it is done.
+/// Without a terminal on stderr, it shows nothing.
+pub async fn spinner<F: std::future::Future>(message: &str, work: F) -> F::Output {
+    const FRAMES: [char; 10] = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+    if !console::Term::stderr().is_term() {
+        return work.await;
+    }
+    tokio::pin!(work);
+    let mut ticks = tokio::time::interval(std::time::Duration::from_millis(80));
+    let mut frame = 0;
+    let output = loop {
+        tokio::select! {
+            output = &mut work => break output,
+            _ = ticks.tick() => {
+                let symbol = console::style(FRAMES[frame % FRAMES.len()]).cyan().for_stderr();
+                write_stderr(&format!("\r\x1b[2K{symbol} {message}"));
+                frame += 1;
+            }
+        }
+    };
+    write_stderr("\r\x1b[2K");
+    output
+}
+
 fn cell_text(value: Option<&Value>) -> String {
     match value {
         None | Some(Value::Null) => "<none>".to_string(),

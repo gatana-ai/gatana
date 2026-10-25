@@ -112,6 +112,12 @@ pub mod types {
         pub is_per_seat_subscription: bool,
         #[serde(rename = "isTrial")]
         pub is_trial: bool,
+        ///When the organization logo last changed, or null when it has none. The logo is at /api/v1/tenant-logo
+        #[serde(
+            rename = "logoUpdatedAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub logo_updated_at: ::std::option::Option<::std::string::String>,
         #[serde(rename = "memberDefaultRole")]
         pub member_default_role: AuthMetadataTenantMemberDefaultRole,
         #[serde(
@@ -326,35 +332,33 @@ pub mod types {
             ::serde_json::Value,
         >,
     }
-    ///`CreateMcpServerResponse`
+    ///`ClientCredentialsJwtPayload`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-    pub struct CreateMcpServerResponse {
-        pub files: ::std::vec::Vec<ServerFile>,
-        pub server: ServerDto,
-    }
-    ///`CreateSandboxResponse`
-    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-    pub struct CreateSandboxResponse {
-        pub sandbox: SandboxDto,
-    }
-    ///`CreateServerRequest`
-    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-    pub struct CreateServerRequest {
-        ///Whether to enable text output compression for this server. Default is true.
+    pub struct ClientCredentialsJwtPayload {
         #[serde(
-            rename = "isOutputCompressionEnabled",
+            rename = "credentialOwnerId",
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        pub is_output_compression_enabled: ::std::option::Option<bool>,
-        ///Technical identifier.
-        pub slug: ::std::string::String,
-        ///Transport type: httpstreaming, sse, stdio, hosted, or openapi
-        #[serde(rename = "transportType")]
-        pub transport_type: CreateServerRequestTransportType,
-        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
-        pub visibility: ::std::option::Option<ServerVisibility>,
+        pub credential_owner_id: ::std::option::Option<::std::string::String>,
+        #[serde(rename = "credentialScope")]
+        pub credential_scope: ClientCredentialsJwtPayloadCredentialScope,
+        #[serde(rename = "defaultScopes")]
+        pub default_scopes: ::std::string::String,
+        #[serde(
+            rename = "requestedByUserId",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub requested_by_user_id: ::std::option::Option<::std::string::String>,
+        #[serde(rename = "returnTo")]
+        pub return_to: ClientCredentialsJwtPayloadReturnTo,
+        #[serde(rename = "serverSlug")]
+        pub server_slug: ::std::string::String,
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        #[serde(rename = "userId")]
+        pub user_id: ::std::string::String,
     }
-    ///Transport type: httpstreaming, sse, stdio, hosted, or openapi
+    ///`ClientCredentialsJwtPayloadCredentialScope`
     #[derive(
         ::serde::Deserialize,
         ::serde::Serialize,
@@ -367,45 +371,37 @@ pub mod types {
         PartialEq,
         PartialOrd
     )]
-    pub enum CreateServerRequestTransportType {
-        #[serde(rename = "hosted")]
-        Hosted,
-        #[serde(rename = "stdio")]
-        Stdio,
-        #[serde(rename = "httpstreaming")]
-        Httpstreaming,
-        #[serde(rename = "sse")]
-        Sse,
-        #[serde(rename = "openapi")]
-        Openapi,
+    pub enum ClientCredentialsJwtPayloadCredentialScope {
+        #[serde(rename = "server")]
+        Server,
+        #[serde(rename = "user")]
+        User,
+        #[serde(rename = "profile")]
+        Profile,
     }
-    impl ::std::fmt::Display for CreateServerRequestTransportType {
+    impl ::std::fmt::Display for ClientCredentialsJwtPayloadCredentialScope {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
-                Self::Hosted => f.write_str("hosted"),
-                Self::Stdio => f.write_str("stdio"),
-                Self::Httpstreaming => f.write_str("httpstreaming"),
-                Self::Sse => f.write_str("sse"),
-                Self::Openapi => f.write_str("openapi"),
+                Self::Server => f.write_str("server"),
+                Self::User => f.write_str("user"),
+                Self::Profile => f.write_str("profile"),
             }
         }
     }
-    impl ::std::str::FromStr for CreateServerRequestTransportType {
+    impl ::std::str::FromStr for ClientCredentialsJwtPayloadCredentialScope {
         type Err = self::error::ConversionError;
         fn from_str(
             value: &str,
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             match value {
-                "hosted" => Ok(Self::Hosted),
-                "stdio" => Ok(Self::Stdio),
-                "httpstreaming" => Ok(Self::Httpstreaming),
-                "sse" => Ok(Self::Sse),
-                "openapi" => Ok(Self::Openapi),
+                "server" => Ok(Self::Server),
+                "user" => Ok(Self::User),
+                "profile" => Ok(Self::Profile),
                 _ => Err("invalid value".into()),
             }
         }
     }
-    impl ::std::convert::TryFrom<&str> for CreateServerRequestTransportType {
+    impl ::std::convert::TryFrom<&str> for ClientCredentialsJwtPayloadCredentialScope {
         type Error = self::error::ConversionError;
         fn try_from(
             value: &str,
@@ -414,13 +410,86 @@ pub mod types {
         }
     }
     impl ::std::convert::TryFrom<::std::string::String>
-    for CreateServerRequestTransportType {
+    for ClientCredentialsJwtPayloadCredentialScope {
         type Error = self::error::ConversionError;
         fn try_from(
             value: ::std::string::String,
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
+    }
+    ///`ClientCredentialsJwtPayloadReturnTo`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ClientCredentialsJwtPayloadReturnTo {
+        #[serde(rename = "details")]
+        Details,
+        #[serde(rename = "settings")]
+        Settings,
+        #[serde(rename = "thank-you-page")]
+        ThankYouPage,
+        #[serde(rename = "profile")]
+        Profile,
+        #[serde(rename = "profile-server")]
+        ProfileServer,
+    }
+    impl ::std::fmt::Display for ClientCredentialsJwtPayloadReturnTo {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Details => f.write_str("details"),
+                Self::Settings => f.write_str("settings"),
+                Self::ThankYouPage => f.write_str("thank-you-page"),
+                Self::Profile => f.write_str("profile"),
+                Self::ProfileServer => f.write_str("profile-server"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ClientCredentialsJwtPayloadReturnTo {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "details" => Ok(Self::Details),
+                "settings" => Ok(Self::Settings),
+                "thank-you-page" => Ok(Self::ThankYouPage),
+                "profile" => Ok(Self::Profile),
+                "profile-server" => Ok(Self::ProfileServer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ClientCredentialsJwtPayloadReturnTo {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for ClientCredentialsJwtPayloadReturnTo {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`CreateSandboxResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateSandboxResponse {
+        pub sandbox: SandboxDto,
     }
     ///`CreateSkillBody`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
@@ -1041,6 +1110,180 @@ pub mod types {
         #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         pub storage: ::std::option::Option<ServerStorageStatus>,
     }
+    ///`DeviceAuthorizationJwtPayload`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DeviceAuthorizationJwtPayload {
+        #[serde(
+            rename = "credentialOwnerId",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub credential_owner_id: ::std::option::Option<::std::string::String>,
+        #[serde(rename = "credentialScope")]
+        pub credential_scope: DeviceAuthorizationJwtPayloadCredentialScope,
+        pub device_code: ::std::string::String,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub expires_at: ::std::option::Option<f64>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub interval: ::std::option::Option<f64>,
+        #[serde(
+            rename = "requestedByUserId",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub requested_by_user_id: ::std::option::Option<::std::string::String>,
+        #[serde(
+            rename = "returnTo",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub return_to: ::std::option::Option<DeviceAuthorizationJwtPayloadReturnTo>,
+        #[serde(rename = "serverSlug")]
+        pub server_slug: ::std::string::String,
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub user_code: ::std::option::Option<::std::string::String>,
+        #[serde(rename = "userId")]
+        pub user_id: ::std::string::String,
+        pub verification_uri: ::std::string::String,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub verification_uri_complete: ::std::option::Option<::std::string::String>,
+    }
+    ///`DeviceAuthorizationJwtPayloadCredentialScope`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum DeviceAuthorizationJwtPayloadCredentialScope {
+        #[serde(rename = "server")]
+        Server,
+        #[serde(rename = "user")]
+        User,
+        #[serde(rename = "profile")]
+        Profile,
+    }
+    impl ::std::fmt::Display for DeviceAuthorizationJwtPayloadCredentialScope {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Server => f.write_str("server"),
+                Self::User => f.write_str("user"),
+                Self::Profile => f.write_str("profile"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for DeviceAuthorizationJwtPayloadCredentialScope {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "server" => Ok(Self::Server),
+                "user" => Ok(Self::User),
+                "profile" => Ok(Self::Profile),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for DeviceAuthorizationJwtPayloadCredentialScope {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for DeviceAuthorizationJwtPayloadCredentialScope {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`DeviceAuthorizationJwtPayloadReturnTo`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum DeviceAuthorizationJwtPayloadReturnTo {
+        #[serde(rename = "details")]
+        Details,
+        #[serde(rename = "settings")]
+        Settings,
+        #[serde(rename = "thank-you-page")]
+        ThankYouPage,
+        #[serde(rename = "profile")]
+        Profile,
+        #[serde(rename = "profile-server")]
+        ProfileServer,
+    }
+    impl ::std::fmt::Display for DeviceAuthorizationJwtPayloadReturnTo {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Details => f.write_str("details"),
+                Self::Settings => f.write_str("settings"),
+                Self::ThankYouPage => f.write_str("thank-you-page"),
+                Self::Profile => f.write_str("profile"),
+                Self::ProfileServer => f.write_str("profile-server"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for DeviceAuthorizationJwtPayloadReturnTo {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "details" => Ok(Self::Details),
+                "settings" => Ok(Self::Settings),
+                "thank-you-page" => Ok(Self::ThankYouPage),
+                "profile" => Ok(Self::Profile),
+                "profile-server" => Ok(Self::ProfileServer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for DeviceAuthorizationJwtPayloadReturnTo {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for DeviceAuthorizationJwtPayloadReturnTo {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`DiscoverMcpServerOauthResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DiscoverMcpServerOauthResponse {
+        #[serde(
+            rename = "oauthMetadata",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub oauth_metadata: ::std::option::Option<ServerOAuthMetadataOutput>,
+    }
     ///`GetCredentialTokenResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct GetCredentialTokenResponse {
@@ -1401,6 +1644,12 @@ pub mod types {
         #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         pub hostname: ::std::option::Option<::std::string::String>,
     }
+    ///`InstallPredefinedBuiltInServerResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct InstallPredefinedBuiltInServerResponse {
+        ///Whether the server was installed
+        pub success: bool,
+    }
     ///`ListDeploymentsLogsResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ListDeploymentsLogsResponse {
@@ -1521,6 +1770,39 @@ pub mod types {
         ///Total number of pages
         #[serde(rename = "totalPages")]
         pub total_pages: f64,
+    }
+    ///`RegisterMcpServerOauthClientWithoutSavingBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct RegisterMcpServerOauthClientWithoutSavingBody {
+        #[serde(rename = "oauthMetadata")]
+        pub oauth_metadata: ServerOAuthMetadata,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub x: ::std::option::Option<RegisterMcpServerOauthClientWithoutSavingBodyX>,
+    }
+    ///`RegisterMcpServerOauthClientWithoutSavingBodyX`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(untagged)]
+    pub enum RegisterMcpServerOauthClientWithoutSavingBodyX {
+        DeviceAuthorizationJwtPayload(DeviceAuthorizationJwtPayload),
+        ClientCredentialsJwtPayload(ClientCredentialsJwtPayload),
+    }
+    impl ::std::convert::From<DeviceAuthorizationJwtPayload>
+    for RegisterMcpServerOauthClientWithoutSavingBodyX {
+        fn from(value: DeviceAuthorizationJwtPayload) -> Self {
+            Self::DeviceAuthorizationJwtPayload(value)
+        }
+    }
+    impl ::std::convert::From<ClientCredentialsJwtPayload>
+    for RegisterMcpServerOauthClientWithoutSavingBodyX {
+        fn from(value: ClientCredentialsJwtPayload) -> Self {
+            Self::ClientCredentialsJwtPayload(value)
+        }
+    }
+    ///`RegisterMcpServerOauthClientWithoutSavingResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct RegisterMcpServerOauthClientWithoutSavingResponse {
+        #[serde(rename = "clientConfiguration")]
+        pub client_configuration: ServerOAuthClientConfiguration,
     }
     ///`SandboxDto`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -1708,7 +1990,7 @@ pub mod types {
         ///OAuth access token
         #[serde(rename = "accessToken")]
         pub access_token: ::std::string::String,
-        ///Expiry time of the access token, as a Unix epoch timestamp
+        ///Expiry time of the access token, as a Unix epoch timestamp in milliseconds
         #[serde(
             rename = "accessTokenExpiresAt",
             skip_serializing_if = "::std::option::Option::is_none"
@@ -1756,13 +2038,13 @@ pub mod types {
             deserialize_with = "::std::option::Option::deserialize"
         )]
         pub last_tool_refresh_at: ::std::option::Option<::std::string::String>,
-        ///Time when the protocol version was last detected, or null if never
+        ///Time of the last MCP protocol detection, or null if unknown
         #[serde(
             rename = "mcpProtocolDetectedAt",
             deserialize_with = "::std::option::Option::deserialize"
         )]
         pub mcp_protocol_detected_at: ::std::option::Option<::std::string::String>,
-        ///MCP protocol version the server was last seen to speak, or empty if not yet detected
+        ///Last detected MCP protocol version, or an empty string if unknown
         #[serde(rename = "mcpProtocolVersion")]
         pub mcp_protocol_version: ::std::string::String,
         ///OAuth client configuration, or null when not configured
@@ -1778,7 +2060,7 @@ pub mod types {
             rename = "oauthMetadata",
             deserialize_with = "::std::option::Option::deserialize"
         )]
-        pub oauth_metadata: ::std::option::Option<ServerOAuthMetadata>,
+        pub oauth_metadata: ::std::option::Option<ServerOAuthMetadataOutput>,
         ///Minimum output size in bytes before compression is applied
         #[serde(rename = "outputCompressionThresholdBytes")]
         pub output_compression_threshold_bytes: i64,
@@ -2339,8 +2621,99 @@ pub mod types {
         pub resource: ::std::option::Option<ServerOAuthMetadataResource>,
     }
     ///Discovered authorization server metadata (RFC 8414)
-    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
     pub struct ServerOAuthMetadataAs {
+        ///URL of the authorization endpoint
+        #[serde(
+            rename = "authorizeEndpoint",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub authorize_endpoint: ::std::option::Option<::std::string::String>,
+        ///Scopes that the authorization server supports
+        #[serde(
+            rename = "availableScopes",
+            default,
+            skip_serializing_if = "::std::vec::Vec::is_empty"
+        )]
+        pub available_scopes: ::std::vec::Vec<::std::string::String>,
+        ///URL of the device authorization endpoint
+        #[serde(
+            rename = "deviceAuthorizationEndpoint",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub device_authorization_endpoint: ::std::option::Option<::std::string::String>,
+        ///Extra query parameters to add to the authorization request
+        #[serde(
+            rename = "extraAuthorizationParameters",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub extra_authorization_parameters: ::std::option::Option<::std::string::String>,
+        ///Issuer identifier of the authorization server
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub issuer: ::std::option::Option<::std::string::String>,
+        ///URL where the authorization server metadata was fetched from
+        #[serde(
+            rename = "metadataUrl",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub metadata_url: ::std::option::Option<::std::string::String>,
+        ///Reason why dynamic client registration is not available
+        #[serde(
+            rename = "noDynamicClientRegistrationReason",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub no_dynamic_client_registration_reason: ::std::option::Option<
+            ::std::string::String,
+        >,
+        ///URL of the dynamic client registration endpoint
+        #[serde(
+            rename = "registrationEndpoint",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub registration_endpoint: ::std::option::Option<::std::string::String>,
+        ///URL of the authorization server documentation
+        #[serde(
+            rename = "serviceDocumentation",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub service_documentation: ::std::option::Option<::std::string::String>,
+        ///Client authentication methods that the token endpoint supports
+        #[serde(
+            rename = "supportedClientAuthMethods",
+            default,
+            skip_serializing_if = "::std::vec::Vec::is_empty"
+        )]
+        pub supported_client_auth_methods: ::std::vec::Vec<::std::string::String>,
+        ///Whether the authorization server supports dynamic client registration
+        #[serde(
+            rename = "supportsDynamicClientRegistration",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub supports_dynamic_client_registration: ::std::option::Option<bool>,
+        ///Whether the authorization server supports PKCE
+        #[serde(
+            rename = "supportsPKCE",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub supports_pkce: ::std::option::Option<bool>,
+        ///URL of the token endpoint
+        #[serde(
+            rename = "tokenEndpoint",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub token_endpoint: ::std::option::Option<::std::string::String>,
+    }
+    ///`ServerOAuthMetadataOutput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ServerOAuthMetadataOutput {
+        #[serde(rename = "as", skip_serializing_if = "::std::option::Option::is_none")]
+        pub as_: ::std::option::Option<ServerOAuthMetadataOutputAs>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub resource: ::std::option::Option<ServerOAuthMetadataOutputResource>,
+    }
+    ///Discovered authorization server metadata (RFC 8414)
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ServerOAuthMetadataOutputAs {
         ///URL of the authorization endpoint
         #[serde(rename = "authorizeEndpoint")]
         pub authorize_endpoint: ::std::string::String,
@@ -2390,7 +2763,7 @@ pub mod types {
     }
     ///Discovered protected resource metadata (RFC 9728)
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-    pub struct ServerOAuthMetadataResource {
+    pub struct ServerOAuthMetadataOutputResource {
         ///Scopes that the protected resource supports
         #[serde(rename = "availableScopes")]
         pub available_scopes: ::std::vec::Vec<::std::string::String>,
@@ -2399,6 +2772,26 @@ pub mod types {
         ///URL where the protected resource metadata was fetched from
         #[serde(rename = "metadataUrl")]
         pub metadata_url: ::std::string::String,
+    }
+    ///Discovered protected resource metadata (RFC 9728)
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ServerOAuthMetadataResource {
+        ///Scopes that the protected resource supports
+        #[serde(
+            rename = "availableScopes",
+            default,
+            skip_serializing_if = "::std::vec::Vec::is_empty"
+        )]
+        pub available_scopes: ::std::vec::Vec<::std::string::String>,
+        ///Resource identifier from the protected resource metadata
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub id: ::std::option::Option<::std::string::String>,
+        ///URL where the protected resource metadata was fetched from
+        #[serde(
+            rename = "metadataUrl",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub metadata_url: ::std::option::Option<::std::string::String>,
     }
     ///`ServerResourceRequests`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -3079,6 +3472,20 @@ pub mod types {
 }
 /// Optional query parameters, one struct per operation that takes any.
 pub mod query {
+    /// Optional query parameters of `discoverMcpServerOauth`.
+    #[derive(Debug, Clone, Default)]
+    pub struct DiscoverMcpServerOauth {
+        /// `url`.
+        pub url: Option<String>,
+    }
+    impl DiscoverMcpServerOauth {
+        pub fn apply<'c, T>(&self, mut call: crate::Call<'c, T>) -> crate::Call<'c, T> {
+            if let Some(value) = &self.url {
+                call = call.query("url", value);
+            }
+            call
+        }
+    }
     /// Optional query parameters of `refreshTools`.
     #[derive(Debug, Clone, Default)]
     pub struct RefreshTools {
@@ -3335,26 +3742,6 @@ impl<'a> Api<'a> {
         let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
         call
     }
-    /** `POST /mcp-servers`
-
- Create a new MCP server*/
-    pub fn create_mcp_server(
-        &self,
-        body: &CreateServerRequest,
-    ) -> crate::Call<'a, CreateMcpServerResponse> {
-        let path = format!("{}/mcp-servers", BASE_PATH);
-        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
-        call.json(body)
-    }
-    /// `POST /mcp-servers` with a body that is sent as given, unchecked.
-    pub fn create_mcp_server_raw(
-        &self,
-        body: ::serde_json::Value,
-    ) -> crate::Call<'a, CreateMcpServerResponse> {
-        let path = format!("{}/mcp-servers", BASE_PATH);
-        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
-        call.json_value(body)
-    }
     /** `DELETE /mcp-servers/{serverSlug}`
 
  Delete an MCP server*/
@@ -3365,6 +3752,62 @@ impl<'a> Api<'a> {
         let server_slug = crate::encode_path_segment(server_slug);
         let path = format!("{}/mcp-servers/{}", BASE_PATH, server_slug);
         let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /mcp-servers/{serverSlug}/oauth/discover`
+
+ Discover OAuth metadata from the given URL or from the remote MCP server URL*/
+    pub fn discover_mcp_server_oauth(
+        &self,
+        server_slug: &str,
+        query: &query::DiscoverMcpServerOauth,
+    ) -> crate::Call<'a, DiscoverMcpServerOauthResponse> {
+        let server_slug = crate::encode_path_segment(server_slug);
+        let path = format!("{}/mcp-servers/{}/oauth/discover", BASE_PATH, server_slug);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        let call = query.apply(call);
+        call
+    }
+    /** `POST /mcp-servers/{serverSlug}/oauth/dynamic-oauth-client-no-save`
+
+ Register an OAuth client dynamically with the remote MCP server and return its configuration without saving it*/
+    pub fn register_mcp_server_oauth_client_without_saving(
+        &self,
+        server_slug: &str,
+        body: &RegisterMcpServerOauthClientWithoutSavingBody,
+    ) -> crate::Call<'a, RegisterMcpServerOauthClientWithoutSavingResponse> {
+        let server_slug = crate::encode_path_segment(server_slug);
+        let path = format!(
+            "{}/mcp-servers/{}/oauth/dynamic-oauth-client-no-save", BASE_PATH,
+            server_slug
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /mcp-servers/{serverSlug}/oauth/dynamic-oauth-client-no-save` with a body that is sent as given, unchecked.
+    pub fn register_mcp_server_oauth_client_without_saving_raw(
+        &self,
+        server_slug: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, RegisterMcpServerOauthClientWithoutSavingResponse> {
+        let server_slug = crate::encode_path_segment(server_slug);
+        let path = format!(
+            "{}/mcp-servers/{}/oauth/dynamic-oauth-client-no-save", BASE_PATH,
+            server_slug
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `POST /install-predefined/{id}`
+
+ Install a predefined built-in MCP server for the current tenant and refresh its tool cache. Fails if the server is already installed. Requires manage permission on the tenant*/
+    pub fn install_predefined_built_in_server(
+        &self,
+        id: &str,
+    ) -> crate::Call<'a, InstallPredefinedBuiltInServerResponse> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/install-predefined/{}", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
         call
     }
     /** `POST /mcp-servers/{serverSlug}/start`
@@ -3447,7 +3890,7 @@ impl<'a> Api<'a> {
     }
     /** `POST /mcp-servers/{serverSlug}/tools/{toolName}/call`
 
- Call a tool on an MCP server. The tool must be enabled, the arguments are validated against the tool schema, and the call is written to the audit log*/
+ Call an enabled MCP tool allowed by the active profiles, validate its arguments, and log the call*/
     pub fn call_mcp_server_tool(
         &self,
         server_slug: &str,
@@ -3505,7 +3948,7 @@ impl<'a> Api<'a> {
     }
     /** `GET /mcp-servers/{serverSlug}/credentials/token`
 
- Get the usable token for a credential. For API key credentials, returns the API keys. For OAuth credentials, returns the access token, refreshing it first if possible and necessary. When credentialsId is omitted, resolves the effective credentials for the current user*/
+ Get API keys or an OAuth access token; refresh the access token if needed and possible; require server authorization again if the token has expired and has no refresh token; use the current user’s credentials when credentialsId is omitted*/
     pub fn get_mcp_server_credentials_token(
         &self,
         server_slug: &str,

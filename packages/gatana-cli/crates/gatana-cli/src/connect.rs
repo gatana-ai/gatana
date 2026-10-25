@@ -41,7 +41,7 @@ pub fn skill_targets(agent: HookAgent) -> &'static [&'static str] {
 /// What the person does in the agent after the install: the sign-in belongs to them.
 pub fn next_step(agent: HookAgent) -> &'static str {
     match agent {
-        HookAgent::Claude => "run /mcp in Claude Code, select gatana, then Authenticate and sign in",
+        HookAgent::Claude => "run \"claude mcp login gatana\"",
         HookAgent::Codex => "run \"codex mcp login gatana\" and sign in",
         HookAgent::Hermes => "run /reload-mcp in Hermes and sign in when it asks",
         HookAgent::Openclaw => "restart the OpenClaw gateway so it loads the server and the hook",

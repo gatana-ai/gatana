@@ -13,6 +13,24 @@ pub mod types {
         ///Time when the credential was authorized
         #[serde(rename = "authorizedAt")]
         pub authorized_at: ::std::string::String,
+        ///Last authorizing user email, or null
+        #[serde(
+            rename = "authorizedByEmail",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub authorized_by_email: ::std::option::Option<::std::string::String>,
+        ///Last authorizing user name, or null
+        #[serde(
+            rename = "authorizedByName",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub authorized_by_name: ::std::option::Option<::std::string::String>,
+        ///Last authorizing user ID, or null if unknown
+        #[serde(
+            rename = "authorizedByUserId",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub authorized_by_user_id: ::std::option::Option<::std::string::String>,
         ///Time when the credential record was created
         #[serde(rename = "createdAt")]
         pub created_at: ::std::string::String,
@@ -592,7 +610,7 @@ pub mod types {
         ///OAuth access token
         #[serde(rename = "accessToken")]
         pub access_token: ::std::string::String,
-        ///Expiry time of the access token, as a Unix epoch timestamp
+        ///Expiry time of the access token, as a Unix epoch timestamp in milliseconds
         #[serde(
             rename = "accessTokenExpiresAt",
             skip_serializing_if = "::std::option::Option::is_none"
@@ -1063,7 +1081,7 @@ pub mod types {
     pub struct V2CreateServerRequest {
         #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         pub authorization: ::std::option::Option<ServerAuthorization>,
-        ///Read-only; accepted and ignored
+        ///Read-only; input is ignored
         #[serde(
             rename = "createdAt",
             skip_serializing_if = "::std::option::Option::is_none"
@@ -1079,7 +1097,7 @@ pub mod types {
             skip_serializing_if = "::std::vec::Vec::is_empty"
         )]
         pub firewall_rules: ::std::vec::Vec<V2CreateServerRequestFirewallRulesItem>,
-        ///Read-only; accepted and ignored
+        ///Read-only; input is ignored
         #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         pub id: ::std::option::Option<::std::string::String>,
         ///Whether the server is enabled
@@ -1100,19 +1118,19 @@ pub mod types {
             skip_serializing_if = "::std::option::Option::is_none"
         )]
         pub is_output_compression_transform_enabled: ::std::option::Option<bool>,
-        ///Read-only; accepted and ignored
+        ///Read-only; input is ignored
         #[serde(
             rename = "lastToolRefreshAt",
             skip_serializing_if = "::std::option::Option::is_none"
         )]
         pub last_tool_refresh_at: ::std::option::Option<::std::string::String>,
-        ///Read-only; accepted and ignored
+        ///Read-only; input is ignored
         #[serde(
             rename = "mcpProtocolDetectedAt",
             skip_serializing_if = "::std::option::Option::is_none"
         )]
         pub mcp_protocol_detected_at: ::std::option::Option<::std::string::String>,
-        ///Read-only; accepted and ignored
+        ///Read-only; input is ignored
         #[serde(
             rename = "mcpProtocolVersion",
             skip_serializing_if = "::std::option::Option::is_none"
@@ -1146,7 +1164,7 @@ pub mod types {
         pub reset_timeout_on_progress_notification: ::std::option::Option<bool>,
         ///URL-friendly name of the server, unique within the tenant
         pub slug: ::std::string::String,
-        ///Read-only; accepted and ignored
+        ///Read-only; input is ignored
         #[serde(
             rename = "tenantId",
             skip_serializing_if = "::std::option::Option::is_none"
@@ -1180,7 +1198,7 @@ pub mod types {
         pub transport_config_type: ::std::option::Option<
             V2CreateServerRequestTransportConfigType,
         >,
-        ///Read-only; accepted and ignored
+        ///Read-only; input is ignored
         #[serde(
             rename = "updatedAt",
             skip_serializing_if = "::std::option::Option::is_none"
@@ -1719,13 +1737,13 @@ pub mod types {
             deserialize_with = "::std::option::Option::deserialize"
         )]
         pub last_tool_refresh_at: ::std::option::Option<::std::string::String>,
-        ///Time when the protocol version was last detected, or null if never
+        ///Time of the last MCP protocol detection, or null if unknown
         #[serde(
             rename = "mcpProtocolDetectedAt",
             deserialize_with = "::std::option::Option::deserialize"
         )]
         pub mcp_protocol_detected_at: ::std::option::Option<::std::string::String>,
-        ///MCP protocol version the server was last seen to speak, or empty if not yet detected
+        ///Last detected MCP protocol version, or an empty string if unknown
         #[serde(rename = "mcpProtocolVersion")]
         pub mcp_protocol_version: ::std::string::String,
         ///OAuth client configuration, or null when not configured

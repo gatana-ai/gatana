@@ -4,9 +4,7 @@
 //! command that only needs a slug or an id must not break on a transport this version does not know.
 
 use super::{Silent, text_at};
-use crate::cli::{
-    CreateCommand, CredentialScope, DeleteCommand, DescribeCommand, GetCommand, PatchCommand, TransportType,
-};
+use crate::cli::{CreateCommand, CredentialScope, DeleteCommand, DescribeCommand, GetCommand, PatchCommand};
 use crate::context::Context;
 use crate::output::{self, Column, Options};
 use crate::skills::api::HttpSkillsApi;
@@ -197,30 +195,6 @@ pub async fn describe(context: &Context, resource: DescribeCommand) -> Result<()
     Ok(())
 }
 
-/// Lower case letters, digits and single dashes, as the backend wants slugs.
-fn normalize_slug(slug: &str) -> String {
-    let cleaned: String =
-        slug.to_lowercase().chars().filter(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || *ch == '-').collect();
-    let mut collapsed = String::new();
-    for ch in cleaned.chars() {
-        if ch == '-' && collapsed.ends_with('-') {
-            continue;
-        }
-        collapsed.push(ch);
-    }
-    collapsed.trim_matches('-').to_string()
-}
-
-fn transport_type(transport: TransportType) -> v1::types::CreateServerRequestTransportType {
-    use v1::types::CreateServerRequestTransportType as Wire;
-    match transport {
-        TransportType::Hosted => Wire::Hosted,
-        TransportType::Stdio => Wire::Stdio,
-        TransportType::Httpstreaming => Wire::Httpstreaming,
-        TransportType::Sse => Wire::Sse,
-    }
-}
-
 /// The text of `-f <file>`, or of stdin when something is piped in.
 fn file_or_stdin(file: Option<&Path>) -> Result<Option<String>> {
     match file {
@@ -231,43 +205,7 @@ fn file_or_stdin(file: Option<&Path>) -> Result<Option<String>> {
 
 pub async fn create(context: &Context, resource: CreateCommand) -> Result<()> {
     match resource {
-        CreateCommand::Server { slug, transport_type: transport } => {
-            let slug = match slug {
-                Some(slug) => slug,
-                None => dialoguer::Input::<String>::new()
-                    .with_prompt("Enter the server slug")
-                    .validate_with(|value: &String| match value.trim() {
-                        "" => Err("Server slug is required"),
-                        text if text.len() < 3 => Err("Server slug must be at least 3 characters long"),
-                        _ => Ok(()),
-                    })
-                    .interact_text()?,
-            };
-            let transport = match transport {
-                Some(transport) => transport,
-                None => {
-                    let choices =
-                        [TransportType::Httpstreaming, TransportType::Sse, TransportType::Stdio, TransportType::Hosted];
-                    let labels = ["httpstreaming", "sse", "stdio", "hosted"];
-                    let index = dialoguer::Select::new()
-                        .with_prompt("Select the server transport type")
-                        .items(labels)
-                        .default(0)
-                        .interact()?;
-                    choices[index]
-                }
-            };
-            let body = v1::types::CreateServerRequest {
-                slug: normalize_slug(&slug),
-                transport_type: transport_type(transport),
-                is_output_compression_enabled: None,
-                visibility: None,
-            };
-            let created = context.api().await?.v1().create_mcp_server(&body).value().await?;
-            let slug = text_at(&created, "/server/slug")
-                .ok_or_else(|| anyhow!("Failed to create server: no server data returned"))?;
-            output::success(&format!("Created server {slug}"));
-        }
+        CreateCommand::Server { kind } => super::create_server::run(context, kind).await?,
         CreateCommand::Credentials { server_slug, file, scope } => {
             create_credentials(context, &server_slug, file.as_deref(), scope).await?;
         }
@@ -386,13 +324,6 @@ pub async fn patch(context: &Context, resource: PatchCommand) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn slugs_are_normalized_like_the_backend_wants() {
-        assert_eq!(normalize_slug("My Server!"), "myserver");
-        assert_eq!(normalize_slug("--a--b--"), "a-b");
-        assert_eq!(normalize_slug("GitHub-2"), "github-2");
-    }
 
     #[test]
     fn tool_names_split_at_the_first_underscore() {

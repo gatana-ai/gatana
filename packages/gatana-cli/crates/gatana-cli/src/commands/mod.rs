@@ -1,6 +1,7 @@
 //! What each command does.
 
 mod config;
+mod create_server;
 mod install;
 mod resources;
 mod servers;

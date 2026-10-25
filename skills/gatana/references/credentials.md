@@ -134,7 +134,7 @@ An `oauth` server needs two things before anybody can sign in:
 
 1. **OAuth metadata** (`oauthMetadata`): the provider's authorize, token and registration endpoints. Get them with `discoverMcpServerOauth({ serverSlug })` for a remote server, or `discoverMcpServerOauth({ serverSlug, url: '<issuer or MCP URL>' })`. Then save the result with `patchServerV2({ slug, body: { oauthMetadata } })`.
 2. **An OAuth client** (`oauthClientConfiguration`): `{ grantType: 'authorization_code', clientId, clientSecret?, clientAuthMethod, scopes? }`.
-   - If the provider supports dynamic client registration, the dashboard registers a client with one click: server page > **Settings** > authorization > **Auto** next to the client ID. There is no public API for this step.
+   - If the provider supports dynamic client registration, the dashboard registers a client with one click: server page > **Settings** > authorization > **Auto** next to the client ID. `gatana create server remote <url>` also registers one when it creates the server. There is no public API for this step.
    - Otherwise the user registers an app with the provider. Use the **Redirect URI** that the server's **Settings** tab shows. Then save the client ID and secret with `patchServerV2`.
    - A client ID or secret can be a secret reference, for example `{{ secrets.vault.google_client_secret }}`.
 

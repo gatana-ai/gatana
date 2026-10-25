@@ -560,11 +560,14 @@ fn generate(spec: &SpecConfig, doc: &Value) -> Result<String> {
     let schemas = doc.pointer("/components/schemas").and_then(Value::as_object).unwrap_or(&empty);
     let components = Components { schemas };
     let operations = collect_operations(spec, doc, &components)?;
+    // The public document names an absolute URL; the private one (`?private=true`) only the path.
     let base_path = doc
         .pointer("/servers/0/url")
         .and_then(Value::as_str)
-        .and_then(|url| url.split_once("://").map(|(_, rest)| rest))
-        .and_then(|rest| rest.find('/').map(|index| rest[index..].to_string()))
+        .and_then(|url| match url.split_once("://") {
+            Some((_, rest)) => rest.find('/').map(|index| rest[index..].to_string()),
+            None => url.starts_with('/').then(|| url.to_string()),
+        })
         .ok_or_else(|| anyhow!("the document has no server URL to take the base path from"))?;
 
     // The schemas the operations reach, anonymous ones inlined, everything normalized.

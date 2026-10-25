@@ -297,41 +297,18 @@ async fn upload(context: &Context, slug: &str, path: &Path, options: UploadOptio
 
 /// A FaaS server on the Node 24 runtime, everything else at the server's defaults.
 fn new_faas_server(slug: &str) -> v2::types::V2CreateServerRequest {
-    use v2::types::{
-        V2CreateServerRequest, V2CreateServerRequestTransportConfig, V2CreateServerRequestTransportConfigRuntime,
-    };
-    V2CreateServerRequest {
-        slug: slug.to_string(),
-        transport_config: Some(V2CreateServerRequestTransportConfig::Hosted {
+    use v2::types::{V2CreateServerRequestTransportConfig, V2CreateServerRequestTransportConfigRuntime};
+    super::create_server::new_server_request(
+        slug,
+        V2CreateServerRequestTransportConfig::Hosted {
             env: Vec::new(),
             limits: None,
             requests: None,
             runtime: V2CreateServerRequestTransportConfigRuntime::Node24,
             storage: None,
             tailscale: None,
-        }),
-        authorization: None,
-        created_at: None,
-        description: None,
-        firewall_rules: Vec::new(),
-        id: None,
-        is_enabled: None,
-        is_output_compression_enabled: None,
-        is_output_compression_transform_enabled: None,
-        last_tool_refresh_at: None,
-        mcp_protocol_detected_at: None,
-        mcp_protocol_version: None,
-        oauth_client_configuration: None,
-        oauth_metadata: None,
-        output_compression_threshold_bytes: None,
-        reset_timeout_on_progress_notification: None,
-        tenant_id: None,
-        timeout_protocol: None,
-        timeout_total: None,
-        transport_config_type: None,
-        updated_at: None,
-        visibility: None,
-    }
+        },
+    )
 }
 
 pub async fn sandbox(context: &Context, command: SandboxCommand) -> Result<()> {

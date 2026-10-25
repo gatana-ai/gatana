@@ -48,11 +48,13 @@ installed (install.sh, npm, pnpm, bun or Homebrew) and upgrades it the same way.
 gatana install
 ```
 
-`install` signs you in (it opens the browser when you are not signed in yet), asks which AI agents
-on this machine to connect, and gives each one the Gatana gateway as an MCP server, the skills of
-your organization, and the hook that keeps the skills current. Then sign in from the agent: for
-Claude Code, run `/mcp`, select `gatana` and Authenticate. The agents it knows are Claude Code,
-Codex, Hermes and OpenClaw; name them to skip the menu: `gatana install claude codex`.
+`install` signs you in (it opens the browser when you are not signed in yet), finds the AI agents
+on this machine, and gives each one the Gatana gateway as an MCP server, the skills of your
+organization, and the hook that keeps the skills current. It does not ask which agents: it connects
+every agent whose folder it finds (`~/.claude`, `~/.codex`, `~/.hermes`, `~/.openclaw`). Then sign
+in from the agent: for Claude Code, run `/mcp`, select `gatana` and Authenticate. The agents it
+knows are Claude Code, Codex, Hermes and OpenClaw; name them to connect only those:
+`gatana install claude codex`.
 
 No organization yet? Run `gatana signup` first. It asks for the name of the organization, its ID
 and your email address, then for the code that Gatana sends to that address. When the organization
@@ -119,7 +121,7 @@ The table format has uppercase headers, no borders and columns as wide as their 
 | Command     | Syntax                                     | Description                                                                                                                                                                                             |
 | ----------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **signup**  | `gatana signup [--org-name name] [--org-id id] [--email address] [--code code] [--browser] [--base-url url]` | Create a new organization and sign in to it. Asks in the terminal for what the flags do not give, then for the code from the email. Without a terminal, it sends the code and prints the command that finishes with `--code`. `--browser` uses the sign-up page instead; `--org-name` and `--email` then fill in its form. The new organization becomes the active organization. |
-| **install** | `gatana install [agent...] [--no-browser] [--force]` | Sign in if needed and choose agents (`claude`, `codex`, `hermes`, `openclaw`). Add the gateway as an MCP server, your organization's skills, and the session-start hook to each agent. `--force` allows a skill folder to sync from a different organization and overwrites locally edited and non-Gatana skills. |
+| **install** | `gatana install [agent...] [--no-browser] [--force]` | Sign in if needed. Connect the named agents (`claude`, `codex`, `hermes`, `openclaw`), or every agent found on this machine when none are named. Add the gateway as an MCP server, your organization's skills, and the session-start hook to each agent. `--force` allows a skill folder to sync from a different organization and overwrites locally edited and non-Gatana skills. |
 
 > `install` writes the gateway URL of your organization into the agent's own configuration:
 > `~/.claude.json` (Claude Code), `~/.codex/config.toml`, `~/.hermes/config.yaml` or
@@ -131,23 +133,39 @@ The table format has uppercase headers, no borders and columns as wide as their 
 
 Operations on servers and credentials.
 
-| Command             | Syntax                                                        | Description                                                     |
-| ------------------- | ------------------------------------------------------------- | --------------------------------------------------------------- |
-| **get server**      | `gatana get server [name]`                                    | List all servers, or get one server by its slug                 |
-| **get tool**        | `gatana get tool [name] [--enabled]`                          | List all tools, or get the schema of one tool                   |
-| **get creds**       | `gatana get creds [id] -s <slug> [-e]`                        | List the credentials of a server, or get one by its ID          |
-| **describe server** | `gatana describe server <name>`                               | Show the deployment status and the tools of a server            |
-| **create server**   | `gatana create server [-s slug] [-t type]`                    | Create a server. Asks for the values that the flags do not give |
-| **create creds**    | `gatana create creds <slug> [-f file] [--scope user\|server]` | Create or replace the credentials of a server                   |
-| **delete server**   | `gatana delete server <name>`                                 | Delete a server                                                 |
-| **delete creds**    | `gatana delete creds <id> -s <slug>`                          | Delete one credential of a server                               |
-| **patch server**    | `gatana patch server <slug> [-p kv...] [-f file]`             | Change a server with a JSON Merge Patch (RFC 7396)              |
+| Command             | Syntax                                                        | Description                                                                           |
+| ------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **get server**      | `gatana get server [name]`                                    | List all servers, or get one server by its slug                                       |
+| **get tool**        | `gatana get tool [name] [--enabled]`                          | List all tools, or get the schema of one tool                                         |
+| **get creds**       | `gatana get creds [id] -s <slug> [-e]`                        | List the credentials of a server, or get one by its ID                                |
+| **describe server** | `gatana describe server <name>`                               | Show the deployment status and the tools of a server                                  |
+| **create server**   | `gatana create server [kind] [args]`                          | Create a server, as the dashboard does. See [Create a server](#create-a-server) below |
+| **create creds**    | `gatana create creds <slug> [-f file] [--scope user\|server]` | Create or replace the credentials of a server                                         |
+| **delete server**   | `gatana delete server <name>`                                 | Delete a server                                                                       |
+| **delete creds**    | `gatana delete creds <id> -s <slug>`                          | Delete one credential of a server                                                     |
+| **patch server**    | `gatana patch server <slug> [-p kv...] [-f file]`             | Change a server with a JSON Merge Patch (RFC 7396)                                    |
 
-> **Transport types** for `create server -t`: `hosted`, `stdio`, `httpstreaming`, `sse`.
->
 > **Credential types**: `create creds` gets the type (OAuth or API key) from the server. For OAuth,
 > omit `-f` to get an authorize URL, or give a token set with `-f` or on stdin. For API keys, give
 > `[["header","value"], …]` with `-f` or on stdin.
+
+### Create a server
+
+`gatana create server` creates a server as the Add Server page of the dashboard does. Without a
+kind, it shows a menu. An argument can answer each question. Without a terminal, a missing answer
+is an error, unless a default can stand in.
+
+| Command                    | Syntax                                                                          | Description                                                                                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **create server remote**   | `gatana create server remote [url] [--sse] [-s slug]`                           | A remote MCP server. Gatana looks for its OAuth while you choose the slug. When the authorization server permits it, the CLI registers an OAuth client |
+| **create server openapi**  | `gatana create server openapi [url] [-s slug]`                                  | Tools made from an OpenAPI or Swagger specification. It also looks for OAuth                                                                           |
+| **create server local**    | `gatana create server local [-s slug] [--storage] [command...]`                 | A command such as `npx` or `uvx`, run in a container of its own. Put the options before the command                                                    |
+| **create server code**     | `gatana create server code [-s slug] [--runtime node24\|python313] [--storage]` | Code that you write in Node.js or Python                                                                                                               |
+| **create server built-in** | `gatana create server built-in [id]`                                            | A server that Gatana provides. Without an ID, a menu shows the ones that are not installed                                                             |
+
+> Each kind except `built-in` also takes `--visibility private|organization` (default `private`) and
+> `--output-compression`. When you omit the slug, the CLI makes it from the domain or the package,
+> as the dashboard does, and adds a number when another server has that slug.
 
 ### Server management
 
@@ -266,11 +284,12 @@ gatana get servers
 ### Manage servers
 
 ```bash
-# Create a server (interactive)
+# Create a server (choose the kind in a menu, then answer the questions)
 gatana create server
 
-# Create a server with flags
-gatana create server -s my-server -t hosted
+# Create a server with arguments
+gatana create server remote https://mcp.example.com/mcp -s my-server
+gatana create server code -s my-server --runtime node24
 
 # Show the details of a server
 gatana describe server my-server
@@ -513,12 +532,12 @@ Changes:
   `faas verify` and `faas run`.
 - `config show` is now `config current`. `config set-api-key` is gone: use
   `config login <org> --pat <token>`.
-- `create server` takes the slug with `-s, --slug`.
+- `create server` asks the questions of the Add Server page of the dashboard. The kind is a
+  subcommand, for example `create server remote <url>`, and `-t, --transport-type` is gone.
 - `delete creds` deletes one credential by its ID. It has no `--all`.
 - `faas verify` and `faas run` start `node` to load the source code. When the source folder
   cannot resolve `zod`, the CLI installs it once into its cache folder with npm and links it in for
   the run. `faas upload` without Node.js checks `index.js` for a schema export only.
-- `create server` without `--transport-type` shows a list to pick from, not a text prompt.
 - `config login --no-browser` prints the link without opening a browser.
 - `-o yaml` does not fold long strings at 80 columns. Tables have no trailing spaces.
 - The skills manifest lists its entries in the order of the server's list, not in download order.
