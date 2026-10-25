@@ -7,6 +7,171 @@
 pub const BASE_PATH: &str = "/api/v1";
 /// Request and response types.
 pub mod types {
+    ///`AssistantLlmConfigurationInput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(tag = "provider")]
+    pub enum AssistantLlmConfigurationInput {
+        #[serde(rename = "openai-compatible")]
+        OpenaiCompatible {
+            ///API key sent as a bearer token
+            #[serde(
+                rename = "apiKey",
+                skip_serializing_if = "::std::option::Option::is_none"
+            )]
+            api_key: ::std::option::Option<::std::string::String>,
+            ///Base URL of the OpenAI-compatible API, up to but not including /chat/completions
+            #[serde(rename = "baseUrl")]
+            base_url: ::std::string::String,
+            ///Model identifier to request, for example deepseek-chat
+            model: ::std::string::String,
+        },
+        #[serde(rename = "bedrock")]
+        Bedrock {
+            ///AWS access key ID, for requests signed with SigV4
+            #[serde(
+                rename = "accessKeyId",
+                skip_serializing_if = "::std::option::Option::is_none"
+            )]
+            access_key_id: ::std::option::Option<::std::string::String>,
+            ///Bedrock API key, used as a bearer token instead of signing each request
+            #[serde(
+                rename = "apiKey",
+                skip_serializing_if = "::std::option::Option::is_none"
+            )]
+            api_key: ::std::option::Option<::std::string::String>,
+            ///Bedrock model or inference profile ID, for example anthropic.claude-sonnet-4-20250514-v1:0
+            model: ::std::string::String,
+            ///AWS region the model is invoked in, for example us-east-1
+            region: ::std::string::String,
+            ///AWS secret access key, for requests signed with SigV4
+            #[serde(
+                rename = "secretAccessKey",
+                skip_serializing_if = "::std::option::Option::is_none"
+            )]
+            secret_access_key: ::std::option::Option<::std::string::String>,
+            ///AWS session token, when the access key pair is temporary
+            #[serde(
+                rename = "sessionToken",
+                skip_serializing_if = "::std::option::Option::is_none"
+            )]
+            session_token: ::std::option::Option<::std::string::String>,
+        },
+        #[serde(rename = "azure-openai")]
+        AzureOpenai {
+            ///Azure OpenAI API key
+            #[serde(
+                rename = "apiKey",
+                skip_serializing_if = "::std::option::Option::is_none"
+            )]
+            api_key: ::std::option::Option<::std::string::String>,
+            ///API version to request, or unset for the provider default
+            #[serde(
+                rename = "apiVersion",
+                skip_serializing_if = "::std::option::Option::is_none"
+            )]
+            api_version: ::std::option::Option<::std::string::String>,
+            ///Name of the deployment to call, which Azure uses in place of a model name
+            model: ::std::string::String,
+            ///Name of the Azure OpenAI resource, the first label of its endpoint host
+            #[serde(rename = "resourceName")]
+            resource_name: ::std::string::String,
+        },
+    }
+    ///`AssistantLlmConfigurationStatus`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct AssistantLlmConfigurationStatus {
+        ///Azure API version, when one is pinned
+        #[serde(
+            rename = "apiVersion",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub api_version: ::std::option::Option<::std::string::String>,
+        ///Base URL of the endpoint, for an OpenAI-compatible provider
+        #[serde(
+            rename = "baseUrl",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub base_url: ::std::option::Option<::std::string::String>,
+        ///Whether a bearer API key is stored
+        #[serde(rename = "hasApiKey")]
+        pub has_api_key: bool,
+        ///Whether an AWS access key pair is stored
+        #[serde(rename = "hasAwsAccessKey")]
+        pub has_aws_access_key: bool,
+        ///Configured model, deployment or inference profile identifier
+        pub model: ::std::string::String,
+        ///Kind of endpoint that is configured
+        pub provider: AssistantLlmConfigurationStatusProvider,
+        ///AWS region, for Bedrock
+        #[serde(deserialize_with = "::std::option::Option::deserialize")]
+        pub region: ::std::option::Option<::std::string::String>,
+        ///Azure OpenAI resource name, for Azure
+        #[serde(
+            rename = "resourceName",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub resource_name: ::std::option::Option<::std::string::String>,
+    }
+    ///Kind of endpoint that is configured
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum AssistantLlmConfigurationStatusProvider {
+        #[serde(rename = "openai-compatible")]
+        OpenaiCompatible,
+        #[serde(rename = "bedrock")]
+        Bedrock,
+        #[serde(rename = "azure-openai")]
+        AzureOpenai,
+    }
+    impl ::std::fmt::Display for AssistantLlmConfigurationStatusProvider {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::OpenaiCompatible => f.write_str("openai-compatible"),
+                Self::Bedrock => f.write_str("bedrock"),
+                Self::AzureOpenai => f.write_str("azure-openai"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for AssistantLlmConfigurationStatusProvider {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "openai-compatible" => Ok(Self::OpenaiCompatible),
+                "bedrock" => Ok(Self::Bedrock),
+                "azure-openai" => Ok(Self::AzureOpenai),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for AssistantLlmConfigurationStatusProvider {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for AssistantLlmConfigurationStatusProvider {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
     ///`AuditLogResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct AuditLogResponse {
@@ -486,10 +651,81 @@ pub mod types {
             value.parse()
         }
     }
+    ///`CreatePersonalAccessTokenRequest`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreatePersonalAccessTokenRequest {
+        ///Display name of the token
+        pub name: ::std::string::String,
+        ///IDs of the profiles the token uses
+        #[serde(
+            rename = "profileIds",
+            default,
+            skip_serializing_if = "::std::vec::Vec::is_empty"
+        )]
+        pub profile_ids: ::std::vec::Vec<::std::string::String>,
+    }
+    ///`CreateProfileBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateProfileBody {
+        ///Human-readable description of the profile
+        pub description: ::std::string::String,
+        ///Whether MCP sessions that use the profile are forced into code mode
+        #[serde(
+            rename = "isCodeModeForced",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_code_mode_forced: ::std::option::Option<bool>,
+        ///Whether all users in the tenant can use the profile without an explicit assignment
+        #[serde(rename = "isOpenToAllUsers")]
+        pub is_open_to_all_users: bool,
+        ///Whether the profile restricts its users to only the servers in the profile; applies even to tenant owners
+        #[serde(rename = "isRestrictive")]
+        pub is_restrictive: bool,
+        ///Display name of the profile
+        pub name: ::std::string::String,
+    }
+    ///`CreateProfileClaimMappingBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateProfileClaimMappingBody {
+        ///Name of the identity provider claim to match
+        #[serde(rename = "claimKey")]
+        pub claim_key: ::std::string::String,
+        ///Claim value that assigns the profile when it matches
+        #[serde(rename = "claimValue")]
+        pub claim_value: ::std::string::String,
+    }
+    ///`CreateProfileClaimMappingResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateProfileClaimMappingResponse {
+        #[serde(rename = "claimMapping")]
+        pub claim_mapping: ProfileClaimMapping,
+    }
+    ///`CreateProfileMaintainerBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateProfileMaintainerBody {
+        ///ID of the user to add as a maintainer
+        #[serde(rename = "userId")]
+        pub user_id: ::std::string::String,
+    }
+    ///`CreateProfileMaintainerResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateProfileMaintainerResponse {
+        pub success: bool,
+    }
+    ///`CreateProfileResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateProfileResponse {
+        pub profile: ProfileDetailsDto,
+    }
     ///`CreateSandboxResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct CreateSandboxResponse {
         pub sandbox: SandboxDto,
+    }
+    ///`CreateServiceAccountPersonalAccessTokenResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateServiceAccountPersonalAccessTokenResponse {
+        pub token: PersonalAccessToken,
     }
     ///`CreateSkillBody`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
@@ -571,11 +807,145 @@ pub mod types {
             value.parse()
         }
     }
+    ///`CreateTeamProfileAssignmentRequest`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateTeamProfileAssignmentRequest {
+        ///Whether to lock the assignment; only organization owners can lock. Default is false
+        #[serde(
+            rename = "isLockedByOrgOwner",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_locked_by_org_owner: ::std::option::Option<bool>,
+        ///ID of the profile to assign
+        #[serde(rename = "profileId")]
+        pub profile_id: ::std::string::String,
+    }
+    ///`CreateTeamProfileResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateTeamProfileResponse {
+        ///Profile assignments of the team
+        #[serde(rename = "profileAssignments")]
+        pub profile_assignments: ::std::vec::Vec<ProfileTeamAssignment>,
+    }
+    ///`CreateUserProfileAssignmentRequest`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateUserProfileAssignmentRequest {
+        ///Whether to lock the assignment; only organization owners can lock. Default is false
+        #[serde(
+            rename = "isLockedByOrgOwner",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_locked_by_org_owner: ::std::option::Option<bool>,
+        ///ID of the profile to assign
+        #[serde(rename = "profileId")]
+        pub profile_id: ::std::string::String,
+    }
+    ///`CreateUserProfileResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateUserProfileResponse {
+        ///Profile assignments of the user
+        #[serde(rename = "profileAssignments")]
+        pub profile_assignments: ::std::vec::Vec<ProfileAssignment>,
+    }
+    ///`CreateUserRequest`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateUserRequest {
+        ///Email address of the new user
+        pub email: ::std::string::String,
+        ///Whether to create a service account instead of a regular user
+        #[serde(rename = "isServiceAccount")]
+        pub is_service_account: bool,
+        ///Display name of the new user
+        pub name: ::std::string::String,
+        ///Role of the user in the tenant: member or owner
+        pub role: CreateUserRequestRole,
+    }
+    ///Role of the user in the tenant: member or owner
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum CreateUserRequestRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "owner")]
+        Owner,
+    }
+    impl ::std::fmt::Display for CreateUserRequestRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Owner => f.write_str("owner"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for CreateUserRequestRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "owner" => Ok(Self::Owner),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for CreateUserRequestRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for CreateUserRequestRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`CreateUserResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateUserResponse {
+        pub user: User,
+    }
     ///`DeleteMcpServerResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct DeleteMcpServerResponse {
         pub files: ::std::vec::Vec<ServerFile>,
         pub server: ServerDto,
+    }
+    ///`DeleteProfileClaimMappingResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DeleteProfileClaimMappingResponse {
+        pub success: bool,
+    }
+    ///`DeleteProfileMaintainerResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DeleteProfileMaintainerResponse {
+        pub success: bool,
+    }
+    ///`DeleteProfileResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DeleteProfileResponse {
+        pub success: bool,
+    }
+    ///`DeleteServiceAccountPersonalAccessTokenResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DeleteServiceAccountPersonalAccessTokenResponse {
+        ///Whether the request succeeded
+        pub success: bool,
     }
     ///`DeploymentContainerStatus`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -1439,6 +1809,43 @@ pub mod types {
         pub files: ::std::vec::Vec<ServerFile>,
         pub server: ServerDto,
     }
+    ///`GetProfileResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetProfileResponse {
+        pub profile: ProfileDetailsDto,
+    }
+    ///`GetQuotaAndUsageResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetQuotaAndUsageResponse {
+        pub quotas: GetQuotaAndUsageResponseQuotas,
+    }
+    ///Quotas and current usage of the tenant
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetQuotaAndUsageResponseQuotas {
+        pub accounts: GetQuotaAndUsageResponseQuotasAccounts,
+        #[serde(rename = "mcpServers")]
+        pub mcp_servers: GetQuotaAndUsageResponseQuotasMcpServers,
+    }
+    ///Account quota and current usage
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetQuotaAndUsageResponseQuotasAccounts {
+        ///Current count
+        pub current: f64,
+        ///Maximum number allowed by the quota
+        pub quota: f64,
+        ///Number remaining before the quota is reached
+        pub remaining: f64,
+    }
+    ///MCP server quota and current usage
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetQuotaAndUsageResponseQuotasMcpServers {
+        ///Current count
+        pub current: f64,
+        ///Maximum number allowed by the quota
+        pub quota: f64,
+        ///Number remaining before the quota is reached
+        pub remaining: f64,
+    }
     ///`GetSkillResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct GetSkillResponse {
@@ -1626,6 +2033,83 @@ pub mod types {
             value.parse()
         }
     }
+    ///`GetSubscriptionResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetSubscriptionResponse {
+        ///Details of the Stripe subscription, or null when there is none
+        #[serde(deserialize_with = "::std::option::Option::deserialize")]
+        pub subscription: ::std::option::Option<GetSubscriptionResponseSubscription>,
+        ///Name of the subscription plan
+        #[serde(rename = "subscriptionPlan")]
+        pub subscription_plan: ::std::string::String,
+        ///Number of seats in the subscription
+        #[serde(rename = "subscriptionSeats")]
+        pub subscription_seats: f64,
+    }
+    ///`GetSubscriptionResponseSubscription`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetSubscriptionResponseSubscription {
+        ///Time when the subscription cancels, or null if it does not cancel
+        #[serde(
+            rename = "cancelsAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub cancels_at: ::std::option::Option<::std::string::String>,
+        ///Details of the default card, or null when no card is set
+        #[serde(deserialize_with = "::std::option::Option::deserialize")]
+        pub card: ::std::option::Option<GetSubscriptionResponseSubscriptionCard>,
+        ///Currency of the subscription
+        pub currency: ::std::string::String,
+        ///Time when the current billing period ends
+        #[serde(rename = "currentPeriodEnd")]
+        pub current_period_end: ::std::string::String,
+        ///Whether a default payment method is set
+        #[serde(rename = "hasPaymentMethod")]
+        pub has_payment_method: bool,
+        ///Stripe payment method type (e.g. "card"), or null
+        #[serde(
+            rename = "paymentType",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub payment_type: ::std::option::Option<::std::string::String>,
+        ///Price per seat in the subscription currency
+        #[serde(rename = "perSeatAmount")]
+        pub per_seat_amount: f64,
+        ///Stripe subscription status
+        pub status: ::std::string::String,
+        ///Time when the trial ends, or null if not in a trial
+        #[serde(
+            rename = "trialEndsAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub trial_ends_at: ::std::option::Option<::std::string::String>,
+    }
+    ///`GetSubscriptionResponseSubscriptionCard`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetSubscriptionResponseSubscriptionCard {
+        ///Card brand (e.g. "visa")
+        pub brand: ::std::string::String,
+        ///Month the card expires
+        #[serde(rename = "expiresMonth")]
+        pub expires_month: f64,
+        ///Year the card expires
+        #[serde(rename = "expiresYear")]
+        pub expires_year: f64,
+        ///Last four digits of the card number
+        pub last4: ::std::string::String,
+        ///Whether the card is valid
+        pub valid: bool,
+    }
+    ///`GetTenantResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetTenantResponse {
+        pub tenant: TenantDto,
+    }
+    ///`GetUserResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetUserResponse {
+        pub user: User,
+    }
     ///Persistent storage for the server. When enabled the server keeps one volume, mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the deployment and counts against the organization storage quota
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct HostedTransportStorageOutput {
@@ -1668,10 +2152,27 @@ pub mod types {
     pub struct ListMcpServerToolsResponse {
         pub tools: ::std::vec::Vec<ServerToolDto>,
     }
+    ///`ListProfileClaimMappingsResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListProfileClaimMappingsResponse {
+        #[serde(rename = "claimMappings")]
+        pub claim_mappings: ::std::vec::Vec<ProfileClaimMapping>,
+    }
+    ///`ListProfilesResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListProfilesResponse {
+        pub profiles: ::std::vec::Vec<ProfileListItemDto>,
+    }
     ///`ListSandboxesResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ListSandboxesResponse {
         pub sandboxes: ::std::vec::Vec<SandboxDto>,
+    }
+    ///`ListServiceAccountPersonalAccessTokensResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListServiceAccountPersonalAccessTokensResponse {
+        ///Personal access tokens of the user
+        pub tokens: ::std::vec::Vec<PersonalAccessToken>,
     }
     ///`ListSkillCollectionsResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -1685,10 +2186,139 @@ pub mod types {
         pub collections: ::std::vec::Vec<SkillCollectionDto>,
         pub skills: ::std::vec::Vec<SkillDto>,
     }
+    ///`ListTeamsResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListTeamsResponse {
+        ///Teams the caller can read
+        pub teams: ::std::vec::Vec<TeamWithMemberCount>,
+    }
     ///`ListToolsResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ListToolsResponse {
         pub tools: ::std::vec::Vec<ServerToolDto>,
+    }
+    ///`ListUserProfilesResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListUserProfilesResponse {
+        ///Profile assignments of the user
+        #[serde(rename = "profileAssignments")]
+        pub profile_assignments: ::std::vec::Vec<ProfileAssignment>,
+    }
+    ///`ListUsersResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListUsersResponse {
+        ///Users and service accounts the caller can read
+        pub users: ::std::vec::Vec<User>,
+    }
+    ///`McpAuditLogVerbosity`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum McpAuditLogVerbosity {
+        #[serde(rename = "off")]
+        Off,
+        #[serde(rename = "terse")]
+        Terse,
+        #[serde(rename = "detailed")]
+        Detailed,
+        #[serde(rename = "detailed-with-error")]
+        DetailedWithError,
+        #[serde(rename = "verbose")]
+        Verbose,
+    }
+    impl ::std::fmt::Display for McpAuditLogVerbosity {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Off => f.write_str("off"),
+                Self::Terse => f.write_str("terse"),
+                Self::Detailed => f.write_str("detailed"),
+                Self::DetailedWithError => f.write_str("detailed-with-error"),
+                Self::Verbose => f.write_str("verbose"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for McpAuditLogVerbosity {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "off" => Ok(Self::Off),
+                "terse" => Ok(Self::Terse),
+                "detailed" => Ok(Self::Detailed),
+                "detailed-with-error" => Ok(Self::DetailedWithError),
+                "verbose" => Ok(Self::Verbose),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for McpAuditLogVerbosity {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for McpAuditLogVerbosity {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///Allow different issuer paths in MCP OAuth ID tokens. Scheme, host, and port must match. Off by default
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(transparent)]
+    pub struct McpOauthIssuerPathToleranceEnabled(pub bool);
+    impl ::std::ops::Deref for McpOauthIssuerPathToleranceEnabled {
+        type Target = bool;
+        fn deref(&self) -> &bool {
+            &self.0
+        }
+    }
+    impl ::std::convert::From<McpOauthIssuerPathToleranceEnabled> for bool {
+        fn from(value: McpOauthIssuerPathToleranceEnabled) -> Self {
+            value.0
+        }
+    }
+    impl ::std::convert::From<bool> for McpOauthIssuerPathToleranceEnabled {
+        fn from(value: bool) -> Self {
+            Self(value)
+        }
+    }
+    impl ::std::fmt::Display for McpOauthIssuerPathToleranceEnabled {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            self.0.fmt(f)
+        }
+    }
+    impl ::std::str::FromStr for McpOauthIssuerPathToleranceEnabled {
+        type Err = <bool as ::std::str::FromStr>::Err;
+        fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+            Ok(Self(value.parse()?))
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for McpOauthIssuerPathToleranceEnabled {
+        type Error = <bool as ::std::str::FromStr>::Err;
+        fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<String> for McpOauthIssuerPathToleranceEnabled {
+        type Error = <bool as ::std::str::FromStr>::Err;
+        fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
+            value.parse()
+        }
     }
     ///`OAuthGrantType`
     #[derive(
@@ -1745,6 +2375,53 @@ pub mod types {
             value.parse()
         }
     }
+    ///`OptionalMcpOauthIssuerPathToleranceEnabled`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(transparent)]
+    pub struct OptionalMcpOauthIssuerPathToleranceEnabled(
+        pub McpOauthIssuerPathToleranceEnabled,
+    );
+    impl ::std::ops::Deref for OptionalMcpOauthIssuerPathToleranceEnabled {
+        type Target = McpOauthIssuerPathToleranceEnabled;
+        fn deref(&self) -> &McpOauthIssuerPathToleranceEnabled {
+            &self.0
+        }
+    }
+    impl ::std::convert::From<OptionalMcpOauthIssuerPathToleranceEnabled>
+    for McpOauthIssuerPathToleranceEnabled {
+        fn from(value: OptionalMcpOauthIssuerPathToleranceEnabled) -> Self {
+            value.0
+        }
+    }
+    impl ::std::convert::From<McpOauthIssuerPathToleranceEnabled>
+    for OptionalMcpOauthIssuerPathToleranceEnabled {
+        fn from(value: McpOauthIssuerPathToleranceEnabled) -> Self {
+            Self(value)
+        }
+    }
+    impl ::std::fmt::Display for OptionalMcpOauthIssuerPathToleranceEnabled {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            self.0.fmt(f)
+        }
+    }
+    impl ::std::str::FromStr for OptionalMcpOauthIssuerPathToleranceEnabled {
+        type Err = <McpOauthIssuerPathToleranceEnabled as ::std::str::FromStr>::Err;
+        fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+            Ok(Self(value.parse()?))
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for OptionalMcpOauthIssuerPathToleranceEnabled {
+        type Error = <McpOauthIssuerPathToleranceEnabled as ::std::str::FromStr>::Err;
+        fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<String> for OptionalMcpOauthIssuerPathToleranceEnabled {
+        type Error = <McpOauthIssuerPathToleranceEnabled as ::std::str::FromStr>::Err;
+        fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
+            value.parse()
+        }
+    }
     ///`PaginatedAuditLogResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct PaginatedAuditLogResponse {
@@ -1770,6 +2447,351 @@ pub mod types {
         ///Total number of pages
         #[serde(rename = "totalPages")]
         pub total_pages: f64,
+    }
+    ///`PersonalAccessToken`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct PersonalAccessToken {
+        ///API key of the token
+        #[serde(rename = "apiKey")]
+        pub api_key: ::std::string::String,
+        ///Time when the token was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Unique ID of the token
+        pub id: ::std::string::String,
+        ///Time when the token was last used, or null if never used
+        #[serde(
+            rename = "lastUsedAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub last_used_at: ::std::option::Option<::std::string::String>,
+        ///Display name of the token
+        pub name: ::std::string::String,
+        ///IDs of the profiles the token uses
+        #[serde(rename = "profileIds")]
+        pub profile_ids: ::std::vec::Vec<::std::string::String>,
+        ///ID of the tenant that owns the token
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///ID of the user the token belongs to
+        #[serde(rename = "userId")]
+        pub user_id: ::std::string::String,
+    }
+    ///`ProfileAssignment`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileAssignment {
+        ///Time when the assignment was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Whether an organization owner locked the assignment; locked assignments take priority when the active profile is resolved
+        #[serde(rename = "isLockedByOrgOwner")]
+        pub is_locked_by_org_owner: bool,
+        ///ID of the assigned profile
+        #[serde(rename = "profileId")]
+        pub profile_id: ::std::string::String,
+        ///ID of the tenant that owns the assignment
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///Time when the assignment was last updated
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+        ///ID of the assigned user
+        #[serde(rename = "userId")]
+        pub user_id: ::std::string::String,
+    }
+    ///`ProfileAssignmentsResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileAssignmentsResponse {
+        ///Users directly assigned to the profile
+        pub accounts: ::std::vec::Vec<ProfileAssignmentsResponseAccountsItem>,
+        ///Teams assigned to the profile
+        pub teams: ::std::vec::Vec<ProfileAssignmentsResponseTeamsItem>,
+    }
+    ///`ProfileAssignmentsResponseAccountsItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileAssignmentsResponseAccountsItem {
+        ///Time when the profile was assigned
+        #[serde(rename = "assignedAt")]
+        pub assigned_at: ::std::string::String,
+        ///Email address of the user
+        pub email: ::std::string::String,
+        ///Unique ID of the user
+        pub id: ::std::string::String,
+        ///Whether an organization owner locked the assignment
+        #[serde(rename = "isLockedByOrgOwner")]
+        pub is_locked_by_org_owner: bool,
+        ///Display name of the user
+        pub name: ::std::string::String,
+    }
+    ///`ProfileAssignmentsResponseTeamsItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileAssignmentsResponseTeamsItem {
+        ///Time when the profile was assigned
+        #[serde(rename = "assignedAt")]
+        pub assigned_at: ::std::string::String,
+        ///ID of the assigned team
+        pub id: ::std::string::String,
+        ///Whether an organization owner locked the assignment
+        #[serde(rename = "isLockedByOrgOwner")]
+        pub is_locked_by_org_owner: bool,
+        ///Name of the assigned team
+        pub name: ::std::string::String,
+    }
+    ///`ProfileClaimMapping`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileClaimMapping {
+        ///Name of the identity provider claim to match
+        #[serde(rename = "claimKey")]
+        pub claim_key: ::std::string::String,
+        ///Claim value that assigns the profile when it matches
+        #[serde(rename = "claimValue")]
+        pub claim_value: ::std::string::String,
+        ///Time when the claim mapping was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Unique ID of the claim mapping
+        pub id: ::std::string::String,
+        ///ID of the profile that the mapping assigns
+        #[serde(rename = "profileId")]
+        pub profile_id: ::std::string::String,
+        ///ID of the tenant that owns the claim mapping
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+    }
+    ///`ProfileDetailsDto`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileDetailsDto {
+        ///Time when the profile was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///ID of the user who created the profile
+        #[serde(rename = "createdBy")]
+        pub created_by: ::std::string::String,
+        ///Human-readable description of the profile
+        pub description: ::std::string::String,
+        ///Unique ID of the profile
+        pub id: ::std::string::String,
+        ///Whether MCP sessions that use the profile are forced into code mode
+        #[serde(rename = "isCodeModeForced")]
+        pub is_code_mode_forced: bool,
+        ///Whether all users in the tenant can use the profile without an explicit assignment
+        #[serde(rename = "isOpenToAllUsers")]
+        pub is_open_to_all_users: bool,
+        ///Whether the profile restricts its users to only the servers in the profile; applies even to tenant owners
+        #[serde(rename = "isRestrictive")]
+        pub is_restrictive: bool,
+        ///Display name of the profile
+        pub name: ::std::string::String,
+        ///Servers included in the profile
+        pub servers: ::std::vec::Vec<ProfileDetailsDtoServersItem>,
+        ///ID of the tenant that owns the profile
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///Time when the profile was last updated
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+    }
+    ///`ProfileDetailsDtoServersItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileDetailsDtoServersItem {
+        pub authorization: ServerAuthorizationOutput,
+        ///Scope of the credentials used for the server
+        #[serde(rename = "credentialScope")]
+        pub credential_scope: ProfileDetailsDtoServersItemCredentialScope,
+        ///Credentials stored for the server in this profile, or null if none
+        #[serde(deserialize_with = "::std::option::Option::deserialize")]
+        pub credentials: ::std::option::Option<ServerCredentialsDto>,
+        ///Number of API keys the server expects, or null when the server does not use API key authorization
+        #[serde(
+            rename = "credentialsNumKeys",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub credentials_num_keys: ::std::option::Option<f64>,
+        ///Name of the server; currently the same value as slug
+        pub name: ::std::string::String,
+        ///URL-friendly name of the server, unique within the tenant
+        pub slug: ::std::string::String,
+    }
+    ///Scope of the credentials used for the server
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProfileDetailsDtoServersItemCredentialScope {
+        #[serde(rename = "server")]
+        Server,
+        #[serde(rename = "user")]
+        User,
+        #[serde(rename = "profile")]
+        Profile,
+    }
+    impl ::std::fmt::Display for ProfileDetailsDtoServersItemCredentialScope {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Server => f.write_str("server"),
+                Self::User => f.write_str("user"),
+                Self::Profile => f.write_str("profile"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProfileDetailsDtoServersItemCredentialScope {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "server" => Ok(Self::Server),
+                "user" => Ok(Self::User),
+                "profile" => Ok(Self::Profile),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProfileDetailsDtoServersItemCredentialScope {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for ProfileDetailsDtoServersItemCredentialScope {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ProfileListItemDto`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileListItemDto {
+        ///Time when the profile was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///ID of the user who created the profile
+        #[serde(rename = "createdBy")]
+        pub created_by: ::std::string::String,
+        ///Human-readable description of the profile
+        pub description: ::std::string::String,
+        ///Unique ID of the profile
+        pub id: ::std::string::String,
+        ///Whether MCP sessions that use the profile are forced into code mode
+        #[serde(rename = "isCodeModeForced")]
+        pub is_code_mode_forced: bool,
+        ///Whether all users in the tenant can use the profile without an explicit assignment
+        #[serde(rename = "isOpenToAllUsers")]
+        pub is_open_to_all_users: bool,
+        ///Whether the profile restricts its users to only the servers in the profile; applies even to tenant owners
+        #[serde(rename = "isRestrictive")]
+        pub is_restrictive: bool,
+        ///Display name of the profile
+        pub name: ::std::string::String,
+        ///Number of teams assigned to the profile
+        #[serde(rename = "numAssignedTeams")]
+        pub num_assigned_teams: f64,
+        ///Number of distinct users assigned to the profile, directly or through a team
+        #[serde(rename = "numAssignedUsers")]
+        pub num_assigned_users: f64,
+        ///Number of claim mappings that assign the profile
+        #[serde(rename = "numMappings")]
+        pub num_mappings: f64,
+        ///Number of servers included in the profile
+        #[serde(rename = "numServers")]
+        pub num_servers: f64,
+        ///Number of distinct users that reference the profile from a personal access token
+        #[serde(rename = "numUsersPats")]
+        pub num_users_pats: f64,
+        ///ID of the tenant that owns the profile
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///Time when the profile was last updated
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+    }
+    ///`ProfileMaintainersResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileMaintainersResponse {
+        ///Users who maintain the profile
+        pub maintainers: ::std::vec::Vec<ProfileMaintainersResponseMaintainersItem>,
+    }
+    ///`ProfileMaintainersResponseMaintainersItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileMaintainersResponseMaintainersItem {
+        ///Time when the maintainer was added
+        #[serde(rename = "addedAt")]
+        pub added_at: ::std::string::String,
+        ///Email address of the user
+        pub email: ::std::string::String,
+        ///Unique ID of the user
+        pub id: ::std::string::String,
+        ///Display name of the user
+        pub name: ::std::string::String,
+    }
+    ///`ProfileServerTools`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileServerTools {
+        ///Whether every tool of the server is available to the profile
+        #[serde(rename = "areAllToolsEnabled")]
+        pub are_all_tools_enabled: bool,
+        ///Whether tools that the server adds later become available to the profile automatically
+        #[serde(rename = "autoEnableNewTools")]
+        pub auto_enable_new_tools: bool,
+        ///Slug of the MCP server that the configuration applies to
+        #[serde(rename = "serverSlug")]
+        pub server_slug: ::std::string::String,
+        ///Per-tool configuration of the profile for the server
+        pub tools: ::std::vec::Vec<ProfileToolEntry>,
+    }
+    ///`ProfileServerToolsResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileServerToolsResponse {
+        ///Tool configuration of the profile, one entry per server of the profile
+        pub servers: ::std::vec::Vec<ProfileServerTools>,
+    }
+    ///`ProfileTeamAssignment`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileTeamAssignment {
+        ///Time when the assignment was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Whether an organization owner locked the assignment; locked assignments take priority when the active profile is resolved
+        #[serde(rename = "isLockedByOrgOwner")]
+        pub is_locked_by_org_owner: bool,
+        ///ID of the assigned profile
+        #[serde(rename = "profileId")]
+        pub profile_id: ::std::string::String,
+        ///ID of the assigned team
+        #[serde(rename = "teamId")]
+        pub team_id: ::std::string::String,
+        ///ID of the tenant that owns the assignment
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///Time when the assignment was last updated
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+    }
+    ///`ProfileToolEntry`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ProfileToolEntry {
+        ///Whether the tool stays listed while the session runs in code mode
+        #[serde(rename = "isPromoted")]
+        pub is_promoted: bool,
+        ///Name of the tool as the MCP server itself reports it
+        #[serde(rename = "toolName")]
+        pub tool_name: ::std::string::String,
+        ///Name that the tool is exposed under to MCP clients, without the server-slug prefix; empty when the tool keeps its regular name
+        #[serde(rename = "toolNameOverride")]
+        pub tool_name_override: ::std::string::String,
     }
     ///`RegisterMcpServerOauthClientWithoutSavingBody`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -2008,6 +3030,218 @@ pub mod types {
             skip_serializing_if = "::std::option::Option::is_none"
         )]
         pub refresh_token: ::std::option::Option<::std::string::String>,
+    }
+    ///`ServerCredentialsDto`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ServerCredentialsDto {
+        ///Names of the API keys that have a stored value, or null for OAuth credentials
+        #[serde(
+            rename = "apikeysPresent",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub apikeys_present: ::std::option::Option<
+            ::std::vec::Vec<::std::string::String>,
+        >,
+        ///Time when the credential was authorized
+        #[serde(rename = "authorizedAt")]
+        pub authorized_at: ::std::string::String,
+        ///Last authorizing user email, or null
+        #[serde(
+            rename = "authorizedByEmail",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub authorized_by_email: ::std::option::Option<::std::string::String>,
+        ///Last authorizing user name, or null
+        #[serde(
+            rename = "authorizedByName",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub authorized_by_name: ::std::option::Option<::std::string::String>,
+        ///Last authorizing user ID, or null if unknown
+        #[serde(
+            rename = "authorizedByUserId",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub authorized_by_user_id: ::std::option::Option<::std::string::String>,
+        ///Time when the credential record was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Email claim from the OAuth ID token, or null
+        #[serde(deserialize_with = "::std::option::Option::deserialize")]
+        pub email: ::std::option::Option<::std::string::String>,
+        ///Unique ID of the credential record
+        pub id: ::std::string::String,
+        ///Time when the credential was last used, or null if never used
+        #[serde(
+            rename = "lastUsedAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub last_used_at: ::std::option::Option<::std::string::String>,
+        ///ID of the owning profile when scope is "profile", otherwise null
+        #[serde(
+            rename = "profileId",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub profile_id: ::std::option::Option<::std::string::String>,
+        ///Name of the owning profile, or null
+        #[serde(
+            rename = "profileName",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub profile_name: ::std::option::Option<::std::string::String>,
+        ///Scope that the credential applies to: server, user, or profile
+        pub scope: ServerCredentialsDtoScope,
+        ///Slug of the server that the credential authorizes access to
+        #[serde(rename = "serverSlug")]
+        pub server_slug: ::std::string::String,
+        ///Subject claim from the OAuth ID token, or null
+        #[serde(deserialize_with = "::std::option::Option::deserialize")]
+        pub subject: ::std::option::Option<::std::string::String>,
+        ///ID of the tenant that owns the credential
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///Authorization method that the credential was created with
+        #[serde(rename = "type")]
+        pub type_: ServerCredentialsDtoType,
+        ///Time when the credential record was last updated
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+        ///Email address of the owning user, or null
+        #[serde(
+            rename = "userEmail",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub user_email: ::std::option::Option<::std::string::String>,
+        ///ID of the owning user, or null
+        #[serde(
+            rename = "userId",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub user_id: ::std::option::Option<::std::string::String>,
+        ///Display name of the owning user, or null
+        #[serde(
+            rename = "userName",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub user_name: ::std::option::Option<::std::string::String>,
+    }
+    ///Scope that the credential applies to: server, user, or profile
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ServerCredentialsDtoScope {
+        #[serde(rename = "server")]
+        Server,
+        #[serde(rename = "user")]
+        User,
+        #[serde(rename = "profile")]
+        Profile,
+    }
+    impl ::std::fmt::Display for ServerCredentialsDtoScope {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Server => f.write_str("server"),
+                Self::User => f.write_str("user"),
+                Self::Profile => f.write_str("profile"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ServerCredentialsDtoScope {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "server" => Ok(Self::Server),
+                "user" => Ok(Self::User),
+                "profile" => Ok(Self::Profile),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ServerCredentialsDtoScope {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ServerCredentialsDtoScope {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///Authorization method that the credential was created with
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ServerCredentialsDtoType {
+        #[serde(rename = "oauth")]
+        Oauth,
+        #[serde(rename = "apikey")]
+        Apikey,
+        #[serde(rename = "oauth-client-credentials")]
+        OauthClientCredentials,
+    }
+    impl ::std::fmt::Display for ServerCredentialsDtoType {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Oauth => f.write_str("oauth"),
+                Self::Apikey => f.write_str("apikey"),
+                Self::OauthClientCredentials => f.write_str("oauth-client-credentials"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ServerCredentialsDtoType {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "oauth" => Ok(Self::Oauth),
+                "apikey" => Ok(Self::Apikey),
+                "oauth-client-credentials" => Ok(Self::OauthClientCredentials),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ServerCredentialsDtoType {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ServerCredentialsDtoType {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
     }
     ///`ServerDto`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -3249,6 +4483,37 @@ pub mod types {
     pub struct StopMcpServerResponse {
         pub success: bool,
     }
+    ///`TeamWithMemberCount`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct TeamWithMemberCount {
+        ///Time when the team was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Human-readable description of the team
+        pub description: ::std::string::String,
+        ///Whether at least one profile is assigned to the team
+        #[serde(rename = "hasProfileAttached")]
+        pub has_profile_attached: bool,
+        ///Unique ID of the team
+        pub id: ::std::string::String,
+        ///Whether the team is managed through SCIM provisioning
+        #[serde(rename = "isScimManaged")]
+        pub is_scim_managed: bool,
+        ///Number of members in the team
+        #[serde(rename = "memberCount")]
+        pub member_count: f64,
+        ///Display name of the team, unique in the organization
+        pub name: ::std::string::String,
+        ///SCIM external ID of the team
+        #[serde(rename = "scimExternalId")]
+        pub scim_external_id: ::std::string::String,
+        ///ID of the tenant that owns the team
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///Time when the team was last updated
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+    }
     ///`TenantAbilities`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct TenantAbilities {
@@ -3276,6 +4541,644 @@ pub mod types {
         pub max_enabled_servers: f64,
         #[serde(rename = "maxUsers")]
         pub max_users: f64,
+    }
+    ///`TenantDto`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct TenantDto {
+        ///Whether members can add hosted servers
+        #[serde(rename = "allowMemberAddHostedServers")]
+        pub allow_member_add_hosted_servers: bool,
+        ///Whether members can add local (stdio) servers
+        #[serde(rename = "allowMemberAddLocalServers")]
+        pub allow_member_add_local_servers: bool,
+        ///Whether members can add remote servers (httpstreaming, sse, openapi)
+        #[serde(rename = "allowMemberAddRemoteServers")]
+        pub allow_member_add_remote_servers: bool,
+        ///Time an owner agreed to that, or null if never given
+        #[serde(
+            rename = "assistantConversationSharingAcceptedAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub assistant_conversation_sharing_accepted_at: ::std::option::Option<
+            ::std::string::String,
+        >,
+        ///ID of the user who agreed to it, or null if it was never given
+        #[serde(
+            rename = "assistantConversationSharingAcceptedBy",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub assistant_conversation_sharing_accepted_by: ::std::option::Option<
+            ::std::string::String,
+        >,
+        ///Maximum number of AI assistant tokens the tenant may spend per day, or null for the default
+        #[serde(
+            rename = "assistantDailyTokenLimit",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub assistant_daily_token_limit: ::std::option::Option<i64>,
+        ///The organization's own model endpoint for the assistant without its credentials, or null when none is stored
+        #[serde(
+            rename = "assistantLlmConfigurationStatus",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub assistant_llm_configuration_status: ::std::option::Option<
+            AssistantLlmConfigurationStatus,
+        >,
+        ///Time an owner instructed Gatana to process assistant conversations through Gatana's model provider, or null if never given
+        #[serde(
+            rename = "assistantPlatformProcessingAcceptedAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub assistant_platform_processing_accepted_at: ::std::option::Option<
+            ::std::string::String,
+        >,
+        ///ID of the user who gave that instruction, or null if it was never given
+        #[serde(
+            rename = "assistantPlatformProcessingAcceptedBy",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub assistant_platform_processing_accepted_by: ::std::option::Option<
+            ::std::string::String,
+        >,
+        ///Number of tools above which code mode is enabled automatically, or null for the default
+        #[serde(
+            rename = "codeModeAutoTriggerThreshold",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub code_mode_auto_trigger_threshold: ::std::option::Option<i64>,
+        #[serde(rename = "defaultResourceLimits")]
+        pub default_resource_limits: TenantDtoDefaultResourceLimits,
+        #[serde(rename = "defaultResourceRequests")]
+        pub default_resource_requests: ServerResourceRequests,
+        #[serde(rename = "deploymentResourceLimits")]
+        pub deployment_resource_limits: TenantDtoDeploymentResourceLimits,
+        ///Total size of persistent volumes the organization may claim across its deployments, in Kubernetes quantity format (e.g. "20Gi"). This caps what may be claimed/allocated and not what is written/used.
+        #[serde(rename = "deploymentStorageQuota")]
+        pub deployment_storage_quota: ::std::string::String,
+        ///Display name of the tenant
+        #[serde(rename = "displayName")]
+        pub display_name: ::std::string::String,
+        ///Whether newly discovered tools are enabled automatically
+        #[serde(rename = "grantPermissionsNewToolPolicy")]
+        pub grant_permissions_new_tool_policy: bool,
+        ///Unique ID of the tenant
+        pub id: ::std::string::String,
+        ///Whether the assistant uses the organization's own model endpoint instead of the platform's
+        #[serde(rename = "isAssistantByokEnabled")]
+        pub is_assistant_byok_enabled: bool,
+        ///Whether a paying organization has agreed that Gatana may keep a reduced copy of its assistant conversations to improve the assistant. Not written for an organization on the free plan, where sharing follows from the plan
+        #[serde(rename = "isAssistantConversationSharingEnabled")]
+        pub is_assistant_conversation_sharing_enabled: bool,
+        ///Whether the in-app AI assistant is available to members
+        #[serde(rename = "isAssistantEnabled")]
+        pub is_assistant_enabled: bool,
+        ///Whether the subscription seat count increases automatically when new members join
+        #[serde(rename = "isAutomaticSeatIncreaseEnabled")]
+        pub is_automatic_seat_increase_enabled: bool,
+        ///Whether code mode is enabled automatically when the tool count exceeds the threshold
+        #[serde(rename = "isCodeModeAutoTriggerEnabled")]
+        pub is_code_mode_auto_trigger_enabled: bool,
+        ///Whether Google OAuth refresh tokens are saved for the tenant
+        #[serde(rename = "isGoogleRefreshTokenSavingEnabled")]
+        pub is_google_refresh_token_saving_enabled: bool,
+        ///Whether API keys can be used to authorize MCP access
+        #[serde(rename = "isMcpAuthorizationApiKeyEnabled")]
+        pub is_mcp_authorization_api_key_enabled: bool,
+        #[serde(rename = "isMcpOauthIssuerPathToleranceEnabled")]
+        pub is_mcp_oauth_issuer_path_tolerance_enabled: McpOauthIssuerPathToleranceEnabled,
+        ///Whether AI-based output compression is enabled
+        #[serde(rename = "isOutputCompressionAiEnabled")]
+        pub is_output_compression_ai_enabled: bool,
+        ///Whether tool output compression is allowed for servers of the tenant
+        #[serde(rename = "isOutputCompressionAllowed")]
+        pub is_output_compression_allowed: bool,
+        ///Send all organization tools to owner MCP clients. When disabled, include only servers the owner has permission to use
+        #[serde(rename = "isOwnerAllToolsOverMcpEnabled")]
+        pub is_owner_all_tools_over_mcp_enabled: bool,
+        ///Whether the tenant is a playground tenant
+        #[serde(rename = "isPlayground")]
+        pub is_playground: bool,
+        ///Whether SCIM provisioning is enabled
+        #[serde(rename = "isScimEnabled")]
+        pub is_scim_enabled: bool,
+        ///Whether access tokens issued by the upstream OIDC provider are accepted for MCP authorization
+        #[serde(rename = "isUpstreamOidcTokensTrusted")]
+        pub is_upstream_oidc_tokens_trusted: bool,
+        ///The logo shown in the sidebar as a base64 data: URL, or empty when there is none
+        pub logo: ::std::string::String,
+        #[serde(rename = "mcpAuditLogLevel")]
+        pub mcp_audit_log_level: McpAuditLogVerbosity,
+        ///Whether MCP audit log entries include the protocol messages
+        #[serde(rename = "mcpAuditLoggingIncludeProtocolMessages")]
+        pub mcp_audit_logging_include_protocol_messages: bool,
+        ///Default server role for members, or "none" for no default access
+        #[serde(rename = "memberDefaultRole")]
+        pub member_default_role: TenantDtoMemberDefaultRole,
+        ///Model variant used for AI-based output compression
+        #[serde(rename = "outputCompressionAiModel")]
+        pub output_compression_ai_model: TenantDtoOutputCompressionAiModel,
+        ///What happens to a team when its SCIM group is deleted
+        #[serde(rename = "scimGroupDeleteBehavior")]
+        pub scim_group_delete_behavior: TenantDtoScimGroupDeleteBehavior,
+        ///What happens to a user when it is deleted through SCIM
+        #[serde(rename = "scimUserDeleteBehavior")]
+        pub scim_user_delete_behavior: TenantDtoScimUserDeleteBehavior,
+        ///External OIDC identity provider configuration, or null when not configured
+        #[serde(
+            rename = "upstreamOidcConfiguration",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub upstream_oidc_configuration: ::std::option::Option<
+            TenantOidcConfigurationOutput,
+        >,
+        ///External SAML identity provider configuration, or null when not configured
+        #[serde(
+            rename = "upstreamSamlConfiguration",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub upstream_saml_configuration: ::std::option::Option<TenantSamlConfiguration>,
+    }
+    ///Deprecated: former default resource ceiling, no longer applied to deployments
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct TenantDtoDefaultResourceLimits {
+        ///CPU limit in Kubernetes quantity format (e.g. "500m" or "1")
+        pub cpu: ::std::string::String,
+        ///Memory limit in Kubernetes quantity format (e.g. "512Mi" or "1Gi")
+        pub memory: ::std::string::String,
+    }
+    ///Total CPU and memory the organization may reserve across all its deployments, summed over their requests
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct TenantDtoDeploymentResourceLimits {
+        ///CPU limit in Kubernetes quantity format (e.g. "500m" or "1")
+        pub cpu: ::std::string::String,
+        ///Memory limit in Kubernetes quantity format (e.g. "512Mi" or "1Gi")
+        pub memory: ::std::string::String,
+    }
+    ///Default server role for members, or "none" for no default access
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum TenantDtoMemberDefaultRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "admin")]
+        Admin,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+        #[serde(rename = "none")]
+        None,
+    }
+    impl ::std::fmt::Display for TenantDtoMemberDefaultRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Admin => f.write_str("admin"),
+                Self::Maintainer => f.write_str("maintainer"),
+                Self::None => f.write_str("none"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for TenantDtoMemberDefaultRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "admin" => Ok(Self::Admin),
+                "maintainer" => Ok(Self::Maintainer),
+                "none" => Ok(Self::None),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for TenantDtoMemberDefaultRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for TenantDtoMemberDefaultRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///Model variant used for AI-based output compression
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum TenantDtoOutputCompressionAiModel {
+        #[serde(rename = "english")]
+        English,
+        #[serde(rename = "multilingual")]
+        Multilingual,
+    }
+    impl ::std::fmt::Display for TenantDtoOutputCompressionAiModel {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::English => f.write_str("english"),
+                Self::Multilingual => f.write_str("multilingual"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for TenantDtoOutputCompressionAiModel {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "english" => Ok(Self::English),
+                "multilingual" => Ok(Self::Multilingual),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for TenantDtoOutputCompressionAiModel {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for TenantDtoOutputCompressionAiModel {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///What happens to a team when its SCIM group is deleted
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum TenantDtoScimGroupDeleteBehavior {
+        #[serde(rename = "delete")]
+        Delete,
+        #[serde(rename = "keep")]
+        Keep,
+    }
+    impl ::std::fmt::Display for TenantDtoScimGroupDeleteBehavior {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Delete => f.write_str("delete"),
+                Self::Keep => f.write_str("keep"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for TenantDtoScimGroupDeleteBehavior {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "delete" => Ok(Self::Delete),
+                "keep" => Ok(Self::Keep),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for TenantDtoScimGroupDeleteBehavior {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for TenantDtoScimGroupDeleteBehavior {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///What happens to a user when it is deleted through SCIM
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum TenantDtoScimUserDeleteBehavior {
+        #[serde(rename = "delete")]
+        Delete,
+        #[serde(rename = "disable")]
+        Disable,
+        #[serde(rename = "keep")]
+        Keep,
+    }
+    impl ::std::fmt::Display for TenantDtoScimUserDeleteBehavior {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Delete => f.write_str("delete"),
+                Self::Disable => f.write_str("disable"),
+                Self::Keep => f.write_str("keep"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for TenantDtoScimUserDeleteBehavior {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "delete" => Ok(Self::Delete),
+                "disable" => Ok(Self::Disable),
+                "keep" => Ok(Self::Keep),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for TenantDtoScimUserDeleteBehavior {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for TenantDtoScimUserDeleteBehavior {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`TenantOidcConfiguration`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct TenantOidcConfiguration {
+        ///URL of the authorization endpoint
+        #[serde(rename = "authorizeEndpoint")]
+        pub authorize_endpoint: ::std::string::String,
+        ///Client authentication method used at the token endpoint
+        #[serde(rename = "clientAuthMethod")]
+        pub client_auth_method: TenantOidcConfigurationClientAuthMethod,
+        ///OAuth client ID
+        #[serde(rename = "clientId")]
+        pub client_id: ::std::string::String,
+        ///OAuth client secret
+        #[serde(rename = "clientSecret")]
+        pub client_secret: ::std::string::String,
+        ///Display name of the identity provider shown on the sign-in page
+        #[serde(rename = "displayName")]
+        pub display_name: ::std::string::String,
+        ///Extra query parameters to add to the authorization request
+        #[serde(rename = "extraParameters")]
+        pub extra_parameters: ::std::string::String,
+        ///URL of the token introspection endpoint
+        #[serde(rename = "introspectionEndpoint")]
+        pub introspection_endpoint: ::std::string::String,
+        ///Whether sign-in through the OIDC provider is enabled
+        #[serde(rename = "isEnabled")]
+        pub is_enabled: bool,
+        ///Issuer identifier of the OIDC provider
+        pub issuer: ::std::string::String,
+        ///URL of the JSON Web Key Set
+        #[serde(rename = "jwksUri")]
+        pub jwks_uri: ::std::string::String,
+        ///Space-separated OAuth scopes to request
+        pub scopes: ::std::string::String,
+        ///URL of the token endpoint
+        #[serde(rename = "tokenEndpoint")]
+        pub token_endpoint: ::std::string::String,
+        ///URL of the userinfo endpoint
+        #[serde(rename = "userInfoEndpoint")]
+        pub user_info_endpoint: ::std::string::String,
+    }
+    ///Client authentication method used at the token endpoint
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum TenantOidcConfigurationClientAuthMethod {
+        #[serde(rename = "client_secret_basic")]
+        ClientSecretBasic,
+        #[serde(rename = "client_secret_post")]
+        ClientSecretPost,
+    }
+    impl ::std::fmt::Display for TenantOidcConfigurationClientAuthMethod {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::ClientSecretBasic => f.write_str("client_secret_basic"),
+                Self::ClientSecretPost => f.write_str("client_secret_post"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for TenantOidcConfigurationClientAuthMethod {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "client_secret_basic" => Ok(Self::ClientSecretBasic),
+                "client_secret_post" => Ok(Self::ClientSecretPost),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for TenantOidcConfigurationClientAuthMethod {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for TenantOidcConfigurationClientAuthMethod {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`TenantOidcConfigurationOutput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct TenantOidcConfigurationOutput {
+        ///URL of the authorization endpoint
+        #[serde(rename = "authorizeEndpoint")]
+        pub authorize_endpoint: ::std::string::String,
+        ///Client authentication method used at the token endpoint
+        #[serde(rename = "clientAuthMethod")]
+        pub client_auth_method: TenantOidcConfigurationOutputClientAuthMethod,
+        ///OAuth client ID
+        #[serde(rename = "clientId")]
+        pub client_id: ::std::string::String,
+        ///OAuth client secret
+        #[serde(rename = "clientSecret")]
+        pub client_secret: ::std::string::String,
+        ///Display name of the identity provider shown on the sign-in page
+        #[serde(rename = "displayName")]
+        pub display_name: ::std::string::String,
+        ///Extra query parameters to add to the authorization request
+        #[serde(rename = "extraParameters")]
+        pub extra_parameters: ::std::string::String,
+        ///URL of the token introspection endpoint
+        #[serde(rename = "introspectionEndpoint")]
+        pub introspection_endpoint: ::std::string::String,
+        ///Whether sign-in through the OIDC provider is enabled
+        #[serde(rename = "isEnabled")]
+        pub is_enabled: bool,
+        ///Issuer identifier of the OIDC provider
+        pub issuer: ::std::string::String,
+        ///URL of the JSON Web Key Set
+        #[serde(rename = "jwksUri")]
+        pub jwks_uri: ::std::string::String,
+        ///Space-separated OAuth scopes to request
+        pub scopes: ::std::string::String,
+        ///URL of the token endpoint
+        #[serde(rename = "tokenEndpoint")]
+        pub token_endpoint: ::std::string::String,
+        ///URL of the userinfo endpoint
+        #[serde(rename = "userInfoEndpoint")]
+        pub user_info_endpoint: ::std::string::String,
+    }
+    ///Client authentication method used at the token endpoint
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum TenantOidcConfigurationOutputClientAuthMethod {
+        #[serde(rename = "client_secret_basic")]
+        ClientSecretBasic,
+        #[serde(rename = "client_secret_post")]
+        ClientSecretPost,
+    }
+    impl ::std::fmt::Display for TenantOidcConfigurationOutputClientAuthMethod {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::ClientSecretBasic => f.write_str("client_secret_basic"),
+                Self::ClientSecretPost => f.write_str("client_secret_post"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for TenantOidcConfigurationOutputClientAuthMethod {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "client_secret_basic" => Ok(Self::ClientSecretBasic),
+                "client_secret_post" => Ok(Self::ClientSecretPost),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str>
+    for TenantOidcConfigurationOutputClientAuthMethod {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for TenantOidcConfigurationOutputClientAuthMethod {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`TenantSamlConfiguration`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct TenantSamlConfiguration {
+        ///Certificate used to validate IdP signatures
+        pub cert: ::std::string::String,
+        ///Display name of the identity provider shown on the sign-in page
+        #[serde(rename = "displayName")]
+        pub display_name: ::std::string::String,
+        ///Name of the assertion attribute that holds the email address
+        #[serde(rename = "emailClaim")]
+        pub email_claim: ::std::string::String,
+        ///URL of the IdP single sign-on endpoint
+        #[serde(rename = "entryPoint")]
+        pub entry_point: ::std::string::String,
+        ///Name of the assertion attribute that holds the first name
+        #[serde(rename = "firstNameClaim")]
+        pub first_name_claim: ::std::string::String,
+        ///SAML name identifier format to request
+        #[serde(rename = "identifierFormat")]
+        pub identifier_format: ::std::string::String,
+        ///Raw IdP metadata XML document
+        #[serde(rename = "idpMetadataDocument")]
+        pub idp_metadata_document: ::std::string::String,
+        ///URL to fetch the IdP metadata document from
+        #[serde(rename = "idpMetadataUrl")]
+        pub idp_metadata_url: ::std::string::String,
+        ///Whether sign-in through the SAML provider is enabled
+        #[serde(rename = "isEnabled")]
+        pub is_enabled: bool,
+        ///Name of the assertion attribute that holds the last name
+        #[serde(rename = "lastNameClaim")]
+        pub last_name_claim: ::std::string::String,
+        ///Signature algorithm for SAML requests
+        #[serde(rename = "signatureAlgorithm")]
+        pub signature_algorithm: ::std::string::String,
     }
     ///Controls how tool refresh is authorized. "server-scoped" means only server-scoped credentials are required, "skip" means refresh is done without authorization, and "any" means any available credentials (server, user, profile) can be used. Defaults to "server-scoped".
     #[derive(
@@ -3345,6 +5248,76 @@ pub mod types {
     ///`UpdateMcpServerCredentialsUserResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct UpdateMcpServerCredentialsUserResponse {
+        pub success: bool,
+    }
+    ///`UpdateProfileBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct UpdateProfileBody {
+        ///Human-readable description of the profile
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub description: ::std::option::Option<::std::string::String>,
+        ///Whether MCP sessions that use the profile are forced into code mode
+        #[serde(
+            rename = "isCodeModeForced",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_code_mode_forced: ::std::option::Option<bool>,
+        ///Whether all users in the tenant can use the profile without an explicit assignment
+        #[serde(
+            rename = "isOpenToAllUsers",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_open_to_all_users: ::std::option::Option<bool>,
+        ///Whether the profile restricts its users to only the servers in the profile; applies even to tenant owners
+        #[serde(
+            rename = "isRestrictive",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_restrictive: ::std::option::Option<bool>,
+        ///Display name of the profile
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub name: ::std::option::Option<::std::string::String>,
+        ///Servers of the profile, each given by its ID or its slug. Replaces the current list: a server that is not listed is removed from the profile, together with its tool configuration for the profile. A value that matches no server is refused
+        #[serde(
+            rename = "serverIds",
+            default,
+            skip_serializing_if = "::std::vec::Vec::is_empty"
+        )]
+        pub server_ids: ::std::vec::Vec<::std::string::String>,
+    }
+    ///`UpdateProfileResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateProfileResponse {
+        pub success: bool,
+    }
+    ///`UpdateProfileServerToolsBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateProfileServerToolsBody {
+        ///Whether every tool of the server is available to the profile
+        #[serde(rename = "areAllToolsEnabled")]
+        pub are_all_tools_enabled: bool,
+        ///Whether tools that the server adds later become available to the profile automatically
+        #[serde(rename = "autoEnableNewTools")]
+        pub auto_enable_new_tools: bool,
+        ///Tools of the server that the profile enables, promotes or renames
+        pub tools: ::std::vec::Vec<UpdateProfileServerToolsBodyToolsItem>,
+    }
+    ///`UpdateProfileServerToolsBodyToolsItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateProfileServerToolsBodyToolsItem {
+        ///Whether the tool stays listed while the session runs in code mode
+        #[serde(rename = "isPromoted")]
+        pub is_promoted: bool,
+        ///Name of the tool as the MCP server itself reports it
+        #[serde(rename = "toolName")]
+        pub tool_name: ::std::string::String,
+        ///Name that the tool is exposed under to MCP clients, without the server-slug prefix; empty when the tool keeps its regular name
+        #[serde(rename = "toolNameOverride")]
+        pub tool_name_override: ::std::string::String,
+    }
+    ///`UpdateProfileServerToolsResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateProfileServerToolsResponse {
         pub success: bool,
     }
     ///`UpdateSkillBody`
@@ -3420,6 +5393,707 @@ pub mod types {
         }
     }
     impl ::std::convert::TryFrom<::std::string::String> for UpdateSkillBodyVisibility {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`UpdateTenantRequest`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct UpdateTenantRequest {
+        ///Whether members can add hosted servers
+        #[serde(
+            rename = "allowMemberAddHostedServers",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub allow_member_add_hosted_servers: ::std::option::Option<bool>,
+        ///Whether members can add local (stdio) servers
+        #[serde(
+            rename = "allowMemberAddLocalServers",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub allow_member_add_local_servers: ::std::option::Option<bool>,
+        ///Whether members can add remote servers (httpstreaming, sse, openapi)
+        #[serde(
+            rename = "allowMemberAddRemoteServers",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub allow_member_add_remote_servers: ::std::option::Option<bool>,
+        ///Maximum number of AI assistant tokens the tenant may spend per day, or null for the default
+        #[serde(
+            rename = "assistantDailyTokenLimit",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub assistant_daily_token_limit: ::std::option::Option<i64>,
+        ///Model endpoint the AI assistant should use for this tenant, or null to clear it. Write-only: reading the tenant reports which endpoint is set, never its credentials. A credential may be left out to keep the stored one
+        #[serde(
+            rename = "assistantLlmConfiguration",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub assistant_llm_configuration: ::std::option::Option<
+            AssistantLlmConfigurationInput,
+        >,
+        ///Number of tools above which code mode is enabled automatically, or null for the default
+        #[serde(
+            rename = "codeModeAutoTriggerThreshold",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub code_mode_auto_trigger_threshold: ::std::option::Option<i64>,
+        #[serde(
+            rename = "defaultResourceLimits",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub default_resource_limits: ::std::option::Option<
+            UpdateTenantRequestDefaultResourceLimits,
+        >,
+        #[serde(
+            rename = "defaultResourceRequests",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub default_resource_requests: ::std::option::Option<
+            UpdateTenantRequestDefaultResourceRequests,
+        >,
+        ///Display name of the tenant
+        #[serde(
+            rename = "displayName",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub display_name: ::std::option::Option<::std::string::String>,
+        ///Whether newly discovered tools are enabled automatically
+        #[serde(
+            rename = "grantPermissionsNewToolPolicy",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub grant_permissions_new_tool_policy: ::std::option::Option<bool>,
+        ///Whether the assistant uses the organization's own model endpoint instead of the platform's
+        #[serde(
+            rename = "isAssistantByokEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_assistant_byok_enabled: ::std::option::Option<bool>,
+        ///Set to true to agree that Gatana may keep a reduced copy of assistant conversations to improve the assistant, which is recorded with the time and the user who agreed, or false to withdraw it. Only an organization owner may send it, and only a paying organization: on the free plan the sharing is a term of the plan and this is refused
+        #[serde(
+            rename = "isAssistantConversationSharingAccepted",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_assistant_conversation_sharing_accepted: ::std::option::Option<bool>,
+        ///Whether the in-app AI assistant is available to members
+        #[serde(
+            rename = "isAssistantEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_assistant_enabled: ::std::option::Option<bool>,
+        ///Set to true to instruct Gatana to process assistant conversations through Gatana's model provider, which is recorded with the time and the user who gave it, or false to withdraw that instruction. Only an organization owner may send it
+        #[serde(
+            rename = "isAssistantPlatformProcessingAccepted",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_assistant_platform_processing_accepted: ::std::option::Option<bool>,
+        ///Whether the subscription seat count increases automatically when new members join
+        #[serde(
+            rename = "isAutomaticSeatIncreaseEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_automatic_seat_increase_enabled: ::std::option::Option<bool>,
+        ///Whether code mode is enabled automatically when the tool count exceeds the threshold
+        #[serde(
+            rename = "isCodeModeAutoTriggerEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_code_mode_auto_trigger_enabled: ::std::option::Option<bool>,
+        ///Whether Google OAuth refresh tokens are saved for the tenant
+        #[serde(
+            rename = "isGoogleRefreshTokenSavingEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_google_refresh_token_saving_enabled: ::std::option::Option<bool>,
+        ///Whether API keys can be used to authorize MCP access
+        #[serde(
+            rename = "isMcpAuthorizationApiKeyEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_mcp_authorization_api_key_enabled: ::std::option::Option<bool>,
+        #[serde(
+            rename = "isMcpOauthIssuerPathToleranceEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_mcp_oauth_issuer_path_tolerance_enabled: ::std::option::Option<
+            OptionalMcpOauthIssuerPathToleranceEnabled,
+        >,
+        ///Whether AI-based output compression is enabled
+        #[serde(
+            rename = "isOutputCompressionAiEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_output_compression_ai_enabled: ::std::option::Option<bool>,
+        ///Whether tool output compression is allowed for servers of the tenant
+        #[serde(
+            rename = "isOutputCompressionAllowed",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_output_compression_allowed: ::std::option::Option<bool>,
+        ///Send all organization tools to owner MCP clients. When disabled, include only servers the owner has permission to use
+        #[serde(
+            rename = "isOwnerAllToolsOverMcpEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_owner_all_tools_over_mcp_enabled: ::std::option::Option<bool>,
+        ///Whether SCIM provisioning is enabled
+        #[serde(
+            rename = "isScimEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_scim_enabled: ::std::option::Option<bool>,
+        ///Whether access tokens issued by the upstream OIDC provider are accepted for MCP authorization
+        #[serde(
+            rename = "isUpstreamOidcTokensTrusted",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_upstream_oidc_tokens_trusted: ::std::option::Option<bool>,
+        ///Logo shown in the sidebar of the app, as a base64 data: URL of a PNG, JPEG, WebP or SVG image of at most 256 KB, or an empty string to remove it
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub logo: ::std::option::Option<::std::string::String>,
+        #[serde(
+            rename = "mcpAuditLogLevel",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub mcp_audit_log_level: ::std::option::Option<McpAuditLogVerbosity>,
+        ///Whether MCP audit log entries include the protocol messages
+        #[serde(
+            rename = "mcpAuditLoggingIncludeProtocolMessages",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub mcp_audit_logging_include_protocol_messages: ::std::option::Option<bool>,
+        ///Default server role for members, or "none" for no default access
+        #[serde(
+            rename = "memberDefaultRole",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub member_default_role: ::std::option::Option<
+            UpdateTenantRequestMemberDefaultRole,
+        >,
+        ///Model variant used for AI-based output compression
+        #[serde(
+            rename = "outputCompressionAiModel",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub output_compression_ai_model: ::std::option::Option<
+            UpdateTenantRequestOutputCompressionAiModel,
+        >,
+        ///What happens to a team when its SCIM group is deleted
+        #[serde(
+            rename = "scimGroupDeleteBehavior",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub scim_group_delete_behavior: ::std::option::Option<
+            UpdateTenantRequestScimGroupDeleteBehavior,
+        >,
+        ///What happens to a user when it is deleted through SCIM
+        #[serde(
+            rename = "scimUserDeleteBehavior",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub scim_user_delete_behavior: ::std::option::Option<
+            UpdateTenantRequestScimUserDeleteBehavior,
+        >,
+        ///External OIDC identity provider configuration, or null when not configured
+        #[serde(
+            rename = "upstreamOidcConfiguration",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub upstream_oidc_configuration: ::std::option::Option<TenantOidcConfiguration>,
+        ///External SAML identity provider configuration to set, or null to clear it
+        #[serde(
+            rename = "upstreamSamlConfiguration",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub upstream_saml_configuration: ::std::option::Option<
+            UpdateTenantRequestUpstreamSamlConfiguration,
+        >,
+    }
+    ///Deprecated: former default resource ceiling, no longer applied to deployments
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct UpdateTenantRequestDefaultResourceLimits {
+        ///CPU limit in Kubernetes quantity format (e.g. "500m" or "1")
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub cpu: ::std::option::Option<::std::string::String>,
+        ///Memory limit in Kubernetes quantity format (e.g. "512Mi" or "1Gi")
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub memory: ::std::option::Option<::std::string::String>,
+    }
+    ///Default resources reserved for an MCP server deployment, used when a server does not set its own. The reservation is the minimum a deployment is guaranteed when the hardware is busy; when capacity is free it may use more
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct UpdateTenantRequestDefaultResourceRequests {
+        ///CPU reserved for the deployment, in Kubernetes quantity format (e.g. "250m" or "1"). This is the minimum the deployment is guaranteed when the hardware is busy; when capacity is free it may use more. Reserved capacity counts against the organization total even while the server idles, so keep it at what the server needs, not what it may burst to
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub cpu: ::std::option::Option<::std::string::String>,
+        ///Memory reserved for the deployment, in Kubernetes quantity format (e.g. "384Mi" or "1Gi"). Unlike CPU this is also the hard ceiling: a process that exceeds it is terminated
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub memory: ::std::option::Option<::std::string::String>,
+    }
+    ///Default server role for members, or "none" for no default access
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum UpdateTenantRequestMemberDefaultRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "admin")]
+        Admin,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+        #[serde(rename = "none")]
+        None,
+    }
+    impl ::std::fmt::Display for UpdateTenantRequestMemberDefaultRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Admin => f.write_str("admin"),
+                Self::Maintainer => f.write_str("maintainer"),
+                Self::None => f.write_str("none"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for UpdateTenantRequestMemberDefaultRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "admin" => Ok(Self::Admin),
+                "maintainer" => Ok(Self::Maintainer),
+                "none" => Ok(Self::None),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for UpdateTenantRequestMemberDefaultRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for UpdateTenantRequestMemberDefaultRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///Model variant used for AI-based output compression
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum UpdateTenantRequestOutputCompressionAiModel {
+        #[serde(rename = "english")]
+        English,
+        #[serde(rename = "multilingual")]
+        Multilingual,
+    }
+    impl ::std::fmt::Display for UpdateTenantRequestOutputCompressionAiModel {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::English => f.write_str("english"),
+                Self::Multilingual => f.write_str("multilingual"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for UpdateTenantRequestOutputCompressionAiModel {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "english" => Ok(Self::English),
+                "multilingual" => Ok(Self::Multilingual),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for UpdateTenantRequestOutputCompressionAiModel {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for UpdateTenantRequestOutputCompressionAiModel {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///What happens to a team when its SCIM group is deleted
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum UpdateTenantRequestScimGroupDeleteBehavior {
+        #[serde(rename = "delete")]
+        Delete,
+        #[serde(rename = "keep")]
+        Keep,
+    }
+    impl ::std::fmt::Display for UpdateTenantRequestScimGroupDeleteBehavior {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Delete => f.write_str("delete"),
+                Self::Keep => f.write_str("keep"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for UpdateTenantRequestScimGroupDeleteBehavior {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "delete" => Ok(Self::Delete),
+                "keep" => Ok(Self::Keep),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for UpdateTenantRequestScimGroupDeleteBehavior {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for UpdateTenantRequestScimGroupDeleteBehavior {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///What happens to a user when it is deleted through SCIM
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum UpdateTenantRequestScimUserDeleteBehavior {
+        #[serde(rename = "delete")]
+        Delete,
+        #[serde(rename = "disable")]
+        Disable,
+        #[serde(rename = "keep")]
+        Keep,
+    }
+    impl ::std::fmt::Display for UpdateTenantRequestScimUserDeleteBehavior {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Delete => f.write_str("delete"),
+                Self::Disable => f.write_str("disable"),
+                Self::Keep => f.write_str("keep"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for UpdateTenantRequestScimUserDeleteBehavior {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "delete" => Ok(Self::Delete),
+                "disable" => Ok(Self::Disable),
+                "keep" => Ok(Self::Keep),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for UpdateTenantRequestScimUserDeleteBehavior {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for UpdateTenantRequestScimUserDeleteBehavior {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`UpdateTenantRequestUpstreamSamlConfiguration`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateTenantRequestUpstreamSamlConfiguration {
+        ///Certificate used to validate IdP signatures
+        pub cert: ::std::string::String,
+        ///Display name of the identity provider shown on the sign-in page
+        #[serde(rename = "displayName")]
+        pub display_name: ::std::string::String,
+        ///Name of the assertion attribute that holds the email address
+        #[serde(rename = "emailClaim")]
+        pub email_claim: ::std::string::String,
+        ///URL of the IdP single sign-on endpoint
+        #[serde(rename = "entryPoint")]
+        pub entry_point: ::std::string::String,
+        ///Name of the assertion attribute that holds the first name
+        #[serde(rename = "firstNameClaim")]
+        pub first_name_claim: ::std::string::String,
+        ///SAML name identifier format to request
+        #[serde(rename = "identifierFormat")]
+        pub identifier_format: ::std::string::String,
+        ///Raw IdP metadata XML document
+        #[serde(rename = "idpMetadataDocument")]
+        pub idp_metadata_document: ::std::string::String,
+        ///URL to fetch the IdP metadata document from
+        #[serde(
+            rename = "idpMetadataUrl",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub idp_metadata_url: ::std::option::Option<::std::string::String>,
+        ///Whether sign-in through the SAML provider is enabled
+        #[serde(rename = "isEnabled")]
+        pub is_enabled: bool,
+        ///Name of the assertion attribute that holds the last name
+        #[serde(rename = "lastNameClaim")]
+        pub last_name_claim: ::std::string::String,
+        ///Signature algorithm for SAML requests
+        #[serde(rename = "signatureAlgorithm")]
+        pub signature_algorithm: ::std::string::String,
+    }
+    ///`UpdateTenantResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateTenantResponse {
+        pub tenant: TenantDto,
+    }
+    ///`UpdateUserRequest`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct UpdateUserRequest {
+        ///New email address of the user
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub email: ::std::option::Option<::std::string::String>,
+        ///Whether the user is disabled
+        #[serde(
+            rename = "isDisabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_disabled: ::std::option::Option<bool>,
+        ///Whether the user is managed through SCIM provisioning
+        #[serde(
+            rename = "isScimManaged",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_scim_managed: ::std::option::Option<bool>,
+        ///New display name of the user
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub name: ::std::option::Option<::std::string::String>,
+        ///New role of the user in the tenant
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub role: ::std::option::Option<UpdateUserRequestRole>,
+        ///SCIM external ID of the user
+        #[serde(
+            rename = "scimExternalId",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub scim_external_id: ::std::option::Option<::std::string::String>,
+    }
+    ///New role of the user in the tenant
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum UpdateUserRequestRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "owner")]
+        Owner,
+    }
+    impl ::std::fmt::Display for UpdateUserRequestRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Owner => f.write_str("owner"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for UpdateUserRequestRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "owner" => Ok(Self::Owner),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for UpdateUserRequestRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for UpdateUserRequestRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`UpdateUserResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateUserResponse {
+        pub user: User,
+    }
+    ///`User`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct User {
+        ///Time when the user was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Email address of the user
+        pub email: ::std::string::String,
+        ///Unique ID of the user
+        pub id: ::std::string::String,
+        ///Whether the user is disabled
+        #[serde(rename = "isDisabled")]
+        pub is_disabled: bool,
+        ///Whether the user was invited and has not set a password yet
+        #[serde(rename = "isInvited")]
+        pub is_invited: bool,
+        ///Whether the user is managed through SCIM provisioning
+        #[serde(rename = "isScimManaged")]
+        pub is_scim_managed: bool,
+        ///Whether the user is a service account
+        #[serde(rename = "isServiceAccount")]
+        pub is_service_account: bool,
+        ///Whether the user is a super administrator
+        #[serde(rename = "isSuperAdministrator")]
+        pub is_super_administrator: bool,
+        ///Display name of the user
+        pub name: ::std::string::String,
+        ///Profile assignments of the user
+        #[serde(rename = "profileIds")]
+        pub profile_ids: ::std::vec::Vec<ProfileAssignment>,
+        ///Role of the user in the tenant: member or owner
+        pub role: UserRole,
+        ///SCIM external ID of the user
+        #[serde(rename = "scimExternalId")]
+        pub scim_external_id: ::std::string::String,
+        ///ID of the tenant that owns the user
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///Time when the user was last updated
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+    }
+    ///Role of the user in the tenant: member or owner
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum UserRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "owner")]
+        Owner,
+    }
+    impl ::std::fmt::Display for UserRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Owner => f.write_str("owner"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for UserRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "owner" => Ok(Self::Owner),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for UserRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for UserRole {
         type Error = self::error::ConversionError;
         fn try_from(
             value: ::std::string::String,
@@ -3711,6 +6385,48 @@ pub mod query {
             call
         }
     }
+    /// Optional query parameters of `listUsers`.
+    #[derive(Debug, Clone, Default)]
+    pub struct ListUsers {
+        /// `type`. Filter by account type: user, service-account, or all One of: user, service-account, all.
+        pub type_: Option<String>,
+    }
+    impl ListUsers {
+        pub fn apply<'c, T>(&self, mut call: crate::Call<'c, T>) -> crate::Call<'c, T> {
+            if let Some(value) = &self.type_ {
+                call = call.query("type", value);
+            }
+            call
+        }
+    }
+    /// Optional query parameters of `listProfiles`.
+    #[derive(Debug, Clone, Default)]
+    pub struct ListProfiles {
+        /// `serverSlug`.
+        pub server_slug: Option<String>,
+    }
+    impl ListProfiles {
+        pub fn apply<'c, T>(&self, mut call: crate::Call<'c, T>) -> crate::Call<'c, T> {
+            if let Some(value) = &self.server_slug {
+                call = call.query("serverSlug", value);
+            }
+            call
+        }
+    }
+    /// Optional query parameters of `listTeams`.
+    #[derive(Debug, Clone, Default)]
+    pub struct ListTeams {
+        /// `userId`. Only return teams this user is a member of
+        pub user_id: Option<String>,
+    }
+    impl ListTeams {
+        pub fn apply<'c, T>(&self, mut call: crate::Call<'c, T>) -> crate::Call<'c, T> {
+            if let Some(value) = &self.user_id {
+                call = call.query("userId", value);
+            }
+            call
+        }
+    }
 }
 use types::*;
 /// The operations of this API.
@@ -3756,7 +6472,7 @@ impl<'a> Api<'a> {
     }
     /** `GET /mcp-servers/{serverSlug}/oauth/discover`
 
- Discover OAuth metadata from the given URL or from the remote MCP server URL*/
+ Discover OAuth metadata from the given URL or from the remote MCP server URL. With a URL, the server does not need to exist yet*/
     pub fn discover_mcp_server_oauth(
         &self,
         server_slug: &str,
@@ -4180,6 +6896,532 @@ impl<'a> Api<'a> {
         &self,
     ) -> crate::Call<'a, ListSkillCollectionsResponse> {
         let path = format!("{}/skill-collections", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `GET /users`
+
+ List the users and service accounts the caller can read, optionally filtered by type*/
+    pub fn list_users(
+        &self,
+        query: &query::ListUsers,
+    ) -> crate::Call<'a, ListUsersResponse> {
+        let path = format!("{}/users", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        let call = query.apply(call);
+        call
+    }
+    /** `GET /users/{userId}`
+
+ Get one user by ID*/
+    pub fn get_user(&self, user_id: &str) -> crate::Call<'a, GetUserResponse> {
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!("{}/users/{}", BASE_PATH, user_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /users`
+
+ Invite a new user by email, or create a service account*/
+    pub fn create_user(
+        &self,
+        body: &CreateUserRequest,
+    ) -> crate::Call<'a, CreateUserResponse> {
+        let path = format!("{}/users", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /users` with a body that is sent as given, unchecked.
+    pub fn create_user_raw(
+        &self,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateUserResponse> {
+        let path = format!("{}/users", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `PUT /users/{userId}`
+
+ Update a user; callers who are not the organization owner can change only the name*/
+    pub fn update_user(
+        &self,
+        user_id: &str,
+        body: &UpdateUserRequest,
+    ) -> crate::Call<'a, UpdateUserResponse> {
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!("{}/users/{}", BASE_PATH, user_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json(body)
+    }
+    /// `PUT /users/{userId}` with a body that is sent as given, unchecked.
+    pub fn update_user_raw(
+        &self,
+        user_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, UpdateUserResponse> {
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!("{}/users/{}", BASE_PATH, user_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json_value(body)
+    }
+    /** `DELETE /users/{userId}`
+
+ Delete a user permanently*/
+    pub fn delete_user(
+        &self,
+        user_id: &str,
+    ) -> crate::Call<'a, ::serde_json::Map<::std::string::String, ::serde_json::Value>> {
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!("{}/users/{}", BASE_PATH, user_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /users/{userId}/profiles`
+
+ List the profiles assigned to a user*/
+    pub fn list_user_profiles(
+        &self,
+        user_id: &str,
+    ) -> crate::Call<'a, ListUserProfilesResponse> {
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!("{}/users/{}/profiles", BASE_PATH, user_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /users/{userId}/profiles`
+
+ Assign a profile to a user; only organization owners can lock the assignment*/
+    pub fn create_user_profile(
+        &self,
+        user_id: &str,
+        body: &CreateUserProfileAssignmentRequest,
+    ) -> crate::Call<'a, CreateUserProfileResponse> {
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!("{}/users/{}/profiles", BASE_PATH, user_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /users/{userId}/profiles` with a body that is sent as given, unchecked.
+    pub fn create_user_profile_raw(
+        &self,
+        user_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateUserProfileResponse> {
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!("{}/users/{}/profiles", BASE_PATH, user_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `DELETE /users/{userId}/profiles/{profileId}`
+
+ Remove a profile assignment; only organization owners can remove locked assignments*/
+    pub fn delete_user_profile(
+        &self,
+        user_id: &str,
+        profile_id: &str,
+    ) -> crate::Call<'a, ::serde_json::Map<::std::string::String, ::serde_json::Value>> {
+        let user_id = crate::encode_path_segment(user_id);
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/users/{}/profiles/{}", BASE_PATH, user_id, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /service-accounts/{userId}/personal-access-tokens`
+
+ List the personal access tokens of a service account you may update, from a browser session or a token*/
+    pub fn list_service_account_personal_access_tokens(
+        &self,
+        user_id: &str,
+    ) -> crate::Call<'a, ListServiceAccountPersonalAccessTokensResponse> {
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!(
+            "{}/service-accounts/{}/personal-access-tokens", BASE_PATH, user_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /service-accounts/{userId}/personal-access-tokens`
+
+ Create a personal access token for a service account you may update and return its API key, from a browser session or a token*/
+    pub fn create_service_account_personal_access_token(
+        &self,
+        user_id: &str,
+        body: &CreatePersonalAccessTokenRequest,
+    ) -> crate::Call<'a, CreateServiceAccountPersonalAccessTokenResponse> {
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!(
+            "{}/service-accounts/{}/personal-access-tokens", BASE_PATH, user_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /service-accounts/{userId}/personal-access-tokens` with a body that is sent as given, unchecked.
+    pub fn create_service_account_personal_access_token_raw(
+        &self,
+        user_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateServiceAccountPersonalAccessTokenResponse> {
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!(
+            "{}/service-accounts/{}/personal-access-tokens", BASE_PATH, user_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `DELETE /service-accounts/{userId}/personal-access-tokens/{patId}`
+
+ Delete a personal access token of a service account you may update, from a browser session or a token*/
+    pub fn delete_service_account_personal_access_token(
+        &self,
+        user_id: &str,
+        pat_id: &str,
+    ) -> crate::Call<'a, DeleteServiceAccountPersonalAccessTokenResponse> {
+        let user_id = crate::encode_path_segment(user_id);
+        let pat_id = crate::encode_path_segment(pat_id);
+        let path = format!(
+            "{}/service-accounts/{}/personal-access-tokens/{}", BASE_PATH, user_id,
+            pat_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /profiles`
+
+ List the profiles the caller can read, optionally filtered to one MCP server*/
+    pub fn list_profiles(
+        &self,
+        query: &query::ListProfiles,
+    ) -> crate::Call<'a, ListProfilesResponse> {
+        let path = format!("{}/profiles", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        let call = query.apply(call);
+        call
+    }
+    /** `GET /profiles/{profileId}`
+
+ Get one profile with its MCP servers and server credentials*/
+    pub fn get_profile(&self, profile_id: &str) -> crate::Call<'a, GetProfileResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /profiles`
+
+ Create a new profile without any MCP servers attached*/
+    pub fn create_profile(
+        &self,
+        body: &CreateProfileBody,
+    ) -> crate::Call<'a, CreateProfileResponse> {
+        let path = format!("{}/profiles", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /profiles` with a body that is sent as given, unchecked.
+    pub fn create_profile_raw(
+        &self,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateProfileResponse> {
+        let path = format!("{}/profiles", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `PUT /profiles/{profileId}`
+
+ Update a profile. Closing a profile that was open to all users also removes it from all personal access tokens*/
+    pub fn update_profile(
+        &self,
+        profile_id: &str,
+        body: &UpdateProfileBody,
+    ) -> crate::Call<'a, UpdateProfileResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json(body)
+    }
+    /// `PUT /profiles/{profileId}` with a body that is sent as given, unchecked.
+    pub fn update_profile_raw(
+        &self,
+        profile_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, UpdateProfileResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json_value(body)
+    }
+    /** `DELETE /profiles/{profileId}`
+
+ Delete a profile. Only callers who can manage the profile are permitted*/
+    pub fn delete_profile(
+        &self,
+        profile_id: &str,
+    ) -> crate::Call<'a, DeleteProfileResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /profiles/{profileId}/direct-assignments`
+
+ List the accounts and teams that are assigned directly to the profile*/
+    pub fn list_profile_direct_assignments(
+        &self,
+        profile_id: &str,
+    ) -> crate::Call<'a, ProfileAssignmentsResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}/direct-assignments", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `GET /profiles/{profileId}/maintainers`
+
+ List the users who maintain the profile*/
+    pub fn list_profile_maintainers(
+        &self,
+        profile_id: &str,
+    ) -> crate::Call<'a, ProfileMaintainersResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}/maintainers", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /profiles/{profileId}/maintainers`
+
+ Add a user as a maintainer of the profile. Only callers who can manage the profile are permitted*/
+    pub fn create_profile_maintainer(
+        &self,
+        profile_id: &str,
+        body: &CreateProfileMaintainerBody,
+    ) -> crate::Call<'a, CreateProfileMaintainerResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}/maintainers", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /profiles/{profileId}/maintainers` with a body that is sent as given, unchecked.
+    pub fn create_profile_maintainer_raw(
+        &self,
+        profile_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateProfileMaintainerResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}/maintainers", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `DELETE /profiles/{profileId}/maintainers/{userId}`
+
+ Remove a maintainer from the profile. The last remaining maintainer cannot be removed*/
+    pub fn delete_profile_maintainer(
+        &self,
+        profile_id: &str,
+        user_id: &str,
+    ) -> crate::Call<'a, DeleteProfileMaintainerResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!(
+            "{}/profiles/{}/maintainers/{}", BASE_PATH, profile_id, user_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /profiles/{profileId}/claim-mappings`
+
+ List the identity claim mappings that give access to the profile*/
+    pub fn list_profile_claim_mappings(
+        &self,
+        profile_id: &str,
+    ) -> crate::Call<'a, ListProfileClaimMappingsResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}/claim-mappings", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /profiles/{profileId}/claim-mappings`
+
+ Add an identity claim mapping that gives all users with the matching claim access to the profile*/
+    pub fn create_profile_claim_mapping(
+        &self,
+        profile_id: &str,
+        body: &CreateProfileClaimMappingBody,
+    ) -> crate::Call<'a, CreateProfileClaimMappingResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}/claim-mappings", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /profiles/{profileId}/claim-mappings` with a body that is sent as given, unchecked.
+    pub fn create_profile_claim_mapping_raw(
+        &self,
+        profile_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateProfileClaimMappingResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}/claim-mappings", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `DELETE /profiles/{profileId}/claim-mappings/{mappingId}`
+
+ Remove an identity claim mapping from the profile*/
+    pub fn delete_profile_claim_mapping(
+        &self,
+        profile_id: &str,
+        mapping_id: &str,
+    ) -> crate::Call<'a, DeleteProfileClaimMappingResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let mapping_id = crate::encode_path_segment(mapping_id);
+        let path = format!(
+            "{}/profiles/{}/claim-mappings/{}", BASE_PATH, profile_id, mapping_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /profiles/{profileId}/tools`
+
+ List the tool configuration of the profile for each of its MCP servers*/
+    pub fn list_profile_tools(
+        &self,
+        profile_id: &str,
+    ) -> crate::Call<'a, ProfileServerToolsResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/profiles/{}/tools", BASE_PATH, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `PUT /profiles/{profileId}/servers/{serverSlug}/tools`
+
+ Replace the tool configuration that the profile uses for one of its MCP servers. The server must be attached to the profile*/
+    pub fn update_profile_server_tools(
+        &self,
+        profile_id: &str,
+        server_slug: &str,
+        body: &UpdateProfileServerToolsBody,
+    ) -> crate::Call<'a, UpdateProfileServerToolsResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let server_slug = crate::encode_path_segment(server_slug);
+        let path = format!(
+            "{}/profiles/{}/servers/{}/tools", BASE_PATH, profile_id, server_slug
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json(body)
+    }
+    /// `PUT /profiles/{profileId}/servers/{serverSlug}/tools` with a body that is sent as given, unchecked.
+    pub fn update_profile_server_tools_raw(
+        &self,
+        profile_id: &str,
+        server_slug: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, UpdateProfileServerToolsResponse> {
+        let profile_id = crate::encode_path_segment(profile_id);
+        let server_slug = crate::encode_path_segment(server_slug);
+        let path = format!(
+            "{}/profiles/{}/servers/{}/tools", BASE_PATH, profile_id, server_slug
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json_value(body)
+    }
+    /** `GET /teams`
+
+ List the teams the caller can read, optionally only those a given user is a member of*/
+    pub fn list_teams(
+        &self,
+        query: &query::ListTeams,
+    ) -> crate::Call<'a, ListTeamsResponse> {
+        let path = format!("{}/teams", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        let call = query.apply(call);
+        call
+    }
+    /** `POST /teams/{teamId}/profiles`
+
+ Assign a profile to a team. Only organization owners can lock the assignment*/
+    pub fn create_team_profile(
+        &self,
+        team_id: &str,
+        body: &CreateTeamProfileAssignmentRequest,
+    ) -> crate::Call<'a, CreateTeamProfileResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/profiles", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /teams/{teamId}/profiles` with a body that is sent as given, unchecked.
+    pub fn create_team_profile_raw(
+        &self,
+        team_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateTeamProfileResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/profiles", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `DELETE /teams/{teamId}/profiles/{profileId}`
+
+ Remove a profile assignment from a team. Only organization owners can remove a locked assignment*/
+    pub fn delete_team_profile(
+        &self,
+        team_id: &str,
+        profile_id: &str,
+    ) -> crate::Call<'a, ::serde_json::Map<::std::string::String, ::serde_json::Value>> {
+        let team_id = crate::encode_path_segment(team_id);
+        let profile_id = crate::encode_path_segment(profile_id);
+        let path = format!("{}/teams/{}/profiles/{}", BASE_PATH, team_id, profile_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /tenants/{tenantId}`
+
+ Get tenant details*/
+    pub fn get_tenant(&self, tenant_id: &str) -> crate::Call<'a, GetTenantResponse> {
+        let tenant_id = crate::encode_path_segment(tenant_id);
+        let path = format!("{}/tenants/{}", BASE_PATH, tenant_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `PUT /tenants/{tenantId}`
+
+ Update the settings of a tenant. Requires manage permission on the tenant*/
+    pub fn update_tenant(
+        &self,
+        tenant_id: &str,
+        body: &UpdateTenantRequest,
+    ) -> crate::Call<'a, UpdateTenantResponse> {
+        let tenant_id = crate::encode_path_segment(tenant_id);
+        let path = format!("{}/tenants/{}", BASE_PATH, tenant_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json(body)
+    }
+    /// `PUT /tenants/{tenantId}` with a body that is sent as given, unchecked.
+    pub fn update_tenant_raw(
+        &self,
+        tenant_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, UpdateTenantResponse> {
+        let tenant_id = crate::encode_path_segment(tenant_id);
+        let path = format!("{}/tenants/{}", BASE_PATH, tenant_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json_value(body)
+    }
+    /** `GET /tenants/{tenantId}/subscription`
+
+ Get tenant subscription details*/
+    pub fn get_tenant_subscription(
+        &self,
+        tenant_id: &str,
+    ) -> crate::Call<'a, GetSubscriptionResponse> {
+        let tenant_id = crate::encode_path_segment(tenant_id);
+        let path = format!("{}/tenants/{}/subscription", BASE_PATH, tenant_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `GET /quota-and-usage`
+
+ Get the account and MCP server quotas and the current usage of the tenant*/
+    pub fn get_quota_and_usage(&self) -> crate::Call<'a, GetQuotaAndUsageResponse> {
+        let path = format!("{}/quota-and-usage", BASE_PATH);
         let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
         call
     }

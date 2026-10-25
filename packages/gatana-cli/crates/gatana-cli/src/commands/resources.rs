@@ -3,8 +3,10 @@
 //! Server objects are read raw: their transport configuration is a union the backend grows, and a
 //! command that only needs a slug or an id must not break on a transport this version does not know.
 
-use super::{Silent, text_at};
-use crate::cli::{CreateCommand, CredentialScope, DeleteCommand, DescribeCommand, GetCommand, PatchCommand};
+use super::{Silent, array_at, text_at};
+use crate::cli::{
+    CreateCommand, CredentialScope, DeleteCommand, DescribeCommand, GetCommand, PatchCommand, PatchInput,
+};
 use crate::context::Context;
 use crate::output::{self, Column, Options};
 use crate::skills::api::HttpSkillsApi;
@@ -60,10 +62,6 @@ pub(crate) fn split_tool_name(name: &str) -> Result<(&str, &str)> {
 async fn server_id(context: &Context, slug: &str) -> Result<String> {
     let server = context.api().await?.v2().get_server_v2(slug).value().await?;
     text_at(&server, "/id").map(str::to_string).ok_or_else(|| anyhow!("Server '{slug}' has no id"))
-}
-
-fn array_at(value: &Value, key: &str) -> Vec<Value> {
-    value.get(key).and_then(Value::as_array).cloned().unwrap_or_default()
 }
 
 pub async fn get(context: &Context, resource: GetCommand) -> Result<()> {
@@ -139,6 +137,12 @@ pub async fn get(context: &Context, resource: GetCommand) -> Result<()> {
             let skills = HttpSkillsApi::new(api, &context.config()?.base_url);
             crate::skills::show_skills(&skills, name.as_deref(), query.as_deref(), None).await?;
         }
+        GetCommand::Account { name, kind } => super::accounts::get(context, name.as_deref(), kind).await?,
+        GetCommand::Profile { name, server } => super::profiles::get(context, name.as_deref(), server).await?,
+        GetCommand::Pat { account, show_secrets } => {
+            super::accounts::get_tokens(context, &account, show_secrets).await?
+        }
+        GetCommand::Org { show_secrets } => super::org::get(context, show_secrets).await?,
     }
     Ok(())
 }
@@ -191,12 +195,15 @@ pub async fn describe(context: &Context, resource: DescribeCommand) -> Result<()
             let skills = HttpSkillsApi::new(api, &context.config()?.base_url);
             crate::skills::show_skills(&skills, Some(&name), None, None).await?;
         }
+        DescribeCommand::Account { name } => super::accounts::describe(context, &name).await?,
+        DescribeCommand::Profile { name } => super::profiles::describe(context, &name).await?,
+        DescribeCommand::Org => super::org::describe(context).await?,
     }
     Ok(())
 }
 
 /// The text of `-f <file>`, or of stdin when something is piped in.
-fn file_or_stdin(file: Option<&Path>) -> Result<Option<String>> {
+pub(crate) fn file_or_stdin(file: Option<&Path>) -> Result<Option<String>> {
     match file {
         Some(file) => Ok(Some(std::fs::read_to_string(file).map_err(|error| anyhow!("{}: {error}", file.display()))?)),
         None => Ok(read_piped_stdin()?.filter(|text| !text.trim().is_empty())),
@@ -213,6 +220,10 @@ pub async fn create(context: &Context, resource: CreateCommand) -> Result<()> {
             let created = context.api().await?.v1().create_sandbox().value().await?;
             output::output(created.get("sandbox").unwrap_or(&created), Options::yaml());
         }
+        CreateCommand::Account(args) => super::accounts::create(context, args).await?,
+        CreateCommand::ServiceAccount(args) => super::accounts::create_service_account(context, args).await?,
+        CreateCommand::Profile(args) => super::profiles::create(context, args).await?,
+        CreateCommand::Pat(args) => super::accounts::create_token(context, args).await?,
     }
     Ok(())
 }
@@ -296,28 +307,55 @@ pub async fn delete(context: &Context, resource: DeleteCommand) -> Result<()> {
             api.v1().delete_sandbox(&id).send().await?;
             output::success(&format!("Deleted sandbox '{id}'."));
         }
+        DeleteCommand::Account { name } => super::accounts::delete(context, &name).await?,
+        DeleteCommand::Profile { name } => super::profiles::delete(context, &name).await?,
+        DeleteCommand::Pat { token, account } => super::accounts::delete_token(context, &account, &token).await?,
     }
     Ok(())
 }
 
-pub async fn patch(context: &Context, resource: PatchCommand) -> Result<()> {
-    let PatchCommand::Server { server_slug, file, patch } = resource;
-    let body = if !patch.is_empty() {
-        let body = parse_inline_object(&patch)?;
-        if !patch.join(" ").trim_start().starts_with('{') {
+/// The patch from `-p`, `-f` or stdin, or None when none of them holds one.
+fn read_patch(input: &PatchInput) -> Result<Option<Value>> {
+    if !input.patch.is_empty() {
+        let body = parse_inline_object(&input.patch)?;
+        if !input.patch.join(" ").trim_start().starts_with('{') {
             output::info(&format!("Patch from key=value pairs: {body}"));
         }
-        body
-    } else {
-        let Some(raw) = file_or_stdin(file.as_deref())? else {
-            output::error("No input provided. Use -f <file>, -p, or pipe JSON via stdin.");
-            return Err(Silent.into());
-        };
-        serde_json::from_str(raw.trim()).map_err(|_| anyhow!("Failed to parse JSON input."))?
+        return Ok(Some(body));
+    }
+    let Some(raw) = file_or_stdin(input.file.as_deref())? else {
+        return Ok(None);
     };
-    // A merge patch is whatever the user wrote; the server validates it.
-    context.api().await?.v2().patch_server_v2_raw(&server_slug, body).send().await?;
-    output::success(&format!("Updated server '{server_slug}'."));
+    Ok(Some(serde_json::from_str(raw.trim()).map_err(|_| anyhow!("Failed to parse JSON input."))?))
+}
+
+/// `read_patch` for the commands that take nothing else.
+fn required_patch(input: &PatchInput) -> Result<Value> {
+    let Some(body) = read_patch(input)? else {
+        output::error("No input provided. Use -f <file>, -p, or pipe JSON via stdin.");
+        return Err(Silent.into());
+    };
+    Ok(body)
+}
+
+pub async fn patch(context: &Context, resource: PatchCommand) -> Result<()> {
+    match resource {
+        PatchCommand::Server { server_slug, input } => {
+            let body = required_patch(&input)?;
+            // A merge patch is whatever the user wrote; the server validates it.
+            context.api().await?.v2().patch_server_v2_raw(&server_slug, body).send().await?;
+            output::success(&format!("Updated server '{server_slug}'."));
+        }
+        PatchCommand::Account { name, input } => {
+            super::accounts::patch(context, &name, required_patch(&input)?).await?
+        }
+        PatchCommand::Profile { name, input } => {
+            super::profiles::patch(context, &name, required_patch(&input)?).await?
+        }
+        PatchCommand::Org { input, logo, remove_logo } => {
+            super::org::patch(context, read_patch(&input)?, logo.as_deref(), remove_logo).await?;
+        }
+    }
     Ok(())
 }
 

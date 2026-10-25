@@ -97,6 +97,16 @@ await codemode.gatanaApi.updateProfile({ profileId, body: { serverIds: [...slugs
 
 You can add a server to a profile only if you can read that server. Removing a server from a profile discards its tool configuration for that profile.
 
+With the CLI, the same steps are:
+
+```bash
+gatana create profile "CI agent" --description "GitHub and Sentry for the CI review agent" --restrictive -s github -s sentry
+gatana profile assign "CI agent" --account ci@service-account.acme.gatana
+gatana profile assign "CI agent" --team platform
+gatana profile claims add "CI agent" groups=ci
+gatana profile add-server "CI agent" new-server
+```
+
 Other operations: `listProfiles({ serverSlug? })`, `listProfileDirectAssignments`, `listProfileClaimMappings`, `deleteProfileClaimMapping`, `deleteUserProfile`, `deleteTeamProfile`, `patchUserProfile` (lock or unlock, owners only), `deleteProfile`. To see what a user or team can reach, use `getMcpServersAccessPreview({ userId })` or `({ teamId })`.
 
 ## Tool configuration

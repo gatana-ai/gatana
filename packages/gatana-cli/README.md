@@ -1,7 +1,7 @@
 # gatana CLI
 
-The `gatana` CLI manages the servers, tools, credentials, sandboxes and skills of a Gatana
-organization. It is a native binary for macOS and Linux (arm64 and x64), written in Rust.
+The `gatana` CLI manages the servers, tools, credentials, accounts, profiles, settings, sandboxes
+and skills of a Gatana organization. It is a native binary for macOS and Linux (arm64 and x64), written in Rust.
 
 Version 4 is a port of the TypeScript CLI (3.x) to Rust. It reads and writes the same
 `~/.gatana.config` and the same skills folders, so you can update without a new login. See
@@ -200,6 +200,62 @@ Sandboxes need early access.
 | **delete sandbox** | `gatana delete sandbox <id>`      | Delete a sandbox                                                |
 | **sandbox shell**  | `gatana sandbox shell <id>`       | Open an interactive SSH shell in a sandbox                      |
 
+### Accounts
+
+Users, service accounts, and the personal access tokens of a service account. An account goes by
+its email address or its ID.
+
+| Command                     | Syntax                                                                 | Description                                                                                       |
+| --------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **get account**             | `gatana get account [email] [--type user\|service-account\|all]`      | List the accounts, or show one                                                                    |
+| **describe account**        | `gatana describe account <email>`                                      | Show an account with its profiles and teams, and the tokens of a service account, without keys   |
+| **create account**          | `gatana create account <email> [--name name] [--role member\|owner]`   | Invite a user. Gatana sends an email with a link to set a password                               |
+| **create service-account**  | `gatana create service-account <name> [--role member\|owner]`          | Create a service account and print the API key of its first token                                |
+| **patch account**           | `gatana patch account <email> [-p kv...] [-f file]`                    | Change the name, email, role or `isDisabled`. Members can change only their own name             |
+| **delete account**          | `gatana delete account <email>`                                        | Delete an account permanently                                                                     |
+| **get pat**                 | `gatana get pat --account <email> [--show-secrets]`                    | List the tokens of a service account. The keys show only with `--show-secrets`                   |
+| **create pat**              | `gatana create pat --account <email> --name name [--profile p...]`     | Create a token for a service account and print its key. `--profile` confines the token           |
+| **delete pat**              | `gatana delete pat <id-or-name> --account <email>`                     | Delete a token of a service account                                                               |
+
+> The service account email is made from the name, as the dashboard does:
+> `Deploy bot` becomes `deploy-bot@service-account.<org>.gatana`. The token commands work only for
+> a service account. Your own tokens need a browser session, so manage them in the dashboard. A
+> token that Gatana made for the assistant or for Code Mode cannot manage tokens at all.
+
+### Profiles
+
+A profile goes by its name or its ID. Put the name in quotes when it holds spaces.
+
+| Command                         | Syntax                                                                                          | Description                                                                     |
+| ------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **get profile**                 | `gatana get profile [name] [-s slug]`                                                           | List the profiles, or the ones that hold a server, or show one                  |
+| **describe profile**            | `gatana describe profile <name>`                                                                | Show a profile with its servers, members, maintainers and claim mappings        |
+| **create profile**              | `gatana create profile <name> [--description text] [--open-to-all] [--restrictive] [--code-mode] [-s slug...]` | Create a profile, with servers if you name them                |
+| **patch profile**               | `gatana patch profile <name> [-p kv...] [-f file]`                                              | Change a profile. `serverIds` replaces the full list                            |
+| **delete profile**              | `gatana delete profile <name>`                                                                  | Delete a profile. It is also removed from every personal access token           |
+| **profile add-server**          | `gatana profile add-server <profile> <slug...>`                                                 | Put servers in a profile                                                        |
+| **profile remove-server**       | `gatana profile remove-server <profile> <slug...>`                                              | Take servers out, with the tool settings of the profile for them                |
+| **profile assign**              | `gatana profile assign <profile> --account <email> \| --team <name> [--lock]`                   | Give a profile to an account or a team. Only owners can lock                    |
+| **profile unassign**            | `gatana profile unassign <profile> --account <email> \| --team <name>`                          | Take a profile away                                                             |
+| **profile maintainers add\|rm** | `gatana profile maintainers add <profile> <email>`                                              | Add or remove a maintainer. The last maintainer stays                           |
+| **profile claims add\|rm**      | `gatana profile claims add <profile> <key>=<value>`                                             | Give the profile to everyone whose identity provider sends the claim, or stop   |
+| **profile tools**               | `gatana profile tools <profile> <slug> [-f file]`                                               | Show the tool settings of a profile for one server, or replace them             |
+
+### Organization
+
+The settings, plan and quotas of the organization. Only organization owners can read them.
+
+| Command           | Syntax                                                        | Description                                                                                        |
+| ----------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **get org**       | `gatana get org [--show-secrets]`                             | Show the settings. The client secret of the identity provider shows only with `--show-secrets`     |
+| **describe org**  | `gatana describe org`                                         | Show the plan, the accounts and the servers in use, and the limits                                 |
+| **patch org**     | `gatana patch org [-p kv...] [-f file] [--logo file] [--remove-logo]` | Change settings. A nested setting merges with the stored one, so one field is enough       |
+
+> `patch org` reads the settings first. For each key that holds an object, it merges your change
+> into the stored value and sends the whole object, because the backend replaces such a key whole.
+> A patch that holds the mask `********` is refused, so output pasted back in cannot overwrite a
+> secret. `--logo` takes a PNG, JPEG, WebP or SVG file of at most 256 KB.
+
 ### Skills
 
 Install the skills of your organization into the folders that AI agents read, and push local
@@ -246,6 +302,9 @@ Configuration, authentication and schemas.
 | **config remove**      | `gatana config remove <org-id>`                               | Remove an organization from the config file             |
 | **auth-info**          | `gatana auth-info`                                            | Show the authenticated user and organization            |
 | **schema server**      | `gatana schema server`                                        | Print the resolved OpenAPI schema of the Server DTO     |
+| **schema account**     | `gatana schema account`                                       | Print what `patch account` takes                        |
+| **schema profile**     | `gatana schema profile`                                       | Print what `patch profile` takes                        |
+| **schema org**         | `gatana schema org`                                           | Print what `patch org` takes                            |
 | **upgrade**            | `gatana upgrade [--dry-run]`                                  | Upgrade to the latest release, the way it was installed |
 
 ---
@@ -259,6 +318,10 @@ Configuration, authentication and schemas.
 | `creds`   | `credential`, `credentials` | Credentials for servers                  |
 | `sandbox` | `sandboxes`                 | Sandboxes (early access)                 |
 | `skill`   | `skills`                    | Markdown instructions that agents follow |
+| `account` | `accounts`, `user`, `users` | Users and service accounts               |
+| `profile` | `profiles`                  | Sets of servers, tools and credentials   |
+| `pat`     | `pats`, `token`, `tokens`   | Personal access tokens of a service account |
+| `org`     | `organization`, `settings`  | The settings of the organization         |
 
 ---
 
@@ -306,6 +369,23 @@ echo '{"description": "Piped"}' | gatana patch server my-server
 
 # Delete a server
 gatana delete server my-server
+```
+
+### Manage access
+
+```bash
+# A profile with two servers, for one team and one account
+gatana create profile Engineering --description "Tools for engineers" -s github -s linear
+gatana profile assign Engineering --team platform
+gatana profile assign Engineering --account ada@example.com
+
+# A service account for a CI job, with a token that only the profile reaches
+gatana create service-account "CI runner"
+gatana create pat --account ci-runner@service-account.acme.gatana --name deploy --profile Engineering
+
+# Turn off local servers for members, and point the sign-in at a new client ID
+gatana patch org -p allowMemberAddLocalServers=false
+gatana patch org -p upstreamOidcConfiguration.clientId=new-client-id
 ```
 
 ### Develop a FaaS server

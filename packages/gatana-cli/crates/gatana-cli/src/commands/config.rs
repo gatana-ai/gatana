@@ -202,12 +202,44 @@ fn resolve_refs(node: &Value, root: &Value, stack: &mut Vec<String>) -> Value {
 }
 
 pub async fn schema(context: &Context, command: SchemaCommand) -> Result<()> {
-    let SchemaCommand::Server = command;
-    let url = url::Url::parse(&context.config()?.base_url)?.join("/api/v2/openapi.json")?;
-    let document: Value = context.http().get(url.clone()).send().await?.error_for_status()?.json().await?;
-    let schema = document.pointer("/components/schemas/V2ServerDto").cloned().unwrap_or(Value::Null);
+    let base = url::Url::parse(&context.config()?.base_url)?;
+    let (document, schema) = match command {
+        SchemaCommand::Server => {
+            let document = fetch_document(context, base.join("/api/v2/openapi.json")?).await?;
+            let schema = document.pointer("/components/schemas/V2ServerDto").cloned();
+            (document, schema)
+        }
+        // What the patch command sends: the body of the update operation
+        SchemaCommand::Account | SchemaCommand::Profile | SchemaCommand::Org => {
+            let operation = match command {
+                SchemaCommand::Account => "updateUser",
+                SchemaCommand::Profile => "updateProfile",
+                _ => "updateTenant",
+            };
+            let document = fetch_document(context, base.join("/api/v1/openapi.json?private=true")?).await?;
+            let schema = request_body_of(&document, operation);
+            (document, schema)
+        }
+    };
+    let schema = schema.unwrap_or(Value::Null);
     output::output(&resolve_refs(&schema, &document, &mut Vec::new()), Options::default_format(Format::Json));
     Ok(())
+}
+
+async fn fetch_document(context: &Context, url: url::Url) -> Result<Value> {
+    Ok(context.http().get(url).send().await?.error_for_status()?.json().await?)
+}
+
+/// The JSON request body schema of the operation with this operationId.
+fn request_body_of(document: &Value, operation_id: &str) -> Option<Value> {
+    let paths = document.get("paths")?.as_object()?;
+    paths
+        .values()
+        .filter_map(Value::as_object)
+        .flat_map(|methods| methods.values())
+        .find(|operation| operation.get("operationId").and_then(Value::as_str) == Some(operation_id))?
+        .pointer("/requestBody/content/application~1json/schema")
+        .cloned()
 }
 
 #[cfg(test)]

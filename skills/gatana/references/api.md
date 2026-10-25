@@ -87,7 +87,7 @@ The REST API also accepts an OAuth access token from Gatana. On-premise installs
 | `createProfileMaintainer`, `deleteProfileMaintainer`         | `/api/v1/profiles/{profileId}/maintainers`                    | Body `{ userId }`.                                                                |
 | `patchConnectedClient`                                       | `PATCH /api/v1/connected-clients/{clientId}`                  | Body `{ profileIds }` attaches profiles to a connected client.                    |
 
-Profiles on personal access tokens can only be changed in the dashboard.
+Your own personal access tokens, and the profiles on them, can only be changed in the dashboard. A service account's tokens can be managed with a token too: `listServiceAccountPersonalAccessTokens`, `createServiceAccountPersonalAccessToken` (body `{ name, profileIds? }`) and `deleteServiceAccountPersonalAccessToken` on `/api/v1/service-accounts/{userId}/personal-access-tokens`, by an organization owner. The tokens that Gatana makes for its own tools, the `gatanaApi` tools among them, are refused there.
 
 ## The gatana CLI
 
@@ -114,5 +114,18 @@ Always give every flag. A command without a needed flag asks a question, and an 
 | `gatana get creds -s <slug>` / `gatana delete creds <id> -s <slug>` | List or delete credentials.                                                                                         |
 | `gatana deploy get\|logs\|wait\|start\|stop <slug>`                 | Deployments of `stdio` and `hosted` servers.                                                                        |
 | `gatana faas init\|verify\|run\|upload\|download`                   | Hosted code. `faas upload <slug> <path> --create` creates and deploys.                                              |
+| `gatana get profiles` / `gatana describe profile <name>`            | List profiles, or show one with its servers, members, maintainers and claim mappings.                               |
+| `gatana create profile <name> --description <text> -s <slug>...`    | Create a profile with servers. Add `--restrictive`, `--open-to-all` or `--code-mode` for those settings.            |
+| `gatana profile add-server\|remove-server <profile> <slug>...`      | Add or remove servers without replacing the list.                                                                   |
+| `gatana profile assign\|unassign <profile> --account <email>`       | Give a profile to an account, or take it away. `--team <name>` for a team, `--lock` to lock (owners only).          |
+| `gatana profile claims add\|rm <profile> <key>=<value>`             | Give the profile to everyone whose identity provider sends the claim.                                               |
+| `gatana profile tools <profile> <slug> [-f tools.json]`             | Show the tool configuration of a profile for one server, or replace it.                                             |
+| `gatana patch profile <name> -p key=value` / `gatana delete profile <name>` | Change or delete a profile. `serverIds` in a patch replaces the list.                                       |
+| `gatana get accounts` / `gatana describe account <email>`           | List accounts, or show one with its profiles and teams.                                                             |
+| `gatana create account <email> --name <name> --role member\|owner`  | Invite a user. Gatana sends the invitation email.                                                                   |
+| `gatana create service-account <name>`                              | Create a service account. Prints the API key of its first token.                                                    |
+| `gatana create pat --account <email> --name <name> --profile <p>`   | Create a token for a service account and print its key. Your own tokens need the dashboard.                         |
+| `gatana patch account <email> -p isDisabled=true` / `delete account` | Change or delete an account.                                                                                       |
+| `gatana get org` / `gatana patch org -p key=value`                  | Organization settings (owners only). A nested key merges with the stored value. `gatana schema org` lists the keys.  |
 
-The CLI has no profile commands. Use the MCP tools or REST for profiles.
+Profiles, accounts and teams go by name, email or ID. Quote a name that holds spaces.

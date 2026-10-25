@@ -1,8 +1,12 @@
 //! What each command does.
 
+mod accounts;
 mod config;
 mod create_server;
 mod install;
+mod org;
+mod profiles;
+mod resolve;
 mod resources;
 mod servers;
 mod signup;
@@ -39,6 +43,7 @@ pub async fn run(cli: Cli) -> Result<()> {
         Command::Creds(args) => servers::effective_credentials(&context, args).await,
         Command::Faas { command } => servers::faas(&context, command).await,
         Command::Sandbox { command } => servers::sandbox(&context, command).await,
+        Command::Profile { command } => profiles::run(&context, command).await,
         Command::Skills { command } => skills::run(&context, command).await,
         Command::Config { command } => config::run(&context, command).await,
         Command::AuthInfo => config::auth_info(&context).await,
@@ -55,3 +60,11 @@ pub async fn run(cli: Cli) -> Result<()> {
 pub(crate) fn text_at<'a>(value: &'a Value, pointer: &str) -> Option<&'a str> {
     value.pointer(pointer).and_then(Value::as_str)
 }
+
+/// The array under `key`, or none: a list response such as `{ "users": [...] }`.
+pub(crate) fn array_at(value: &Value, key: &str) -> Vec<Value> {
+    value.get(key).and_then(Value::as_array).cloned().unwrap_or_default()
+}
+
+/// What a secret shows as unless `--show-secrets` is given.
+pub(crate) const MASK: &str = "********";

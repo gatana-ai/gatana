@@ -15,9 +15,9 @@ Get Started:
   install       Sign in and connect the AI agents on this machine: gateway, skills and hooks
 
 Basic Commands:
-  get           List resources or show one resource
+  get           List or show resources: server, tool, creds, account, profile, pat, org, sandbox, skill
   describe      Show details of a specific resource
-  create        Create a resource: a server, credentials or a sandbox
+  create        Create a resource: a server, credentials, an account, a profile, a token or a sandbox
   delete        Delete resources
   patch         Patch a resource
 
@@ -27,6 +27,9 @@ Server Management:
   creds         Get the effective credentials for a server
   faas          Manage FaaS servers (hosted source code)
   sandbox       Manage sandboxes (requires early access)
+
+Access:
+  profile       Manage the servers, members, maintainers and tools of a profile
 
 Skills:
   skills        Managing skills and installing them to this computer
@@ -80,7 +83,7 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Command {
-    /// List resources or show one resource
+    /// List or show resources: server, tool, creds, account, profile, pat, org, sandbox, skill
     Get {
         #[command(subcommand)]
         resource: GetCommand,
@@ -125,6 +128,12 @@ pub enum Command {
     Sandbox {
         #[command(subcommand)]
         command: SandboxCommand,
+    },
+    /// Manage the servers, members, maintainers and tools of a profile
+    #[command(after_help = PROFILE_EXAMPLES)]
+    Profile {
+        #[command(subcommand)]
+        command: ProfileCommand,
     },
     /// Install skills for AI agents, follow collections, and push local changes to Gatana
     Skills {
@@ -215,6 +224,51 @@ pub enum GetCommand {
         #[arg(short = 'q', long = "query", value_name = "TEXT")]
         query: Option<String>,
     },
+    /// List accounts or show one account
+    #[command(visible_aliases = ["accounts", "user", "users"])]
+    Account {
+        /// Email address or ID (omit to list all)
+        name: Option<String>,
+        /// Only list accounts of this kind
+        #[arg(long = "type", value_enum, value_name = "KIND")]
+        kind: Option<AccountKind>,
+    },
+    /// List profiles or show one profile
+    #[command(visible_alias = "profiles")]
+    Profile {
+        /// Profile name or ID (omit to list all)
+        name: Option<String>,
+        /// Only list the profiles that hold this server
+        #[arg(short = 's', long = "server", value_name = "SLUG")]
+        server: Option<String>,
+    },
+    /// List the personal access tokens of a service account
+    #[command(visible_aliases = ["pats", "token", "tokens"])]
+    Pat {
+        /// The service account: email address or ID
+        #[arg(short = 'a', long, value_name = "ACCOUNT")]
+        account: String,
+        /// Show the API keys instead of hiding them
+        #[arg(long = "show-secrets")]
+        show_secrets: bool,
+    },
+    /// Show the settings of the organization (organization owners only)
+    #[command(visible_aliases = ["organization", "settings"])]
+    Org {
+        /// Show secrets, such as the client secret of the identity provider, instead of hiding them
+        #[arg(long = "show-secrets")]
+        show_secrets: bool,
+    },
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum AccountKind {
+    /// People, who sign in with a browser
+    User,
+    /// Accounts for scripts and agents, which sign in with a token
+    ServiceAccount,
+    /// Both
+    All,
 }
 
 #[derive(Subcommand, Debug)]
@@ -229,6 +283,20 @@ pub enum DescribeCommand {
         /// Skill name
         name: String,
     },
+    /// Show an account with its profiles and teams, and the tokens of a service account
+    #[command(visible_alias = "user")]
+    Account {
+        /// Email address or ID
+        name: String,
+    },
+    /// Show a profile with its servers, members, maintainers and claim mappings
+    Profile {
+        /// Profile name or ID
+        name: String,
+    },
+    /// Show the plan, the accounts and the quotas of the organization (organization owners only)
+    #[command(visible_alias = "organization")]
+    Org,
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
@@ -262,6 +330,80 @@ pub enum CreateCommand {
     },
     /// Create a new sandbox
     Sandbox,
+    /// Invite a user. Gatana sends an email with a link to set a password
+    #[command(visible_alias = "user")]
+    Account(CreateAccountArgs),
+    /// Create a service account, for a script or an agent, and print its API key
+    ServiceAccount(CreateServiceAccountArgs),
+    /// Create a profile. Add servers with --server, or later with "gatana profile add-server"
+    Profile(CreateProfileArgs),
+    /// Create a personal access token for a service account and print its API key
+    #[command(visible_alias = "token")]
+    Pat(CreatePatArgs),
+}
+
+#[derive(Args, Debug)]
+pub struct CreateAccountArgs {
+    /// Email address of the user
+    pub email: String,
+    /// Display name. Default: the part of the email address before the @
+    #[arg(long)]
+    pub name: Option<String>,
+    /// Role in the organization
+    #[arg(long, value_enum, default_value_t)]
+    pub role: Role,
+}
+
+#[derive(Args, Debug)]
+pub struct CreateServiceAccountArgs {
+    /// Display name, for example "Deploy bot". The email address of the account is made from it
+    pub name: String,
+    /// Role in the organization
+    #[arg(long, value_enum, default_value_t)]
+    pub role: Role,
+}
+
+#[derive(Clone, Copy, Debug, Default, ValueEnum)]
+pub enum Role {
+    /// Uses the servers that teams, profiles and grants give access to
+    #[default]
+    Member,
+    /// Manages the organization: every server, account and setting
+    Owner,
+}
+
+#[derive(Args, Debug)]
+pub struct CreateProfileArgs {
+    /// Profile name
+    pub name: String,
+    /// What the profile is for
+    #[arg(long, default_value = "")]
+    pub description: String,
+    /// Every member can apply the profile themselves, and so gets member access to all its servers
+    #[arg(long = "open-to-all")]
+    pub open_to_all: bool,
+    /// A session with this profile reaches only the servers of the profile, organization owners too
+    #[arg(long)]
+    pub restrictive: bool,
+    /// Sessions with this profile run in Code Mode for all servers
+    #[arg(long = "code-mode")]
+    pub code_mode: bool,
+    /// A server to put in the profile. Repeat for more servers
+    #[arg(short = 's', long = "server", value_name = "SLUG")]
+    pub servers: Vec<String>,
+}
+
+#[derive(Args, Debug)]
+pub struct CreatePatArgs {
+    /// The service account: email address or ID
+    #[arg(short = 'a', long, value_name = "ACCOUNT")]
+    pub account: String,
+    /// Name of the token, for example the script that uses it
+    #[arg(long)]
+    pub name: String,
+    /// Confine the token to this profile. Repeat for more profiles
+    #[arg(short = 'p', long = "profile", value_name = "PROFILE")]
+    pub profiles: Vec<String>,
 }
 
 const CREATE_SERVER_EXAMPLES: &str = r#"Examples:
@@ -428,6 +570,26 @@ pub enum DeleteCommand {
         /// Sandbox ID
         id: String,
     },
+    /// Delete an account permanently
+    #[command(visible_alias = "user")]
+    Account {
+        /// Email address or ID
+        name: String,
+    },
+    /// Delete a profile. It is also removed from every personal access token
+    Profile {
+        /// Profile name or ID
+        name: String,
+    },
+    /// Delete a personal access token of a service account
+    #[command(visible_alias = "token")]
+    Pat {
+        /// Token ID or name
+        token: String,
+        /// The service account: email address or ID
+        #[arg(short = 'a', long, value_name = "ACCOUNT")]
+        account: String,
+    },
 }
 
 const PATCH_EXAMPLES: &str = r#"To get the schema, run "gatana schema server".
@@ -446,6 +608,32 @@ Examples:
   # From stdin
   $ echo '{"description": "Piped"}' | gatana patch server my-server"#;
 
+const PATCH_ACCOUNT_EXAMPLES: &str = r#"To get the schema, run "gatana schema account".
+
+Examples:
+  $ gatana patch account ada@example.com -p role=owner
+  $ gatana patch account ada@example.com -p isDisabled=true"#;
+
+const PATCH_PROFILE_EXAMPLES: &str = r#"To get the schema, run "gatana schema profile".
+
+Examples:
+  $ gatana patch profile Engineering -p description="Tools for the platform team"
+  $ gatana patch profile Engineering -p isRestrictive=true
+
+  # serverIds replaces the full list. To add or remove one server, use "gatana profile add-server"
+  $ gatana patch profile Engineering -p '{"serverIds": ["github", "linear"]}'"#;
+
+const PATCH_ORG_EXAMPLES: &str = r#"To get the schema, run "gatana schema org".
+
+Examples:
+  $ gatana patch org -p allowMemberAddLocalServers=false
+
+  # A nested setting merges with the stored one, so one field is enough
+  $ gatana patch org -p upstreamOidcConfiguration.clientId=new-client-id
+
+  # The logo in the sidebar of the app
+  $ gatana patch org --logo ./logo.png"#;
+
 #[derive(Subcommand, Debug)]
 pub enum PatchCommand {
     /// Patch an existing server (JSON Merge Patch RFC 7396 strategy). To get the schema, run
@@ -454,13 +642,49 @@ pub enum PatchCommand {
     Server {
         /// Server slug
         server_slug: String,
-        /// JSON file with server config to patch (omit to read from stdin)
-        #[arg(short = 'f', long = "file", value_name = "PATH")]
-        file: Option<PathBuf>,
-        /// Inline patch: JSON string or dot-notation key=value pairs
-        #[arg(short = 'p', long = "patch", value_name = "KV", num_args = 1.., action = clap::ArgAction::Append)]
-        patch: Vec<String>,
+        #[command(flatten)]
+        input: PatchInput,
     },
+    /// Patch an account. Organization owners can change every field; members only their own name
+    #[command(after_help = PATCH_ACCOUNT_EXAMPLES, visible_alias = "user")]
+    Account {
+        /// Email address or ID
+        name: String,
+        #[command(flatten)]
+        input: PatchInput,
+    },
+    /// Patch a profile. The keys you leave out keep their values
+    #[command(after_help = PATCH_PROFILE_EXAMPLES)]
+    Profile {
+        /// Profile name or ID
+        name: String,
+        #[command(flatten)]
+        input: PatchInput,
+    },
+    /// Patch the settings of the organization (organization owners only). The keys you leave out
+    /// keep their values, and a nested setting merges with the stored one
+    #[command(after_help = PATCH_ORG_EXAMPLES, visible_aliases = ["organization", "settings"])]
+    Org {
+        #[command(flatten)]
+        input: PatchInput,
+        /// Set the logo in the sidebar of the app: a PNG, JPEG, WebP or SVG file of at most 256 KB
+        #[arg(long, value_name = "PATH", conflicts_with = "remove_logo")]
+        logo: Option<PathBuf>,
+        /// Remove the logo
+        #[arg(long = "remove-logo")]
+        remove_logo: bool,
+    },
+}
+
+/// The patch of a `patch` command: one of these, or JSON piped to stdin.
+#[derive(Args, Debug)]
+pub struct PatchInput {
+    /// JSON file with the patch (omit to read from stdin)
+    #[arg(short = 'f', long = "file", value_name = "PATH")]
+    pub file: Option<PathBuf>,
+    /// Inline patch: JSON string or dot-notation key=value pairs
+    #[arg(short = 'p', long = "patch", value_name = "KV", num_args = 1.., action = clap::ArgAction::Append)]
+    pub patch: Vec<String>,
 }
 
 const TOOL_EXAMPLES: &str = r#"Get the tool schema by running "gatana get tools <tool_name>"
@@ -620,6 +844,132 @@ pub enum SandboxCommand {
     Shell {
         /// Sandbox ID
         id: String,
+    },
+}
+
+const PROFILE_EXAMPLES: &str = r#"Examples:
+  # Put the GitHub and Linear servers in the profile "Engineering"
+  $ gatana profile add-server Engineering github linear
+
+  # Give the profile to a team, and to one account
+  $ gatana profile assign Engineering --team platform
+  $ gatana profile assign Engineering --account ada@example.com
+
+  # Everyone whose identity provider sends the claim department=engineering gets the profile
+  $ gatana profile claims add Engineering department=engineering
+
+  # Save the tool settings of the profile for one server, change them, and send them back
+  $ gatana profile tools Engineering github -o json > tools.json
+  $ gatana profile tools Engineering github -f tools.json"#;
+
+#[derive(Subcommand, Debug)]
+pub enum ProfileCommand {
+    /// Put servers in a profile
+    AddServer {
+        /// Profile name or ID
+        profile: String,
+        /// Server slugs
+        #[arg(required = true, value_name = "SLUG")]
+        servers: Vec<String>,
+    },
+    /// Take servers out of a profile, together with the tool settings of the profile for them
+    RemoveServer {
+        /// Profile name or ID
+        profile: String,
+        /// Server slugs
+        #[arg(required = true, value_name = "SLUG")]
+        servers: Vec<String>,
+    },
+    /// Give a profile to an account or a team
+    Assign {
+        /// Profile name or ID
+        profile: String,
+        #[command(flatten)]
+        member: ProfileMember,
+        /// Lock the assignment, so that only organization owners can remove it (organization owners only)
+        #[arg(long)]
+        lock: bool,
+    },
+    /// Take a profile away from an account or a team
+    Unassign {
+        /// Profile name or ID
+        profile: String,
+        #[command(flatten)]
+        member: ProfileMember,
+    },
+    /// Add or remove the users who maintain a profile
+    #[command(visible_alias = "maintainer")]
+    Maintainers {
+        #[command(subcommand)]
+        command: MaintainerCommand,
+    },
+    /// Add or remove the identity provider claims that give a profile to everyone who has them
+    #[command(visible_alias = "claim")]
+    Claims {
+        #[command(subcommand)]
+        command: ClaimCommand,
+    },
+    /// Show the tool settings of a profile for one server, or replace them with -f or stdin
+    Tools {
+        /// Profile name or ID
+        profile: String,
+        /// Server slug
+        server: String,
+        /// JSON file with the new tool settings (omit to show the current ones, or pipe JSON to stdin)
+        #[arg(short = 'f', long = "file", value_name = "PATH")]
+        file: Option<PathBuf>,
+    },
+}
+
+/// Who a profile goes to: one account or one team.
+#[derive(Args, Debug)]
+#[group(required = true, multiple = false)]
+pub struct ProfileMember {
+    /// The account: email address or ID
+    #[arg(short = 'a', long, value_name = "ACCOUNT")]
+    pub account: Option<String>,
+    /// The team: name or ID
+    #[arg(short = 't', long, value_name = "TEAM")]
+    pub team: Option<String>,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum MaintainerCommand {
+    /// Make a user a maintainer of the profile
+    Add {
+        /// Profile name or ID
+        profile: String,
+        /// The user: email address or ID
+        account: String,
+    },
+    /// Remove a maintainer. The last maintainer cannot be removed
+    #[command(visible_alias = "remove")]
+    Rm {
+        /// Profile name or ID
+        profile: String,
+        /// The user: email address or ID
+        account: String,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ClaimCommand {
+    /// Give the profile to everyone whose identity provider sends this claim
+    Add {
+        /// Profile name or ID
+        profile: String,
+        /// The claim and the value that gives the profile
+        #[arg(value_name = "KEY=VALUE")]
+        claim: String,
+    },
+    /// Remove a claim mapping
+    #[command(visible_alias = "remove")]
+    Rm {
+        /// Profile name or ID
+        profile: String,
+        /// The claim and the value of the mapping
+        #[arg(value_name = "KEY=VALUE")]
+        claim: String,
     },
 }
 
@@ -848,6 +1198,14 @@ pub struct UpgradeArgs {
 pub enum SchemaCommand {
     /// Server data schema
     Server,
+    /// What "gatana patch account" takes
+    #[command(visible_alias = "user")]
+    Account,
+    /// What "gatana patch profile" takes
+    Profile,
+    /// What "gatana patch org" takes
+    #[command(visible_aliases = ["organization", "settings"])]
+    Org,
 }
 
 #[cfg(test)]
@@ -900,5 +1258,45 @@ mod tests {
         assert_eq!(args.id, Some(BuiltIn::GatanaApi));
         assert!(kind(&[]).is_none());
         assert!(Cli::try_parse_from(["gatana", "create", "server", "code", "--runtime", "ruby"]).is_err());
+    }
+
+    #[test]
+    fn a_profile_goes_to_exactly_one_account_or_team() {
+        let parse =
+            |args: &[&str]| Cli::try_parse_from(["gatana", "profile", "assign", "Engineering"].iter().chain(args));
+        let Command::Profile { command: ProfileCommand::Assign { member, lock, .. } } =
+            parse(&["--team", "platform", "--lock"]).unwrap().command
+        else {
+            panic!("not assign")
+        };
+        assert_eq!(member.team.as_deref(), Some("platform"));
+        assert!(member.account.is_none() && lock);
+        assert!(parse(&[]).is_err());
+        assert!(parse(&["--team", "platform", "--account", "ada@example.com"]).is_err());
+    }
+
+    #[test]
+    fn new_resources_parse_with_their_aliases() {
+        let cli =
+            Cli::try_parse_from(["gatana", "create", "profile", "Sales team", "-s", "github", "-s", "linear"]).unwrap();
+        let Command::Create { resource: CreateCommand::Profile(args) } = cli.command else {
+            panic!("not create profile")
+        };
+        assert_eq!(args.servers, vec!["github", "linear"]);
+        let cli = Cli::try_parse_from(["gatana", "get", "users", "--type", "service-account"]).unwrap();
+        assert!(matches!(
+            cli.command,
+            Command::Get { resource: GetCommand::Account { kind: Some(AccountKind::ServiceAccount), .. } }
+        ));
+        let cli = Cli::try_parse_from(["gatana", "delete", "token", "ci", "--account", "bot"]).unwrap();
+        assert!(matches!(cli.command, Command::Delete { resource: DeleteCommand::Pat { .. } }));
+        assert!(Cli::try_parse_from(["gatana", "get", "pats"]).is_err());
+        let cli = Cli::try_parse_from(["gatana", "patch", "settings", "--logo", "logo.png"]).unwrap();
+        let Command::Patch { resource: PatchCommand::Org { logo, input, .. } } = cli.command else {
+            panic!("not patch org")
+        };
+        assert_eq!(logo.as_deref(), Some(std::path::Path::new("logo.png")));
+        assert!(input.patch.is_empty());
+        assert!(Cli::try_parse_from(["gatana", "patch", "org", "--logo", "a.png", "--remove-logo"]).is_err());
     }
 }
