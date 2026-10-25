@@ -61,8 +61,9 @@ rs-build:
     cargo build --release --manifest-path {{rs_manifest}} -p gatana-cli
 
 # Run the Rust CLI from source
+[positional-arguments]
 rs *ARGS:
-    cargo run -q --manifest-path {{rs_manifest}} -p gatana-cli -- {{ARGS}}
+    cargo run -q --manifest-path {{rs_manifest}} -p gatana-cli -- "$@"
 
 # Test, lint and format-check the Rust crates
 rs-test:
@@ -75,8 +76,9 @@ rs-dist:
     packages/gatana-cli/scripts/dist.sh
 
 # Release the Rust CLI to GitHub, npm and Homebrew; --dry-run only builds and stages
+[positional-arguments]
 rs-release *ARGS:
-    packages/gatana-cli/scripts/release.sh {{ARGS}}
+    packages/gatana-cli/scripts/release.sh "$@"
 
 # Regenerate the gatana-api crate from the backend's OpenAPI documents (e.g. base_url=https://acme.local.gatana.ai)
 generate-rs base_url="https://hello.gatana.ai":

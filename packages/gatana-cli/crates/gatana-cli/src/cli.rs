@@ -28,7 +28,7 @@ Server Management:
   sandbox       Manage sandboxes (requires early access)
 
 Skills:
-  skills        Install your organization's skills for AI agents, and push changes back
+  skills        Managing skills and installing them to this computer
 
 Utility Commands:
   config        Show and change the configuration; log in

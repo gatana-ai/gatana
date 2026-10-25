@@ -159,7 +159,7 @@ pub fn output(data: &Value, options: Options) {
     };
     match format {
         Format::Json => println(&data.to_string()),
-        Format::Yaml => write_stdout(&crate::yaml::dump(data)),
+        Format::Yaml => write_stdout(&crate::yaml::dump_for_stdout(data)),
         Format::Table => {
             for line in table_lines(data, &options) {
                 println(&line);
@@ -250,17 +250,30 @@ pub fn render_table(rows: &[Value], columns: Option<&[Column]>, no_headers: bool
         .enumerate()
         .map(|(index, header)| cells.iter().map(|row| width(&row[index])).chain([width(header)]).max().unwrap_or(0))
         .collect();
-    let line = |cells: &[String]| {
-        let padded: Vec<String> =
-            cells.iter().zip(&widths).map(|(cell, width)| format!("{cell:<width$}", width = width)).collect();
+    // Pads before styling: escape codes have no width on screen but would count in `{:<width$}`.
+    let line = |cells: &[String], style: fn(&str) -> String| {
+        let padded: Vec<String> = cells
+            .iter()
+            .zip(&widths)
+            .map(|(cell, width)| format!("{}{}", style(cell), " ".repeat(width - cell.chars().count())))
+            .collect();
         padded.join("   ").trim_end().to_string()
     };
     let mut lines = Vec::new();
     if !no_headers {
-        lines.push(line(&headers));
+        lines.push(line(&headers, bold));
     }
-    lines.extend(cells.iter().map(|row| line(row)));
+    lines.extend(cells.iter().map(|row| line(row, cell_style)));
     lines
+}
+
+/// Booleans and empty cells stand out from the text around them; other cells stay plain.
+fn cell_style(text: &str) -> String {
+    match text {
+        "true" => green(text),
+        "false" | "<none>" => dim(text),
+        _ => text.to_string(),
+    }
 }
 
 const PROPERTY_COLUMNS: [Column; 2] = [Column::path("Property", "property"), Column::path("Value", "value")];

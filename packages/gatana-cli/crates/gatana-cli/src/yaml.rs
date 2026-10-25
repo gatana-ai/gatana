@@ -16,19 +16,26 @@ struct Style {
     force_quotes: bool,
     /// Double quotes instead of single ones where quoting is needed.
     double: bool,
+    /// Bold keys and colored booleans and nulls, as the tables have them. Only for stdout.
+    color: bool,
 }
 
 const INDENT: usize = 2;
 
 /// js-yaml `dump(value)` with its defaults (but no folding).
 pub fn dump(value: &Value) -> String {
-    emit(value, Style { force_quotes: false, double: false })
+    emit(value, Style { force_quotes: false, double: false, color: false })
+}
+
+/// `dump` for `-o yaml` on stdout: colored when stdout is a terminal, plain text otherwise.
+pub fn dump_for_stdout(value: &Value) -> String {
+    emit(value, Style { force_quotes: false, double: false, color: true })
 }
 
 /// js-yaml `dump(value, { lineWidth: -1, quotingType: '"', forceQuotes: true })`: the frontmatter
 /// style, every string on one line in double quotes.
 pub fn dump_quoted(value: &Value) -> String {
-    emit(value, Style { force_quotes: true, double: true })
+    emit(value, Style { force_quotes: true, double: true, color: false })
 }
 
 fn emit(value: &Value, style: Style) -> String {
@@ -42,7 +49,10 @@ fn next_line(level: usize) -> String {
 
 fn node(value: &Value, level: usize, compact: bool, is_key: bool, style: Style) -> String {
     match value {
+        Value::Null if style.color => crate::output::dim("null"),
         Value::Null => "null".to_string(),
+        Value::Bool(true) if style.color => crate::output::green("true"),
+        Value::Bool(false) if style.color => crate::output::dim("false"),
         Value::Bool(flag) => flag.to_string(),
         Value::Number(number) => number_text(number),
         Value::String(text) => scalar(text, level, is_key, style),
@@ -66,7 +76,8 @@ fn node(value: &Value, level: usize, compact: bool, is_key: bool, style: Style) 
                 if !compact || !out.is_empty() {
                     out.push_str(&next_line(level));
                 }
-                out.push_str(&scalar(key, level + 1, true, style));
+                let key = scalar(key, level + 1, true, style);
+                out.push_str(&if style.color { crate::output::bold(&key) } else { key });
                 let dumped = node(child, level + 1, false, false, style);
                 out.push_str(if dumped.starts_with('\n') { ":" } else { ": " });
                 out.push_str(&dumped);
