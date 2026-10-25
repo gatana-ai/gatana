@@ -1,6 +1,7 @@
 //! `gatana config ...`, `auth-info` and `schema`.
 
 use super::{Silent, text_at};
+use crate::apex::Start;
 use crate::cli::{ConfigCommand, SchemaCommand};
 use crate::config::{self, get_organization, list_organizations, set_organization_login};
 use crate::context::Context;
@@ -27,7 +28,7 @@ pub async fn run(context: &Context, command: ConfigCommand) -> Result<()> {
                 None if pat.is_some() => Err(anyhow!(
                     "A personal access token requires an organization. Use: gatana config login <org-id> --pat <token>"
                 )),
-                None => apex_login(context, base_url, !no_browser).await,
+                None => apex_login(context, base_url, !no_browser, Start::ChooseOrganization).await,
             };
             if let Err(error) = result {
                 output::error(&format!("Sign-in failed: {error:#}"));
@@ -94,10 +95,11 @@ async fn login(
     logged_in(&org_id)
 }
 
-/// The browser login without an organization: the person chooses it at the base domain (apex.rs).
-pub(super) async fn apex_login(context: &Context, apex_url: Option<String>, browser: bool) -> Result<()> {
+/// The browser login without an organization: the person chooses it at the base domain (apex.rs),
+/// or creates one there.
+pub(super) async fn apex_login(context: &Context, apex_url: Option<String>, browser: bool, start: Start) -> Result<()> {
     let apex_url = apex_url.as_deref().unwrap_or(crate::apex::DEFAULT_APEX_URL);
-    let signed_in = crate::apex::login(context.http(), apex_url, browser).await?;
+    let signed_in = crate::apex::login(context.http(), apex_url, browser, start).await?;
     let stored = json!({
         "access_token": signed_in.tokens.access_token,
         "refresh_token": signed_in.tokens.refresh_token.as_deref().unwrap_or_default(),
@@ -110,7 +112,7 @@ pub(super) async fn apex_login(context: &Context, apex_url: Option<String>, brow
     logged_in(&signed_in.org_id)
 }
 
-fn logged_in(org_id: &str) -> Result<()> {
+pub(super) fn logged_in(org_id: &str) -> Result<()> {
     output::println("Signed in.");
     config::set_default_organization(org_id)?;
     output::println(&format!("{org_id} is now the active organization."));

@@ -4,6 +4,7 @@ mod config;
 mod install;
 mod resources;
 mod servers;
+mod signup;
 mod skills;
 mod upgrade;
 
@@ -40,6 +41,7 @@ pub async fn run(cli: Cli) -> Result<()> {
         Command::Skills { command } => skills::run(&context, command).await,
         Command::Config { command } => config::run(&context, command).await,
         Command::AuthInfo => config::auth_info(&context).await,
+        Command::Signup(args) => signup::run(&context, args).await,
         Command::Schema { command } => config::schema(&context, command).await,
         Command::Upgrade(args) => upgrade::run(&context, args).await,
         // It signs in by itself when the saved credentials do not work.

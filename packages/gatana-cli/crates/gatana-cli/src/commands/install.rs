@@ -67,7 +67,7 @@ async fn signed_in(context: Context, browser: bool) -> Result<Context> {
         return Ok(context);
     }
     output::println(&output::bold("Sign in to Gatana first."));
-    config::apex_login(&context, None, browser).await?;
+    config::apex_login(&context, None, browser, crate::apex::Start::ChooseOrganization).await?;
     // The old context cached the failure; a new one reads the config file again.
     let context = Context::new()?;
     match whoami(&context).await {

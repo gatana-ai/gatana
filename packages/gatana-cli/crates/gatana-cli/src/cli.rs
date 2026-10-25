@@ -10,6 +10,7 @@ const ROOT_HELP: &str = "\
 {usage-heading} {usage}
 
 Get Started:
+  signup        Create a new organization and sign in to it
   install       Sign in and connect the AI agents on this machine: gateway, skills and hooks
 
 Basic Commands:
@@ -134,6 +135,9 @@ pub enum Command {
     },
     /// Show the signed-in user
     AuthInfo,
+    /// Create a new organization and sign in to it
+    #[command(after_help = SIGNUP_EXAMPLES)]
+    Signup(SignupArgs),
     /// Sign in and connect AI agents to Gatana. Add the MCP gateway, organization skills,
     /// and hooks that update skills when a session starts
     #[command(after_help = INSTALL_EXAMPLES)]
@@ -655,6 +659,45 @@ pub struct InstallAgentsArgs {
     /// Overwrite local edits and skills not tracked by Gatana. Allow syncing from a different organization
     #[arg(long)]
     pub force: bool,
+}
+
+const SIGNUP_EXAMPLES: &str = r#"Examples:
+  # Answer the questions in the terminal
+  $ gatana signup
+
+  # Give the answers first. Then the CLI asks only for the code from the email
+  $ gatana signup --org-name "Acme Inc" --email you@acme.com
+
+  # Without a terminal (an agent or a script): the first run sends the code and prints the
+  # command that finishes the sign-up
+  $ gatana signup --org-name "Acme Inc" --email you@acme.com
+  $ gatana signup --org-name 'Acme Inc' --org-id acme-inc --email you@acme.com --code 123456
+
+  # Sign up on the sign-up page in the browser
+  $ gatana signup --browser"#;
+
+#[derive(Args, Debug)]
+pub struct SignupArgs {
+    /// The name of the new organization
+    #[arg(long = "org-name", value_name = "NAME")]
+    pub org_name: Option<String>,
+    /// The organization ID, the first part of its address (ID.gatana.ai). Omit to make it from the name
+    #[arg(long = "org-id", value_name = "ID", conflicts_with = "browser")]
+    pub org_id: Option<String>,
+    /// Your email address. Gatana sends the sign-up code to it
+    #[arg(long)]
+    pub email: Option<String>,
+    /// The code from the email. It finishes a sign-up that an earlier run started without a
+    /// terminal; that run prints the full command
+    #[arg(long, value_name = "CODE", conflicts_with = "browser")]
+    pub code: Option<String>,
+    /// Sign up on the sign-up page in the browser instead of in the terminal
+    #[arg(long)]
+    pub browser: bool,
+    /// The base domain to sign up at (default: https://gatana.ai), e.g. the address of an
+    /// on-premise install
+    #[arg(short = 'b', long = "base-url")]
+    pub base_url: Option<String>,
 }
 
 #[derive(Args, Debug)]

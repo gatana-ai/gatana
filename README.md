@@ -63,6 +63,17 @@ The login opens the browser, where you choose your organization. It writes `~/.g
 
 ---
 
+## Agent skill
+
+[`skills/gatana`](skills/gatana/SKILL.md) teaches an AI agent to work with Gatana: add MCP servers,
+set up profiles and explain how credentials and their scopes work.
+
+```bash
+npx skills add gatana-ai/gatana
+```
+
+---
+
 ## Configuration
 
 All packages find the credentials in the same way. They use the first source that is complete:
@@ -140,6 +151,8 @@ packages/
   gatana-python/     # Python client, generated (PyPI: gatana-client)
   gatana-langchain/  # LangChain sandbox backend (PyPI: gatana-langchain)
                      # Also holds the Python dev setup for both Python packages
+skills/
+  gatana/            # Agent skill (npx skills add gatana-ai/gatana)
 scripts/
   release.sh         # Releases every package that changed
 ```

@@ -6,6 +6,12 @@
 //! bare token is the organization's own and works on its host, so the CLI keeps the bare token and
 //! from then on talks to `https://acme.gatana.ai` only, refreshes included. The device login cannot
 //! go through the apex: a device code belongs to one organization from its first request.
+//!
+//! `gatana signup --browser` is the same sign-in with `prompt=create` (OpenID Connect Prompt Create
+//! 1.0): the apex opens the sign-up page in place of the organization page, and the new organization
+//! goes on with this sign-in. What the person gave on the command line goes along as `login_hint`
+//! (the email, a standard parameter) and `organization_name` (the apex's own), and the sign-up form
+//! starts with it.
 
 use crate::oidc::{Tokens, oauth_error, post_form};
 use anyhow::{Context, Result, anyhow, bail};
@@ -27,6 +33,8 @@ const SCOPE: &str = "email profile offline_access";
 const LOGIN_TIMEOUT: Duration = Duration::from_secs(10 * 60);
 /// The apex writes this between the organization and the token.
 const TOKEN_SEPARATOR: char = '~';
+const CREATE_PROMPT: &str = "create";
+const ORGANIZATION_NAME_PARAM: &str = "organization_name";
 
 #[derive(Deserialize)]
 struct Metadata {
@@ -34,6 +42,49 @@ struct Metadata {
     authorization_endpoint: String,
     token_endpoint: String,
     registration_endpoint: Option<String>,
+    #[serde(default)]
+    prompt_values_supported: Vec<String>,
+}
+
+/// The page the browser opens at the apex.
+#[derive(Debug, PartialEq, Eq)]
+pub enum Start {
+    /// The organization page: the person chooses one of their organizations.
+    ChooseOrganization,
+    /// The sign-up page: the person creates an organization and is signed in to it.
+    CreateOrganization(SignUpForm),
+}
+
+/// What the sign-up form starts with. The person can still change it there.
+#[derive(Debug, Default, PartialEq, Eq)]
+pub struct SignUpForm {
+    pub email: Option<String>,
+    pub organization_name: Option<String>,
+}
+
+impl Start {
+    /// The command to run again after a failure.
+    fn command(&self) -> &'static str {
+        match self {
+            Start::ChooseOrganization => "gatana config login",
+            Start::CreateOrganization(_) => "gatana signup --browser",
+        }
+    }
+
+    /// What the authorize request carries beyond the sign-in itself.
+    fn authorize_params(&self) -> Vec<(&str, &str)> {
+        let Start::CreateOrganization(form) = self else {
+            return Vec::new();
+        };
+        let mut params = vec![("prompt", CREATE_PROMPT)];
+        if let Some(email) = &form.email {
+            params.push(("login_hint", email));
+        }
+        if let Some(name) = &form.organization_name {
+            params.push((ORGANIZATION_NAME_PARAM, name));
+        }
+        params
+    }
 }
 
 /// What a sign-in through the apex found out: the organization, and the tokens for its host.
@@ -44,10 +95,19 @@ pub struct ApexLogin {
     pub tokens: Tokens,
 }
 
-pub async fn login(http: &reqwest::Client, apex_url: &str, browser: bool) -> Result<ApexLogin> {
+pub async fn login(http: &reqwest::Client, apex_url: &str, browser: bool, start: Start) -> Result<ApexLogin> {
     let apex = url::Url::parse(apex_url).with_context(|| format!("invalid URL {apex_url}"))?;
     let origin = apex.origin().ascii_serialization();
-    let metadata = discover(http, &origin).await?;
+    let metadata = discover(http, &origin, &start).await?;
+    // An apex without it would pass the value on to the organization, which refuses it.
+    if matches!(start, Start::CreateOrganization(_))
+        && !metadata.prompt_values_supported.iter().any(|value| value == CREATE_PROMPT)
+    {
+        bail!(
+            "{origin} does not support sign-up from the CLI. Sign up at {}, then run: gatana config login",
+            sign_up_page(&apex)?
+        );
+    }
 
     let listener = TcpListener::bind(("127.0.0.1", 0)).await.context("could not listen on a local port")?;
     let redirect_uri = format!("http://127.0.0.1:{}{CALLBACK_PATH}", listener.local_addr()?.port());
@@ -56,15 +116,19 @@ pub async fn login(http: &reqwest::Client, apex_url: &str, browser: bool) -> Res
     let state = random_token();
 
     let client_id = client_id(http, &origin, &metadata, &redirect_uri, &challenge, &state).await?;
-    let authorize = authorize_url(&metadata, &client_id, &redirect_uri, &challenge, &state)?;
-    crate::output::println(&format!("Open {authorize} to sign in and choose your organization."));
+    let authorize = authorize_url(&metadata, &client_id, &redirect_uri, &challenge, &state, &start.authorize_params())?;
+    let task = match start {
+        Start::ChooseOrganization => "sign in and choose your organization",
+        Start::CreateOrganization(_) => "create your organization",
+    };
+    crate::output::println(&format!("Open {authorize} to {task}."));
     if browser {
         let _ = open::that_detached(authorize.as_str());
     }
 
     let code = tokio::time::timeout(LOGIN_TIMEOUT, wait_for_code(&listener, &state, &metadata.issuer))
         .await
-        .map_err(|_| anyhow!("Sign-in timed out. Run gatana config login again."))??;
+        .map_err(|_| anyhow!("The browser did not answer in time. Run {} again.", start.command()))??;
 
     let fields = [
         ("grant_type", "authorization_code"),
@@ -91,9 +155,12 @@ pub async fn login(http: &reqwest::Client, apex_url: &str, browser: bool) -> Res
     Ok(ApexLogin { org_id, base_url, client_id, tokens })
 }
 
-async fn discover(http: &reqwest::Client, origin: &str) -> Result<Metadata> {
+async fn discover(http: &reqwest::Client, origin: &str, start: &Start) -> Result<Metadata> {
     let url = format!("{origin}/.well-known/oauth-authorization-server");
-    let hint = "Name the organization instead: gatana config login <org-id>";
+    let hint = match start {
+        Start::ChooseOrganization => "Name the organization instead: gatana config login <org-id>",
+        Start::CreateOrganization(_) => "Sign up in the browser instead, then run: gatana config login <org-id>",
+    };
     let response = http.get(&url).send().await.with_context(|| format!("could not reach {origin}"))?;
     if !response.status().is_success() {
         bail!("{origin} does not offer a sign-in without an organization ({}). {hint}", response.status());
@@ -119,7 +186,7 @@ async fn client_id(
             .user_agent(concat!("gatana-cli/", env!("CARGO_PKG_VERSION")))
             .redirect(reqwest::redirect::Policy::none())
             .build()?;
-        let url = authorize_url(metadata, &known, redirect_uri, challenge, state)?;
+        let url = authorize_url(metadata, &known, redirect_uri, challenge, state, &[])?;
         let response = probe.get(url).send().await.with_context(|| format!("could not reach {origin}"))?;
         if response.status().is_redirection() {
             return Ok(known);
@@ -160,16 +227,21 @@ fn authorize_url(
     redirect_uri: &str,
     challenge: &str,
     state: &str,
+    extra: &[(&str, &str)],
 ) -> Result<url::Url> {
     let mut url = url::Url::parse(&metadata.authorization_endpoint).context("invalid authorization endpoint")?;
-    url.query_pairs_mut()
-        .append_pair("client_id", client_id)
-        .append_pair("redirect_uri", redirect_uri)
-        .append_pair("response_type", "code")
-        .append_pair("scope", SCOPE)
-        .append_pair("code_challenge", challenge)
-        .append_pair("code_challenge_method", "S256")
-        .append_pair("state", state);
+    {
+        let mut query = url.query_pairs_mut();
+        query
+            .append_pair("client_id", client_id)
+            .append_pair("redirect_uri", redirect_uri)
+            .append_pair("response_type", "code")
+            .append_pair("scope", SCOPE)
+            .append_pair("code_challenge", challenge)
+            .append_pair("code_challenge_method", "S256")
+            .append_pair("state", state);
+        query.extend_pairs(extra);
+    }
     Ok(url)
 }
 
@@ -266,11 +338,16 @@ fn split_token(value: &str) -> Option<(String, String)> {
 }
 
 /// The organization's host under the apex: `https://gatana.ai` and `acme` give `https://acme.gatana.ai`.
-fn organization_url(apex: &url::Url, org_id: &str) -> Result<String> {
+pub(crate) fn organization_url(apex: &url::Url, org_id: &str) -> Result<String> {
     let host = apex.host_str().ok_or_else(|| anyhow!("the URL has no host"))?;
     let mut url = apex.clone();
     url.set_host(Some(&format!("{org_id}.{host}")))?;
     Ok(url.origin().ascii_serialization())
+}
+
+/// The sign-up page in the browser. It is on `hello`, a name no organization can take.
+fn sign_up_page(apex: &url::Url) -> Result<String> {
+    Ok(format!("{}/signup", organization_url(apex, "hello")?))
 }
 
 /// 32 random bytes as base64url: a PKCE verifier (RFC 7636 asks for 43 to 128 characters) or a state.
@@ -300,6 +377,35 @@ mod tests {
         assert_eq!(
             organization_url(&url("https://local.gatana.ai:8443/"), "acme").unwrap(),
             "https://acme.local.gatana.ai:8443"
+        );
+    }
+
+    #[test]
+    fn sign_up_asks_the_apex_for_prompt_create() {
+        let metadata = Metadata {
+            issuer: "https://gatana.ai".into(),
+            authorization_endpoint: "https://gatana.ai/oauth/authorize".into(),
+            token_endpoint: "https://gatana.ai/oauth/token".into(),
+            registration_endpoint: None,
+            prompt_values_supported: vec![],
+        };
+        let query = |start: Start| {
+            let params = start.authorize_params();
+            let url = authorize_url(&metadata, "apx_1", "http://127.0.0.1:1/callback", "c", "s", &params).unwrap();
+            let pairs: std::collections::HashMap<String, String> = url.query_pairs().into_owned().collect();
+            ["prompt", "login_hint", ORGANIZATION_NAME_PARAM].map(|key| pairs.get(key).cloned())
+        };
+        assert_eq!(query(Start::ChooseOrganization), [None, None, None]);
+        assert_eq!(query(Start::CreateOrganization(SignUpForm::default())), [Some("create".into()), None, None]);
+        let form =
+            SignUpForm { email: Some("founder@acme.example".into()), organization_name: Some("Acme & Co".into()) };
+        assert_eq!(
+            query(Start::CreateOrganization(form)),
+            [Some("create".into()), Some("founder@acme.example".into()), Some("Acme & Co".into())]
+        );
+        assert_eq!(
+            sign_up_page(&url::Url::parse("https://gatana.ai").unwrap()).unwrap(),
+            "https://hello.gatana.ai/signup"
         );
     }
 

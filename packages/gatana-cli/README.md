@@ -54,6 +54,14 @@ your organization, and the hook that keeps the skills current. Then sign in from
 Claude Code, run `/mcp`, select `gatana` and Authenticate. The agents it knows are Claude Code,
 Codex, Hermes and OpenClaw; name them to skip the menu: `gatana install claude codex`.
 
+No organization yet? Run `gatana signup` first. It asks for the name of the organization, its ID
+and your email address, then for the code that Gatana sends to that address. When the organization
+exists, the CLI is signed in to it and makes it the active organization. Give the answers as flags
+to skip the questions: `gatana signup --org-name "Acme Inc" --email you@acme.com`. Without a
+terminal (an agent or a script), that run stops after the code goes out and prints the command
+that finishes the sign-up with `--code <code>`. To sign up on the sign-up page in the browser
+instead, add `--browser`.
+
 For the rest of the CLI:
 
 ```bash
@@ -110,6 +118,7 @@ The table format has uppercase headers, no borders and columns as wide as their 
 
 | Command     | Syntax                                     | Description                                                                                                                                                                                             |
 | ----------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **signup**  | `gatana signup [--org-name name] [--org-id id] [--email address] [--code code] [--browser] [--base-url url]` | Create a new organization and sign in to it. Asks in the terminal for what the flags do not give, then for the code from the email. Without a terminal, it sends the code and prints the command that finishes with `--code`. `--browser` uses the sign-up page instead; `--org-name` and `--email` then fill in its form. The new organization becomes the active organization. |
 | **install** | `gatana install [agent...] [--no-browser] [--force]` | Sign in if needed and choose agents (`claude`, `codex`, `hermes`, `openclaw`). Add the gateway as an MCP server, your organization's skills, and the session-start hook to each agent. `--force` allows a skill folder to sync from a different organization and overwrites locally edited and non-Gatana skills. |
 
 > `install` writes the gateway URL of your organization into the agent's own configuration:
