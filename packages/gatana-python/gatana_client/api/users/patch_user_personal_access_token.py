@@ -68,7 +68,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: UpdatePersonalAccessTokenRequest | Unset = UNSET,
 ) -> Response[PatchUserPersonalAccessTokenResponse200]:
-    """Update the name or the assigned profiles of a personal access token
+    """Update a personal access token name or profiles using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -103,7 +103,7 @@ def sync(
     client: AuthenticatedClient | Client,
     body: UpdatePersonalAccessTokenRequest | Unset = UNSET,
 ) -> PatchUserPersonalAccessTokenResponse200 | None:
-    """Update the name or the assigned profiles of a personal access token
+    """Update a personal access token name or profiles using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -133,7 +133,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: UpdatePersonalAccessTokenRequest | Unset = UNSET,
 ) -> Response[PatchUserPersonalAccessTokenResponse200]:
-    """Update the name or the assigned profiles of a personal access token
+    """Update a personal access token name or profiles using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -166,7 +166,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: UpdatePersonalAccessTokenRequest | Unset = UNSET,
 ) -> PatchUserPersonalAccessTokenResponse200 | None:
-    """Update the name or the assigned profiles of a personal access token
+    """Update a personal access token name or profiles using a browser session
 
     Args:
         user_id (str): ID of the user

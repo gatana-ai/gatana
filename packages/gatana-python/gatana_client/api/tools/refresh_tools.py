@@ -12,6 +12,7 @@ def _get_kwargs(
     *,
     server_slug: str | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["serverSlug"] = server_slug

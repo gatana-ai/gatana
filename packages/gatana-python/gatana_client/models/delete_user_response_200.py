@@ -13,6 +13,7 @@ class DeleteUserResponse200:
     """ """
 
     def to_dict(self) -> dict[str, Any]:
+
         field_dict: dict[str, Any] = {}
 
         return field_dict

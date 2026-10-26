@@ -13,6 +13,7 @@ def _get_kwargs(
     server_slug: str,
     credentials_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "delete",
         "url": "/mcp-servers/{server_slug}/credentials/{credentials_id}".format(

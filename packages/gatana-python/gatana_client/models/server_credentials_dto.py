@@ -5,8 +5,8 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_632 import Schema632
-from ..models.schema_641 import Schema641
+from ..models.schema_684 import Schema684
+from ..models.schema_695 import Schema695
 
 T = TypeVar("T", bound="ServerCredentialsDto")
 
@@ -17,18 +17,21 @@ class ServerCredentialsDto:
     Attributes:
         id (str): Unique ID of the credential record
         tenant_id (str): ID of the tenant that owns the credential
-        scope (Schema632):
+        scope (Schema684):
         user_id (None | str): ID of the owning user, or null
         profile_id (None | str): ID of the owning profile when scope is "profile", otherwise null
         last_used_at (None | str): Time when the credential was last used, or null if never used
         authorized_at (str): Time when the credential was authorized
-        type_ (Schema641): Authorization method that the credential was created with
+        authorized_by_user_id (None | str): Last authorizing user ID, or null if unknown
+        type_ (Schema695): Authorization method that the credential was created with
         created_at (str): Time when the credential record was created
         updated_at (str): Time when the credential record was last updated
         server_slug (str): Slug of the server that the credential authorizes access to
         user_email (None | str): Email address of the owning user, or null
         user_name (None | str): Display name of the owning user, or null
         profile_name (None | str): Name of the owning profile, or null
+        authorized_by_name (None | str): Last authorizing user name, or null
+        authorized_by_email (None | str): Last authorizing user email, or null
         apikeys_present (list[str] | None): Names of the API keys that have a stored value, or null for OAuth
             credentials
         subject (None | str): Subject claim from the OAuth ID token, or null
@@ -37,18 +40,21 @@ class ServerCredentialsDto:
 
     id: str
     tenant_id: str
-    scope: Schema632
+    scope: Schema684
     user_id: None | str
     profile_id: None | str
     last_used_at: None | str
     authorized_at: str
-    type_: Schema641
+    authorized_by_user_id: None | str
+    type_: Schema695
     created_at: str
     updated_at: str
     server_slug: str
     user_email: None | str
     user_name: None | str
     profile_name: None | str
+    authorized_by_name: None | str
+    authorized_by_email: None | str
     apikeys_present: list[str] | None
     subject: None | str
     email: None | str
@@ -71,6 +77,9 @@ class ServerCredentialsDto:
 
         authorized_at = self.authorized_at
 
+        authorized_by_user_id: None | str
+        authorized_by_user_id = self.authorized_by_user_id
+
         type_ = self.type_.value
 
         created_at = self.created_at
@@ -87,6 +96,12 @@ class ServerCredentialsDto:
 
         profile_name: None | str
         profile_name = self.profile_name
+
+        authorized_by_name: None | str
+        authorized_by_name = self.authorized_by_name
+
+        authorized_by_email: None | str
+        authorized_by_email = self.authorized_by_email
 
         apikeys_present: list[str] | None
         if isinstance(self.apikeys_present, list):
@@ -112,6 +127,7 @@ class ServerCredentialsDto:
                 "profileId": profile_id,
                 "lastUsedAt": last_used_at,
                 "authorizedAt": authorized_at,
+                "authorizedByUserId": authorized_by_user_id,
                 "type": type_,
                 "createdAt": created_at,
                 "updatedAt": updated_at,
@@ -119,6 +135,8 @@ class ServerCredentialsDto:
                 "userEmail": user_email,
                 "userName": user_name,
                 "profileName": profile_name,
+                "authorizedByName": authorized_by_name,
+                "authorizedByEmail": authorized_by_email,
                 "apikeysPresent": apikeys_present,
                 "subject": subject,
                 "email": email,
@@ -134,7 +152,7 @@ class ServerCredentialsDto:
 
         tenant_id = d.pop("tenantId")
 
-        scope = Schema632(d.pop("scope"))
+        scope = Schema684(d.pop("scope"))
 
         def _parse_user_id(data: object) -> None | str:
             if data is None:
@@ -159,7 +177,14 @@ class ServerCredentialsDto:
 
         authorized_at = d.pop("authorizedAt")
 
-        type_ = Schema641(d.pop("type"))
+        def _parse_authorized_by_user_id(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        authorized_by_user_id = _parse_authorized_by_user_id(d.pop("authorizedByUserId"))
+
+        type_ = Schema695(d.pop("type"))
 
         created_at = d.pop("createdAt")
 
@@ -188,15 +213,29 @@ class ServerCredentialsDto:
 
         profile_name = _parse_profile_name(d.pop("profileName"))
 
+        def _parse_authorized_by_name(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        authorized_by_name = _parse_authorized_by_name(d.pop("authorizedByName"))
+
+        def _parse_authorized_by_email(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        authorized_by_email = _parse_authorized_by_email(d.pop("authorizedByEmail"))
+
         def _parse_apikeys_present(data: object) -> list[str] | None:
             if data is None:
                 return data
             try:
                 if not isinstance(data, list):
                     raise TypeError()
-                componentsschemas_schema651_type_0 = cast(list[str], data)
+                componentsschemas_schema709_type_0 = cast(list[str], data)
 
-                return componentsschemas_schema651_type_0
+                return componentsschemas_schema709_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(list[str] | None, data)
@@ -225,6 +264,7 @@ class ServerCredentialsDto:
             profile_id=profile_id,
             last_used_at=last_used_at,
             authorized_at=authorized_at,
+            authorized_by_user_id=authorized_by_user_id,
             type_=type_,
             created_at=created_at,
             updated_at=updated_at,
@@ -232,6 +272,8 @@ class ServerCredentialsDto:
             user_email=user_email,
             user_name=user_name,
             profile_name=profile_name,
+            authorized_by_name=authorized_by_name,
+            authorized_by_email=authorized_by_email,
             apikeys_present=apikeys_present,
             subject=subject,
             email=email,

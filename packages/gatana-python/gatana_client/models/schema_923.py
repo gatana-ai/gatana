@@ -1,12 +1,44 @@
-from enum import Enum
+from __future__ import annotations
+
+from collections.abc import Mapping
+from typing import Any, Literal, TypeVar, cast
+
+from attrs import define as _attrs_define
+
+T = TypeVar("T", bound="Schema923")
 
 
-class Schema923(str, Enum):
-    AWS_SECRETS_MANAGER = "aws_secrets_manager"
-    AZURE_KEY_VAULT = "azure_key_vault"
-    GCP_SECRET_MANAGER = "gcp_secret_manager"
-    HASHICORP_VAULT = "hashicorp_vault"
-    INFISICAL = "infisical"
+@_attrs_define
+class Schema923:
+    """
+    Attributes:
+        type_ (Literal['mainContainerReady']): Event type discriminator, always "mainContainerReady"
+    """
 
-    def __str__(self) -> str:
-        return str(self.value)
+    type_: Literal["mainContainerReady"]
+
+    def to_dict(self) -> dict[str, Any]:
+        type_ = self.type_
+
+        field_dict: dict[str, Any] = {}
+
+        field_dict.update(
+            {
+                "type": type_,
+            }
+        )
+
+        return field_dict
+
+    @classmethod
+    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        d = dict(src_dict)
+        type_ = cast(Literal["mainContainerReady"], d.pop("type"))
+        if type_ != "mainContainerReady":
+            raise ValueError(f"type must match const 'mainContainerReady', got '{type_}'")
+
+        schema_923 = cls(
+            type_=type_,
+        )
+
+        return schema_923

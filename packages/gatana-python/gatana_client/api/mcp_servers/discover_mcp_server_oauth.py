@@ -15,6 +15,7 @@ def _get_kwargs(
     *,
     url_query: str | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["url"] = url_query
@@ -63,7 +64,8 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     url_query: str | Unset = UNSET,
 ) -> Response[DiscoverMcpServerOauthResponse200]:
-    """Discover OAuth metadata from the given URL or from the remote MCP server URL
+    """Discover OAuth metadata from the given URL or from the remote MCP server URL. With a URL, the server
+    does not need to exist yet
 
     Args:
         server_slug (str):
@@ -95,7 +97,8 @@ def sync(
     client: AuthenticatedClient | Client,
     url_query: str | Unset = UNSET,
 ) -> DiscoverMcpServerOauthResponse200 | None:
-    """Discover OAuth metadata from the given URL or from the remote MCP server URL
+    """Discover OAuth metadata from the given URL or from the remote MCP server URL. With a URL, the server
+    does not need to exist yet
 
     Args:
         server_slug (str):
@@ -122,7 +125,8 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     url_query: str | Unset = UNSET,
 ) -> Response[DiscoverMcpServerOauthResponse200]:
-    """Discover OAuth metadata from the given URL or from the remote MCP server URL
+    """Discover OAuth metadata from the given URL or from the remote MCP server URL. With a URL, the server
+    does not need to exist yet
 
     Args:
         server_slug (str):
@@ -152,7 +156,8 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     url_query: str | Unset = UNSET,
 ) -> DiscoverMcpServerOauthResponse200 | None:
-    """Discover OAuth metadata from the given URL or from the remote MCP server URL
+    """Discover OAuth metadata from the given URL or from the remote MCP server URL. With a URL, the server
+    does not need to exist yet
 
     Args:
         server_slug (str):

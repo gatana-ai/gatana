@@ -6,7 +6,7 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_338 import Schema338
+from ..models.schema_390 import Schema390
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CreateSkillCollectionBody")
@@ -18,12 +18,12 @@ class CreateSkillCollectionBody:
     Attributes:
         name (str):
         description (str | Unset): One line saying what the collection gathers
-        visibility (Schema338 | Unset):
+        visibility (Schema390 | Unset):
     """
 
     name: str
     description: str | Unset = UNSET
-    visibility: Schema338 | Unset = UNSET
+    visibility: Schema390 | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -57,11 +57,11 @@ class CreateSkillCollectionBody:
         description = d.pop("description", UNSET)
 
         _visibility = d.pop("visibility", UNSET)
-        visibility: Schema338 | Unset
+        visibility: Schema390 | Unset
         if isinstance(_visibility, Unset):
             visibility = UNSET
         else:
-            visibility = Schema338(_visibility)
+            visibility = Schema390(_visibility)
 
         create_skill_collection_body = cls(
             name=name,

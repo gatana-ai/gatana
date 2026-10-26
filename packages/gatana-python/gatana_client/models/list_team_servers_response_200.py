@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_899 import Schema899
+    from ..models.schema_958 import Schema958
 
 
 T = TypeVar("T", bound="ListTeamServersResponse200")
@@ -16,10 +16,10 @@ T = TypeVar("T", bound="ListTeamServersResponse200")
 class ListTeamServersResponse200:
     """
     Attributes:
-        permissions (list[Schema899]): MCP server permissions granted to the team
+        permissions (list[Schema958]): MCP server permissions granted to the team
     """
 
-    permissions: list[Schema899]
+    permissions: list[Schema958]
 
     def to_dict(self) -> dict[str, Any]:
         permissions = []
@@ -39,13 +39,13 @@ class ListTeamServersResponse200:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_899 import Schema899
+        from ..models.schema_958 import Schema958
 
         d = dict(src_dict)
         permissions = []
         _permissions = d.pop("permissions")
         for permissions_item_data in _permissions:
-            permissions_item = Schema899.from_dict(permissions_item_data)
+            permissions_item = Schema958.from_dict(permissions_item_data)
 
             permissions.append(permissions_item)
 

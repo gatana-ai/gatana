@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class McpAuditLogVerbosity(str, Enum):
     DETAILED = "detailed"
     DETAILED_WITH_ERROR = "detailed-with-error"

@@ -14,6 +14,7 @@ def _get_kwargs(
     sandbox_id: str,
     id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/sandboxes/{sandbox_id}/audit-logs/{id}".format(

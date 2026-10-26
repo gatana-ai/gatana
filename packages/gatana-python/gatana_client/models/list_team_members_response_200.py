@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_879 import Schema879
+    from ..models.schema_938 import Schema938
 
 
 T = TypeVar("T", bound="ListTeamMembersResponse200")
@@ -16,10 +16,10 @@ T = TypeVar("T", bound="ListTeamMembersResponse200")
 class ListTeamMembersResponse200:
     """
     Attributes:
-        members (list[Schema879]): Members of the team
+        members (list[Schema938]): Members of the team
     """
 
-    members: list[Schema879]
+    members: list[Schema938]
 
     def to_dict(self) -> dict[str, Any]:
         members = []
@@ -39,13 +39,13 @@ class ListTeamMembersResponse200:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_879 import Schema879
+        from ..models.schema_938 import Schema938
 
         d = dict(src_dict)
         members = []
         _members = d.pop("members")
         for members_item_data in _members:
-            members_item = Schema879.from_dict(members_item_data)
+            members_item = Schema938.from_dict(members_item_data)
 
             members.append(members_item)
 

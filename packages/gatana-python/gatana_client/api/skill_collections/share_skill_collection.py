@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_332 import Schema332
+from ...models.schema_384 import Schema384
 from ...models.share_role_body import ShareRoleBody
 from ...models.skill_collection_shares_response import SkillCollectionSharesResponse
 from ...types import UNSET, Response, Unset
@@ -14,7 +14,7 @@ from ...types import UNSET, Response, Unset
 
 def _get_kwargs(
     collection_id: str,
-    member_type: Schema332,
+    member_type: Schema384,
     member_id: str,
     *,
     body: ShareRoleBody | Unset = UNSET,
@@ -66,7 +66,7 @@ def _build_response(
 
 def sync_detailed(
     collection_id: str,
-    member_type: Schema332,
+    member_type: Schema384,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -77,7 +77,7 @@ def sync_detailed(
 
     Args:
         collection_id (str):
-        member_type (Schema332): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema384): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
         body (ShareRoleBody | Unset):
@@ -106,7 +106,7 @@ def sync_detailed(
 
 def sync(
     collection_id: str,
-    member_type: Schema332,
+    member_type: Schema384,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -117,7 +117,7 @@ def sync(
 
     Args:
         collection_id (str):
-        member_type (Schema332): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema384): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
         body (ShareRoleBody | Unset):
@@ -141,7 +141,7 @@ def sync(
 
 async def asyncio_detailed(
     collection_id: str,
-    member_type: Schema332,
+    member_type: Schema384,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -152,7 +152,7 @@ async def asyncio_detailed(
 
     Args:
         collection_id (str):
-        member_type (Schema332): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema384): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
         body (ShareRoleBody | Unset):
@@ -179,7 +179,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     collection_id: str,
-    member_type: Schema332,
+    member_type: Schema384,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -190,7 +190,7 @@ async def asyncio(
 
     Args:
         collection_id (str):
-        member_type (Schema332): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema384): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
         body (ShareRoleBody | Unset):

@@ -14,6 +14,7 @@ def _get_kwargs(
     team_id: str,
     mapping_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "delete",
         "url": "/teams/{team_id}/claim-mappings/{mapping_id}".format(

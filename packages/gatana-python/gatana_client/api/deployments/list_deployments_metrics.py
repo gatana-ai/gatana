@@ -16,6 +16,7 @@ def _get_kwargs(
     sandbox_id: str | Unset = UNSET,
     range_: Schema204 | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["serverSlug"] = server_slug

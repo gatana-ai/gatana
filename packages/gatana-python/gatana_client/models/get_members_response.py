@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_628_item import Schema628Item
-    from ..models.schema_629_item import Schema629Item
+    from ..models.schema_680_item import Schema680Item
+    from ..models.schema_681_item import Schema681Item
 
 
 T = TypeVar("T", bound="GetMembersResponse")
@@ -17,23 +17,23 @@ T = TypeVar("T", bound="GetMembersResponse")
 class GetMembersResponse:
     """
     Attributes:
-        teams (list[Schema628Item]):
-        users (list[Schema629Item]):
+        teams (list[Schema680Item]):
+        users (list[Schema681Item]):
     """
 
-    teams: list[Schema628Item]
-    users: list[Schema629Item]
+    teams: list[Schema680Item]
+    users: list[Schema681Item]
 
     def to_dict(self) -> dict[str, Any]:
         teams = []
-        for componentsschemas_schema628_item_data in self.teams:
-            componentsschemas_schema628_item = componentsschemas_schema628_item_data.to_dict()
-            teams.append(componentsschemas_schema628_item)
+        for componentsschemas_schema680_item_data in self.teams:
+            componentsschemas_schema680_item = componentsschemas_schema680_item_data.to_dict()
+            teams.append(componentsschemas_schema680_item)
 
         users = []
-        for componentsschemas_schema629_item_data in self.users:
-            componentsschemas_schema629_item = componentsschemas_schema629_item_data.to_dict()
-            users.append(componentsschemas_schema629_item)
+        for componentsschemas_schema681_item_data in self.users:
+            componentsschemas_schema681_item = componentsschemas_schema681_item_data.to_dict()
+            users.append(componentsschemas_schema681_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -48,23 +48,23 @@ class GetMembersResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_628_item import Schema628Item
-        from ..models.schema_629_item import Schema629Item
+        from ..models.schema_680_item import Schema680Item
+        from ..models.schema_681_item import Schema681Item
 
         d = dict(src_dict)
         teams = []
         _teams = d.pop("teams")
-        for componentsschemas_schema628_item_data in _teams:
-            componentsschemas_schema628_item = Schema628Item.from_dict(componentsschemas_schema628_item_data)
+        for componentsschemas_schema680_item_data in _teams:
+            componentsschemas_schema680_item = Schema680Item.from_dict(componentsschemas_schema680_item_data)
 
-            teams.append(componentsschemas_schema628_item)
+            teams.append(componentsschemas_schema680_item)
 
         users = []
         _users = d.pop("users")
-        for componentsschemas_schema629_item_data in _users:
-            componentsschemas_schema629_item = Schema629Item.from_dict(componentsschemas_schema629_item_data)
+        for componentsschemas_schema681_item_data in _users:
+            componentsschemas_schema681_item = Schema681Item.from_dict(componentsschemas_schema681_item_data)
 
-            users.append(componentsschemas_schema629_item)
+            users.append(componentsschemas_schema681_item)
 
         get_members_response = cls(
             teams=teams,

@@ -17,6 +17,7 @@ def _get_kwargs(
     page: str | Unset = UNSET,
     limit: str | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["serverId"] = server_id

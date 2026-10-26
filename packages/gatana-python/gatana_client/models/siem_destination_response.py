@@ -1,11 +1,18 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_967 import Schema967
+from ..models.schema_1021 import Schema1021
+from ..models.schema_1046 import Schema1046
+
+if TYPE_CHECKING:
+    from ..models.siem_gcs_target_settings import SiemGcsTargetSettings
+    from ..models.siem_https_target_settings import SiemHttpsTargetSettings
+    from ..models.siem_s3_target_settings import SiemS3TargetSettings
+
 
 T = TypeVar("T", bound="SiemDestinationResponse")
 
@@ -16,11 +23,14 @@ class SiemDestinationResponse:
     Attributes:
         id (str): Unique ID of the destination
         name (str): Display name of the destination
-        url (str): HTTPS endpoint that receives the NDJSON batches
+        kind (Schema1021): Destination type: HTTPS, S3, or GCS
+        url (str): HTTPS delivery URL; empty for buckets
+        target (SiemGcsTargetSettings | SiemHttpsTargetSettings | SiemS3TargetSettings):
+        has_credentials (bool): Whether bucket credentials are stored; credentials are never returned
         auth_header_name (None | str): Name of the custom auth header, or null when none is configured
         has_auth_header_value (bool): Whether a custom auth header value is stored. The value itself is never returned
         is_enabled (bool): The tenant admin's on/off switch
-        status (Schema967): Delivery status, maintained by the export job
+        status (Schema1046): Delivery status, maintained by the export job
         export_audit_logs (bool): Whether audit log events are streamed
         export_credential_audit_logs (bool): Whether credential audit log events are streamed
         consecutive_failures (float): Number of delivery attempts that failed in a row
@@ -35,11 +45,14 @@ class SiemDestinationResponse:
 
     id: str
     name: str
+    kind: Schema1021
     url: str
+    target: SiemGcsTargetSettings | SiemHttpsTargetSettings | SiemS3TargetSettings
+    has_credentials: bool
     auth_header_name: None | str
     has_auth_header_value: bool
     is_enabled: bool
-    status: Schema967
+    status: Schema1046
     export_audit_logs: bool
     export_credential_audit_logs: bool
     consecutive_failures: float
@@ -52,11 +65,26 @@ class SiemDestinationResponse:
     updated_at: str
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.siem_https_target_settings import SiemHttpsTargetSettings
+        from ..models.siem_s3_target_settings import SiemS3TargetSettings
+
         id = self.id
 
         name = self.name
 
+        kind = self.kind.value
+
         url = self.url
+
+        target: dict[str, Any]
+        if isinstance(self.target, SiemHttpsTargetSettings):
+            target = self.target.to_dict()
+        elif isinstance(self.target, SiemS3TargetSettings):
+            target = self.target.to_dict()
+        else:
+            target = self.target.to_dict()
+
+        has_credentials = self.has_credentials
 
         auth_header_name: None | str
         auth_header_name = self.auth_header_name
@@ -98,7 +126,10 @@ class SiemDestinationResponse:
             {
                 "id": id,
                 "name": name,
+                "kind": kind,
                 "url": url,
+                "target": target,
+                "hasCredentials": has_credentials,
                 "authHeaderName": auth_header_name,
                 "hasAuthHeaderValue": has_auth_header_value,
                 "isEnabled": is_enabled,
@@ -120,12 +151,45 @@ class SiemDestinationResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.siem_gcs_target_settings import SiemGcsTargetSettings
+        from ..models.siem_https_target_settings import SiemHttpsTargetSettings
+        from ..models.siem_s3_target_settings import SiemS3TargetSettings
+
         d = dict(src_dict)
         id = d.pop("id")
 
         name = d.pop("name")
 
+        kind = Schema1021(d.pop("kind"))
+
         url = d.pop("url")
+
+        def _parse_target(data: object) -> SiemGcsTargetSettings | SiemHttpsTargetSettings | SiemS3TargetSettings:
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_schema1023_type_0 = SiemHttpsTargetSettings.from_dict(data)
+
+                return componentsschemas_schema1023_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_schema1023_type_1 = SiemS3TargetSettings.from_dict(data)
+
+                return componentsschemas_schema1023_type_1
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            if not isinstance(data, dict):
+                raise TypeError()
+            componentsschemas_schema1023_type_2 = SiemGcsTargetSettings.from_dict(data)
+
+            return componentsschemas_schema1023_type_2
+
+        target = _parse_target(d.pop("target"))
+
+        has_credentials = d.pop("hasCredentials")
 
         def _parse_auth_header_name(data: object) -> None | str:
             if data is None:
@@ -138,7 +202,7 @@ class SiemDestinationResponse:
 
         is_enabled = d.pop("isEnabled")
 
-        status = Schema967(d.pop("status"))
+        status = Schema1046(d.pop("status"))
 
         export_audit_logs = d.pop("exportAuditLogs")
 
@@ -188,7 +252,10 @@ class SiemDestinationResponse:
         siem_destination_response = cls(
             id=id,
             name=name,
+            kind=kind,
             url=url,
+            target=target,
+            has_credentials=has_credentials,
             auth_header_name=auth_header_name,
             has_auth_header_value=has_auth_header_value,
             is_enabled=is_enabled,

@@ -5,7 +5,7 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_826 import Schema826
+from ..models.schema_885 import Schema885
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="DeploymentContainerStatus")
@@ -16,7 +16,7 @@ class DeploymentContainerStatus:
     """
     Attributes:
         name (str): Name of the container
-        status (Schema826): State of the container right now
+        status (Schema885): State of the container right now
         restarts (float): Number of times the container has restarted
         started_at (str | Unset):
         finished_at (str | Unset):
@@ -25,7 +25,7 @@ class DeploymentContainerStatus:
     """
 
     name: str
-    status: Schema826
+    status: Schema885
     restarts: float
     started_at: str | Unset = UNSET
     finished_at: str | Unset = UNSET
@@ -72,7 +72,7 @@ class DeploymentContainerStatus:
         d = dict(src_dict)
         name = d.pop("name")
 
-        status = Schema826(d.pop("status"))
+        status = Schema885(d.pop("status"))
 
         restarts = d.pop("restarts")
 

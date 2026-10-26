@@ -68,8 +68,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: CallMcpServerToolBody | Unset = UNSET,
 ) -> Response[CallMcpServerToolResponse200]:
-    """Call a tool on an MCP server. The tool must be enabled, the arguments are validated against the tool
-    schema, and the call is written to the audit log
+    """Call an enabled MCP tool allowed by the active profiles, validate its arguments, and log the call
 
     Args:
         server_slug (str):
@@ -104,8 +103,7 @@ def sync(
     client: AuthenticatedClient | Client,
     body: CallMcpServerToolBody | Unset = UNSET,
 ) -> CallMcpServerToolResponse200 | None:
-    """Call a tool on an MCP server. The tool must be enabled, the arguments are validated against the tool
-    schema, and the call is written to the audit log
+    """Call an enabled MCP tool allowed by the active profiles, validate its arguments, and log the call
 
     Args:
         server_slug (str):
@@ -135,8 +133,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: CallMcpServerToolBody | Unset = UNSET,
 ) -> Response[CallMcpServerToolResponse200]:
-    """Call a tool on an MCP server. The tool must be enabled, the arguments are validated against the tool
-    schema, and the call is written to the audit log
+    """Call an enabled MCP tool allowed by the active profiles, validate its arguments, and log the call
 
     Args:
         server_slug (str):
@@ -169,8 +166,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: CallMcpServerToolBody | Unset = UNSET,
 ) -> CallMcpServerToolResponse200 | None:
-    """Call a tool on an MCP server. The tool must be enabled, the arguments are validated against the tool
-    schema, and the call is written to the audit log
+    """Call an enabled MCP tool allowed by the active profiles, validate its arguments, and log the call
 
     Args:
         server_slug (str):

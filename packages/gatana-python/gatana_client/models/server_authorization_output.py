@@ -5,7 +5,7 @@ from typing import Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_463 import Schema463
+from ..models.schema_513 import Schema513
 from ..models.tool_refresh_credential_policy_output import ToolRefreshCredentialPolicyOutput
 from ..types import UNSET, Unset
 
@@ -16,14 +16,14 @@ T = TypeVar("T", bound="ServerAuthorizationOutput")
 class ServerAuthorizationOutput:
     """
     Attributes:
-        method (Schema463): Authorization method that the server uses
+        method (Schema513): Authorization method that the server uses
         credentials_scope (Literal['server'] | Literal['user']): Whether credentials are shared for the whole server or
             stored per user
         tool_refresh_credential_policy (ToolRefreshCredentialPolicyOutput):
         apikeys (list[str] | Unset):
     """
 
-    method: Schema463
+    method: Schema513
     credentials_scope: Literal["server"] | Literal["user"]
     tool_refresh_credential_policy: ToolRefreshCredentialPolicyOutput
     apikeys: list[str] | Unset = UNSET
@@ -57,21 +57,21 @@ class ServerAuthorizationOutput:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        method = Schema463(d.pop("method"))
+        method = Schema513(d.pop("method"))
 
         def _parse_credentials_scope(data: object) -> Literal["server"] | Literal["user"]:
-            componentsschemas_schema464_type_0 = cast(Literal["server"], data)
-            if componentsschemas_schema464_type_0 != "server":
+            componentsschemas_schema514_type_0 = cast(Literal["server"], data)
+            if componentsschemas_schema514_type_0 != "server":
                 raise ValueError(
-                    f"/components/schemas/__schema464_type_0 must match const 'server', got '{componentsschemas_schema464_type_0}'"
+                    f"/components/schemas/__schema514_type_0 must match const 'server', got '{componentsschemas_schema514_type_0}'"
                 )
-            return componentsschemas_schema464_type_0
-            componentsschemas_schema464_type_1 = cast(Literal["user"], data)
-            if componentsschemas_schema464_type_1 != "user":
+            return componentsschemas_schema514_type_0
+            componentsschemas_schema514_type_1 = cast(Literal["user"], data)
+            if componentsschemas_schema514_type_1 != "user":
                 raise ValueError(
-                    f"/components/schemas/__schema464_type_1 must match const 'user', got '{componentsschemas_schema464_type_1}'"
+                    f"/components/schemas/__schema514_type_1 must match const 'user', got '{componentsschemas_schema514_type_1}'"
                 )
-            return componentsschemas_schema464_type_1
+            return componentsschemas_schema514_type_1
 
         credentials_scope = _parse_credentials_scope(d.pop("credentialsScope"))
 

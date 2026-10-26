@@ -6,8 +6,7 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_302 import Schema302
-from ..models.schema_304 import Schema304
+from ..models.schema_327 import Schema327
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="PatchArtifactBody")
@@ -18,14 +17,14 @@ class PatchArtifactBody:
     """
     Attributes:
         title (str | Unset):
-        visibility (Schema302 | Unset):
-        theme (Schema304 | Unset): Stylesheet linked into the page when it is served. 'gatana' (the default) applies the
-            Gatana fonts, colors and typography to plain HTML; 'none' serves the document as published
+        visibility (Schema327 | Unset):
+        theme (str | Unset): 'gatana' (Gatana styling), 'none' (the document as published), or an organization theme by
+            id or by name
     """
 
     title: str | Unset = UNSET
-    visibility: Schema302 | Unset = UNSET
-    theme: Schema304 | Unset = UNSET
+    visibility: Schema327 | Unset = UNSET
+    theme: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -35,9 +34,7 @@ class PatchArtifactBody:
         if not isinstance(self.visibility, Unset):
             visibility = self.visibility.value
 
-        theme: str | Unset = UNSET
-        if not isinstance(self.theme, Unset):
-            theme = self.theme.value
+        theme = self.theme
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -57,18 +54,13 @@ class PatchArtifactBody:
         title = d.pop("title", UNSET)
 
         _visibility = d.pop("visibility", UNSET)
-        visibility: Schema302 | Unset
+        visibility: Schema327 | Unset
         if isinstance(_visibility, Unset):
             visibility = UNSET
         else:
-            visibility = Schema302(_visibility)
+            visibility = Schema327(_visibility)
 
-        _theme = d.pop("theme", UNSET)
-        theme: Schema304 | Unset
-        if isinstance(_theme, Unset):
-            theme = UNSET
-        else:
-            theme = Schema304(_theme)
+        theme = d.pop("theme", UNSET)
 
         patch_artifact_body = cls(
             title=title,

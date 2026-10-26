@@ -1,44 +1,31 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
-from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
-
-from ..types import UNSET, Unset
-
-
-
-
-
 
 T = TypeVar("T", bound="ServerPodStatus")
 
 
-
 @_attrs_define
 class ServerPodStatus:
-    """ 
-        Attributes:
-            name (str):
-            ready (bool):
-            phase (str | Unset):
-            reason (str | Unset):
-            created_at (str | Unset):
-     """
+    """
+    Attributes:
+        name (str):
+        ready (bool):
+        phase (str | Unset):
+        reason (str | Unset):
+        created_at (str | Unset):
+    """
 
     name: str
     ready: bool
     phase: str | Unset = UNSET
     reason: str | Unset = UNSET
     created_at: str | Unset = UNSET
-
-
-
-
 
     def to_dict(self) -> dict[str, Any]:
         name = self.name
@@ -51,13 +38,14 @@ class ServerPodStatus:
 
         created_at = self.created_at
 
-
         field_dict: dict[str, Any] = {}
 
-        field_dict.update({
-            "name": name,
-            "ready": ready,
-        })
+        field_dict.update(
+            {
+                "name": name,
+                "ready": ready,
+            }
+        )
         if phase is not UNSET:
             field_dict["phase"] = phase
         if reason is not UNSET:
@@ -66,8 +54,6 @@ class ServerPodStatus:
             field_dict["createdAt"] = created_at
 
         return field_dict
-
-
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
@@ -91,4 +77,3 @@ class ServerPodStatus:
         )
 
         return server_pod_status
-

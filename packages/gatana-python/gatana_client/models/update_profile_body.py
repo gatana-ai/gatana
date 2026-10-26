@@ -22,7 +22,7 @@ class UpdateProfileBody:
         is_restrictive (bool | Unset): Whether the profile restricts its users to only the servers in the profile;
             applies even to tenant owners
         is_code_mode_forced (bool | Unset): Whether MCP sessions that use the profile are forced into code mode
-        server_ids (list[str] | Unset): IDs of the servers included in the profile
+        server_ids (list[str] | Unset):
     """
 
     name: str | Unset = UNSET

@@ -97,35 +97,35 @@ Sign in: `gatana config login <org>`. No organization yet: `gatana signup`, see 
 
 Always give every flag. A command without a needed flag asks a question, and an agent cannot answer it.
 
-| Command                                                             | Purpose                                                                                                             |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `gatana get servers` / `gatana get server <slug>`                   | List servers, or show one.                                                                                          |
-| `gatana describe server <slug>`                                     | Deployment status and tools.                                                                                        |
-| `gatana create server remote <url> -s <slug>` (add `--sse` for SSE) | Add a remote MCP server. Finds its OAuth and registers a client when the issuer permits it.                         |
-| `gatana create server openapi <spec-url> -s <slug>`                 | Add tools made from an OpenAPI specification.                                                                       |
-| `gatana create server local -s <slug> <command...>`                 | Add a command such as `npx -y <package>`. Put the flags before the command.                                         |
-| `gatana create server code -s <slug> --runtime node24\|python313`   | Add hosted code. Then deploy it with `faas upload`.                                                                 |
-| `gatana create server built-in <id>`                                | Install a built-in server: `artifacts`, `skills`, `codemode`, `gatana-api`, `gatana-debug`, `fetch`, `compression`. |
-| `gatana patch server <slug> -f patch.json`                          | Merge patch with the v2 server fields, for example `transportConfig` and `authorization`.                           |
-| `gatana delete server <slug>`                                       | Delete.                                                                                                             |
-| `gatana get tool [name] --enabled`                                  | Tools, or the schema of one tool.                                                                                   |
-| `gatana tool <slug>_<tool> -a key=value` or `-f args.json`          | Call a tool.                                                                                                        |
-| `gatana create creds <slug> --scope server\|user -f keys.json`      | Set API keys: `[["NAME","value"]]`. Without `-f` on an OAuth server: prints the authorize link.                     |
-| `gatana get creds -s <slug>` / `gatana delete creds <id> -s <slug>` | List or delete credentials.                                                                                         |
-| `gatana deploy get\|logs\|wait\|start\|stop <slug>`                 | Deployments of `stdio` and `hosted` servers.                                                                        |
-| `gatana faas init\|verify\|run\|upload\|download`                   | Hosted code. `faas upload <slug> <path> --create` creates and deploys.                                              |
-| `gatana get profiles` / `gatana describe profile <name>`            | List profiles, or show one with its servers, members, maintainers and claim mappings.                               |
-| `gatana create profile <name> --description <text> -s <slug>...`    | Create a profile with servers. Add `--restrictive`, `--open-to-all` or `--code-mode` for those settings.            |
-| `gatana profile add-server\|remove-server <profile> <slug>...`      | Add or remove servers without replacing the list.                                                                   |
-| `gatana profile assign\|unassign <profile> --account <email>`       | Give a profile to an account, or take it away. `--team <name>` for a team, `--lock` to lock (owners only).          |
-| `gatana profile claims add\|rm <profile> <key>=<value>`             | Give the profile to everyone whose identity provider sends the claim.                                               |
-| `gatana profile tools <profile> <slug> [-f tools.json]`             | Show the tool configuration of a profile for one server, or replace it.                                             |
-| `gatana patch profile <name> -p key=value` / `gatana delete profile <name>` | Change or delete a profile. `serverIds` in a patch replaces the list.                                       |
-| `gatana get accounts` / `gatana describe account <email>`           | List accounts, or show one with its profiles and teams.                                                             |
-| `gatana create account <email> --name <name> --role member\|owner`  | Invite a user. Gatana sends the invitation email.                                                                   |
-| `gatana create service-account <name>`                              | Create a service account. Prints the API key of its first token.                                                    |
-| `gatana create pat --account <email> --name <name> --profile <p>`   | Create a token for a service account and print its key. Your own tokens need the dashboard.                         |
-| `gatana patch account <email> -p isDisabled=true` / `delete account` | Change or delete an account.                                                                                       |
-| `gatana get org` / `gatana patch org -p key=value`                  | Organization settings (owners only). A nested key merges with the stored value. `gatana schema org` lists the keys.  |
+| Command                                                                     | Purpose                                                                                                             |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `gatana get servers` / `gatana get server <slug>`                           | List servers, or show one.                                                                                          |
+| `gatana describe server <slug>`                                             | Deployment status and tools.                                                                                        |
+| `gatana create server remote <url> -s <slug>` (add `--sse` for SSE)         | Add a remote MCP server. Finds its OAuth and registers a client when the issuer permits it.                         |
+| `gatana create server openapi <spec-url> -s <slug>`                         | Add tools made from an OpenAPI specification.                                                                       |
+| `gatana create server local -s <slug> <command...>`                         | Add a command such as `npx -y <package>`. Put the flags before the command.                                         |
+| `gatana create server code -s <slug> --runtime node24\|python313`           | Add hosted code. Then deploy it with `faas upload`.                                                                 |
+| `gatana create server built-in <id>`                                        | Install a built-in server: `artifacts`, `skills`, `codemode`, `gatana-api`, `gatana-debug`, `fetch`, `compression`. |
+| `gatana patch server <slug> -f patch.json`                                  | Merge patch with the v2 server fields, for example `transportConfig` and `authorization`.                           |
+| `gatana delete server <slug>`                                               | Delete.                                                                                                             |
+| `gatana get tool [name] --enabled`                                          | Tools, or the schema of one tool.                                                                                   |
+| `gatana tool <slug>_<tool> -a key=value` or `-f args.json`                  | Call a tool.                                                                                                        |
+| `gatana create creds <slug> --scope server\|user -f keys.json`              | Set API keys: `[["NAME","value"]]`. Without `-f` on an OAuth server: prints the authorize link.                     |
+| `gatana get creds -s <slug>` / `gatana delete creds <id> -s <slug>`         | List or delete credentials.                                                                                         |
+| `gatana deploy get\|logs\|wait\|start\|stop <slug>`                         | Deployments of `stdio` and `hosted` servers.                                                                        |
+| `gatana faas init\|verify\|run\|upload\|download`                           | Hosted code. `faas upload <slug> <path> --create` creates and deploys.                                              |
+| `gatana get profiles` / `gatana describe profile <name>`                    | List profiles, or show one with its servers, members, maintainers and claim mappings.                               |
+| `gatana create profile <name> --description <text> -s <slug>...`            | Create a profile with servers. Add `--restrictive`, `--open-to-all` or `--code-mode` for those settings.            |
+| `gatana profile add-server\|remove-server <profile> <slug>...`              | Add or remove servers without replacing the list.                                                                   |
+| `gatana profile assign\|unassign <profile> --account <email>`               | Give a profile to an account, or take it away. `--team <name>` for a team, `--lock` to lock (owners only).          |
+| `gatana profile claims add\|rm <profile> <key>=<value>`                     | Give the profile to everyone whose identity provider sends the claim.                                               |
+| `gatana profile tools <profile> <slug> [-f tools.json]`                     | Show the tool configuration of a profile for one server, or replace it.                                             |
+| `gatana patch profile <name> -p key=value` / `gatana delete profile <name>` | Change or delete a profile. `serverIds` in a patch replaces the list.                                               |
+| `gatana get accounts` / `gatana describe account <email>`                   | List accounts, or show one with its profiles and teams.                                                             |
+| `gatana create account <email> --name <name> --role member\|owner`          | Invite a user. Gatana sends the invitation email.                                                                   |
+| `gatana create service-account <name>`                                      | Create a service account. Prints the API key of its first token.                                                    |
+| `gatana create pat --account <email> --name <name> --profile <p>`           | Create a token for a service account and print its key. Your own tokens need the dashboard.                         |
+| `gatana patch account <email> -p isDisabled=true` / `delete account`        | Change or delete an account.                                                                                        |
+| `gatana get org` / `gatana patch org -p key=value`                          | Organization settings (owners only). A nested key merges with the stored value. `gatana schema org` lists the keys. |
 
 Profiles, accounts and teams go by name, email or ID. Quote a name that holds spaces.

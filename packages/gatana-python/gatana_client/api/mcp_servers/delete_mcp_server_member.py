@@ -16,6 +16,7 @@ def _get_kwargs(
     member_type: Schema175,
     member_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "delete",
         "url": "/mcp-servers/{server_slug}/members/{member_type}/{member_id}".format(

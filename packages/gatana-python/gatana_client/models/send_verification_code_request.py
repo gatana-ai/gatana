@@ -6,7 +6,7 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_278 import Schema278
+from ..models.schema_300 import Schema300
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="SendVerificationCodeRequest")
@@ -17,13 +17,15 @@ class SendVerificationCodeRequest:
     """
     Attributes:
         email (str):
-        purpose (Schema278):
+        purpose (Schema300):
         turnstile_token (str | Unset):
+        tenant_slug (str | Unset):
     """
 
     email: str
-    purpose: Schema278
+    purpose: Schema300
     turnstile_token: str | Unset = UNSET
+    tenant_slug: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -32,6 +34,8 @@ class SendVerificationCodeRequest:
         purpose = self.purpose.value
 
         turnstile_token = self.turnstile_token
+
+        tenant_slug = self.tenant_slug
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -43,6 +47,8 @@ class SendVerificationCodeRequest:
         )
         if turnstile_token is not UNSET:
             field_dict["turnstileToken"] = turnstile_token
+        if tenant_slug is not UNSET:
+            field_dict["tenantSlug"] = tenant_slug
 
         return field_dict
 
@@ -51,14 +57,17 @@ class SendVerificationCodeRequest:
         d = dict(src_dict)
         email = d.pop("email")
 
-        purpose = Schema278(d.pop("purpose"))
+        purpose = Schema300(d.pop("purpose"))
 
         turnstile_token = d.pop("turnstileToken", UNSET)
+
+        tenant_slug = d.pop("tenantSlug", UNSET)
 
         send_verification_code_request = cls(
             email=email,
             purpose=purpose,
             turnstile_token=turnstile_token,
+            tenant_slug=tenant_slug,
         )
 
         send_verification_code_request.additional_properties = d

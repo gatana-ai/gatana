@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, Literal, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
@@ -12,19 +12,24 @@ T = TypeVar("T", bound="Schema863")
 class Schema863:
     """
     Attributes:
-        type_ (Literal['mainContainerRunning']): Event type discriminator, always "mainContainerRunning"
+        timestamps (list[float]): Sample times as Unix epoch timestamps in seconds
+        values (list[float]): Sampled values, aligned with timestamps
     """
 
-    type_: Literal["mainContainerRunning"]
+    timestamps: list[float]
+    values: list[float]
 
     def to_dict(self) -> dict[str, Any]:
-        type_ = self.type_
+        timestamps = self.timestamps
+
+        values = self.values
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "type": type_,
+                "timestamps": timestamps,
+                "values": values,
             }
         )
 
@@ -33,12 +38,13 @@ class Schema863:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        type_ = cast(Literal["mainContainerRunning"], d.pop("type"))
-        if type_ != "mainContainerRunning":
-            raise ValueError(f"type must match const 'mainContainerRunning', got '{type_}'")
+        timestamps = cast(list[float], d.pop("timestamps"))
+
+        values = cast(list[float], d.pop("values"))
 
         schema_863 = cls(
-            type_=type_,
+            timestamps=timestamps,
+            values=values,
         )
 
         return schema_863

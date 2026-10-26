@@ -23,9 +23,9 @@ class ProfileServerToolsResponse:
 
     def to_dict(self) -> dict[str, Any]:
         servers = []
-        for componentsschemas_schema1027_item_data in self.servers:
-            componentsschemas_schema1027_item = componentsschemas_schema1027_item_data.to_dict()
-            servers.append(componentsschemas_schema1027_item)
+        for componentsschemas_schema1108_item_data in self.servers:
+            componentsschemas_schema1108_item = componentsschemas_schema1108_item_data.to_dict()
+            servers.append(componentsschemas_schema1108_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -44,10 +44,10 @@ class ProfileServerToolsResponse:
         d = dict(src_dict)
         servers = []
         _servers = d.pop("servers")
-        for componentsschemas_schema1027_item_data in _servers:
-            componentsschemas_schema1027_item = ProfileServerTools.from_dict(componentsschemas_schema1027_item_data)
+        for componentsschemas_schema1108_item_data in _servers:
+            componentsschemas_schema1108_item = ProfileServerTools.from_dict(componentsschemas_schema1108_item_data)
 
-            servers.append(componentsschemas_schema1027_item)
+            servers.append(componentsschemas_schema1108_item)
 
         profile_server_tools_response = cls(
             servers=servers,

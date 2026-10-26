@@ -217,8 +217,14 @@ generate-py openapi_url="https://acme.gatana.ai/api/v1/openapi.json":
     # 1. Fetch the latest OpenAPI spec
     curl -sf -o "$DEST/openapi.json" "{{ openapi_url }}"
 
-    # 2. Generate into a temp directory
-    openapi-python-client generate --path "$DEST/openapi.json" --overwrite --output-path "$TMPDIR/gatana-client"
+    # 2. Generate into a temp directory.
+    #    Zod writes a closed tuple as `items: false`, which openapi-python-client cannot parse.
+    #    `maxItems` still closes the tuple, so the generator gets a copy without it.
+    #    The generator's post-hooks run ruff, so ruff comes along in the same tool env.
+    jq 'walk(if type == "object" and .items == false then del(.items) else . end)' \
+      "$DEST/openapi.json" > "$TMPDIR/openapi.json"
+    uvx --from openapi-python-client==0.28.2 --with ruff==0.16.10 openapi-python-client generate \
+      --path "$TMPDIR/openapi.json" --overwrite --output-path "$TMPDIR/gatana-client"
 
     # 3. Copy generated code into the package, preserving hand-written files
     #    Generated artefacts: api/, models/, types.py, errors.py, _base_client.py (was client.py)

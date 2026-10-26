@@ -1,24 +1,9 @@
-from __future__ import annotations
-
-from collections.abc import Mapping
-from typing import Any, TypeVar
-
-from attrs import define as _attrs_define
-
-T = TypeVar("T", bound="Schema611")
+from enum import Enum
 
 
-@_attrs_define
-class Schema611:
-    """JSON schema for the tool input"""
+class Schema611(str, Enum):
+    ORGANIZATION = "organization"
+    PRIVATE = "private"
 
-    def to_dict(self) -> dict[str, Any]:
-        field_dict: dict[str, Any] = {}
-
-        return field_dict
-
-    @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        schema_611 = cls()
-
-        return schema_611
+    def __str__(self) -> str:
+        return str(self.value)

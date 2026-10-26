@@ -13,6 +13,7 @@ def _get_kwargs(
     store_id: str,
     mapping_name: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "delete",
         "url": "/secret-stores/{store_id}/mappings/{mapping_name}".format(

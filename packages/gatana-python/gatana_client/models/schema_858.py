@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, Literal, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
@@ -12,24 +12,24 @@ T = TypeVar("T", bound="Schema858")
 class Schema858:
     """
     Attributes:
-        type_ (Literal['mainContainerWaiting']): Event type discriminator, always "mainContainerWaiting"
-        reason (str): Reason the main container is waiting
+        timestamps (list[float]): Sample times as Unix epoch timestamps in seconds
+        values (list[float]): Sampled values, aligned with timestamps
     """
 
-    type_: Literal["mainContainerWaiting"]
-    reason: str
+    timestamps: list[float]
+    values: list[float]
 
     def to_dict(self) -> dict[str, Any]:
-        type_ = self.type_
+        timestamps = self.timestamps
 
-        reason = self.reason
+        values = self.values
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "type": type_,
-                "reason": reason,
+                "timestamps": timestamps,
+                "values": values,
             }
         )
 
@@ -38,15 +38,13 @@ class Schema858:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        type_ = cast(Literal["mainContainerWaiting"], d.pop("type"))
-        if type_ != "mainContainerWaiting":
-            raise ValueError(f"type must match const 'mainContainerWaiting', got '{type_}'")
+        timestamps = cast(list[float], d.pop("timestamps"))
 
-        reason = d.pop("reason")
+        values = cast(list[float], d.pop("values"))
 
         schema_858 = cls(
-            type_=type_,
-            reason=reason,
+            timestamps=timestamps,
+            values=values,
         )
 
         return schema_858

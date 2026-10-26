@@ -23,6 +23,7 @@ def _get_kwargs(
     search: str | Unset = UNSET,
     filter_: list[str] | str | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["page"] = page

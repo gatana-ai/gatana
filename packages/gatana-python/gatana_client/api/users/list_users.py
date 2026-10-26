@@ -14,6 +14,7 @@ def _get_kwargs(
     *,
     type_: Schema12 | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     json_type_: str | Unset = UNSET

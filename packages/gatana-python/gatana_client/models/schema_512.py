@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
+
+from ..models.schema_513 import Schema513
+from ..models.tool_refresh_credential_policy_output import ToolRefreshCredentialPolicyOutput
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="Schema512")
 
@@ -12,31 +16,74 @@ T = TypeVar("T", bound="Schema512")
 class Schema512:
     """
     Attributes:
-        enabled (bool): Whether the server gets a persistent volume
+        method (Schema513): Authorization method that the server uses
+        credentials_scope (Literal['server'] | Literal['user']): Whether credentials are shared for the whole server or
+            stored per user
+        tool_refresh_credential_policy (ToolRefreshCredentialPolicyOutput):
+        apikeys (list[str] | Unset):
     """
 
-    enabled: bool
+    method: Schema513
+    credentials_scope: Literal["server"] | Literal["user"]
+    tool_refresh_credential_policy: ToolRefreshCredentialPolicyOutput
+    apikeys: list[str] | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        enabled = self.enabled
+        method = self.method.value
+
+        credentials_scope: Literal["server"] | Literal["user"]
+        credentials_scope = self.credentials_scope
+
+        tool_refresh_credential_policy = self.tool_refresh_credential_policy.value
+
+        apikeys: list[str] | Unset = UNSET
+        if not isinstance(self.apikeys, Unset):
+            apikeys = self.apikeys
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "enabled": enabled,
+                "method": method,
+                "credentialsScope": credentials_scope,
+                "toolRefreshCredentialPolicy": tool_refresh_credential_policy,
             }
         )
+        if apikeys is not UNSET:
+            field_dict["apikeys"] = apikeys
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        enabled = d.pop("enabled")
+        method = Schema513(d.pop("method"))
+
+        def _parse_credentials_scope(data: object) -> Literal["server"] | Literal["user"]:
+            componentsschemas_schema514_type_0 = cast(Literal["server"], data)
+            if componentsschemas_schema514_type_0 != "server":
+                raise ValueError(
+                    f"/components/schemas/__schema514_type_0 must match const 'server', got '{componentsschemas_schema514_type_0}'"
+                )
+            return componentsschemas_schema514_type_0
+            componentsschemas_schema514_type_1 = cast(Literal["user"], data)
+            if componentsschemas_schema514_type_1 != "user":
+                raise ValueError(
+                    f"/components/schemas/__schema514_type_1 must match const 'user', got '{componentsschemas_schema514_type_1}'"
+                )
+            return componentsschemas_schema514_type_1
+
+        credentials_scope = _parse_credentials_scope(d.pop("credentialsScope"))
+
+        tool_refresh_credential_policy = ToolRefreshCredentialPolicyOutput(d.pop("toolRefreshCredentialPolicy"))
+
+        apikeys = cast(list[str], d.pop("apikeys", UNSET))
 
         schema_512 = cls(
-            enabled=enabled,
+            method=method,
+            credentials_scope=credentials_scope,
+            tool_refresh_credential_policy=tool_refresh_credential_policy,
+            apikeys=apikeys,
         )
 
         return schema_512

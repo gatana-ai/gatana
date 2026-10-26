@@ -23,9 +23,9 @@ class ListSkillCollectionsResponse:
 
     def to_dict(self) -> dict[str, Any]:
         collections = []
-        for componentsschemas_schema1180_item_data in self.collections:
-            componentsschemas_schema1180_item = componentsschemas_schema1180_item_data.to_dict()
-            collections.append(componentsschemas_schema1180_item)
+        for componentsschemas_schema1276_item_data in self.collections:
+            componentsschemas_schema1276_item = componentsschemas_schema1276_item_data.to_dict()
+            collections.append(componentsschemas_schema1276_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -44,10 +44,10 @@ class ListSkillCollectionsResponse:
         d = dict(src_dict)
         collections = []
         _collections = d.pop("collections")
-        for componentsschemas_schema1180_item_data in _collections:
-            componentsschemas_schema1180_item = SkillCollectionDto.from_dict(componentsschemas_schema1180_item_data)
+        for componentsschemas_schema1276_item_data in _collections:
+            componentsschemas_schema1276_item = SkillCollectionDto.from_dict(componentsschemas_schema1276_item_data)
 
-            collections.append(componentsschemas_schema1180_item)
+            collections.append(componentsschemas_schema1276_item)
 
         list_skill_collections_response = cls(
             collections=collections,

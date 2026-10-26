@@ -14,6 +14,7 @@ def _get_kwargs(
     days: str | Unset = UNSET,
     time_zone: str | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["days"] = days
@@ -59,7 +60,7 @@ def sync_detailed(
     time_zone: str | Unset = UNSET,
 ) -> Response[ActivitySummary]:
     """Summarize the tool calls the caller made over a recent window, as a count per day plus the servers
-    and clients they went through
+    they went to
 
     Args:
         days (str | Unset):
@@ -92,7 +93,7 @@ def sync(
     time_zone: str | Unset = UNSET,
 ) -> ActivitySummary | None:
     """Summarize the tool calls the caller made over a recent window, as a count per day plus the servers
-    and clients they went through
+    they went to
 
     Args:
         days (str | Unset):
@@ -120,7 +121,7 @@ async def asyncio_detailed(
     time_zone: str | Unset = UNSET,
 ) -> Response[ActivitySummary]:
     """Summarize the tool calls the caller made over a recent window, as a count per day plus the servers
-    and clients they went through
+    they went to
 
     Args:
         days (str | Unset):
@@ -151,7 +152,7 @@ async def asyncio(
     time_zone: str | Unset = UNSET,
 ) -> ActivitySummary | None:
     """Summarize the tool calls the caller made over a recent window, as a count per day plus the servers
-    and clients they went through
+    they went to
 
     Args:
         days (str | Unset):

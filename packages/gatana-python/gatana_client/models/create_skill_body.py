@@ -6,7 +6,7 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_317 import Schema317
+from ..models.schema_369 import Schema369
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CreateSkillBody")
@@ -24,7 +24,7 @@ class CreateSkillBody:
             applies
         content (str | Unset): The instructions as Markdown: the body of a SKILL.md without the frontmatter. Maximum 200
             KiB
-        visibility (Schema317 | Unset):
+        visibility (Schema369 | Unset):
         collection_id (None | str | Unset): ID of the collection to put the skill in, or null for a skill at root. You
             must be able to read the collection
     """
@@ -33,7 +33,7 @@ class CreateSkillBody:
     name: str | Unset = UNSET
     description: str | Unset = UNSET
     content: str | Unset = UNSET
-    visibility: Schema317 | Unset = UNSET
+    visibility: Schema369 | Unset = UNSET
     collection_id: None | str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -86,11 +86,11 @@ class CreateSkillBody:
         content = d.pop("content", UNSET)
 
         _visibility = d.pop("visibility", UNSET)
-        visibility: Schema317 | Unset
+        visibility: Schema369 | Unset
         if isinstance(_visibility, Unset):
             visibility = UNSET
         else:
-            visibility = Schema317(_visibility)
+            visibility = Schema369(_visibility)
 
         def _parse_collection_id(data: object) -> None | str | Unset:
             if data is None:

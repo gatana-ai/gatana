@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.list_mcp_servers_response_200_servers_item import ListMcpServersResponse200ServersItem
+    from ..models.server_dto import ServerDto
 
 
 T = TypeVar("T", bound="ListMcpServersResponse200")
@@ -16,10 +16,10 @@ T = TypeVar("T", bound="ListMcpServersResponse200")
 class ListMcpServersResponse200:
     """
     Attributes:
-        servers (list[ListMcpServersResponse200ServersItem]):
+        servers (list[ServerDto]):
     """
 
-    servers: list[ListMcpServersResponse200ServersItem]
+    servers: list[ServerDto]
 
     def to_dict(self) -> dict[str, Any]:
         servers = []
@@ -39,13 +39,13 @@ class ListMcpServersResponse200:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.list_mcp_servers_response_200_servers_item import ListMcpServersResponse200ServersItem
+        from ..models.server_dto import ServerDto
 
         d = dict(src_dict)
         servers = []
         _servers = d.pop("servers")
         for servers_item_data in _servers:
-            servers_item = ListMcpServersResponse200ServersItem.from_dict(servers_item_data)
+            servers_item = ServerDto.from_dict(servers_item_data)
 
             servers.append(servers_item)
 

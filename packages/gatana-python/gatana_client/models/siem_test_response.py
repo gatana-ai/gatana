@@ -16,6 +16,7 @@ class SiemTestResponse:
         status (float | None): HTTP status the receiver answered with, or null when the request never completed
         response_snippet (None | str): First part of the response body, to help a tenant debug a rejection
         error (None | str): Error message when the request failed, or null
+        location (None | str): Test object URL (s3://bucket/key or gs://bucket/key); null for HTTPS
         duration_ms (float): Duration of the test request in milliseconds
     """
 
@@ -23,6 +24,7 @@ class SiemTestResponse:
     status: float | None
     response_snippet: None | str
     error: None | str
+    location: None | str
     duration_ms: float
 
     def to_dict(self) -> dict[str, Any]:
@@ -37,6 +39,9 @@ class SiemTestResponse:
         error: None | str
         error = self.error
 
+        location: None | str
+        location = self.location
+
         duration_ms = self.duration_ms
 
         field_dict: dict[str, Any] = {}
@@ -47,6 +52,7 @@ class SiemTestResponse:
                 "status": status,
                 "responseSnippet": response_snippet,
                 "error": error,
+                "location": location,
                 "durationMs": duration_ms,
             }
         )
@@ -79,6 +85,13 @@ class SiemTestResponse:
 
         error = _parse_error(d.pop("error"))
 
+        def _parse_location(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        location = _parse_location(d.pop("location"))
+
         duration_ms = d.pop("durationMs")
 
         siem_test_response = cls(
@@ -86,6 +99,7 @@ class SiemTestResponse:
             status=status,
             response_snippet=response_snippet,
             error=error,
+            location=location,
             duration_ms=duration_ms,
         )
 

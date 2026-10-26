@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_300 import Schema300
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="UpdateArtifactBody")
@@ -20,14 +19,14 @@ class UpdateArtifactBody:
         html (str | Unset): A complete, self-contained HTML document. Give either html or markdown, not both
         markdown (str | Unset): A Markdown document (GitHub flavored). Stored as written and rendered to HTML when
             served. Give either html or markdown, not both
-        theme (Schema300 | Unset): Stylesheet linked into the page when it is served. 'gatana' (the default) applies the
-            Gatana fonts, colors and typography to plain HTML; 'none' serves the document as published
+        theme (str | Unset): 'gatana' (Gatana styling), 'none' (the document as published), or an organization theme by
+            id or by name
     """
 
     title: str | Unset = UNSET
     html: str | Unset = UNSET
     markdown: str | Unset = UNSET
-    theme: Schema300 | Unset = UNSET
+    theme: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -37,9 +36,7 @@ class UpdateArtifactBody:
 
         markdown = self.markdown
 
-        theme: str | Unset = UNSET
-        if not isinstance(self.theme, Unset):
-            theme = self.theme.value
+        theme = self.theme
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -64,12 +61,7 @@ class UpdateArtifactBody:
 
         markdown = d.pop("markdown", UNSET)
 
-        _theme = d.pop("theme", UNSET)
-        theme: Schema300 | Unset
-        if isinstance(_theme, Unset):
-            theme = UNSET
-        else:
-            theme = Schema300(_theme)
+        theme = d.pop("theme", UNSET)
 
         update_artifact_body = cls(
             title=title,

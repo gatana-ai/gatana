@@ -5,8 +5,7 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1090 import Schema1090
-from ..models.schema_1091 import Schema1091
+from ..models.schema_1171 import Schema1171
 
 T = TypeVar("T", bound="ArtifactDto")
 
@@ -20,8 +19,8 @@ class ArtifactDto:
         created_by_user_id (str):
         created_by_user_name (str): Display name of the creator, empty when no name is set
         created_by_user_email (str): Email of the creator
-        visibility (Schema1090):
-        theme (Schema1091):
+        visibility (Schema1171):
+        theme (str): The theme the artifact is served with: 'gatana', 'none', or the id of an organization theme
         current_version (float):
         shared_with_user_ids (list[str]): IDs of the users the artifact is shared with
         shared_with_team_ids (list[str]): IDs of the teams the artifact is shared with
@@ -35,8 +34,8 @@ class ArtifactDto:
     created_by_user_id: str
     created_by_user_name: str
     created_by_user_email: str
-    visibility: Schema1090
-    theme: Schema1091
+    visibility: Schema1171
+    theme: str
     current_version: float
     shared_with_user_ids: list[str]
     shared_with_team_ids: list[str]
@@ -57,7 +56,7 @@ class ArtifactDto:
 
         visibility = self.visibility.value
 
-        theme = self.theme.value
+        theme = self.theme
 
         current_version = self.current_version
 
@@ -106,9 +105,9 @@ class ArtifactDto:
 
         created_by_user_email = d.pop("createdByUserEmail")
 
-        visibility = Schema1090(d.pop("visibility"))
+        visibility = Schema1171(d.pop("visibility"))
 
-        theme = Schema1091(d.pop("theme"))
+        theme = d.pop("theme")
 
         current_version = d.pop("currentVersion")
 

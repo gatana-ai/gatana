@@ -60,7 +60,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: RequestEmailChangeVerificationRequest | Unset = UNSET,
 ) -> Response[RequestOwnEmailVerificationResponse200]:
-    """Send a verification code to a new email address before changing it
+    """Send an email verification code using a browser session
 
     Args:
         body (RequestEmailChangeVerificationRequest | Unset):
@@ -89,7 +89,7 @@ def sync(
     client: AuthenticatedClient | Client,
     body: RequestEmailChangeVerificationRequest | Unset = UNSET,
 ) -> RequestOwnEmailVerificationResponse200 | None:
-    """Send a verification code to a new email address before changing it
+    """Send an email verification code using a browser session
 
     Args:
         body (RequestEmailChangeVerificationRequest | Unset):
@@ -113,7 +113,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: RequestEmailChangeVerificationRequest | Unset = UNSET,
 ) -> Response[RequestOwnEmailVerificationResponse200]:
-    """Send a verification code to a new email address before changing it
+    """Send an email verification code using a browser session
 
     Args:
         body (RequestEmailChangeVerificationRequest | Unset):
@@ -140,7 +140,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: RequestEmailChangeVerificationRequest | Unset = UNSET,
 ) -> RequestOwnEmailVerificationResponse200 | None:
-    """Send a verification code to a new email address before changing it
+    """Send an email verification code using a browser session
 
     Args:
         body (RequestEmailChangeVerificationRequest | Unset):

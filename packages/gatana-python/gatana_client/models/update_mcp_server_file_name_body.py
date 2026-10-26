@@ -13,7 +13,7 @@ T = TypeVar("T", bound="UpdateMcpServerFileNameBody")
 class UpdateMcpServerFileNameBody:
     """
     Attributes:
-        filename (str):
+        filename (str): Name of the file as exposed to the server
     """
 
     filename: str

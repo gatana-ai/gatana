@@ -7,7 +7,7 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-    from ..models.schema_270 import Schema270
+    from ..models.schema_292 import Schema292
 
 
 T = TypeVar("T", bound="UpdateProfileServerToolsBody")
@@ -20,12 +20,12 @@ class UpdateProfileServerToolsBody:
         are_all_tools_enabled (bool): Whether every tool of the server is available to the profile
         auto_enable_new_tools (bool): Whether tools that the server adds later become available to the profile
             automatically
-        tools (list[Schema270]): Tools of the server that the profile enables, promotes or renames
+        tools (list[Schema292]): Tools of the server that the profile enables, promotes or renames
     """
 
     are_all_tools_enabled: bool
     auto_enable_new_tools: bool
-    tools: list[Schema270]
+    tools: list[Schema292]
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -52,7 +52,7 @@ class UpdateProfileServerToolsBody:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_270 import Schema270
+        from ..models.schema_292 import Schema292
 
         d = dict(src_dict)
         are_all_tools_enabled = d.pop("areAllToolsEnabled")
@@ -62,7 +62,7 @@ class UpdateProfileServerToolsBody:
         tools = []
         _tools = d.pop("tools")
         for tools_item_data in _tools:
-            tools_item = Schema270.from_dict(tools_item_data)
+            tools_item = Schema292.from_dict(tools_item_data)
 
             tools.append(tools_item)
 

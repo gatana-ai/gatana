@@ -14,6 +14,7 @@ def _get_kwargs(
     user_id: str,
     pat_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "delete",
         "url": "/users/{user_id}/personal-access-tokens/{pat_id}".format(
@@ -56,7 +57,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[DeleteUserPersonalAccessTokenResponse200]:
-    """Delete a personal access token
+    """Delete a personal access token using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -88,7 +89,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 ) -> DeleteUserPersonalAccessTokenResponse200 | None:
-    """Delete a personal access token
+    """Delete a personal access token using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -115,7 +116,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[DeleteUserPersonalAccessTokenResponse200]:
-    """Delete a personal access token
+    """Delete a personal access token using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -145,7 +146,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 ) -> DeleteUserPersonalAccessTokenResponse200 | None:
-    """Delete a personal access token
+    """Delete a personal access token using a browser session
 
     Args:
         user_id (str): ID of the user

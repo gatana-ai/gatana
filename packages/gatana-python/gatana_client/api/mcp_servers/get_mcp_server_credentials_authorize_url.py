@@ -24,6 +24,7 @@ def _get_kwargs(
     profile_id: str | Unset = UNSET,
     user_id: str | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     json_scope: str | Unset = UNSET

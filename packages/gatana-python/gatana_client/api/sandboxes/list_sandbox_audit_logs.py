@@ -20,6 +20,7 @@ def _get_kwargs(
     start_date: datetime.datetime | Unset = UNSET,
     end_date: datetime.datetime | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["page"] = page

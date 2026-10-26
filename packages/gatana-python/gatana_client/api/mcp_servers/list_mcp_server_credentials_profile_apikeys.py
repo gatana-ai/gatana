@@ -16,6 +16,7 @@ def _get_kwargs(
     server_slug: str,
     profile_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/mcp-servers/{server_slug}/credentials/profile/{profile_id}/apikeys".format(

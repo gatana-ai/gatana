@@ -6,13 +6,14 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.list_user_personal_access_tokens_response_200 import ListUserPersonalAccessTokensResponse200
+from ...models.schema_496 import Schema496
 from ...types import Response
 
 
 def _get_kwargs(
     user_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/users/{user_id}/personal-access-tokens".format(
@@ -23,11 +24,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ListUserPersonalAccessTokensResponse200 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema496 | None:
     if response.status_code == 200:
-        response_200 = ListUserPersonalAccessTokensResponse200.from_dict(response.json())
+        response_200 = Schema496.from_dict(response.json())
 
         return response_200
 
@@ -37,9 +36,7 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ListUserPersonalAccessTokensResponse200]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema496]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -52,8 +49,8 @@ def sync_detailed(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[ListUserPersonalAccessTokensResponse200]:
-    """List the personal access tokens of the user; allowed for yourself or a managed service account
+) -> Response[Schema496]:
+    """List tokens for yourself or a managed service account using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -63,7 +60,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ListUserPersonalAccessTokensResponse200]
+        Response[Schema496]
     """
 
     kwargs = _get_kwargs(
@@ -81,8 +78,8 @@ def sync(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> ListUserPersonalAccessTokensResponse200 | None:
-    """List the personal access tokens of the user; allowed for yourself or a managed service account
+) -> Schema496 | None:
+    """List tokens for yourself or a managed service account using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -92,7 +89,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ListUserPersonalAccessTokensResponse200
+        Schema496
     """
 
     return sync_detailed(
@@ -105,8 +102,8 @@ async def asyncio_detailed(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[ListUserPersonalAccessTokensResponse200]:
-    """List the personal access tokens of the user; allowed for yourself or a managed service account
+) -> Response[Schema496]:
+    """List tokens for yourself or a managed service account using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -116,7 +113,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ListUserPersonalAccessTokensResponse200]
+        Response[Schema496]
     """
 
     kwargs = _get_kwargs(
@@ -132,8 +129,8 @@ async def asyncio(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> ListUserPersonalAccessTokensResponse200 | None:
-    """List the personal access tokens of the user; allowed for yourself or a managed service account
+) -> Schema496 | None:
+    """List tokens for yourself or a managed service account using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -143,7 +140,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ListUserPersonalAccessTokensResponse200
+        Schema496
     """
 
     return (

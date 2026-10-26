@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-if TYPE_CHECKING:
-    from ..models.profile_team_assignment import ProfileTeamAssignment
-
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="Schema913")
 
@@ -16,41 +14,84 @@ T = TypeVar("T", bound="Schema913")
 class Schema913:
     """
     Attributes:
-        profile_assignments (list[ProfileTeamAssignment]): Profile assignments of the team
+        type_ (Literal['sidecarContainerFailed']): Event type discriminator, always "sidecarContainerFailed"
+        name (str): Name of the sidecar container
+        restarts (float): Number of times the container has restarted
+        is_backing_off (bool): Whether the kubelet is holding the container off before another attempt
+        exit_code (float | Unset):
+        reason (str | Unset):
+        message (str | Unset):
     """
 
-    profile_assignments: list[ProfileTeamAssignment]
+    type_: Literal["sidecarContainerFailed"]
+    name: str
+    restarts: float
+    is_backing_off: bool
+    exit_code: float | Unset = UNSET
+    reason: str | Unset = UNSET
+    message: str | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        profile_assignments = []
-        for profile_assignments_item_data in self.profile_assignments:
-            profile_assignments_item = profile_assignments_item_data.to_dict()
-            profile_assignments.append(profile_assignments_item)
+        type_ = self.type_
+
+        name = self.name
+
+        restarts = self.restarts
+
+        is_backing_off = self.is_backing_off
+
+        exit_code = self.exit_code
+
+        reason = self.reason
+
+        message = self.message
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "profileAssignments": profile_assignments,
+                "type": type_,
+                "name": name,
+                "restarts": restarts,
+                "isBackingOff": is_backing_off,
             }
         )
+        if exit_code is not UNSET:
+            field_dict["exitCode"] = exit_code
+        if reason is not UNSET:
+            field_dict["reason"] = reason
+        if message is not UNSET:
+            field_dict["message"] = message
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.profile_team_assignment import ProfileTeamAssignment
-
         d = dict(src_dict)
-        profile_assignments = []
-        _profile_assignments = d.pop("profileAssignments")
-        for profile_assignments_item_data in _profile_assignments:
-            profile_assignments_item = ProfileTeamAssignment.from_dict(profile_assignments_item_data)
+        type_ = cast(Literal["sidecarContainerFailed"], d.pop("type"))
+        if type_ != "sidecarContainerFailed":
+            raise ValueError(f"type must match const 'sidecarContainerFailed', got '{type_}'")
 
-            profile_assignments.append(profile_assignments_item)
+        name = d.pop("name")
+
+        restarts = d.pop("restarts")
+
+        is_backing_off = d.pop("isBackingOff")
+
+        exit_code = d.pop("exitCode", UNSET)
+
+        reason = d.pop("reason", UNSET)
+
+        message = d.pop("message", UNSET)
 
         schema_913 = cls(
-            profile_assignments=profile_assignments,
+            type_=type_,
+            name=name,
+            restarts=restarts,
+            is_backing_off=is_backing_off,
+            exit_code=exit_code,
+            reason=reason,
+            message=message,
         )
 
         return schema_913

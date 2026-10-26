@@ -15,7 +15,10 @@ const [mode, sourceDir, resultFile, toolName, inputFile] = process.argv.slice(2)
 const entrypoint = join(sourceDir, 'index.js');
 
 function finish(result) {
-  writeFileSync(resultFile, JSON.stringify(result, (_key, value) => (value === undefined ? null : value)));
+  writeFileSync(
+    resultFile,
+    JSON.stringify(result, (_key, value) => (value === undefined ? null : value))
+  );
   // A tool may leave timers or sockets open; the run is over either way.
   process.exit(0);
 }
@@ -117,7 +120,11 @@ if (mode === 'run') {
     });
   }
   if (typeof impl[toolName] !== 'function') {
-    finish({ ok: false, stage: 'lookup', error: `Tool "${toolName}" is defined in schema but has no exported function.` });
+    finish({
+      ok: false,
+      stage: 'lookup',
+      error: `Tool "${toolName}" is defined in schema but has no exported function.`,
+    });
   }
   let input = JSON.parse(readFileSync(inputFile, 'utf8'));
   const schema = impl.schema[toolName].input;
@@ -128,7 +135,13 @@ if (mode === 'run') {
         path: issue.path?.join('.') || '(root)',
         message: issue.message,
       }));
-      finish({ ok: false, stage: 'validation', error: `Input validation failed for tool "${toolName}":`, issues, expected: describeInput(z, schema) });
+      finish({
+        ok: false,
+        stage: 'validation',
+        error: `Input validation failed for tool "${toolName}":`,
+        issues,
+        expected: describeInput(z, schema),
+      });
     }
     // The parsed value: coerced and defaulted.
     input = parsed.data;

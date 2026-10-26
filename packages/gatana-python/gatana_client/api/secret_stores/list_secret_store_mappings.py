@@ -13,6 +13,7 @@ from ...types import Response
 def _get_kwargs(
     store_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/secret-stores/{store_id}/mappings".format(

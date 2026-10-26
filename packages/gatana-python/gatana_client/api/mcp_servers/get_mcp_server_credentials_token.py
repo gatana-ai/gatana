@@ -15,6 +15,7 @@ def _get_kwargs(
     *,
     credentials_id: str | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["credentialsId"] = credentials_id
@@ -63,9 +64,9 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     credentials_id: str | Unset = UNSET,
 ) -> Response[GetCredentialTokenResponse]:
-    """Get the usable token for a credential. For API key credentials, returns the API keys. For OAuth
-    credentials, returns the access token, refreshing it first if possible and necessary. When
-    credentialsId is omitted, resolves the effective credentials for the current user
+    """Get API keys or an OAuth access token; refresh the access token if needed and possible; require
+    server authorization again if the token has expired and has no refresh token; use the current user’s
+    credentials when credentialsId is omitted
 
     Args:
         server_slug (str):
@@ -97,9 +98,9 @@ def sync(
     client: AuthenticatedClient | Client,
     credentials_id: str | Unset = UNSET,
 ) -> GetCredentialTokenResponse | None:
-    """Get the usable token for a credential. For API key credentials, returns the API keys. For OAuth
-    credentials, returns the access token, refreshing it first if possible and necessary. When
-    credentialsId is omitted, resolves the effective credentials for the current user
+    """Get API keys or an OAuth access token; refresh the access token if needed and possible; require
+    server authorization again if the token has expired and has no refresh token; use the current user’s
+    credentials when credentialsId is omitted
 
     Args:
         server_slug (str):
@@ -126,9 +127,9 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     credentials_id: str | Unset = UNSET,
 ) -> Response[GetCredentialTokenResponse]:
-    """Get the usable token for a credential. For API key credentials, returns the API keys. For OAuth
-    credentials, returns the access token, refreshing it first if possible and necessary. When
-    credentialsId is omitted, resolves the effective credentials for the current user
+    """Get API keys or an OAuth access token; refresh the access token if needed and possible; require
+    server authorization again if the token has expired and has no refresh token; use the current user’s
+    credentials when credentialsId is omitted
 
     Args:
         server_slug (str):
@@ -158,9 +159,9 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     credentials_id: str | Unset = UNSET,
 ) -> GetCredentialTokenResponse | None:
-    """Get the usable token for a credential. For API key credentials, returns the API keys. For OAuth
-    credentials, returns the access token, refreshing it first if possible and necessary. When
-    credentialsId is omitted, resolves the effective credentials for the current user
+    """Get API keys or an OAuth access token; refresh the access token if needed and possible; require
+    server authorization again if the token has expired and has no refresh token; use the current user’s
+    credentials when credentialsId is omitted
 
     Args:
         server_slug (str):

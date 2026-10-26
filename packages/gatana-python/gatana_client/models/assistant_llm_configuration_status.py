@@ -5,7 +5,7 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_736 import Schema736
+from ..models.schema_794 import Schema794
 
 T = TypeVar("T", bound="AssistantLlmConfigurationStatus")
 
@@ -14,7 +14,7 @@ T = TypeVar("T", bound="AssistantLlmConfigurationStatus")
 class AssistantLlmConfigurationStatus:
     """
     Attributes:
-        provider (Schema736): Kind of endpoint that is configured
+        provider (Schema794): Kind of endpoint that is configured
         model (str): Configured model, deployment or inference profile identifier
         base_url (None | str): Base URL of the endpoint, for an OpenAI-compatible provider
         region (None | str): AWS region, for Bedrock
@@ -24,7 +24,7 @@ class AssistantLlmConfigurationStatus:
         has_aws_access_key (bool): Whether an AWS access key pair is stored
     """
 
-    provider: Schema736
+    provider: Schema794
     model: str
     base_url: None | str
     region: None | str
@@ -74,7 +74,7 @@ class AssistantLlmConfigurationStatus:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        provider = Schema736(d.pop("provider"))
+        provider = Schema794(d.pop("provider"))
 
         model = d.pop("model")
 

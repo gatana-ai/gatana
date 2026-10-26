@@ -6,13 +6,14 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_578 import Schema578
+from ...models.schema_628 import Schema628
 from ...types import Response
 
 
 def _get_kwargs(
     server_slug: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/mcp-servers/{server_slug}".format(
@@ -23,9 +24,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema578 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema628 | None:
     if response.status_code == 200:
-        response_200 = Schema578.from_dict(response.json())
+        response_200 = Schema628.from_dict(response.json())
 
         return response_200
 
@@ -35,7 +36,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema578]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema628]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -48,7 +49,7 @@ def sync_detailed(
     server_slug: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[Schema578]:
+) -> Response[Schema628]:
     """Get a single MCP server together with its files
 
     Args:
@@ -59,7 +60,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema578]
+        Response[Schema628]
     """
 
     kwargs = _get_kwargs(
@@ -77,7 +78,7 @@ def sync(
     server_slug: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Schema578 | None:
+) -> Schema628 | None:
     """Get a single MCP server together with its files
 
     Args:
@@ -88,7 +89,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema578
+        Schema628
     """
 
     return sync_detailed(
@@ -101,7 +102,7 @@ async def asyncio_detailed(
     server_slug: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[Schema578]:
+) -> Response[Schema628]:
     """Get a single MCP server together with its files
 
     Args:
@@ -112,7 +113,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema578]
+        Response[Schema628]
     """
 
     kwargs = _get_kwargs(
@@ -128,7 +129,7 @@ async def asyncio(
     server_slug: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Schema578 | None:
+) -> Schema628 | None:
     """Get a single MCP server together with its files
 
     Args:
@@ -139,7 +140,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema578
+        Schema628
     """
 
     return (

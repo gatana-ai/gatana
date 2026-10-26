@@ -14,6 +14,7 @@ def _get_kwargs(
     user_id: str | Unset = UNSET,
     team_id: str | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["userId"] = user_id

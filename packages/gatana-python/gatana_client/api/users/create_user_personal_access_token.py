@@ -7,7 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_personal_access_token_request import CreatePersonalAccessTokenRequest
-from ...models.create_user_personal_access_token_response_200 import CreateUserPersonalAccessTokenResponse200
+from ...models.schema_507 import Schema507
 from ...types import UNSET, Response, Unset
 
 
@@ -34,11 +34,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> CreateUserPersonalAccessTokenResponse200 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema507 | None:
     if response.status_code == 200:
-        response_200 = CreateUserPersonalAccessTokenResponse200.from_dict(response.json())
+        response_200 = Schema507.from_dict(response.json())
 
         return response_200
 
@@ -48,9 +46,7 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[CreateUserPersonalAccessTokenResponse200]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema507]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -64,8 +60,8 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: CreatePersonalAccessTokenRequest | Unset = UNSET,
-) -> Response[CreateUserPersonalAccessTokenResponse200]:
-    """Create a personal access token for the user and return its API key
+) -> Response[Schema507]:
+    """Create a personal access token and return its API key using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -76,7 +72,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[CreateUserPersonalAccessTokenResponse200]
+        Response[Schema507]
     """
 
     kwargs = _get_kwargs(
@@ -96,8 +92,8 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: CreatePersonalAccessTokenRequest | Unset = UNSET,
-) -> CreateUserPersonalAccessTokenResponse200 | None:
-    """Create a personal access token for the user and return its API key
+) -> Schema507 | None:
+    """Create a personal access token and return its API key using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -108,7 +104,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        CreateUserPersonalAccessTokenResponse200
+        Schema507
     """
 
     return sync_detailed(
@@ -123,8 +119,8 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: CreatePersonalAccessTokenRequest | Unset = UNSET,
-) -> Response[CreateUserPersonalAccessTokenResponse200]:
-    """Create a personal access token for the user and return its API key
+) -> Response[Schema507]:
+    """Create a personal access token and return its API key using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -135,7 +131,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[CreateUserPersonalAccessTokenResponse200]
+        Response[Schema507]
     """
 
     kwargs = _get_kwargs(
@@ -153,8 +149,8 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: CreatePersonalAccessTokenRequest | Unset = UNSET,
-) -> CreateUserPersonalAccessTokenResponse200 | None:
-    """Create a personal access token for the user and return its API key
+) -> Schema507 | None:
+    """Create a personal access token and return its API key using a browser session
 
     Args:
         user_id (str): ID of the user
@@ -165,7 +161,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        CreateUserPersonalAccessTokenResponse200
+        Schema507
     """
 
     return (

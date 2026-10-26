@@ -27,14 +27,14 @@ class ListSkillsResponse:
 
     def to_dict(self) -> dict[str, Any]:
         skills = []
-        for componentsschemas_schema1151_item_data in self.skills:
-            componentsschemas_schema1151_item = componentsschemas_schema1151_item_data.to_dict()
-            skills.append(componentsschemas_schema1151_item)
+        for componentsschemas_schema1247_item_data in self.skills:
+            componentsschemas_schema1247_item = componentsschemas_schema1247_item_data.to_dict()
+            skills.append(componentsschemas_schema1247_item)
 
         collections = []
-        for componentsschemas_schema1152_item_data in self.collections:
-            componentsschemas_schema1152_item = componentsschemas_schema1152_item_data.to_dict()
-            collections.append(componentsschemas_schema1152_item)
+        for componentsschemas_schema1248_item_data in self.collections:
+            componentsschemas_schema1248_item = componentsschemas_schema1248_item_data.to_dict()
+            collections.append(componentsschemas_schema1248_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -55,17 +55,17 @@ class ListSkillsResponse:
         d = dict(src_dict)
         skills = []
         _skills = d.pop("skills")
-        for componentsschemas_schema1151_item_data in _skills:
-            componentsschemas_schema1151_item = SkillDto.from_dict(componentsschemas_schema1151_item_data)
+        for componentsschemas_schema1247_item_data in _skills:
+            componentsschemas_schema1247_item = SkillDto.from_dict(componentsschemas_schema1247_item_data)
 
-            skills.append(componentsschemas_schema1151_item)
+            skills.append(componentsschemas_schema1247_item)
 
         collections = []
         _collections = d.pop("collections")
-        for componentsschemas_schema1152_item_data in _collections:
-            componentsschemas_schema1152_item = SkillCollectionDto.from_dict(componentsschemas_schema1152_item_data)
+        for componentsschemas_schema1248_item_data in _collections:
+            componentsschemas_schema1248_item = SkillCollectionDto.from_dict(componentsschemas_schema1248_item_data)
 
-            collections.append(componentsschemas_schema1152_item)
+            collections.append(componentsschemas_schema1248_item)
 
         list_skills_response = cls(
             skills=skills,

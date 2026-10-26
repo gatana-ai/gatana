@@ -36,9 +36,9 @@ class ProfileServerTools:
         auto_enable_new_tools = self.auto_enable_new_tools
 
         tools = []
-        for componentsschemas_schema1031_item_data in self.tools:
-            componentsschemas_schema1031_item = componentsschemas_schema1031_item_data.to_dict()
-            tools.append(componentsschemas_schema1031_item)
+        for componentsschemas_schema1112_item_data in self.tools:
+            componentsschemas_schema1112_item = componentsschemas_schema1112_item_data.to_dict()
+            tools.append(componentsschemas_schema1112_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -66,10 +66,10 @@ class ProfileServerTools:
 
         tools = []
         _tools = d.pop("tools")
-        for componentsschemas_schema1031_item_data in _tools:
-            componentsschemas_schema1031_item = ProfileToolEntry.from_dict(componentsschemas_schema1031_item_data)
+        for componentsschemas_schema1112_item_data in _tools:
+            componentsschemas_schema1112_item = ProfileToolEntry.from_dict(componentsschemas_schema1112_item_data)
 
-            tools.append(componentsschemas_schema1031_item)
+            tools.append(componentsschemas_schema1112_item)
 
         profile_server_tools = cls(
             server_slug=server_slug,

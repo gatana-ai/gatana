@@ -93,30 +93,30 @@ class ServerFile:
         def _parse_source_type(
             data: object,
         ) -> Literal["aws-secrets-manager"] | Literal["aws-ssm"] | Literal["gcs"] | Literal["s3"]:
-            componentsschemas_schema583_type_0 = cast(Literal["gcs"], data)
-            if componentsschemas_schema583_type_0 != "gcs":
+            componentsschemas_schema633_type_0 = cast(Literal["gcs"], data)
+            if componentsschemas_schema633_type_0 != "gcs":
                 raise ValueError(
-                    f"/components/schemas/__schema583_type_0 must match const 'gcs', got '{componentsschemas_schema583_type_0}'"
+                    f"/components/schemas/__schema633_type_0 must match const 'gcs', got '{componentsschemas_schema633_type_0}'"
                 )
-            return componentsschemas_schema583_type_0
-            componentsschemas_schema583_type_1 = cast(Literal["s3"], data)
-            if componentsschemas_schema583_type_1 != "s3":
+            return componentsschemas_schema633_type_0
+            componentsschemas_schema633_type_1 = cast(Literal["s3"], data)
+            if componentsschemas_schema633_type_1 != "s3":
                 raise ValueError(
-                    f"/components/schemas/__schema583_type_1 must match const 's3', got '{componentsschemas_schema583_type_1}'"
+                    f"/components/schemas/__schema633_type_1 must match const 's3', got '{componentsschemas_schema633_type_1}'"
                 )
-            return componentsschemas_schema583_type_1
-            componentsschemas_schema583_type_2 = cast(Literal["aws-ssm"], data)
-            if componentsschemas_schema583_type_2 != "aws-ssm":
+            return componentsschemas_schema633_type_1
+            componentsschemas_schema633_type_2 = cast(Literal["aws-ssm"], data)
+            if componentsschemas_schema633_type_2 != "aws-ssm":
                 raise ValueError(
-                    f"/components/schemas/__schema583_type_2 must match const 'aws-ssm', got '{componentsschemas_schema583_type_2}'"
+                    f"/components/schemas/__schema633_type_2 must match const 'aws-ssm', got '{componentsschemas_schema633_type_2}'"
                 )
-            return componentsschemas_schema583_type_2
-            componentsschemas_schema583_type_3 = cast(Literal["aws-secrets-manager"], data)
-            if componentsschemas_schema583_type_3 != "aws-secrets-manager":
+            return componentsschemas_schema633_type_2
+            componentsschemas_schema633_type_3 = cast(Literal["aws-secrets-manager"], data)
+            if componentsschemas_schema633_type_3 != "aws-secrets-manager":
                 raise ValueError(
-                    f"/components/schemas/__schema583_type_3 must match const 'aws-secrets-manager', got '{componentsschemas_schema583_type_3}'"
+                    f"/components/schemas/__schema633_type_3 must match const 'aws-secrets-manager', got '{componentsschemas_schema633_type_3}'"
                 )
-            return componentsschemas_schema583_type_3
+            return componentsschemas_schema633_type_3
 
         source_type = _parse_source_type(d.pop("sourceType"))
 

@@ -60,7 +60,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: UpdateUserMeRequest | Unset = UNSET,
 ) -> Response[UpdateUsersMeResponse200]:
-    """Update the current authenticated user
+    """Update the current user; password and email changes require a browser login within the last 12 hours
 
     Args:
         body (UpdateUserMeRequest | Unset):
@@ -89,7 +89,7 @@ def sync(
     client: AuthenticatedClient | Client,
     body: UpdateUserMeRequest | Unset = UNSET,
 ) -> UpdateUsersMeResponse200 | None:
-    """Update the current authenticated user
+    """Update the current user; password and email changes require a browser login within the last 12 hours
 
     Args:
         body (UpdateUserMeRequest | Unset):
@@ -113,7 +113,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: UpdateUserMeRequest | Unset = UNSET,
 ) -> Response[UpdateUsersMeResponse200]:
-    """Update the current authenticated user
+    """Update the current user; password and email changes require a browser login within the last 12 hours
 
     Args:
         body (UpdateUserMeRequest | Unset):
@@ -140,7 +140,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: UpdateUserMeRequest | Unset = UNSET,
 ) -> UpdateUsersMeResponse200 | None:
-    """Update the current authenticated user
+    """Update the current user; password and email changes require a browser login within the last 12 hours
 
     Args:
         body (UpdateUserMeRequest | Unset):

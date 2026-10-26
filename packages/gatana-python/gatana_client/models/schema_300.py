@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class Schema300(str, Enum):
-    GATANA = "gatana"
-    NONE = "none"
+    PLAYGROUND_CONVERSION = "playground-conversion"
+    SIGNUP = "signup"
 
     def __str__(self) -> str:
         return str(self.value)

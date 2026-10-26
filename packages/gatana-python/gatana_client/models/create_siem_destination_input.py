@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+    from ..models.siem_gcs_target_input import SiemGcsTargetInput
+    from ..models.siem_https_target_input import SiemHttpsTargetInput
+    from ..models.siem_s3_target_input import SiemS3TargetInput
+
 
 T = TypeVar("T", bound="CreateSiemDestinationInput")
 
@@ -15,16 +21,18 @@ T = TypeVar("T", bound="CreateSiemDestinationInput")
 class CreateSiemDestinationInput:
     """
     Attributes:
-        url (str): HTTPS endpoint that receives the NDJSON batches. Must resolve to a public address.
         name (str | Unset):
+        url (str | Unset): HTTPS delivery URL; required for HTTPS, ignored for buckets. Must resolve to a public address
+        target (SiemGcsTargetInput | SiemHttpsTargetInput | SiemS3TargetInput | Unset):
         auth_header_name (str | Unset):
         auth_header_value (str | Unset):
         export_audit_logs (bool | Unset):
         export_credential_audit_logs (bool | Unset):
     """
 
-    url: str
     name: str | Unset = UNSET
+    url: str | Unset = UNSET
+    target: SiemGcsTargetInput | SiemHttpsTargetInput | SiemS3TargetInput | Unset = UNSET
     auth_header_name: str | Unset = UNSET
     auth_header_value: str | Unset = UNSET
     export_audit_logs: bool | Unset = UNSET
@@ -32,9 +40,22 @@ class CreateSiemDestinationInput:
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        url = self.url
+        from ..models.siem_https_target_input import SiemHttpsTargetInput
+        from ..models.siem_s3_target_input import SiemS3TargetInput
 
         name = self.name
+
+        url = self.url
+
+        target: dict[str, Any] | Unset
+        if isinstance(self.target, Unset):
+            target = UNSET
+        elif isinstance(self.target, SiemHttpsTargetInput):
+            target = self.target.to_dict()
+        elif isinstance(self.target, SiemS3TargetInput):
+            target = self.target.to_dict()
+        else:
+            target = self.target.to_dict()
 
         auth_header_name = self.auth_header_name
 
@@ -46,13 +67,13 @@ class CreateSiemDestinationInput:
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "url": url,
-            }
-        )
+        field_dict.update({})
         if name is not UNSET:
             field_dict["name"] = name
+        if url is not UNSET:
+            field_dict["url"] = url
+        if target is not UNSET:
+            field_dict["target"] = target
         if auth_header_name is not UNSET:
             field_dict["authHeaderName"] = auth_header_name
         if auth_header_value is not UNSET:
@@ -66,10 +87,41 @@ class CreateSiemDestinationInput:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        d = dict(src_dict)
-        url = d.pop("url")
+        from ..models.siem_gcs_target_input import SiemGcsTargetInput
+        from ..models.siem_https_target_input import SiemHttpsTargetInput
+        from ..models.siem_s3_target_input import SiemS3TargetInput
 
+        d = dict(src_dict)
         name = d.pop("name", UNSET)
+
+        url = d.pop("url", UNSET)
+
+        def _parse_target(data: object) -> SiemGcsTargetInput | SiemHttpsTargetInput | SiemS3TargetInput | Unset:
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_schema245_type_0 = SiemHttpsTargetInput.from_dict(data)
+
+                return componentsschemas_schema245_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_schema245_type_1 = SiemS3TargetInput.from_dict(data)
+
+                return componentsschemas_schema245_type_1
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            if not isinstance(data, dict):
+                raise TypeError()
+            componentsschemas_schema245_type_2 = SiemGcsTargetInput.from_dict(data)
+
+            return componentsschemas_schema245_type_2
+
+        target = _parse_target(d.pop("target", UNSET))
 
         auth_header_name = d.pop("authHeaderName", UNSET)
 
@@ -80,8 +132,9 @@ class CreateSiemDestinationInput:
         export_credential_audit_logs = d.pop("exportCredentialAuditLogs", UNSET)
 
         create_siem_destination_input = cls(
-            url=url,
             name=name,
+            url=url,
+            target=target,
             auth_header_name=auth_header_name,
             auth_header_value=auth_header_value,
             export_audit_logs=export_audit_logs,

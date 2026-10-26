@@ -7,15 +7,16 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.artifact_shares_response import ArtifactSharesResponse
-from ...models.schema_306 import Schema306
+from ...models.schema_331 import Schema331
 from ...types import Response
 
 
 def _get_kwargs(
     artifact_id: str,
-    member_type: Schema306,
+    member_type: Schema331,
     member_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "delete",
         "url": "/artifacts/{artifact_id}/shares/{member_type}/{member_id}".format(
@@ -53,7 +54,7 @@ def _build_response(
 
 def sync_detailed(
     artifact_id: str,
-    member_type: Schema306,
+    member_type: Schema331,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -62,7 +63,7 @@ def sync_detailed(
 
     Args:
         artifact_id (str):
-        member_type (Schema306): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema331): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
 
@@ -89,7 +90,7 @@ def sync_detailed(
 
 def sync(
     artifact_id: str,
-    member_type: Schema306,
+    member_type: Schema331,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -98,7 +99,7 @@ def sync(
 
     Args:
         artifact_id (str):
-        member_type (Schema306): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema331): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
 
@@ -120,7 +121,7 @@ def sync(
 
 async def asyncio_detailed(
     artifact_id: str,
-    member_type: Schema306,
+    member_type: Schema331,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -129,7 +130,7 @@ async def asyncio_detailed(
 
     Args:
         artifact_id (str):
-        member_type (Schema306): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema331): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
 
@@ -154,7 +155,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     artifact_id: str,
-    member_type: Schema306,
+    member_type: Schema331,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -163,7 +164,7 @@ async def asyncio(
 
     Args:
         artifact_id (str):
-        member_type (Schema306): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema331): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
 

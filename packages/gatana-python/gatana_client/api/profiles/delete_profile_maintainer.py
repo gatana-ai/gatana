@@ -14,6 +14,7 @@ def _get_kwargs(
     profile_id: str,
     user_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "delete",
         "url": "/profiles/{profile_id}/maintainers/{user_id}".format(

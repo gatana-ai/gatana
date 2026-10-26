@@ -5,7 +5,7 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1123 import Schema1123
+from ..models.schema_1219 import Schema1219
 
 T = TypeVar("T", bound="GetSkillResponse")
 
@@ -17,7 +17,7 @@ class GetSkillResponse:
         id (str):
         name (str): Unique name in the organization; how agents address the skill
         description (str): One line saying when to use the skill
-        visibility (Schema1123):
+        visibility (Schema1219):
         collection_id (None | str): The collection the skill is in, or null at root
         collection_name (None | str): Name of that collection, or null at root
         content_bytes (float): Size of the Markdown body in bytes
@@ -28,7 +28,7 @@ class GetSkillResponse:
         shared_with_team_ids (list[str]): IDs of the teams the skill is shared with, any role
         maintainer_user_ids (list[str]): IDs of the users that maintain the skill: the same rights as the creator
         maintainer_team_ids (list[str]): IDs of the teams whose members maintain the skill
-        collection_visibility (None | Schema1123): The collection's general access, null at root
+        collection_visibility (None | Schema1219): The collection's general access, null at root
         collection_shared_with_user_ids (list[str]): Users with access through the collection, any role
         collection_shared_with_team_ids (list[str]): Teams with access through the collection, any role
         collection_maintainer_user_ids (list[str]): Users that maintain the collection, and so this skill
@@ -44,7 +44,7 @@ class GetSkillResponse:
     id: str
     name: str
     description: str
-    visibility: Schema1123
+    visibility: Schema1219
     collection_id: None | str
     collection_name: None | str
     content_bytes: float
@@ -55,7 +55,7 @@ class GetSkillResponse:
     shared_with_team_ids: list[str]
     maintainer_user_ids: list[str]
     maintainer_team_ids: list[str]
-    collection_visibility: None | Schema1123
+    collection_visibility: None | Schema1219
     collection_shared_with_user_ids: list[str]
     collection_shared_with_team_ids: list[str]
     collection_maintainer_user_ids: list[str]
@@ -98,7 +98,7 @@ class GetSkillResponse:
         maintainer_team_ids = self.maintainer_team_ids
 
         collection_visibility: None | str
-        if isinstance(self.collection_visibility, Schema1123):
+        if isinstance(self.collection_visibility, Schema1219):
             collection_visibility = self.collection_visibility.value
         else:
             collection_visibility = self.collection_visibility
@@ -163,7 +163,7 @@ class GetSkillResponse:
 
         description = d.pop("description")
 
-        visibility = Schema1123(d.pop("visibility"))
+        visibility = Schema1219(d.pop("visibility"))
 
         def _parse_collection_id(data: object) -> None | str:
             if data is None:
@@ -195,18 +195,18 @@ class GetSkillResponse:
 
         maintainer_team_ids = cast(list[str], d.pop("maintainerTeamIds"))
 
-        def _parse_collection_visibility(data: object) -> None | Schema1123:
+        def _parse_collection_visibility(data: object) -> None | Schema1219:
             if data is None:
                 return data
             try:
                 if not isinstance(data, str):
                     raise TypeError()
-                componentsschemas_schema1140_type_0 = Schema1123(data)
+                componentsschemas_schema1236_type_0 = Schema1219(data)
 
-                return componentsschemas_schema1140_type_0
+                return componentsschemas_schema1236_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema1123, data)
+            return cast(None | Schema1219, data)
 
         collection_visibility = _parse_collection_visibility(d.pop("collectionVisibility"))
 

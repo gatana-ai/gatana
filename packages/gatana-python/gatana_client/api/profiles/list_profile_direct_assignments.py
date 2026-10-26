@@ -13,6 +13,7 @@ from ...types import Response
 def _get_kwargs(
     profile_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/profiles/{profile_id}/direct-assignments".format(

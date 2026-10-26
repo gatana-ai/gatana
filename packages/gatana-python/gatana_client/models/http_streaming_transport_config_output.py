@@ -31,14 +31,14 @@ class HttpStreamingTransportConfigOutput:
         headers: list[list[str]] | Unset = UNSET
         if not isinstance(self.headers, Unset):
             headers = []
-            for componentsschemas_schema473_item_data in self.headers:
-                componentsschemas_schema473_item = []
-                for componentsschemas_schema473_item_item_data in componentsschemas_schema473_item_data:
-                    componentsschemas_schema473_item_item: str
-                    componentsschemas_schema473_item_item = componentsschemas_schema473_item_item_data
-                    componentsschemas_schema473_item.append(componentsschemas_schema473_item_item)
+            for componentsschemas_schema523_item_data in self.headers:
+                componentsschemas_schema523_item = []
+                for componentsschemas_schema523_item_item_data in componentsschemas_schema523_item_data:
+                    componentsschemas_schema523_item_item: str
+                    componentsschemas_schema523_item_item = componentsschemas_schema523_item_item_data
+                    componentsschemas_schema523_item.append(componentsschemas_schema523_item_item)
 
-                headers.append(componentsschemas_schema473_item)
+                headers.append(componentsschemas_schema523_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -66,21 +66,21 @@ class HttpStreamingTransportConfigOutput:
         headers: list[list[str]] | Unset = UNSET
         if _headers is not UNSET:
             headers = []
-            for componentsschemas_schema473_item_data in _headers:
-                componentsschemas_schema473_item = []
-                _componentsschemas_schema473_item = componentsschemas_schema473_item_data
-                for componentsschemas_schema473_item_item_data in _componentsschemas_schema473_item:
+            for componentsschemas_schema523_item_data in _headers:
+                componentsschemas_schema523_item = []
+                _componentsschemas_schema523_item = componentsschemas_schema523_item_data
+                for componentsschemas_schema523_item_item_data in _componentsschemas_schema523_item:
 
-                    def _parse_componentsschemas_schema473_item_item(data: object) -> str:
+                    def _parse_componentsschemas_schema523_item_item(data: object) -> str:
                         return cast(str, data)
 
-                    componentsschemas_schema473_item_item = _parse_componentsschemas_schema473_item_item(
-                        componentsschemas_schema473_item_item_data
+                    componentsschemas_schema523_item_item = _parse_componentsschemas_schema523_item_item(
+                        componentsschemas_schema523_item_item_data
                     )
 
-                    componentsschemas_schema473_item.append(componentsschemas_schema473_item_item)
+                    componentsschemas_schema523_item.append(componentsschemas_schema523_item_item)
 
-                headers.append(componentsschemas_schema473_item)
+                headers.append(componentsschemas_schema523_item)
 
         http_streaming_transport_config_output = cls(
             type_=type_,

@@ -13,6 +13,7 @@ from ...types import Response
 def _get_kwargs(
     server_slug: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/mcp-servers/{server_slug}/members/".format(

@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_350 import Schema350
-    from ..models.schema_352 import Schema352
-    from ..models.schema_372 import Schema372
+    from ..models.schema_402 import Schema402
+    from ..models.schema_404 import Schema404
+    from ..models.schema_425 import Schema425
 
 
 T = TypeVar("T", bound="AuthMetadata")
@@ -22,20 +22,20 @@ class AuthMetadata:
         has_paid_subscription (bool):
         has_assistant (bool):
         has_glama_registry (bool):
-        user (Schema350):
-        tenant (Schema352):
+        user (Schema402):
+        tenant (Schema404):
         rules (list[Any]):
-        quota (Schema372):
+        quota (Schema425):
     """
 
     is_playground: bool
     has_paid_subscription: bool
     has_assistant: bool
     has_glama_registry: bool
-    user: Schema350
-    tenant: Schema352
+    user: Schema402
+    tenant: Schema404
     rules: list[Any]
-    quota: Schema372
+    quota: Schema425
 
     def to_dict(self) -> dict[str, Any]:
         is_playground = self.is_playground
@@ -73,9 +73,9 @@ class AuthMetadata:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_350 import Schema350
-        from ..models.schema_352 import Schema352
-        from ..models.schema_372 import Schema372
+        from ..models.schema_402 import Schema402
+        from ..models.schema_404 import Schema404
+        from ..models.schema_425 import Schema425
 
         d = dict(src_dict)
         is_playground = d.pop("isPlayground")
@@ -86,13 +86,13 @@ class AuthMetadata:
 
         has_glama_registry = d.pop("hasGlamaRegistry")
 
-        user = Schema350.from_dict(d.pop("user"))
+        user = Schema402.from_dict(d.pop("user"))
 
-        tenant = Schema352.from_dict(d.pop("tenant"))
+        tenant = Schema404.from_dict(d.pop("tenant"))
 
         rules = cast(list[Any], d.pop("rules"))
 
-        quota = Schema372.from_dict(d.pop("quota"))
+        quota = Schema425.from_dict(d.pop("quota"))
 
         auth_metadata = cls(
             is_playground=is_playground,

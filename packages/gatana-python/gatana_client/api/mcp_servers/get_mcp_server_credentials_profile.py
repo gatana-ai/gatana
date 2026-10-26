@@ -15,6 +15,7 @@ def _get_kwargs(
     *,
     profile_id: str,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["profileId"] = profile_id

@@ -13,6 +13,7 @@ def _get_kwargs(
     *,
     all_: str | Unset = UNSET,
 ) -> dict[str, Any]:
+
     params: dict[str, Any] = {}
 
     params["all"] = all_

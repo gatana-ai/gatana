@@ -6,13 +6,14 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_446 import Schema446
+from ...models.schema_494 import Schema494
 from ...types import Response
 
 
 def _get_kwargs(
     user_id: str,
 ) -> dict[str, Any]:
+
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/users/{user_id}".format(
@@ -23,9 +24,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema446 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema494 | None:
     if response.status_code == 200:
-        response_200 = Schema446.from_dict(response.json())
+        response_200 = Schema494.from_dict(response.json())
 
         return response_200
 
@@ -35,7 +36,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema446]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema494]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -48,7 +49,7 @@ def sync_detailed(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[Schema446]:
+) -> Response[Schema494]:
     """Get one user by ID
 
     Args:
@@ -59,7 +60,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema446]
+        Response[Schema494]
     """
 
     kwargs = _get_kwargs(
@@ -77,7 +78,7 @@ def sync(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Schema446 | None:
+) -> Schema494 | None:
     """Get one user by ID
 
     Args:
@@ -88,7 +89,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema446
+        Schema494
     """
 
     return sync_detailed(
@@ -101,7 +102,7 @@ async def asyncio_detailed(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[Schema446]:
+) -> Response[Schema494]:
     """Get one user by ID
 
     Args:
@@ -112,7 +113,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema446]
+        Response[Schema494]
     """
 
     kwargs = _get_kwargs(
@@ -128,7 +129,7 @@ async def asyncio(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Schema446 | None:
+) -> Schema494 | None:
     """Get one user by ID
 
     Args:
@@ -139,7 +140,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema446
+        Schema494
     """
 
     return (
