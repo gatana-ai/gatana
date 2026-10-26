@@ -16,7 +16,7 @@ use super::Silent;
 use super::config::{apex_login, logged_in};
 use crate::apex::{SignUpForm, Start};
 use crate::cli::SignupArgs;
-use crate::config::set_organization_login;
+use crate::config::{login_command, set_organization_login};
 use crate::context::Context;
 use crate::output;
 use anyhow::{Context as _, Result, anyhow, bail};
@@ -133,7 +133,7 @@ async fn in_terminal(context: &Context, args: SignupArgs) -> Result<bool> {
 
     let tokens =
         crate::oidc::refresh(context.http(), &base_url, client_id, refresh_token).await.with_context(|| {
-            format!("The organization exists, but the sign-in failed. Run: gatana config login {org_id}")
+            format!("The organization exists, but the sign-in failed. Run: {}", login_command(org_id, &base_url))
         })?;
     let stored = json!({
         "access_token": tokens.access_token,
@@ -141,8 +141,8 @@ async fn in_terminal(context: &Context, args: SignupArgs) -> Result<bool> {
         "expires_at": tokens.expires_at(),
     });
     // No clientId: without one, the CLI uses the organization's own `<org>-cli`, which this token is for
-    set_organization_login(org_id, json!({ "baseUrl": base_url, "tokens": stored }))?;
-    logged_in(org_id)?;
+    let saved_as = set_organization_login(org_id, &base_url, json!({ "tokens": stored }))?;
+    logged_in(&saved_as)?;
     Ok(true)
 }
 

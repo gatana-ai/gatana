@@ -2,7 +2,6 @@
 
 use super::Silent;
 use crate::cli::{InstallArgs, SkillsCommand, SyncArgs};
-use crate::config::{default_organization, tenant_from_url};
 use crate::context::Context;
 use crate::output::{self, Column, Options};
 use crate::skills::api::HttpSkillsApi;
@@ -65,8 +64,8 @@ fn org_context(org: Option<&str>) -> Result<Option<Context>> {
 }
 
 /// The skills API and the organization the files are stamped with. The organization id is
-/// recorded in every manifest and SKILL.md, so it must be known even when only a base URL is: the
-/// first host label is the tenant.
+/// recorded in every manifest and SKILL.md; with only GATANA_BASE_URL set, the configuration takes
+/// it from the first host label.
 pub(super) async fn connect<'a>(
     context: &'a Context,
     org: Option<&str>,
@@ -76,13 +75,7 @@ pub(super) async fn connect<'a>(
         None => error,
     })?;
     let api = context.api().await?;
-    let env = |name: &str| std::env::var(name).ok().filter(|value| !value.is_empty());
-    let org_id = org
-        .map(str::to_string)
-        .or_else(|| env("GATANA_ORG_ID"))
-        .or_else(|| if env("GATANA_API_KEY").is_some() { None } else { default_organization() })
-        .unwrap_or_else(|| tenant_from_url(&config.base_url));
-    let identity = SkillsIdentity { org_id, base_url: config.base_url.clone() };
+    let identity = SkillsIdentity { org_id: config.org_id.clone(), base_url: config.base_url.clone() };
     Ok((HttpSkillsApi::new(api, &config.base_url), identity))
 }
 

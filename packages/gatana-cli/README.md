@@ -298,8 +298,8 @@ Configuration, authentication and schemas.
 | **config token**       | `gatana config token`                                         | Print the token that requests use                       |
 | **config login**       | `gatana config login [org-id-or-url] [-p pat] [--no-browser]` | Log in in the browser or with a personal access token   |
 | **config ls**          | `gatana config ls`                                            | List all configured organizations                       |
-| **config set-default** | `gatana config set-default <org-id>`                          | Set the default organization                            |
-| **config remove**      | `gatana config remove <org-id>`                               | Remove an organization from the config file             |
+| **config set-default** | `gatana config set-default <name-or-url>`                     | Set the default organization                            |
+| **config remove**      | `gatana config remove <name-or-url>`                          | Remove an organization from the config file             |
 | **auth-info**          | `gatana auth-info`                                            | Show the authenticated user and organization            |
 | **schema server**      | `gatana schema server`                                        | Print the resolved OpenAPI schema of the Server DTO     |
 | **schema account**     | `gatana schema account`                                       | Print what `patch account` takes                        |
@@ -485,6 +485,20 @@ gatana config set-default org-two
 
 # Remove an organization
 gatana config remove org-one
+```
+
+Each login is saved under a name. The name is the organization ID, unless that ID is already saved
+for another address: then the name is the host. So the same organization can be signed in on two
+addresses side by side:
+
+```bash
+gatana config login acme                        # saved as acme
+gatana config login https://acme.s.gatana.ai    # saved as acme.s.gatana.ai
+gatana config ls                                # shows the Name line for the second one
+
+# --org, GATANA_ORG_ID, set-default and remove take the name, the URL or the host
+GATANA_ORG_ID=acme.s.gatana.ai gatana get servers
+gatana config set-default https://acme.s.gatana.ai
 ```
 
 ### Skills

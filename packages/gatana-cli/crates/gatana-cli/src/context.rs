@@ -24,12 +24,12 @@ pub fn http_client() -> Result<reqwest::Client> {
 impl Context {
     /// Environment variables first, then the config file.
     pub fn new() -> Result<Self> {
-        Self::with_strategies(vec![Strategy::Env, Strategy::File { org_id: None }])
+        Self::with_strategies(vec![Strategy::Env, Strategy::File { selector: None }])
     }
 
-    /// One organization from the config file: `--org`.
-    pub fn for_org(org_id: &str) -> Result<Self> {
-        Self::with_strategies(vec![Strategy::File { org_id: Some(org_id.to_string()) }])
+    /// One organization from the config file, by its saved name or address: `--org`.
+    pub fn for_org(selector: &str) -> Result<Self> {
+        Self::with_strategies(vec![Strategy::File { selector: Some(selector.to_string()) }])
     }
 
     fn with_strategies(strategies: Vec<Strategy>) -> Result<Self> {
@@ -78,12 +78,12 @@ impl Context {
         if !refused {
             return error;
         }
-        let org = &config.org_id;
-        let advice = match config.credentials {
+        let advice = match &config.credentials {
             Credentials::ApiKey(_) => "Gatana does not accept the key in GATANA_API_KEY".to_string(),
-            Credentials::File { .. } => {
-                format!("The login saved for {org} no longer works. Run \"gatana config login {org}\" to sign in again")
-            }
+            Credentials::File { name, .. } => format!(
+                "The login saved for {name} no longer works. Run \"{}\" to sign in again",
+                config::login_command(&config.org_id, &config.base_url)
+            ),
         };
         anyhow!("{error:#}. {advice}")
     }

@@ -3,7 +3,7 @@
 use super::{Silent, text_at};
 use crate::apex::Start;
 use crate::cli::{ConfigCommand, SchemaCommand};
-use crate::config::{self, get_organization, list_organizations, set_organization_login};
+use crate::config::{self, list_organizations, set_organization_login};
 use crate::context::Context;
 use crate::output::{self, Format, Options};
 use crate::util::get_path;
@@ -37,14 +37,14 @@ pub async fn run(context: &Context, command: ConfigCommand) -> Result<()> {
         }
         ConfigCommand::Ls => list(),
         ConfigCommand::SetDefault { org_id } => match config::set_default_organization(&org_id) {
-            Ok(()) => output::println(&format!("Set {org_id} as the default organization.")),
+            Ok(name) => output::println(&format!("Set {name} as the default organization.")),
             Err(error) => {
                 output::error(&format!("Could not set the default organization: {error}"));
                 return Err(Silent.into());
             }
         },
         ConfigCommand::Remove { org_id } => match config::remove_organization(&org_id) {
-            Ok(()) => output::println(&format!("Removed organization {org_id}.")),
+            Ok(name) => output::println(&format!("Removed organization {name}.")),
             Err(error) => {
                 output::error(&format!("Could not remove the organization: {error}"));
                 return Err(Silent.into());
@@ -71,8 +71,8 @@ async fn login(
         (org_id_or_url.to_string(), None)
     };
     let base_url = base_url.or(derived_base_url).unwrap_or_else(|| format!("https://{org_id}.gatana.ai"));
-    match pat {
-        Some(pat) => set_organization_login(&org_id, json!({ "baseUrl": base_url, "pat": pat }))?,
+    let name = match pat {
+        Some(pat) => set_organization_login(&org_id, &base_url, json!({ "pat": pat }))?,
         None => {
             let scope = "openid profile email offline_access gatana.selfservice";
             let device =
@@ -89,10 +89,10 @@ async fn login(
                 "refresh_token": tokens.refresh_token.as_deref().unwrap_or_default(),
                 "expires_at": tokens.expires_at(),
             });
-            set_organization_login(&org_id, json!({ "baseUrl": base_url, "tokens": stored }))?;
+            set_organization_login(&org_id, &base_url, json!({ "tokens": stored }))?
         }
-    }
-    logged_in(&org_id)
+    };
+    logged_in(&name)
 }
 
 /// The browser login without an organization: the person chooses it at the base domain (apex.rs),
@@ -105,17 +105,19 @@ pub(super) async fn apex_login(context: &Context, apex_url: Option<String>, brow
         "refresh_token": signed_in.tokens.refresh_token.as_deref().unwrap_or_default(),
         "expires_at": signed_in.tokens.expires_at(),
     });
-    set_organization_login(
+    let name = set_organization_login(
         &signed_in.org_id,
-        json!({ "baseUrl": signed_in.base_url, "clientId": signed_in.client_id, "tokens": stored }),
+        &signed_in.base_url,
+        json!({ "clientId": signed_in.client_id, "tokens": stored }),
     )?;
-    logged_in(&signed_in.org_id)
+    logged_in(&name)
 }
 
-pub(super) fn logged_in(org_id: &str) -> Result<()> {
+/// `name` is what the login was saved under.
+pub(super) fn logged_in(name: &str) -> Result<()> {
     output::println("Signed in.");
-    config::set_default_organization(org_id)?;
-    output::println(&format!("{org_id} is now the active organization."));
+    config::set_default_organization(name)?;
+    output::println(&format!("{name} is now the active organization."));
     Ok(())
 }
 
@@ -127,14 +129,17 @@ fn list() {
         return;
     }
     output::println("Configured organizations:");
-    for org in &orgs {
-        let entry = get_organization(org).unwrap_or_default();
-        let marker = if default.as_deref() == Some(org.as_str()) { "* " } else { "  " };
-        output::println(&format!("  {marker}Organization ID: {org}"));
-        if let Some(base_url) = text_at(&entry, "/baseUrl") {
+    for (name, entry) in &orgs {
+        let org_id = config::organization_id(name, entry);
+        let marker = if default.as_deref() == Some(name.as_str()) { "* " } else { "  " };
+        output::println(&format!("  {marker}Organization ID: {org_id}"));
+        if *name != org_id {
+            output::println(&format!("    Name: {name}"));
+        }
+        if let Some(base_url) = text_at(entry, "/baseUrl") {
             output::println(&format!("    Base URL: {base_url}"));
         }
-        let saved = |pointer: &str| text_at(&entry, pointer).is_some_and(|value| !value.is_empty());
+        let saved = |pointer: &str| text_at(entry, pointer).is_some_and(|value| !value.is_empty());
         if saved("/pat") {
             output::println("    Personal Access Token: [SAVED]");
         }

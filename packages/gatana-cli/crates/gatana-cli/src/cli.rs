@@ -1120,12 +1120,12 @@ pub enum ConfigCommand {
     Ls,
     /// Set default organization
     SetDefault {
-        /// ID of the organization to set as default
+        /// The name of the saved organization (see gatana config ls), or its address
         org_id: String,
     },
     /// Remove an organization configuration
     Remove {
-        /// ID of the organization to remove
+        /// The name of the saved organization (see gatana config ls), or its address
         org_id: String,
     },
 }

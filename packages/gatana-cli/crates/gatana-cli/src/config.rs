@@ -3,12 +3,18 @@
 //! in again.
 //!
 //! ```json
-//! { "orgs": { "acme": { "baseUrl": "https://acme.gatana.ai", "pat": "gk_...",
+//! { "orgs": { "acme": { "orgId": "acme", "baseUrl": "https://acme.gatana.ai", "pat": "gk_...",
 //!                       "tokens": { "access_token": "...", "refresh_token": "...", "expires_at": 1760000000 },
-//!                       "clientId": "apx_..." } },
+//!                       "clientId": "apx_..." },
+//!             "acme.s.gatana.ai": { "orgId": "acme", "baseUrl": "https://acme.s.gatana.ai", ... } },
 //!   "defaultOrgId": "acme",
 //!   "apexClients": { "https://gatana.ai": "apx_..." } }
 //! ```
+//!
+//! A key in `orgs` is the name a login is saved under, and `defaultOrgId` holds one. The name is
+//! the organization ID, or the host when that ID is already saved for another address: the same
+//! organization can be signed in on production and staging side by side. Without `orgId` (files
+//! the TypeScript CLI wrote), the name is the organization ID.
 //!
 //! `clientId` is set when the tokens came from a sign-in through the base domain (apex.rs): they
 //! were issued to that client and refresh with it. Without it they belong to `<org>-cli`.
@@ -57,37 +63,87 @@ pub fn tenant_from_url(base_url: &str) -> String {
         .unwrap_or_default()
 }
 
-/// Merges into the organization's entry (lodash merge, as before), and makes it the default when
-/// there is none yet.
-pub fn set_organization_config(org_id: &str, update: Value) -> Result<()> {
+/// Merges into the entry saved under this name (lodash merge, as before), and makes it the default
+/// when there is none yet.
+pub fn set_organization_config(name: &str, update: Value) -> Result<()> {
     let mut config = read_config();
-    merge_organization(&mut config, org_id, &update)?;
+    merge_organization(&mut config, name, &update)?;
     write_config(&config)
 }
 
-/// What a login writes. The credentials of the organization are replaced, not merged: a personal
-/// access token wins over OIDC tokens, and tokens refresh with `clientId`, so either one left over
-/// from an earlier login would outlive this one.
-pub fn set_organization_login(org_id: &str, login: Value) -> Result<()> {
+/// What a login writes; returns the name it is saved under. The credentials are replaced, not
+/// merged: a personal access token wins over OIDC tokens, and tokens refresh with `clientId`, so
+/// either one left over from an earlier login would outlive this one.
+pub fn set_organization_login(org_id: &str, base_url: &str, credentials: Value) -> Result<String> {
     let mut config = read_config();
-    if let Some(org) = config.get_mut("orgs").and_then(|orgs| orgs.get_mut(org_id)).and_then(Value::as_object_mut) {
+    let name = login_name(config.get("orgs").and_then(Value::as_object), org_id, base_url);
+    if let Some(org) = config.get_mut("orgs").and_then(|orgs| orgs.get_mut(&name)).and_then(Value::as_object_mut) {
         for key in ["pat", "tokens", "clientId"] {
             org.shift_remove(key);
         }
     }
-    merge_organization(&mut config, org_id, &login)?;
-    write_config(&config)
+    let mut login = json!({ "orgId": org_id, "baseUrl": base_url });
+    deep_merge(&mut login, &credentials);
+    merge_organization(&mut config, &name, &login)?;
+    write_config(&config)?;
+    Ok(name)
 }
 
-fn merge_organization(config: &mut Value, org_id: &str, update: &Value) -> Result<()> {
+/// The entry that already holds this organization at this address, else the organization ID, else
+/// the host when the ID is saved for another address.
+fn login_name(orgs: Option<&Map<String, Value>>, org_id: &str, base_url: &str) -> String {
+    let empty = Map::new();
+    let orgs = orgs.unwrap_or(&empty);
+    let saved = orgs.iter().find(|(name, org)| {
+        organization_id(name, org) == org_id
+            && org.get("baseUrl").and_then(Value::as_str).is_some_and(|saved| same_origin(saved, base_url))
+    });
+    if let Some((name, _)) = saved {
+        return name.clone();
+    }
+    let host = url::Url::parse(base_url)
+        .ok()
+        .and_then(|url| url.host_str().map(str::to_string))
+        .unwrap_or_else(|| base_url.to_string());
+    [org_id.to_string(), host.clone()]
+        .into_iter()
+        .chain((2..).map(|n| format!("{host}-{n}")))
+        .find(|name| !orgs.contains_key(name))
+        .unwrap_or_default()
+}
+
+fn same_origin(a: &str, b: &str) -> bool {
+    match (url::Url::parse(a), url::Url::parse(b)) {
+        (Ok(a), Ok(b)) => a.origin() == b.origin(),
+        _ => a.trim_end_matches('/') == b.trim_end_matches('/'),
+    }
+}
+
+/// The organization ID of a saved entry.
+pub fn organization_id(name: &str, org: &Value) -> String {
+    org.get("orgId").and_then(Value::as_str).filter(|id| !id.is_empty()).unwrap_or(name).to_string()
+}
+
+/// The command that signs in to this organization at this address again.
+pub fn login_command(org_id: &str, base_url: &str) -> String {
+    if same_origin(base_url, &format!("https://{org_id}.gatana.ai")) {
+        format!("gatana config login {org_id}")
+    } else if tenant_from_url(base_url) == org_id {
+        format!("gatana config login {base_url}")
+    } else {
+        format!("gatana config login {org_id} --base-url {base_url}")
+    }
+}
+
+fn merge_organization(config: &mut Value, name: &str, update: &Value) -> Result<()> {
     let root = config.as_object_mut().ok_or_else(|| anyhow!("the configuration must be a JSON object"))?;
     let orgs = root.entry("orgs").or_insert_with(|| Value::Object(Map::new()));
     if !orgs.is_object() {
         *orgs = Value::Object(Map::new());
     }
-    deep_merge(orgs, &json!({ org_id: update }));
+    deep_merge(orgs, &json!({ name: update }));
     if root.get("defaultOrgId").and_then(Value::as_str).is_none_or(str::is_empty) {
-        root.insert("defaultOrgId".into(), Value::String(org_id.to_string()));
+        root.insert("defaultOrgId".into(), Value::String(name.to_string()));
     }
     Ok(())
 }
@@ -108,37 +164,70 @@ pub fn set_apex_client(origin: &str, client_id: &str) -> Result<()> {
     write_config(&config)
 }
 
-/// Organization ids are looked up in lower case.
-pub fn get_organization(org_id: &str) -> Option<Value> {
-    read_config().get("orgs")?.get(org_id.to_lowercase())?.as_object().map(|org| Value::Object(org.clone()))
+/// The saved entry a selector names, with its name: the name itself (also in lower case), or the
+/// address it was saved with, as a URL (`https://acme.gatana.ai`) or a host (`acme.gatana.ai`).
+pub fn find_organization(selector: &str) -> Option<(String, Value)> {
+    find_saved(&read_config(), selector)
 }
 
-pub fn list_organizations() -> Vec<String> {
-    read_config().get("orgs").and_then(Value::as_object).map(|orgs| orgs.keys().cloned().collect()).unwrap_or_default()
+fn find_saved(config: &Value, selector: &str) -> Option<(String, Value)> {
+    let orgs = config.get("orgs")?.as_object()?;
+    let by_name = [selector.to_string(), selector.to_lowercase()].into_iter().find(|name| orgs.contains_key(name));
+    let name = by_name.or_else(|| {
+        orgs.iter()
+            .find(|(_, org)| org.get("baseUrl").and_then(Value::as_str).is_some_and(|url| at_address(url, selector)))
+            .map(|(name, _)| name.clone())
+    })?;
+    orgs.get(&name).filter(|org| org.is_object()).map(|org| (name, org.clone()))
+}
+
+fn at_address(base_url: &str, selector: &str) -> bool {
+    let Ok(base) = url::Url::parse(base_url) else {
+        return false;
+    };
+    if selector.contains("://") {
+        url::Url::parse(selector).is_ok_and(|url| url.origin() == base.origin())
+    } else {
+        base.host_str().is_some_and(|host| host.eq_ignore_ascii_case(selector))
+    }
+}
+
+/// Every saved entry with its name, in file order.
+pub fn list_organizations() -> Vec<(String, Value)> {
+    read_config()
+        .get("orgs")
+        .and_then(Value::as_object)
+        .map(|orgs| orgs.iter().map(|(name, org)| (name.clone(), org.clone())).collect())
+        .unwrap_or_default()
 }
 
 pub fn default_organization() -> Option<String> {
     read_config().get("defaultOrgId").and_then(Value::as_str).filter(|id| !id.is_empty()).map(str::to_string)
 }
 
-pub fn set_default_organization(org_id: &str) -> Result<()> {
+/// Returns the name of the entry that is now the default.
+pub fn set_default_organization(selector: &str) -> Result<String> {
     let mut config = read_config();
-    if config.pointer(&format!("/orgs/{}", escape_pointer(org_id))).is_none() {
-        bail!("{org_id} not found in config");
-    }
-    config["defaultOrgId"] = Value::String(org_id.to_string());
-    write_config(&config)
+    let Some((name, _)) = find_saved(&config, selector) else {
+        bail!("{selector} not found in config");
+    };
+    config["defaultOrgId"] = Value::String(name.clone());
+    write_config(&config)?;
+    Ok(name)
 }
 
-pub fn remove_organization(org_id: &str) -> Result<()> {
+/// Returns the name of the entry it removed.
+pub fn remove_organization(selector: &str) -> Result<String> {
     let mut config = read_config();
-    let orgs = config.get_mut("orgs").and_then(Value::as_object_mut);
-    let Some(orgs) = orgs.filter(|orgs| orgs.contains_key(org_id)) else {
-        bail!("{org_id} not found in config");
+    let Some((name, _)) = find_saved(&config, selector) else {
+        bail!("{selector} not found in config");
     };
-    orgs.shift_remove(org_id);
+    let Some(orgs) = config.get_mut("orgs").and_then(Value::as_object_mut) else {
+        bail!("{selector} not found in config");
+    };
+    orgs.shift_remove(&name);
     let next_default = orgs.keys().next().cloned();
-    if config.get("defaultOrgId").and_then(Value::as_str) == Some(org_id) {
+    if config.get("defaultOrgId").and_then(Value::as_str) == Some(name.as_str()) {
         match next_default {
             Some(next) => config["defaultOrgId"] = Value::String(next),
             None => {
@@ -148,11 +237,8 @@ pub fn remove_organization(org_id: &str) -> Result<()> {
             }
         }
     }
-    write_config(&config)
-}
-
-fn escape_pointer(key: &str) -> String {
-    key.replace('~', "~0").replace('/', "~1")
+    write_config(&config)?;
+    Ok(name)
 }
 
 /// Where a command's credentials come from.
@@ -160,8 +246,9 @@ fn escape_pointer(key: &str) -> String {
 pub enum Credentials {
     /// GATANA_API_KEY.
     ApiKey(String),
-    /// An organization in the config file: a PAT, or OIDC tokens that may need a refresh.
-    File { org: Value },
+    /// An organization in the config file, by the name it is saved under: a PAT, or OIDC tokens
+    /// that may need a refresh.
+    File { name: String, org: Value },
 }
 
 #[derive(Clone, Debug)]
@@ -172,17 +259,23 @@ pub struct ResolvedConfig {
 }
 
 impl ResolvedConfig {
-    /// What `gatana config current` shows.
+    /// What `gatana config current` shows. The saved name only when it is not the organization ID.
     pub fn describe(&self) -> Value {
-        json!({ "orgId": self.org_id, "baseUrl": self.base_url })
+        let mut described = json!({ "orgId": self.org_id, "baseUrl": self.base_url });
+        if let Credentials::File { name, .. } = &self.credentials
+            && *name != self.org_id
+        {
+            described["name"] = Value::String(name.clone());
+        }
+        described
     }
 
     /// The bearer token for requests. An OIDC access token about to expire is refreshed and the new
     /// tokens are written back to the config file.
     pub async fn token(&self, http: &reqwest::Client) -> Result<String> {
-        let org = match &self.credentials {
+        let (name, org) = match &self.credentials {
             Credentials::ApiKey(key) => return Ok(key.clone()),
-            Credentials::File { org } => org,
+            Credentials::File { name, org } => (name, org),
         };
         let now = chrono::Utc::now().timestamp();
         if let Some(token) = usable_token(org, now) {
@@ -193,7 +286,7 @@ impl ResolvedConfig {
         // refresh with the same token at once, and the one that came second would revoke the tokens
         // the first had just saved. One process refreshes at a time; the next one reads its tokens.
         let _lock = lock_config().await?;
-        let org = get_organization(&self.org_id).unwrap_or_else(|| org.clone());
+        let org = read_config().get("orgs").and_then(|orgs| orgs.get(name)).cloned().unwrap_or_else(|| org.clone());
         if let Some(token) = usable_token(&org, chrono::Utc::now().timestamp()) {
             gatana_api::debug!("gatana", "Using the access token another process saved");
             return Ok(token);
@@ -211,14 +304,15 @@ impl ResolvedConfig {
             .filter(|id| !id.is_empty())
             .map_or_else(|| format!("{}-cli", self.org_id), str::to_string);
         let fresh = crate::oidc::refresh(http, &self.base_url, &client_id, refresh).await.map_err(|error| {
-            anyhow!("Could not refresh the access token. Sign in again with gatana config login. ({error})")
+            let login = login_command(&self.org_id, &self.base_url);
+            anyhow!("Could not refresh the access token. Sign in again with {login}. ({error})")
         })?;
         let tokens = json!({
             "access_token": fresh.access_token,
             "refresh_token": fresh.refresh_token.as_deref().unwrap_or(refresh),
             "expires_at": fresh.expires_at(),
         });
-        set_organization_config(&self.org_id, json!({ "tokens": tokens }))?;
+        set_organization_config(name, json!({ "tokens": tokens }))?;
         gatana_api::debug!("gatana", "Token refreshed successfully");
         Ok(fresh.access_token)
     }
@@ -256,7 +350,7 @@ pub enum Strategy {
     /// GATANA_API_KEY with GATANA_ORG_ID or GATANA_BASE_URL.
     Env,
     /// The config file: the given organization, else GATANA_ORG_ID, else the default one.
-    File { org_id: Option<String> },
+    File { selector: Option<String> },
 }
 
 impl Strategy {
@@ -286,12 +380,16 @@ impl Strategy {
                     credentials: Credentials::ApiKey(key),
                 })
             }
-            Strategy::File { org_id } => {
-                let org_id = org_id.clone().or_else(|| env("GATANA_ORG_ID")).or_else(default_organization)?;
-                gatana_api::debug!("gatana", "FileConfigLoader loading config for orgId={org_id}");
-                let org = get_organization(&org_id)?;
+            Strategy::File { selector } => {
+                let selector = selector.clone().or_else(|| env("GATANA_ORG_ID")).or_else(default_organization)?;
+                gatana_api::debug!("gatana", "FileConfigLoader loading config for {selector}");
+                let (name, org) = find_organization(&selector)?;
                 let base_url = org.get("baseUrl").and_then(Value::as_str).unwrap_or_default().to_string();
-                Some(ResolvedConfig { org_id, base_url, credentials: Credentials::File { org } })
+                Some(ResolvedConfig {
+                    org_id: organization_id(&name, &org),
+                    base_url,
+                    credentials: Credentials::File { name, org },
+                })
             }
         }
     }
@@ -324,6 +422,49 @@ mod tests {
         assert_eq!(
             usable_token(&json!({ "pat": "gk_1", "tokens": { "access_token": "at" } }), 0).as_deref(),
             Some("gk_1")
+        );
+    }
+
+    fn saved() -> Value {
+        json!({ "orgs": {
+            "acme": { "baseUrl": "https://acme.gatana.ai" },
+            "acme.s.gatana.ai": { "orgId": "acme", "baseUrl": "https://acme.s.gatana.ai" },
+        } })
+    }
+
+    #[test]
+    fn a_login_at_another_address_is_saved_under_the_host() {
+        let config = saved();
+        let orgs = config["orgs"].as_object();
+        assert_eq!(login_name(orgs, "acme", "https://acme.gatana.ai/"), "acme");
+        assert_eq!(login_name(orgs, "acme", "https://acme.s.gatana.ai"), "acme.s.gatana.ai");
+        assert_eq!(login_name(orgs, "acme", "https://acme.d.gatana.ai"), "acme.d.gatana.ai");
+        assert_eq!(login_name(orgs, "acme", "http://acme.s.gatana.ai"), "acme.s.gatana.ai-2");
+        assert_eq!(login_name(orgs, "other", "https://other.gatana.ai"), "other");
+        assert_eq!(login_name(None, "acme", "https://acme.s.gatana.ai"), "acme");
+    }
+
+    #[test]
+    fn a_saved_organization_is_found_by_name_or_address() {
+        let config = saved();
+        let name = |selector: &str| find_saved(&config, selector).map(|(name, _)| name);
+        assert_eq!(name("acme").as_deref(), Some("acme"));
+        assert_eq!(name("ACME").as_deref(), Some("acme"));
+        assert_eq!(name("acme.s.gatana.ai").as_deref(), Some("acme.s.gatana.ai"));
+        assert_eq!(name("https://acme.s.gatana.ai/").as_deref(), Some("acme.s.gatana.ai"));
+        assert_eq!(name("acme.gatana.ai").as_deref(), Some("acme"));
+        assert_eq!(name("https://acme.d.gatana.ai"), None);
+        let (found, org) = find_saved(&config, "acme.s.gatana.ai").unwrap();
+        assert_eq!(organization_id(&found, &org), "acme");
+    }
+
+    #[test]
+    fn the_login_command_names_the_address_when_it_is_not_the_default() {
+        assert_eq!(login_command("acme", "https://acme.gatana.ai"), "gatana config login acme");
+        assert_eq!(login_command("acme", "https://acme.s.gatana.ai"), "gatana config login https://acme.s.gatana.ai");
+        assert_eq!(
+            login_command("acme", "https://gatana.acme.internal"),
+            "gatana config login acme --base-url https://gatana.acme.internal"
         );
     }
 }
