@@ -138,6 +138,7 @@ pub async fn get(context: &Context, resource: GetCommand) -> Result<()> {
             crate::skills::show_skills(&skills, name.as_deref(), query.as_deref(), None).await?;
         }
         GetCommand::Account { name, kind } => super::accounts::get(context, name.as_deref(), kind).await?,
+        GetCommand::Team { name, account } => super::teams::get(context, name.as_deref(), account.as_deref()).await?,
         GetCommand::Profile { name, server } => super::profiles::get(context, name.as_deref(), server).await?,
         GetCommand::Pat { account, show_secrets } => {
             super::accounts::get_tokens(context, &account, show_secrets).await?
@@ -188,7 +189,15 @@ pub async fn describe(context: &Context, resource: DescribeCommand) -> Result<()
                     json!({ "id": credential.get("id"), "scope": scope, "owner": owner })
                 })
                 .collect();
-            output::output(&json!({ "server": server, "logsTop5": logs, "credentials": credentials }), Options::yaml());
+            let mut shown = json!({ "server": server, "logsTop5": logs, "credentials": credentials });
+            if let Ok(rows) = super::server_access::access_rows(api, &name).await {
+                let access: Vec<Value> = rows
+                    .iter()
+                    .map(|row| json!({ "kind": row.get("kind"), "name": row.get("name"), "role": row.get("role") }))
+                    .collect();
+                shown["access"] = Value::Array(access);
+            }
+            output::output(&shown, Options::yaml());
         }
         DescribeCommand::Skill { name } => {
             let api = context.api().await?;
@@ -196,6 +205,7 @@ pub async fn describe(context: &Context, resource: DescribeCommand) -> Result<()
             crate::skills::show_skills(&skills, Some(&name), None, None).await?;
         }
         DescribeCommand::Account { name } => super::accounts::describe(context, &name).await?,
+        DescribeCommand::Team { name } => super::teams::describe(context, &name).await?,
         DescribeCommand::Profile { name } => super::profiles::describe(context, &name).await?,
         DescribeCommand::Org => super::org::describe(context).await?,
     }
@@ -222,6 +232,7 @@ pub async fn create(context: &Context, resource: CreateCommand) -> Result<()> {
         }
         CreateCommand::Account(args) => super::accounts::create(context, args).await?,
         CreateCommand::ServiceAccount(args) => super::accounts::create_service_account(context, args).await?,
+        CreateCommand::Team(args) => super::teams::create(context, args).await?,
         CreateCommand::Profile(args) => super::profiles::create(context, args).await?,
         CreateCommand::Pat(args) => super::accounts::create_token(context, args).await?,
     }
@@ -308,6 +319,7 @@ pub async fn delete(context: &Context, resource: DeleteCommand) -> Result<()> {
             output::success(&format!("Deleted sandbox '{id}'."));
         }
         DeleteCommand::Account { name } => super::accounts::delete(context, &name).await?,
+        DeleteCommand::Team { name } => super::teams::delete(context, &name).await?,
         DeleteCommand::Profile { name } => super::profiles::delete(context, &name).await?,
         DeleteCommand::Pat { token, account } => super::accounts::delete_token(context, &account, &token).await?,
     }
@@ -349,6 +361,7 @@ pub async fn patch(context: &Context, resource: PatchCommand) -> Result<()> {
         PatchCommand::Account { name, input } => {
             super::accounts::patch(context, &name, required_patch(&input)?).await?
         }
+        PatchCommand::Team { name, input } => super::teams::patch(context, &name, required_patch(&input)?).await?,
         PatchCommand::Profile { name, input } => {
             super::profiles::patch(context, &name, required_patch(&input)?).await?
         }

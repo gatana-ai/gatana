@@ -8,9 +8,11 @@ mod org;
 mod profiles;
 mod resolve;
 mod resources;
+mod server_access;
 mod servers;
 mod signup;
 mod skills;
+mod teams;
 mod upgrade;
 
 use crate::cli::{Cli, Command};
@@ -43,6 +45,8 @@ pub async fn run(cli: Cli) -> Result<()> {
         Command::Creds(args) => servers::effective_credentials(&context, args).await,
         Command::Faas { command } => servers::faas(&context, command).await,
         Command::Sandbox { command } => servers::sandbox(&context, command).await,
+        Command::Server { command } => server_access::run(&context, command).await,
+        Command::Team { command } => teams::run(&context, command).await,
         Command::Profile { command } => profiles::run(&context, command).await,
         Command::Skills { command } => skills::run(&context, command).await,
         Command::Config { command } => config::run(&context, command).await,

@@ -1,8 +1,9 @@
 //! Profiles: the profile itself through get, describe, create, patch and delete, and what it holds
 //! and who has it through "gatana profile".
 
+use super::resolve::Member;
 use super::{array_at, resolve, text_at};
-use crate::cli::{ClaimCommand, CreateProfileArgs, MaintainerCommand, ProfileCommand, ProfileMember};
+use crate::cli::{ClaimCommand, CreateProfileArgs, MaintainerCommand, ProfileCommand};
 use crate::context::Context;
 use crate::output::{self, Column, Options};
 use crate::util::format_age;
@@ -162,34 +163,32 @@ pub async fn run(context: &Context, command: ProfileCommand) -> Result<()> {
             let profile = resolve::profile(api, &profile).await?;
             let profile_id = resolve::id(&profile).to_string();
             let is_locked_by_org_owner = lock.then_some(true);
-            let who = match member_of(api, &member).await? {
+            let member = resolve::member(api, &member).await?;
+            match &member {
                 Member::Account(account) => {
                     let body = v1::types::CreateUserProfileAssignmentRequest { profile_id, is_locked_by_org_owner };
-                    api.v1().create_user_profile(resolve::id(&account), &body).send().await?;
-                    format!("account '{}'", text_at(&account, "/email").unwrap_or_default())
+                    api.v1().create_user_profile(resolve::id(account), &body).send().await?;
                 }
                 Member::Team(team) => {
                     let body = v1::types::CreateTeamProfileAssignmentRequest { profile_id, is_locked_by_org_owner };
-                    api.v1().create_team_profile(resolve::id(&team), &body).send().await?;
-                    format!("team '{}'", name_of(&team))
+                    api.v1().create_team_profile(resolve::id(team), &body).send().await?;
                 }
-            };
-            output::success(&format!("Gave profile '{}' to {who}.", name_of(&profile)));
+            }
+            output::success(&format!("Gave profile '{}' to {}.", name_of(&profile), member.label()));
         }
         ProfileCommand::Unassign { profile, member } => {
             let profile = resolve::profile(api, &profile).await?;
             let profile_id = resolve::id(&profile);
-            let who = match member_of(api, &member).await? {
+            let member = resolve::member(api, &member).await?;
+            match &member {
                 Member::Account(account) => {
-                    api.v1().delete_user_profile(resolve::id(&account), profile_id).send().await?;
-                    format!("account '{}'", text_at(&account, "/email").unwrap_or_default())
+                    api.v1().delete_user_profile(resolve::id(account), profile_id).send().await?;
                 }
                 Member::Team(team) => {
-                    api.v1().delete_team_profile(resolve::id(&team), profile_id).send().await?;
-                    format!("team '{}'", name_of(&team))
+                    api.v1().delete_team_profile(resolve::id(team), profile_id).send().await?;
                 }
-            };
-            output::success(&format!("Took profile '{}' from {who}.", name_of(&profile)));
+            }
+            output::success(&format!("Took profile '{}' from {}.", name_of(&profile), member.label()));
         }
         ProfileCommand::Maintainers { command } => match command {
             MaintainerCommand::Add { profile, account } => {
@@ -263,22 +262,8 @@ pub async fn run(context: &Context, command: ProfileCommand) -> Result<()> {
     Ok(())
 }
 
-enum Member {
-    Account(Value),
-    Team(Value),
-}
-
-async fn member_of(api: &gatana_api::Client, member: &ProfileMember) -> Result<Member> {
-    match (&member.account, &member.team) {
-        (Some(account), _) => Ok(Member::Account(resolve::account(api, account).await?)),
-        (None, Some(team)) => Ok(Member::Team(resolve::team(api, team).await?)),
-        // clap requires one of the two
-        (None, None) => bail!("Give --account or --team."),
-    }
-}
-
 /// `department=engineering` as the claim key and the value that matches. The value may hold `=`.
-fn split_claim(claim: &str) -> Result<(String, String)> {
+pub(crate) fn split_claim(claim: &str) -> Result<(String, String)> {
     match claim.split_once('=') {
         Some((key, value)) if !key.is_empty() && !value.is_empty() => Ok((key.to_string(), value.to_string())),
         _ => bail!("Invalid claim: \"{claim}\". Expected format: KEY=VALUE, for example department=engineering"),

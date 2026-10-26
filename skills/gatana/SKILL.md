@@ -34,7 +34,7 @@ This skill has four jobs:
 Use the first surface that is available:
 
 1. **Gatana MCP tools.** Look for tools that start with `gatana-api_`, for example `gatana-api_createServerV2`. If the gateway runs in Code Mode, you see only `codemode_search_tools` and `codemode_execute_code`. Then search first, and call `codemode.gatanaApi.<operation>({ ... })` from code.
-2. **The `gatana` CLI.** Run `gatana auth-info`. The CLI can create servers and set up their OAuth, patch them, set server and user credentials, and upload hosted code. It has no profile commands. See [references/api.md](references/api.md).
+2. **The `gatana` CLI.** Run `gatana auth-info`. The CLI can create servers and set up their OAuth, patch them, set server and user credentials, upload hosted code, and manage accounts, teams, profiles and who has access to a server. See [references/api.md](references/api.md).
 3. **The REST API.** Use it only when the user gives you a personal access token in an environment variable. Base URLs: `https://<org>.gatana.ai/api/v1` and `/api/v2`. See [Public API](https://docs.gatana.ai/public-api-introduction/).
 
 If none of these is available, give the user the dashboard steps. Each reference file has them. If the user has no organization yet, see [Create an organization](#create-an-organization). If the user has one but is not connected to it, see [Connecting to Gatana](https://docs.gatana.ai/connecting-to-gatana/).
@@ -192,7 +192,7 @@ A server with no tools usually needs credentials. It is usually not broken. For 
 
 A new server is private. Its creator is its admin. Organization owners can manage it. Nobody else can use it until one of these is true:
 
-- A user or team is a member: `updateMcpServerMember({ serverSlug, memberType: 'users' | 'teams', memberId, body: { role: 'member' } })`. Roles: `member` calls tools, `maintainer` changes the configuration, `admin` also manages members and deletes.
+- A user or team is a member: `updateMcpServerMember({ serverSlug, memberType: 'users' | 'teams', memberId, body: { role: 'member' } })`, or `gatana server grant <slug> --account <email> | --team <name>`. `gatana server access <slug>` lists the members and the profiles. Roles: `member` calls tools, `maintainer` changes the configuration, `admin` also manages members and deletes.
 - A profile that the user has includes the server.
 - The server has `visibility: "organization"`. Then every member can use it.
 - The organization base role is not `none`. Then every member has that role on every server.

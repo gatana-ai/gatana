@@ -215,9 +215,10 @@ pub async fn schema(context: &Context, command: SchemaCommand) -> Result<()> {
             (document, schema)
         }
         // What the patch command sends: the body of the update operation
-        SchemaCommand::Account | SchemaCommand::Profile | SchemaCommand::Org => {
+        SchemaCommand::Account | SchemaCommand::Team | SchemaCommand::Profile | SchemaCommand::Org => {
             let operation = match command {
                 SchemaCommand::Account => "updateUser",
+                SchemaCommand::Team => "updateTeam",
                 SchemaCommand::Profile => "updateProfile",
                 _ => "updateTenant",
             };

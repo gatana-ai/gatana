@@ -807,6 +807,169 @@ pub mod types {
             value.parse()
         }
     }
+    ///`CreateTeamBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateTeamBody {
+        ///Human-readable description of the team
+        pub description: ::std::string::String,
+        ///Display name of the team, unique in the organization
+        pub name: ::std::string::String,
+    }
+    ///`CreateTeamClaimMappingBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateTeamClaimMappingBody {
+        ///Name of the identity provider claim to match
+        #[serde(rename = "claimKey")]
+        pub claim_key: ::std::string::String,
+        ///Claim value that gives membership when it matches
+        #[serde(rename = "claimValue")]
+        pub claim_value: ::std::string::String,
+    }
+    ///`CreateTeamClaimMappingResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateTeamClaimMappingResponse {
+        #[serde(rename = "claimMapping")]
+        pub claim_mapping: TeamClaimMapping,
+    }
+    ///`CreateTeamInvitationBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateTeamInvitationBody {
+        ///Email address of the person to invite
+        pub email: ::std::string::String,
+        ///Role the invited person gets in the team
+        pub role: CreateTeamInvitationBodyRole,
+    }
+    ///Role the invited person gets in the team
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum CreateTeamInvitationBodyRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+    }
+    impl ::std::fmt::Display for CreateTeamInvitationBodyRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Maintainer => f.write_str("maintainer"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for CreateTeamInvitationBodyRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "maintainer" => Ok(Self::Maintainer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for CreateTeamInvitationBodyRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for CreateTeamInvitationBodyRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`CreateTeamInvitationResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateTeamInvitationResponse {
+        pub invitation: TeamInvitation,
+    }
+    ///`CreateTeamMemberBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateTeamMemberBody {
+        ///Role of the user in the team
+        pub role: CreateTeamMemberBodyRole,
+        ///ID of the user to add
+        #[serde(rename = "userId")]
+        pub user_id: ::std::string::String,
+    }
+    ///Role of the user in the team
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum CreateTeamMemberBodyRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+    }
+    impl ::std::fmt::Display for CreateTeamMemberBodyRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Maintainer => f.write_str("maintainer"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for CreateTeamMemberBodyRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "maintainer" => Ok(Self::Maintainer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for CreateTeamMemberBodyRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for CreateTeamMemberBodyRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`CreateTeamMemberResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateTeamMemberResponse {
+        ///Whether the operation succeeded
+        pub success: bool,
+    }
     ///`CreateTeamProfileAssignmentRequest`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct CreateTeamProfileAssignmentRequest {
@@ -826,6 +989,11 @@ pub mod types {
         ///Profile assignments of the team
         #[serde(rename = "profileAssignments")]
         pub profile_assignments: ::std::vec::Vec<ProfileTeamAssignment>,
+    }
+    ///`CreateTeamResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateTeamResponse {
+        pub team: TeamWithMemberCount,
     }
     ///`CreateUserProfileAssignmentRequest`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -920,6 +1088,11 @@ pub mod types {
     pub struct CreateUserResponse {
         pub user: User,
     }
+    ///`DeleteMcpServerMemberResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DeleteMcpServerMemberResponse {
+        pub success: bool,
+    }
     ///`DeleteMcpServerResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct DeleteMcpServerResponse {
@@ -945,6 +1118,24 @@ pub mod types {
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct DeleteServiceAccountPersonalAccessTokenResponse {
         ///Whether the request succeeded
+        pub success: bool,
+    }
+    ///`DeleteTeamClaimMappingResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DeleteTeamClaimMappingResponse {
+        ///Whether the operation succeeded
+        pub success: bool,
+    }
+    ///`DeleteTeamInvitationResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DeleteTeamInvitationResponse {
+        ///Whether the operation succeeded
+        pub success: bool,
+    }
+    ///`DeleteTeamMemberResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DeleteTeamMemberResponse {
+        ///Whether the operation succeeded
         pub success: bool,
     }
     ///`DeploymentContainerStatus`
@@ -1809,6 +2000,147 @@ pub mod types {
         pub files: ::std::vec::Vec<ServerFile>,
         pub server: ServerDto,
     }
+    ///`GetMembersResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetMembersResponse {
+        pub teams: ::std::vec::Vec<GetMembersResponseTeamsItem>,
+        pub users: ::std::vec::Vec<GetMembersResponseUsersItem>,
+    }
+    ///`GetMembersResponseTeamsItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetMembersResponseTeamsItem {
+        pub id: ::std::string::String,
+        pub name: ::std::string::String,
+        pub role: GetMembersResponseTeamsItemRole,
+    }
+    ///`GetMembersResponseTeamsItemRole`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum GetMembersResponseTeamsItemRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "admin")]
+        Admin,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+    }
+    impl ::std::fmt::Display for GetMembersResponseTeamsItemRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Admin => f.write_str("admin"),
+                Self::Maintainer => f.write_str("maintainer"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for GetMembersResponseTeamsItemRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "admin" => Ok(Self::Admin),
+                "maintainer" => Ok(Self::Maintainer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for GetMembersResponseTeamsItemRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for GetMembersResponseTeamsItemRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`GetMembersResponseUsersItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetMembersResponseUsersItem {
+        pub email: ::std::string::String,
+        pub id: ::std::string::String,
+        pub name: ::std::string::String,
+        pub role: GetMembersResponseUsersItemRole,
+    }
+    ///`GetMembersResponseUsersItemRole`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum GetMembersResponseUsersItemRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "admin")]
+        Admin,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+    }
+    impl ::std::fmt::Display for GetMembersResponseUsersItemRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Admin => f.write_str("admin"),
+                Self::Maintainer => f.write_str("maintainer"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for GetMembersResponseUsersItemRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "admin" => Ok(Self::Admin),
+                "maintainer" => Ok(Self::Maintainer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for GetMembersResponseUsersItemRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for GetMembersResponseUsersItemRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
     ///`GetProfileResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct GetProfileResponse {
@@ -2100,6 +2432,11 @@ pub mod types {
         ///Whether the card is valid
         pub valid: bool,
     }
+    ///`GetTeamResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetTeamResponse {
+        pub team: TeamWithMemberCount,
+    }
     ///`GetTenantResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct GetTenantResponse {
@@ -2185,6 +2522,52 @@ pub mod types {
         ///The collections the caller can see, whether or not a listed skill is in them
         pub collections: ::std::vec::Vec<SkillCollectionDto>,
         pub skills: ::std::vec::Vec<SkillDto>,
+    }
+    ///`ListTeamClaimMappingsResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListTeamClaimMappingsResponse {
+        ///Claim mappings of the team
+        #[serde(rename = "claimMappings")]
+        pub claim_mappings: ::std::vec::Vec<TeamClaimMapping>,
+    }
+    ///`ListTeamInvitationsResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListTeamInvitationsResponse {
+        ///Invitations of the team
+        pub invitations: ::std::vec::Vec<TeamInvitation>,
+    }
+    ///`ListTeamMembersResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListTeamMembersResponse {
+        ///Members of the team
+        pub members: ::std::vec::Vec<ListTeamMembersResponseMembersItem>,
+    }
+    ///`ListTeamMembersResponseMembersItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListTeamMembersResponseMembersItem {
+        pub member: TeamMember,
+        pub user: User,
+    }
+    ///`ListTeamProfilesResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListTeamProfilesResponse {
+        ///Profile assignments of the team
+        #[serde(rename = "profileAssignments")]
+        pub profile_assignments: ::std::vec::Vec<ProfileTeamAssignment>,
+    }
+    ///`ListTeamServersResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListTeamServersResponse {
+        ///MCP server permissions granted to the team
+        pub permissions: ::std::vec::Vec<ListTeamServersResponsePermissionsItem>,
+    }
+    ///`ListTeamServersResponsePermissionsItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListTeamServersResponsePermissionsItem {
+        pub permission: ServerMember,
+        ///Slug of the server
+        #[serde(rename = "serverSlug")]
+        pub server_slug: ::std::string::String,
     }
     ///`ListTeamsResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -3807,6 +4190,173 @@ pub mod types {
             value.parse()
         }
     }
+    ///`ServerMember`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(untagged)]
+    pub enum ServerMember {
+        Variant0 {
+            ///Time when the membership was created
+            #[serde(rename = "createdAt")]
+            created_at: ::std::string::String,
+            ///Role of the member on the server
+            role: ServerMemberVariant0Role,
+            ///ID of the server that the membership grants access to
+            #[serde(rename = "serverId")]
+            server_id: ::std::string::String,
+            ///Always null for a user membership
+            #[serde(rename = "teamId")]
+            team_id: (),
+            ///ID of the tenant that owns the membership
+            #[serde(rename = "tenantId")]
+            tenant_id: ::std::string::String,
+            ///Time when the membership was last updated
+            #[serde(rename = "updatedAt")]
+            updated_at: ::std::string::String,
+            ///ID of the member user
+            #[serde(rename = "userId")]
+            user_id: ::std::string::String,
+        },
+        Variant1 {
+            ///Time when the membership was created
+            #[serde(rename = "createdAt")]
+            created_at: ::std::string::String,
+            ///Role of the member on the server
+            role: ServerMemberVariant1Role,
+            ///ID of the server that the membership grants access to
+            #[serde(rename = "serverId")]
+            server_id: ::std::string::String,
+            ///ID of the member team
+            #[serde(rename = "teamId")]
+            team_id: ::std::string::String,
+            ///ID of the tenant that owns the membership
+            #[serde(rename = "tenantId")]
+            tenant_id: ::std::string::String,
+            ///Time when the membership was last updated
+            #[serde(rename = "updatedAt")]
+            updated_at: ::std::string::String,
+            ///Always null for a team membership
+            #[serde(rename = "userId")]
+            user_id: (),
+        },
+    }
+    ///Role of the member on the server
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ServerMemberVariant0Role {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "admin")]
+        Admin,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+    }
+    impl ::std::fmt::Display for ServerMemberVariant0Role {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Admin => f.write_str("admin"),
+                Self::Maintainer => f.write_str("maintainer"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ServerMemberVariant0Role {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "admin" => Ok(Self::Admin),
+                "maintainer" => Ok(Self::Maintainer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ServerMemberVariant0Role {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ServerMemberVariant0Role {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///Role of the member on the server
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ServerMemberVariant1Role {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "admin")]
+        Admin,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+    }
+    impl ::std::fmt::Display for ServerMemberVariant1Role {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Admin => f.write_str("admin"),
+                Self::Maintainer => f.write_str("maintainer"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ServerMemberVariant1Role {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "admin" => Ok(Self::Admin),
+                "maintainer" => Ok(Self::Maintainer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ServerMemberVariant1Role {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ServerMemberVariant1Role {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
     ///`ServerOAuthClientConfiguration`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ServerOAuthClientConfiguration {
@@ -4482,6 +5032,194 @@ pub mod types {
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct StopMcpServerResponse {
         pub success: bool,
+    }
+    ///`TeamClaimMapping`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct TeamClaimMapping {
+        ///Name of the identity provider claim to match
+        #[serde(rename = "claimKey")]
+        pub claim_key: ::std::string::String,
+        ///Claim value that gives membership when it matches
+        #[serde(rename = "claimValue")]
+        pub claim_value: ::std::string::String,
+        ///Time when the claim mapping was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Unique ID of the claim mapping
+        pub id: ::std::string::String,
+        ///ID of the team that the mapping gives membership of
+        #[serde(rename = "teamId")]
+        pub team_id: ::std::string::String,
+        ///ID of the tenant that owns the claim mapping
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+    }
+    ///`TeamInvitation`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct TeamInvitation {
+        ///Time when the invitation was accepted, or null
+        #[serde(
+            rename = "acceptedAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub accepted_at: ::std::option::Option<::std::string::String>,
+        ///Time when the invitation was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Email address the invitation was sent to
+        pub email: ::std::string::String,
+        ///Time when the invitation expires
+        #[serde(rename = "expiresAt")]
+        pub expires_at: ::std::string::String,
+        ///Unique ID of the invitation
+        pub id: ::std::string::String,
+        ///ID of the user who sent the invitation, or null
+        #[serde(
+            rename = "inviterUserId",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub inviter_user_id: ::std::option::Option<::std::string::String>,
+        ///Role the invited person gets in the team
+        pub role: TeamInvitationRole,
+        ///ID of the team the invitation is for
+        #[serde(rename = "teamId")]
+        pub team_id: ::std::string::String,
+        ///ID of the tenant that owns the invitation
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///Token used to accept the invitation
+        pub token: ::std::string::String,
+        ///Time when the invitation was last updated
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+    }
+    ///Role the invited person gets in the team
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum TeamInvitationRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+    }
+    impl ::std::fmt::Display for TeamInvitationRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Maintainer => f.write_str("maintainer"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for TeamInvitationRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "maintainer" => Ok(Self::Maintainer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for TeamInvitationRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for TeamInvitationRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`TeamMember`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct TeamMember {
+        ///Time when the membership was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Role of the member in the team
+        pub role: TeamMemberRole,
+        ///ID of the team
+        #[serde(rename = "teamId")]
+        pub team_id: ::std::string::String,
+        ///Time when the membership was last updated
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+        ///ID of the member user
+        #[serde(rename = "userId")]
+        pub user_id: ::std::string::String,
+    }
+    ///Role of the member in the team
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum TeamMemberRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+    }
+    impl ::std::fmt::Display for TeamMemberRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Maintainer => f.write_str("maintainer"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for TeamMemberRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "maintainer" => Ok(Self::Maintainer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for TeamMemberRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for TeamMemberRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
     }
     ///`TeamWithMemberCount`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -5250,6 +5988,76 @@ pub mod types {
     pub struct UpdateMcpServerCredentialsUserResponse {
         pub success: bool,
     }
+    ///`UpdateMcpServerMemberBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateMcpServerMemberBody {
+        pub role: UpdateMcpServerMemberBodyRole,
+    }
+    ///`UpdateMcpServerMemberBodyRole`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum UpdateMcpServerMemberBodyRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "admin")]
+        Admin,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+    }
+    impl ::std::fmt::Display for UpdateMcpServerMemberBodyRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Admin => f.write_str("admin"),
+                Self::Maintainer => f.write_str("maintainer"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for UpdateMcpServerMemberBodyRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "admin" => Ok(Self::Admin),
+                "maintainer" => Ok(Self::Maintainer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for UpdateMcpServerMemberBodyRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for UpdateMcpServerMemberBodyRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`UpdateMcpServerMemberResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateMcpServerMemberResponse {
+        pub success: bool,
+    }
     ///`UpdateProfileBody`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
     pub struct UpdateProfileBody {
@@ -5399,6 +6207,86 @@ pub mod types {
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
+    }
+    ///`UpdateTeamBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateTeamBody {
+        ///Human-readable description of the team
+        pub description: ::std::string::String,
+        ///Display name of the team, unique in the organization
+        pub name: ::std::string::String,
+    }
+    ///`UpdateTeamMemberBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateTeamMemberBody {
+        ///New role of the member in the team
+        pub role: UpdateTeamMemberBodyRole,
+    }
+    ///New role of the member in the team
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum UpdateTeamMemberBodyRole {
+        #[serde(rename = "member")]
+        Member,
+        #[serde(rename = "maintainer")]
+        Maintainer,
+    }
+    impl ::std::fmt::Display for UpdateTeamMemberBodyRole {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Member => f.write_str("member"),
+                Self::Maintainer => f.write_str("maintainer"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for UpdateTeamMemberBodyRole {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "member" => Ok(Self::Member),
+                "maintainer" => Ok(Self::Maintainer),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for UpdateTeamMemberBodyRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for UpdateTeamMemberBodyRole {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`UpdateTeamMemberResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateTeamMemberResponse {
+        ///Whether the operation succeeded
+        pub success: bool,
+    }
+    ///`UpdateTeamResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct UpdateTeamResponse {
+        pub team: TeamWithMemberCount,
     }
     ///`UpdateTenantRequest`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
@@ -6636,6 +7524,75 @@ impl<'a> Api<'a> {
         let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
         call.json_value(body)
     }
+    /** `GET /mcp-servers/{serverSlug}/members/`
+
+ List the users and teams which are members of an MCP server, with their roles*/
+    pub fn list_mcp_server_members(
+        &self,
+        server_slug: &str,
+    ) -> crate::Call<'a, GetMembersResponse> {
+        let server_slug = crate::encode_path_segment(server_slug);
+        let path = format!("{}/mcp-servers/{}/members/", BASE_PATH, server_slug);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `PUT /mcp-servers/{serverSlug}/members/{memberType}/{memberId}`
+
+ Add a user or a team as a member of an MCP server, or change the role of an existing member*/
+    pub fn update_mcp_server_member(
+        &self,
+        server_slug: &str,
+        member_type: &str,
+        member_id: &str,
+        body: &UpdateMcpServerMemberBody,
+    ) -> crate::Call<'a, UpdateMcpServerMemberResponse> {
+        let server_slug = crate::encode_path_segment(server_slug);
+        let member_type = crate::encode_path_segment(member_type);
+        let member_id = crate::encode_path_segment(member_id);
+        let path = format!(
+            "{}/mcp-servers/{}/members/{}/{}", BASE_PATH, server_slug, member_type,
+            member_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json(body)
+    }
+    /// `PUT /mcp-servers/{serverSlug}/members/{memberType}/{memberId}` with a body that is sent as given, unchecked.
+    pub fn update_mcp_server_member_raw(
+        &self,
+        server_slug: &str,
+        member_type: &str,
+        member_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, UpdateMcpServerMemberResponse> {
+        let server_slug = crate::encode_path_segment(server_slug);
+        let member_type = crate::encode_path_segment(member_type);
+        let member_id = crate::encode_path_segment(member_id);
+        let path = format!(
+            "{}/mcp-servers/{}/members/{}/{}", BASE_PATH, server_slug, member_type,
+            member_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json_value(body)
+    }
+    /** `DELETE /mcp-servers/{serverSlug}/members/{memberType}/{memberId}`
+
+ Remove a user or a team from the members of an MCP server*/
+    pub fn delete_mcp_server_member(
+        &self,
+        server_slug: &str,
+        member_type: &str,
+        member_id: &str,
+    ) -> crate::Call<'a, DeleteMcpServerMemberResponse> {
+        let server_slug = crate::encode_path_segment(server_slug);
+        let member_type = crate::encode_path_segment(member_type);
+        let member_id = crate::encode_path_segment(member_id);
+        let path = format!(
+            "{}/mcp-servers/{}/members/{}/{}", BASE_PATH, server_slug, member_type,
+            member_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
     /** `GET /deployments/status`
 
  Get the deployment status of an MCP server or a sandbox. Provide either serverSlug or sandboxId; requires read permission on the server*/
@@ -7332,6 +8289,277 @@ impl<'a> Api<'a> {
         let path = format!("{}/teams", BASE_PATH);
         let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
         let call = query.apply(call);
+        call
+    }
+    /** `GET /teams/{teamId}`
+
+ Get a single team*/
+    pub fn get_team(&self, team_id: &str) -> crate::Call<'a, GetTeamResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /teams`
+
+ Create a new team. The name must be unique in the organization*/
+    pub fn create_team(
+        &self,
+        body: &CreateTeamBody,
+    ) -> crate::Call<'a, CreateTeamResponse> {
+        let path = format!("{}/teams", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /teams` with a body that is sent as given, unchecked.
+    pub fn create_team_raw(
+        &self,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateTeamResponse> {
+        let path = format!("{}/teams", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `PUT /teams/{teamId}`
+
+ Update a team*/
+    pub fn update_team(
+        &self,
+        team_id: &str,
+        body: &UpdateTeamBody,
+    ) -> crate::Call<'a, UpdateTeamResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json(body)
+    }
+    /// `PUT /teams/{teamId}` with a body that is sent as given, unchecked.
+    pub fn update_team_raw(
+        &self,
+        team_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, UpdateTeamResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json_value(body)
+    }
+    /** `DELETE /teams/{teamId}`
+
+ Delete a team*/
+    pub fn delete_team(
+        &self,
+        team_id: &str,
+    ) -> crate::Call<'a, ::serde_json::Map<::std::string::String, ::serde_json::Value>> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /teams/{teamId}/members`
+
+ List the members of a team with their user records. Only organization owners and members of the team can read this*/
+    pub fn list_team_members(
+        &self,
+        team_id: &str,
+    ) -> crate::Call<'a, ListTeamMembersResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/members", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /teams/{teamId}/members`
+
+ Add a user to a team with the given role*/
+    pub fn create_team_member(
+        &self,
+        team_id: &str,
+        body: &CreateTeamMemberBody,
+    ) -> crate::Call<'a, CreateTeamMemberResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/members", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /teams/{teamId}/members` with a body that is sent as given, unchecked.
+    pub fn create_team_member_raw(
+        &self,
+        team_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateTeamMemberResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/members", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `PUT /teams/{teamId}/members/{userId}`
+
+ Change the role of a team member*/
+    pub fn update_team_member(
+        &self,
+        team_id: &str,
+        user_id: &str,
+        body: &UpdateTeamMemberBody,
+    ) -> crate::Call<'a, UpdateTeamMemberResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!("{}/teams/{}/members/{}", BASE_PATH, team_id, user_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json(body)
+    }
+    /// `PUT /teams/{teamId}/members/{userId}` with a body that is sent as given, unchecked.
+    pub fn update_team_member_raw(
+        &self,
+        team_id: &str,
+        user_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, UpdateTeamMemberResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!("{}/teams/{}/members/{}", BASE_PATH, team_id, user_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json_value(body)
+    }
+    /** `DELETE /teams/{teamId}/members/{userId}`
+
+ Remove a member from a team*/
+    pub fn delete_team_member(
+        &self,
+        team_id: &str,
+        user_id: &str,
+    ) -> crate::Call<'a, DeleteTeamMemberResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let user_id = crate::encode_path_segment(user_id);
+        let path = format!("{}/teams/{}/members/{}", BASE_PATH, team_id, user_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /teams/{teamId}/invitations`
+
+ List the invitations of a team*/
+    pub fn list_team_invitations(
+        &self,
+        team_id: &str,
+    ) -> crate::Call<'a, ListTeamInvitationsResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/invitations", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /teams/{teamId}/invitations`
+
+ Invite a person to a team by email. The invitation expires after 7 days and an email is sent to the address*/
+    pub fn create_team_invitation(
+        &self,
+        team_id: &str,
+        body: &CreateTeamInvitationBody,
+    ) -> crate::Call<'a, CreateTeamInvitationResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/invitations", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /teams/{teamId}/invitations` with a body that is sent as given, unchecked.
+    pub fn create_team_invitation_raw(
+        &self,
+        team_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateTeamInvitationResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/invitations", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `DELETE /teams/{teamId}/invitations/{invitationId}`
+
+ Delete a team invitation*/
+    pub fn delete_team_invitation(
+        &self,
+        team_id: &str,
+        invitation_id: &str,
+    ) -> crate::Call<'a, DeleteTeamInvitationResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let invitation_id = crate::encode_path_segment(invitation_id);
+        let path = format!(
+            "{}/teams/{}/invitations/{}", BASE_PATH, team_id, invitation_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /teams/{teamId}/servers`
+
+ List the MCP server permissions granted to a team*/
+    pub fn list_team_servers(
+        &self,
+        team_id: &str,
+    ) -> crate::Call<'a, ListTeamServersResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/servers", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `GET /teams/{teamId}/claim-mappings`
+
+ List the identity provider claim mappings that give membership of a team at sign-in*/
+    pub fn list_team_claim_mappings(
+        &self,
+        team_id: &str,
+    ) -> crate::Call<'a, ListTeamClaimMappingsResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/claim-mappings", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /teams/{teamId}/claim-mappings`
+
+ Create a claim mapping that gives membership of a team to users with a matching identity provider claim*/
+    pub fn create_team_claim_mapping(
+        &self,
+        team_id: &str,
+        body: &CreateTeamClaimMappingBody,
+    ) -> crate::Call<'a, CreateTeamClaimMappingResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/claim-mappings", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /teams/{teamId}/claim-mappings` with a body that is sent as given, unchecked.
+    pub fn create_team_claim_mapping_raw(
+        &self,
+        team_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateTeamClaimMappingResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/claim-mappings", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `DELETE /teams/{teamId}/claim-mappings/{mappingId}`
+
+ Delete a team claim mapping*/
+    pub fn delete_team_claim_mapping(
+        &self,
+        team_id: &str,
+        mapping_id: &str,
+    ) -> crate::Call<'a, DeleteTeamClaimMappingResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let mapping_id = crate::encode_path_segment(mapping_id);
+        let path = format!(
+            "{}/teams/{}/claim-mappings/{}", BASE_PATH, team_id, mapping_id
+        );
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /teams/{teamId}/profiles`
+
+ List the profiles assigned to a team*/
+    pub fn list_team_profiles(
+        &self,
+        team_id: &str,
+    ) -> crate::Call<'a, ListTeamProfilesResponse> {
+        let team_id = crate::encode_path_segment(team_id);
+        let path = format!("{}/teams/{}/profiles", BASE_PATH, team_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
         call
     }
     /** `POST /teams/{teamId}/profiles`

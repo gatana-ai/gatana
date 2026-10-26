@@ -15,9 +15,9 @@ Get Started:
   install       Sign in and connect the AI agents on this machine: gateway, skills and hooks
 
 Basic Commands:
-  get           List or show resources: server, tool, creds, account, profile, pat, org, sandbox, skill
+  get           List or show resources: server, tool, creds, account, team, profile, pat, org, sandbox, skill
   describe      Show details of a specific resource
-  create        Create a resource: a server, credentials, an account, a profile, a token or a sandbox
+  create        Create a resource: a server, credentials, an account, a team, a profile, a token or a sandbox
   delete        Delete resources
   patch         Patch a resource
 
@@ -29,6 +29,8 @@ Server Management:
   sandbox       Manage sandboxes (requires early access)
 
 Access:
+  server        Show who has access to a server, and give or take away roles on it
+  team          Manage the members, invitations and claim mappings of a team
   profile       Manage the servers, members, maintainers and tools of a profile
 
 Skills:
@@ -83,7 +85,7 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Command {
-    /// List or show resources: server, tool, creds, account, profile, pat, org, sandbox, skill
+    /// List or show resources: server, tool, creds, account, team, profile, pat, org, sandbox, skill
     Get {
         #[command(subcommand)]
         resource: GetCommand,
@@ -128,6 +130,18 @@ pub enum Command {
     Sandbox {
         #[command(subcommand)]
         command: SandboxCommand,
+    },
+    /// Show who has access to a server, and give or take away roles on it
+    #[command(after_help = SERVER_EXAMPLES)]
+    Server {
+        #[command(subcommand)]
+        command: ServerCommand,
+    },
+    /// Manage the members, invitations and claim mappings of a team
+    #[command(after_help = TEAM_EXAMPLES)]
+    Team {
+        #[command(subcommand)]
+        command: TeamCommand,
     },
     /// Manage the servers, members, maintainers and tools of a profile
     #[command(after_help = PROFILE_EXAMPLES)]
@@ -233,6 +247,15 @@ pub enum GetCommand {
         #[arg(long = "type", value_enum, value_name = "KIND")]
         kind: Option<AccountKind>,
     },
+    /// List teams or show one team
+    #[command(visible_alias = "teams")]
+    Team {
+        /// Team name or ID (omit to list all)
+        name: Option<String>,
+        /// Only list the teams that this account is a member of: email address or ID
+        #[arg(short = 'a', long, value_name = "ACCOUNT")]
+        account: Option<String>,
+    },
     /// List profiles or show one profile
     #[command(visible_alias = "profiles")]
     Profile {
@@ -289,6 +312,11 @@ pub enum DescribeCommand {
         /// Email address or ID
         name: String,
     },
+    /// Show a team with its members, invitations, server roles, profiles and claim mappings
+    Team {
+        /// Team name or ID
+        name: String,
+    },
     /// Show a profile with its servers, members, maintainers and claim mappings
     Profile {
         /// Profile name or ID
@@ -335,6 +363,8 @@ pub enum CreateCommand {
     Account(CreateAccountArgs),
     /// Create a service account, for a script or an agent, and print its API key
     ServiceAccount(CreateServiceAccountArgs),
+    /// Create a team. Add members with --account, or later with "gatana team add-member"
+    Team(CreateTeamArgs),
     /// Create a profile. Add servers with --server, or later with "gatana profile add-server"
     Profile(CreateProfileArgs),
     /// Create a personal access token for a service account and print its API key
@@ -370,6 +400,18 @@ pub enum Role {
     Member,
     /// Manages the organization: every server, account and setting
     Owner,
+}
+
+#[derive(Args, Debug)]
+pub struct CreateTeamArgs {
+    /// Team name, unique in the organization
+    pub name: String,
+    /// What the team is for
+    #[arg(long, default_value = "")]
+    pub description: String,
+    /// An account to add as a member: email address or ID. Repeat for more accounts
+    #[arg(short = 'a', long = "account", value_name = "ACCOUNT")]
+    pub accounts: Vec<String>,
 }
 
 #[derive(Args, Debug)]
@@ -578,6 +620,11 @@ pub enum DeleteCommand {
         /// Email address or ID
         name: String,
     },
+    /// Delete a team. Its members keep their accounts, but lose the access that the team gave them
+    Team {
+        /// Team name or ID
+        name: String,
+    },
     /// Delete a profile. It is also removed from every personal access token
     Profile {
         /// Profile name or ID
@@ -625,6 +672,12 @@ Examples:
   # serverIds replaces the full list. To add or remove one server, use "gatana profile add-server"
   $ gatana patch profile Engineering -p '{"serverIds": ["github", "linear"]}'"#;
 
+const PATCH_TEAM_EXAMPLES: &str = r#"To get the schema, run "gatana schema team".
+
+Examples:
+  $ gatana patch team platform -p name=platform-engineering
+  $ gatana patch team platform -p description="Engineers who run the platform""#;
+
 const PATCH_ORG_EXAMPLES: &str = r#"To get the schema, run "gatana schema org".
 
 Examples:
@@ -651,6 +704,14 @@ pub enum PatchCommand {
     #[command(after_help = PATCH_ACCOUNT_EXAMPLES, visible_alias = "user")]
     Account {
         /// Email address or ID
+        name: String,
+        #[command(flatten)]
+        input: PatchInput,
+    },
+    /// Patch a team: its name or its description. The keys you leave out keep their values
+    #[command(after_help = PATCH_TEAM_EXAMPLES)]
+    Team {
+        /// Team name or ID
         name: String,
         #[command(flatten)]
         input: PatchInput,
@@ -887,7 +948,7 @@ pub enum ProfileCommand {
         /// Profile name or ID
         profile: String,
         #[command(flatten)]
-        member: ProfileMember,
+        member: AccountOrTeam,
         /// Lock the assignment, so that only organization owners can remove it (organization owners only)
         #[arg(long)]
         lock: bool,
@@ -897,7 +958,7 @@ pub enum ProfileCommand {
         /// Profile name or ID
         profile: String,
         #[command(flatten)]
-        member: ProfileMember,
+        member: AccountOrTeam,
     },
     /// Add or remove the users who maintain a profile
     #[command(visible_alias = "maintainer")]
@@ -923,10 +984,10 @@ pub enum ProfileCommand {
     },
 }
 
-/// Who a profile goes to: one account or one team.
+/// One account or one team: who a profile goes to, or who has a role on a server.
 #[derive(Args, Debug)]
 #[group(required = true, multiple = false)]
-pub struct ProfileMember {
+pub struct AccountOrTeam {
     /// The account: email address or ID
     #[arg(short = 'a', long, value_name = "ACCOUNT")]
     pub account: Option<String>,
@@ -969,6 +1030,187 @@ pub enum ClaimCommand {
     Rm {
         /// Profile name or ID
         profile: String,
+        /// The claim and the value of the mapping
+        #[arg(value_name = "KEY=VALUE")]
+        claim: String,
+    },
+}
+
+const SERVER_EXAMPLES: &str = r#"Examples:
+  # Who has access to the server, and with which role
+  $ gatana server access github
+
+  # Let a team change the configuration of the server
+  $ gatana server grant github --team platform --role maintainer
+
+  # Let one account use the server, and take that away again
+  $ gatana server grant github --account ada@example.com
+  $ gatana server revoke github --account ada@example.com
+
+  # A profile gives the role member on each of its servers
+  $ gatana profile add-server Engineering github
+
+  # Every member of the organization can use the server
+  $ gatana patch server github -p visibility=organization"#;
+
+#[derive(Subcommand, Debug)]
+pub enum ServerCommand {
+    /// Show the accounts, teams and profiles that have a role on a server
+    #[command(visible_alias = "members")]
+    Access {
+        /// Server slug
+        server: String,
+    },
+    /// Give an account or a team a role on a server, or change the role it has
+    Grant {
+        /// Server slug
+        server: String,
+        #[command(flatten)]
+        member: AccountOrTeam,
+        /// The role on the server
+        #[arg(long, value_enum, default_value_t)]
+        role: ServerRole,
+    },
+    /// Take the role on a server away from an account or a team. Access through a team or a
+    /// profile stays
+    Revoke {
+        /// Server slug
+        server: String,
+        #[command(flatten)]
+        member: AccountOrTeam,
+    },
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, ValueEnum)]
+pub enum ServerRole {
+    /// Sees the server and calls its tools
+    #[default]
+    Member,
+    /// Also changes the configuration of the server
+    Maintainer,
+    /// Also changes who has access to the server, and deletes it
+    Admin,
+}
+
+impl ServerRole {
+    /// The role as the API names it.
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Member => "member",
+            Self::Maintainer => "maintainer",
+            Self::Admin => "admin",
+        }
+    }
+}
+
+const TEAM_EXAMPLES: &str = r#"Examples:
+  # A team with two members. Then make one of them a maintainer
+  $ gatana create team platform --description "Platform engineers"
+  $ gatana team add-member platform ada@example.com bob@example.com
+  $ gatana team add-member platform ada@example.com --role maintainer
+
+  # Invite a person by email. The invitation expires after 7 days
+  $ gatana team invitations add platform carol@example.com
+
+  # Everyone whose identity provider sends the claim groups=platform joins the team at sign-in
+  $ gatana team claims add platform groups=platform
+
+  # Give the team access: a role on one server, or a profile
+  $ gatana server grant github --team platform --role maintainer
+  $ gatana profile assign Engineering --team platform"#;
+
+#[derive(Subcommand, Debug)]
+pub enum TeamCommand {
+    /// Add accounts to a team, or change the role they have in it
+    AddMember {
+        /// Team name or ID
+        team: String,
+        /// The accounts: email addresses or IDs
+        #[arg(required = true, value_name = "ACCOUNT")]
+        accounts: Vec<String>,
+        /// The role in the team
+        #[arg(long, value_enum, default_value_t)]
+        role: TeamRole,
+    },
+    /// Remove accounts from a team
+    RemoveMember {
+        /// Team name or ID
+        team: String,
+        /// The accounts: email addresses or IDs
+        #[arg(required = true, value_name = "ACCOUNT")]
+        accounts: Vec<String>,
+    },
+    /// Invite people to a team by email, or delete an invitation
+    #[command(visible_alias = "invitation")]
+    Invitations {
+        #[command(subcommand)]
+        command: InvitationCommand,
+    },
+    /// Add or remove the identity provider claims that make everyone who has them a member of a team
+    #[command(visible_alias = "claim")]
+    Claims {
+        #[command(subcommand)]
+        command: TeamClaimCommand,
+    },
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, ValueEnum)]
+pub enum TeamRole {
+    /// Gets the access of the team
+    #[default]
+    Member,
+    /// Also adds and removes the members of the team
+    Maintainer,
+}
+
+impl TeamRole {
+    /// The role as the API names it.
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Member => "member",
+            Self::Maintainer => "maintainer",
+        }
+    }
+}
+
+#[derive(Subcommand, Debug)]
+pub enum InvitationCommand {
+    /// Send an invitation by email. The person accepts it after they sign in. It expires after 7 days
+    Add {
+        /// Team name or ID
+        team: String,
+        /// Email addresses
+        #[arg(required = true, value_name = "EMAIL")]
+        emails: Vec<String>,
+        /// The role in the team
+        #[arg(long, value_enum, default_value_t)]
+        role: TeamRole,
+    },
+    /// Delete the open invitations for an email address
+    #[command(visible_alias = "remove")]
+    Rm {
+        /// Team name or ID
+        team: String,
+        /// Email address
+        email: String,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum TeamClaimCommand {
+    /// Make everyone whose identity provider sends this claim a member of the team when they sign in
+    Add {
+        /// Team name or ID
+        team: String,
+        /// The claim and the value that gives membership
+        #[arg(value_name = "KEY=VALUE")]
+        claim: String,
+    },
+    /// Remove a claim mapping
+    #[command(visible_alias = "remove")]
+    Rm {
+        /// Team name or ID
+        team: String,
         /// The claim and the value of the mapping
         #[arg(value_name = "KEY=VALUE")]
         claim: String,
@@ -1203,6 +1445,8 @@ pub enum SchemaCommand {
     /// What "gatana patch account" takes
     #[command(visible_alias = "user")]
     Account,
+    /// What "gatana patch team" takes
+    Team,
     /// What "gatana patch profile" takes
     Profile,
     /// What "gatana patch org" takes
@@ -1275,6 +1519,34 @@ mod tests {
         assert!(member.account.is_none() && lock);
         assert!(parse(&[]).is_err());
         assert!(parse(&["--team", "platform", "--account", "ada@example.com"]).is_err());
+    }
+
+    #[test]
+    fn server_roles_and_team_members_parse() {
+        let cli = Cli::try_parse_from(["gatana", "server", "grant", "github", "--team", "platform", "--role", "admin"])
+            .unwrap();
+        let Command::Server { command: ServerCommand::Grant { server, member, role } } = cli.command else {
+            panic!("not grant")
+        };
+        assert_eq!((server.as_str(), member.team.as_deref(), role), ("github", Some("platform"), ServerRole::Admin));
+        let cli = Cli::try_parse_from(["gatana", "server", "grant", "github", "-a", "ada@example.com"]).unwrap();
+        assert!(matches!(
+            cli.command,
+            Command::Server { command: ServerCommand::Grant { role: ServerRole::Member, .. } }
+        ));
+        assert!(Cli::try_parse_from(["gatana", "server", "revoke", "github"]).is_err());
+        assert!(
+            Cli::try_parse_from(["gatana", "server", "grant", "github", "--team", "x", "--role", "owner"]).is_err()
+        );
+
+        let cli = Cli::try_parse_from(["gatana", "team", "add-member", "platform", "ada@x.com", "bob@x.com"]).unwrap();
+        let Command::Team { command: TeamCommand::AddMember { accounts, role, .. } } = cli.command else {
+            panic!("not add-member")
+        };
+        assert_eq!((accounts.len(), role), (2, TeamRole::Member));
+        assert!(Cli::try_parse_from(["gatana", "team", "remove-member", "platform"]).is_err());
+        let cli = Cli::try_parse_from(["gatana", "get", "teams", "--account", "ada@x.com"]).unwrap();
+        assert!(matches!(cli.command, Command::Get { resource: GetCommand::Team { name: None, account: Some(_) } }));
     }
 
     #[test]

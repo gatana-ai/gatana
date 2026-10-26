@@ -138,7 +138,7 @@ Operations on servers and credentials.
 | **get server**      | `gatana get server [name]`                                    | List all servers, or get one server by its slug                                       |
 | **get tool**        | `gatana get tool [name] [--enabled]`                          | List all tools, or get the schema of one tool                                         |
 | **get creds**       | `gatana get creds [id] -s <slug> [-e]`                        | List the credentials of a server, or get one by its ID                                |
-| **describe server** | `gatana describe server <name>`                               | Show the deployment status and the tools of a server                                  |
+| **describe server** | `gatana describe server <name>`                               | Show a server with its last 5 events, its credentials and who has access to it        |
 | **create server**   | `gatana create server [kind] [args]`                          | Create a server, as the dashboard does. See [Create a server](#create-a-server) below |
 | **create creds**    | `gatana create creds <slug> [-f file] [--scope user\|server]` | Create or replace the credentials of a server                                         |
 | **delete server**   | `gatana delete server <name>`                                 | Delete a server                                                                       |
@@ -222,6 +222,39 @@ its email address or its ID.
 > a service account. Your own tokens need a browser session, so manage them in the dashboard. A
 > token that Gatana made for the assistant or for Code Mode cannot manage tokens at all.
 
+### Server access
+
+Who can use a server, and what they can do with it. An account or a team gets a role of its own on
+the server. A profile that holds the server gives the role `member` to everyone who has the profile.
+
+| Command           | Syntax                                                                                             | Description                                                                                                        |
+| ----------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **server access** | `gatana server access <slug>`                                                                      | List the accounts, teams and profiles with a role on the server, and the settings that give access to every member |
+| **server grant**  | `gatana server grant <slug> --account <email> \| --team <name> [--role member\|maintainer\|admin]` | Give a role on the server, or change the role. Default: `member`                                                   |
+| **server revoke** | `gatana server revoke <slug> --account <email> \| --team <name>`                                   | Take the role away. Access through a team or a profile stays                                                       |
+
+> `member` calls the tools, `maintainer` also changes the configuration, and `admin` also changes
+> who has access and deletes the server. Two settings give access to every member of the
+> organization: the visibility of the server (`gatana patch server <slug> -p visibility=organization`)
+> and the base role of the organization (`memberDefaultRole` in `gatana patch org`).
+
+### Teams
+
+A team goes by its name or its ID. A team gets its access from a role on a server
+(`gatana server grant --team`) or from a profile (`gatana profile assign --team`).
+
+| Command                      | Syntax                                                                      | Description                                                                                               |
+| ---------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **get team**                 | `gatana get team [name] [--account email]`                                  | List the teams, or the teams of one account, or show one team                                             |
+| **describe team**            | `gatana describe team <name>`                                               | Show a team with its members, open invitations, server roles, profiles and claim mappings                 |
+| **create team**              | `gatana create team <name> [--description text] [-a email...]`              | Create a team, with members if you name them                                                              |
+| **patch team**               | `gatana patch team <name> [-p kv...] [-f file]`                             | Change the name or the description                                                                        |
+| **delete team**              | `gatana delete team <name>`                                                 | Delete a team. Its members lose the access that the team gave them                                        |
+| **team add-member**          | `gatana team add-member <team> <email...> [--role member\|maintainer]`      | Add accounts to the team, or change their role. A maintainer adds and removes members                     |
+| **team remove-member**       | `gatana team remove-member <team> <email...>`                               | Remove accounts from the team                                                                             |
+| **team invitations add\|rm** | `gatana team invitations add <team> <email...> [--role member\|maintainer]` | Invite people by email, or delete the open invitations for an address. An invitation expires after 7 days |
+| **team claims add\|rm**      | `gatana team claims add <team> <key>=<value>`                               | Make everyone whose identity provider sends the claim a member at sign-in, or stop                        |
+
 ### Profiles
 
 A profile goes by its name or its ID. Put the name in quotes when it holds spaces.
@@ -303,6 +336,7 @@ Configuration, authentication and schemas.
 | **auth-info**          | `gatana auth-info`                                            | Show the authenticated user and organization            |
 | **schema server**      | `gatana schema server`                                        | Print the resolved OpenAPI schema of the Server DTO     |
 | **schema account**     | `gatana schema account`                                       | Print what `patch account` takes                        |
+| **schema team**        | `gatana schema team`                                          | Print what `patch team` takes                           |
 | **schema profile**     | `gatana schema profile`                                       | Print what `patch profile` takes                        |
 | **schema org**         | `gatana schema org`                                           | Print what `patch org` takes                            |
 | **upgrade**            | `gatana upgrade [--dry-run]`                                  | Upgrade to the latest release, the way it was installed |
@@ -374,6 +408,11 @@ gatana delete server my-server
 ### Manage access
 
 ```bash
+# A team with two members, which may change the configuration of the GitHub server
+gatana create team platform --description "Platform engineers" -a ada@example.com -a bob@example.com
+gatana server grant github --team platform --role maintainer
+gatana server access github
+
 # A profile with two servers, for one team and one account
 gatana create profile Engineering --description "Tools for engineers" -s github -s linear
 gatana profile assign Engineering --team platform
