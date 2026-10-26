@@ -394,6 +394,7 @@ fn label_of(built_in: BuiltIn) -> &'static str {
         BuiltIn::Skills => "Skills",
         BuiltIn::Codemode => "CodeMode",
         BuiltIn::GatanaApi => "Gatana API",
+        BuiltIn::Gatana => "Gatana",
         BuiltIn::GatanaDebug => "Debug Tools",
         BuiltIn::Fetch => "Web Fetch",
         BuiltIn::Compression => "Compression",
@@ -723,6 +724,9 @@ mod tests {
     #[test]
     fn built_in_ids_are_the_ids_of_the_backend() {
         let ids: Vec<String> = BuiltIn::value_variants().iter().map(|built_in| id_of(*built_in)).collect();
-        assert_eq!(ids, ["artifacts", "skills", "codemode", "gatana-api", "gatana-debug", "fetch", "compression"]);
+        assert_eq!(
+            ids,
+            ["artifacts", "skills", "codemode", "gatana-api", "gatana", "gatana-debug", "fetch", "compression"]
+        );
     }
 }

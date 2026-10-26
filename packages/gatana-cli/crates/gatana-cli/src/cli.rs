@@ -541,6 +541,8 @@ pub enum BuiltIn {
     Codemode,
     /// The full Gatana API over MCP
     GatanaApi,
+    /// Selected Gatana management tools
+    Gatana,
     /// Tools for debugging, such as slow responses and the authorization data of the caller
     GatanaDebug,
     /// Gets the main content of a web page
