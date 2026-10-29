@@ -22,7 +22,7 @@ Basic Commands:
   patch         Patch a resource
 
 Server Management:
-  tools         Call a tool (alias: tool)
+  tools         List tools, show the arguments of a tool, and call it (alias: tool)
   deployment    Manage server deployments (alias: deploy)
   creds         Get the effective credentials for a server
   faas          Manage FaaS servers (hosted source code)
@@ -110,9 +110,14 @@ pub enum Command {
         #[command(subcommand)]
         resource: PatchCommand,
     },
-    /// Call a tool. See "gatana get tools" for the list of available tools
-    #[command(visible_alias = "tool", after_help = TOOL_EXAMPLES)]
-    Tools(ToolArgs),
+    /// List the enabled tools, show the arguments of a tool, and call it
+    #[command(
+        visible_alias = "tool",
+        after_help = TOOLS_EXAMPLES,
+        args_conflicts_with_subcommands = true,
+        arg_required_else_help = true
+    )]
+    Tools(ToolsArgs),
     /// Manage server deployments (stdio and hosted)
     #[command(name = "deployment", visible_alias = "deploy")]
     Deployment {
@@ -202,7 +207,7 @@ pub enum GetCommand {
     /// List tools or show one tool
     #[command(visible_alias = "tools")]
     Tool {
-        /// Tool name (omit to list all). Use "gatana tool <name>" to call the tool
+        /// Tool name (omit to list all). Use "gatana tools call <name>" to call the tool
         name: Option<String>,
         /// Only show enabled tools
         #[arg(long)]
@@ -468,7 +473,13 @@ const CREATE_SERVER_EXAMPLES: &str = r#"Examples:
   $ gatana create server code --slug my-tools --runtime python313
 
   # A server that Gatana provides itself
-  $ gatana create server built-in artifacts"#;
+  $ gatana create server built-in artifacts
+
+  # A Gmail mailbox. Each user signs in with their own app password
+  $ gatana create server email gmail --login password
+
+  # Another IMAP server, which sends mail through an SMTP server
+  $ gatana create server email imap --imap-host imap.example.com --smtp-host smtp.example.com"#;
 
 #[derive(Subcommand, Debug)]
 pub enum ServerKind {
@@ -486,6 +497,8 @@ pub enum ServerKind {
     /// A server that Gatana provides itself, with nothing to host
     #[command(name = "built-in", visible_alias = "builtin")]
     BuiltIn(BuiltInServerArgs),
+    /// A mailbox, through IMAP or JMAP. Each user signs in to their own mailbox
+    Email(EmailServerArgs),
 }
 
 /// The settings that every new server takes.
@@ -591,6 +604,72 @@ pub enum BuiltIn {
     Fetch,
     /// Searches the full content of large tool results that Gatana compressed
     Compression,
+}
+
+#[derive(Args, Debug, Default)]
+pub struct EmailServerArgs {
+    /// The email provider. Omit to choose it from a menu
+    #[arg(value_enum, value_name = "PROVIDER")]
+    pub provider: Option<EmailProvider>,
+    /// The IMAP server, for the provider imap. Gatana connects to port 993 with TLS. You can change
+    /// the port and the encryption in the server settings
+    #[arg(long = "imap-host", value_name = "HOST")]
+    pub imap_host: Option<String>,
+    /// The SMTP server that sends mail, for the provider imap. Gatana connects to port 465 with
+    /// TLS. Without an SMTP server, the server cannot send
+    #[arg(long = "smtp-host", value_name = "HOST")]
+    pub smtp_host: Option<String>,
+    /// The JMAP session URL, for the provider jmap
+    #[arg(long = "session-url", value_name = "URL")]
+    pub session_url: Option<String>,
+    /// How each user signs in to their mailbox. Omit to choose it from a menu, if the provider
+    /// permits more than one
+    #[arg(long, value_enum)]
+    pub login: Option<EmailLogin>,
+    /// What the tools can do. Omit to choose it from a menu
+    #[arg(long, value_enum)]
+    pub access: Option<EmailAccess>,
+    #[command(flatten)]
+    pub server: NewServerArgs,
+}
+
+/// The providers of the Add Server page (email-presets.ts in the frontend), in its order.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
+pub enum EmailProvider {
+    /// A Google Workspace or personal Gmail account
+    Gmail,
+    /// An Exchange Online mailbox, the business mail of Outlook
+    #[value(alias = "m365")]
+    Microsoft365,
+    /// A Fastmail account, through JMAP
+    Fastmail,
+    /// An iCloud, me.com or mac.com address
+    Icloud,
+    /// Another IMAP mail server. To send, it needs an SMTP server
+    Imap,
+    /// Another mail server with JMAP, such as Stalwart or Cyrus
+    Jmap,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
+pub enum EmailLogin {
+    /// Each user gives their own username and password. Some providers need an app password
+    Password,
+    /// Each user gives their own API token
+    Token,
+    /// Each user signs in with the provider. The organization must first register an OAuth app
+    Oauth,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, ValueEnum)]
+pub enum EmailAccess {
+    /// Read, organize and send. Mail can hold instructions that trick the agent into sharing data
+    #[default]
+    Send,
+    /// Read, flag, move and trash messages, and write drafts. A person must send the drafts
+    Organize,
+    /// Read messages and attachments. The tools do not change the mailbox
+    Read,
 }
 
 #[derive(Subcommand, Debug)]
@@ -750,19 +829,56 @@ pub struct PatchInput {
     pub patch: Vec<String>,
 }
 
-const TOOL_EXAMPLES: &str = r#"Get the tool schema by running "gatana get tools <tool_name>"
+const TOOLS_EXAMPLES: &str = r#"Examples:
+  # The enabled tools of every server, or of one server
+  $ gatana tools ls
+  $ gatana tools ls --server github
+
+  # The description and arguments of a tool, and an example call
+  $ gatana tools github_search_issues
+
+  # Call a tool (alias: x)
+  $ gatana tools call github_search_issues -a query="is:open label:bug""#;
+
+const TOOL_CALL_EXAMPLES: &str = r#"See the arguments of a tool with "gatana tools <tool_name>"
 Examples:
   # Dot-notation key=value pairs
-  $ gatana tool my_tool -a argument1="arg1 value" -a argument2.nested="nested value"
+  $ gatana tools call my_tool -a argument1="arg1 value" -a argument2.nested="nested value"
 
   # Inline JSON
-  $ gatana tool my_tool -a '{"argument1": "arg1 value", "argument2": {"nested": "nested value"}}'
+  $ gatana tools call my_tool -a '{"argument1": "arg1 value", "argument2": {"nested": "nested value"}}'
 
   # From a JSON file
-  $ gatana tool my_tool -f arg.json
+  $ gatana tools call my_tool -f arg.json
 
   # From stdin
-  $ echo '{"argument1": "Piped"}' | gatana tool my_tool"#;
+  $ echo '{"argument1": "Piped"}' | gatana tools x my_tool"#;
+
+#[derive(Args, Debug)]
+pub struct ToolsArgs {
+    #[command(subcommand)]
+    pub command: Option<ToolsCommand>,
+    /// Tool to show: its description, its arguments and an example call
+    #[arg(value_name = "TOOL_NAME")]
+    pub tool: Option<String>,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ToolsCommand {
+    /// List the enabled tools, of every server or of one server
+    #[command(visible_alias = "list")]
+    Ls {
+        /// List only the tools of this server
+        #[arg(short = 's', long = "server", value_name = "SLUG")]
+        server: Option<String>,
+        /// List also the disabled tools, and the tools of disabled servers
+        #[arg(long)]
+        all: bool,
+    },
+    /// Call a tool. See "gatana tools <tool_name>" for its arguments
+    #[command(visible_alias = "x", after_help = TOOL_CALL_EXAMPLES)]
+    Call(ToolArgs),
+}
 
 #[derive(Clone, Copy, Debug, ValueEnum, PartialEq)]
 pub enum ToolPart {
@@ -773,7 +889,7 @@ pub enum ToolPart {
 
 #[derive(Args, Debug)]
 pub struct ToolArgs {
-    /// Name of the tool to call. See "gatana get tools" for the list of available tools
+    /// Name of the tool to call. See "gatana tools" for the list of tools
     #[arg(value_name = "TOOL_NAME")]
     pub tool_name: String,
     /// JSON file with tool arguments (omit to read from stdin)
@@ -1468,8 +1584,12 @@ mod tests {
     fn global_output_works_anywhere_and_variadic_flags_collect() {
         let cli = Cli::try_parse_from(["gatana", "get", "servers", "-o", "json"]).unwrap();
         assert_eq!(cli.output, Some(Format::Json));
-        let cli = Cli::try_parse_from(["gatana", "tool", "srv_tool", "-a", "x=1", "y=2", "-p", "structured"]).unwrap();
-        let Command::Tools(args) = cli.command else { panic!("not a tool call") };
+        let cli =
+            Cli::try_parse_from(["gatana", "tools", "x", "srv_tool", "-a", "x=1", "y=2", "-p", "structured"]).unwrap();
+        let Command::Tools(ToolsArgs { command: Some(ToolsCommand::Call(args)), .. }) = cli.command else {
+            panic!("not a tool call")
+        };
+        assert_eq!(args.tool_name, "srv_tool");
         assert_eq!(args.arg, vec!["x=1", "y=2"]);
         assert_eq!(args.part, ToolPart::Structured);
         let cli = Cli::try_parse_from(["gatana", "skills", "install", "release", "hermes", "--no-hooks"]).unwrap();
@@ -1478,6 +1598,32 @@ mod tests {
         assert_eq!(args.targets, vec!["hermes"]);
         assert!(args.no_hooks);
         assert!(Cli::try_parse_from(["gatana", "skills", "install", "x", "--collection", "--skill"]).is_err());
+    }
+
+    #[test]
+    fn tools_lists_shows_or_calls() {
+        let tools = |args: &[&str]| {
+            let cli = Cli::try_parse_from(["gatana", "tools"].iter().chain(args)).unwrap();
+            let Command::Tools(args) = cli.command else { panic!("not tools") };
+            args
+        };
+        // Without arguments, "gatana tools" prints its help.
+        let error = Cli::try_parse_from(["gatana", "tools"]).unwrap_err();
+        assert_eq!(error.kind(), clap::error::ErrorKind::DisplayHelpOnMissingArgumentOrSubcommand);
+        let Some(ToolsCommand::Ls { server, all }) = tools(&["ls", "--server", "github", "--all"]).command else {
+            panic!("not ls")
+        };
+        assert_eq!(server.as_deref(), Some("github"));
+        assert!(all);
+        assert_eq!(tools(&["github_search"]).tool.as_deref(), Some("github_search"));
+        let Some(ToolsCommand::Call(args)) = tools(&["call", "github_search", "-a", "q=x"]).command else {
+            panic!("not a call")
+        };
+        assert_eq!(args.tool_name, "github_search");
+        let cli = Cli::try_parse_from(["gatana", "tool", "github_search"]).unwrap();
+        assert!(matches!(cli.command, Command::Tools(ToolsArgs { tool: Some(_), .. })));
+        assert!(Cli::try_parse_from(["gatana", "tools", "--server", "github"]).is_err());
+        assert!(Cli::try_parse_from(["gatana", "tools", "github_search", "-a", "q=x"]).is_err());
     }
 
     #[test]
@@ -1502,6 +1648,18 @@ mod tests {
         assert!(args.sse);
         let Some(ServerKind::BuiltIn(args)) = kind(&["built-in", "gatana-api"]) else { panic!("not built-in") };
         assert_eq!(args.id, Some(BuiltIn::GatanaApi));
+        let Some(ServerKind::Email(args)) = kind(&["email", "m365", "--login", "oauth", "--access", "read"]) else {
+            panic!("not email")
+        };
+        assert_eq!(args.provider, Some(EmailProvider::Microsoft365));
+        assert_eq!(args.login, Some(EmailLogin::Oauth));
+        assert_eq!(args.access, Some(EmailAccess::Read));
+        let Some(ServerKind::Email(args)) = kind(&["email", "--imap-host", "imap.example.com"]) else {
+            panic!("not email")
+        };
+        assert_eq!(args.provider, None);
+        assert_eq!(args.imap_host.as_deref(), Some("imap.example.com"));
+        assert!(Cli::try_parse_from(["gatana", "create", "server", "email", "yahoo"]).is_err());
         assert!(kind(&[]).is_none());
         assert!(Cli::try_parse_from(["gatana", "create", "server", "code", "--runtime", "ruby"]).is_err());
     }

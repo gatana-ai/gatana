@@ -162,10 +162,13 @@ is an error, unless a default can stand in.
 | **create server local**    | `gatana create server local [-s slug] [--storage] [command...]`                 | A command such as `npx` or `uvx`, run in a container of its own. Put the options before the command                                                    |
 | **create server code**     | `gatana create server code [-s slug] [--runtime node24\|python313] [--storage]` | Code that you write in Node.js or Python                                                                                                               |
 | **create server built-in** | `gatana create server built-in [id]`                                            | A server that Gatana provides. Without an ID, a menu shows the ones that are not installed                                                             |
+| **create server email**    | `gatana create server email [provider] [--login l] [--access a] [-s slug]`      | A mailbox: `gmail`, `microsoft365`, `fastmail`, `icloud`, `imap` (`--imap-host`, `--smtp-host`) or `jmap` (`--session-url`)                            |
 
 > Each kind except `built-in` also takes `--visibility private|organization` (default `private`) and
 > `--output-compression`. When you omit the slug, the CLI makes it from the domain or the package,
-> as the dashboard does, and adds a number when another server has that slug.
+> as the dashboard does, and adds a number when another server has that slug. An email server gets
+> the name of the provider, or a slug made from the host. Its `--login` is `password`, `token` or
+> `oauth`, as the provider permits, and its `--access` is `send` (default), `organize` or `read`.
 
 ### Server management
 
@@ -173,7 +176,9 @@ Deployments, tool calls, FaaS servers and effective credentials.
 
 | Command           | Syntax                                                                          | Description                                                            |
 | ----------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **tool**          | `gatana tool <name> [-a kv...] [-f file] [-p part]`                             | Call a tool by its universal name (`serverSlug_toolName`)              |
+| **tools ls**      | `gatana tools ls [-s slug] [--all]`                                             | List the enabled tools, of all servers or of one server                |
+| **tools \<name>** | `gatana tools <name>`                                                           | Show the description and arguments of a tool, and an example call      |
+| **tools call**    | `gatana tools call <name> [-a kv...] [-f file] [-p part]`                       | Call a tool by its universal name (`serverSlug_toolName`). Alias: `x`  |
 | **deploy get**    | `gatana deploy get <name>`                                                      | Get the deployment status of a server                                  |
 | **deploy logs**   | `gatana deploy logs <name> [-f] [-p] [--id <deploymentId>]`                     | Show the logs of a stdio or hosted server                              |
 | **deploy wait**   | `gatana deploy wait <name> [--timeout 10m]`                                     | Wait until the deployment is ready                                     |
@@ -459,26 +464,27 @@ gatana deploy start my-server --wait
 ### Call tools
 
 ```bash
-# List all tools
-gatana get tools
+# List the enabled tools, of all servers or of one server
+gatana tools ls
+gatana tools ls --server my_server
 
-# List only the enabled tools
-gatana get tools --enabled
+# Also list the disabled tools and the tools of disabled servers
+gatana tools ls --all
 
-# Show the schema of one tool
-gatana get tool serverSlug_toolName
+# Show the description and arguments of a tool, and an example call
+gatana tools my_server_search
 
-# Call a tool with dot-notation arguments
-gatana tool my_server_search -a query="hello world" -a limit=10
+# Call a tool with dot-notation arguments ("x" is short for "call")
+gatana tools call my_server_search -a query="hello world" -a limit=10
 
 # Call a tool with inline JSON
-gatana tool my_server_search -a '{"query": "hello world", "limit": 10}'
+gatana tools x my_server_search -a '{"query": "hello world", "limit": 10}'
 
 # Call a tool with arguments from a JSON file
-gatana tool my_server_search -f args.json
+gatana tools call my_server_search -f args.json
 
 # Call a tool with arguments from stdin
-echo '{"query": "hello"}' | gatana tool my_server_search
+echo '{"query": "hello"}' | gatana tools call my_server_search
 ```
 
 ### Credentials

@@ -13,6 +13,7 @@ mod servers;
 mod signup;
 mod skills;
 mod teams;
+mod tools;
 mod upgrade;
 
 use crate::cli::{Cli, Command};
@@ -40,7 +41,7 @@ pub async fn run(cli: Cli) -> Result<()> {
         Command::Create { resource } => resources::create(&context, resource).await,
         Command::Delete { resource } => resources::delete(&context, resource).await,
         Command::Patch { resource } => resources::patch(&context, resource).await,
-        Command::Tools(args) => servers::call_tool(&context, args).await,
+        Command::Tools(args) => tools::run(&context, args).await,
         Command::Deployment { command } => servers::deployment(&context, command).await,
         Command::Creds(args) => servers::effective_credentials(&context, args).await,
         Command::Faas { command } => servers::faas(&context, command).await,

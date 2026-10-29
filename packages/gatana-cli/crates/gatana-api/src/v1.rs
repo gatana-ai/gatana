@@ -1845,6 +1845,401 @@ pub mod types {
         )]
         pub oauth_metadata: ::std::option::Option<ServerOAuthMetadataOutput>,
     }
+    ///What the tools may do. "read" reads mail and attachments. "organize" also flags, moves and trashes messages and writes drafts. "send" also sends mail
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum EmailAccessLevel {
+        #[serde(rename = "read")]
+        Read,
+        #[serde(rename = "organize")]
+        Organize,
+        #[serde(rename = "send")]
+        Send,
+    }
+    impl ::std::fmt::Display for EmailAccessLevel {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Read => f.write_str("read"),
+                Self::Organize => f.write_str("organize"),
+                Self::Send => f.write_str("send"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for EmailAccessLevel {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "read" => Ok(Self::Read),
+                "organize" => Ok(Self::Organize),
+                "send" => Ok(Self::Send),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for EmailAccessLevel {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for EmailAccessLevel {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`EmailImapConnectionOutput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct EmailImapConnectionOutput {
+        ///Host name of the IMAP server, for example imap.gmail.com
+        pub host: ::std::string::String,
+        ///Password for the login, for example an app password. Can reference credentials and secrets
+        pub password: ::std::string::String,
+        ///Port of the IMAP server: usually 993 with "tls" and 143 with "starttls"
+        pub port: i64,
+        ///Protocol discriminator, always "imap"
+        pub protocol: EmailImapConnectionOutputProtocol,
+        ///Save a copy in Sent after sending. Disable if the SMTP server saves a copy automatically, as Gmail does
+        #[serde(rename = "saveSentCopy")]
+        pub save_sent_copy: bool,
+        ///Encryption method. "tls" encrypts from the start. "starttls" requires a TLS upgrade before sign-in and stops if the upgrade fails
+        pub security: EmailImapConnectionOutputSecurity,
+        ///The server that sends mail. Without one, the server cannot send
+        #[serde(deserialize_with = "::std::option::Option::deserialize")]
+        pub smtp: ::std::option::Option<EmailSmtpServerOutput>,
+        ///User name for the login, usually the email address. Can reference credentials and secrets
+        pub username: ::std::string::String,
+    }
+    ///Protocol discriminator, always "imap"
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum EmailImapConnectionOutputProtocol {
+        #[serde(rename = "imap")]
+        Imap,
+    }
+    impl ::std::fmt::Display for EmailImapConnectionOutputProtocol {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Imap => f.write_str("imap"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for EmailImapConnectionOutputProtocol {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "imap" => Ok(Self::Imap),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for EmailImapConnectionOutputProtocol {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for EmailImapConnectionOutputProtocol {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///Encryption method. "tls" encrypts from the start. "starttls" requires a TLS upgrade before sign-in and stops if the upgrade fails
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum EmailImapConnectionOutputSecurity {
+        #[serde(rename = "tls")]
+        Tls,
+        #[serde(rename = "starttls")]
+        Starttls,
+    }
+    impl ::std::fmt::Display for EmailImapConnectionOutputSecurity {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Tls => f.write_str("tls"),
+                Self::Starttls => f.write_str("starttls"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for EmailImapConnectionOutputSecurity {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "tls" => Ok(Self::Tls),
+                "starttls" => Ok(Self::Starttls),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for EmailImapConnectionOutputSecurity {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for EmailImapConnectionOutputSecurity {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`EmailJmapConnectionOutput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct EmailJmapConnectionOutput {
+        ///ID of the JMAP account to use. Defaults to the primary mail account of the session
+        #[serde(
+            rename = "accountId",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub account_id: ::std::option::Option<::std::string::String>,
+        ///HTTP headers to send with each JMAP request, as [name, value] pairs. Values can reference credentials and secrets
+        pub headers: ::std::vec::Vec<(::std::string::String, ::std::string::String)>,
+        ///Protocol discriminator, always "jmap"
+        pub protocol: EmailJmapConnectionOutputProtocol,
+        ///URL of the JMAP session resource, for example https://api.fastmail.com/jmap/session
+        #[serde(rename = "sessionUrl")]
+        pub session_url: ::std::string::String,
+    }
+    ///Protocol discriminator, always "jmap"
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum EmailJmapConnectionOutputProtocol {
+        #[serde(rename = "jmap")]
+        Jmap,
+    }
+    impl ::std::fmt::Display for EmailJmapConnectionOutputProtocol {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Jmap => f.write_str("jmap"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for EmailJmapConnectionOutputProtocol {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "jmap" => Ok(Self::Jmap),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for EmailJmapConnectionOutputProtocol {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for EmailJmapConnectionOutputProtocol {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///Email provider shown on the settings page
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum EmailPreset {
+        #[serde(rename = "gmail")]
+        Gmail,
+        #[serde(rename = "microsoft365")]
+        Microsoft365,
+        #[serde(rename = "fastmail")]
+        Fastmail,
+        #[serde(rename = "icloud")]
+        Icloud,
+        #[serde(rename = "imap")]
+        Imap,
+        #[serde(rename = "jmap")]
+        Jmap,
+    }
+    impl ::std::fmt::Display for EmailPreset {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Gmail => f.write_str("gmail"),
+                Self::Microsoft365 => f.write_str("microsoft365"),
+                Self::Fastmail => f.write_str("fastmail"),
+                Self::Icloud => f.write_str("icloud"),
+                Self::Imap => f.write_str("imap"),
+                Self::Jmap => f.write_str("jmap"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for EmailPreset {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "gmail" => Ok(Self::Gmail),
+                "microsoft365" => Ok(Self::Microsoft365),
+                "fastmail" => Ok(Self::Fastmail),
+                "icloud" => Ok(Self::Icloud),
+                "imap" => Ok(Self::Imap),
+                "jmap" => Ok(Self::Jmap),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for EmailPreset {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for EmailPreset {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///SMTP server used to send mail. Uses the same credentials as IMAP
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct EmailSmtpServerOutput {
+        ///Host name of the SMTP server, for example smtp.gmail.com
+        pub host: ::std::string::String,
+        ///Port of the SMTP server: usually 465 with "tls" and 587 with "starttls"
+        pub port: i64,
+        ///How the connection is encrypted. "starttls" refuses to continue if the server cannot upgrade the connection
+        pub security: EmailSmtpServerOutputSecurity,
+    }
+    ///How the connection is encrypted. "starttls" refuses to continue if the server cannot upgrade the connection
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum EmailSmtpServerOutputSecurity {
+        #[serde(rename = "tls")]
+        Tls,
+        #[serde(rename = "starttls")]
+        Starttls,
+    }
+    impl ::std::fmt::Display for EmailSmtpServerOutputSecurity {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Tls => f.write_str("tls"),
+                Self::Starttls => f.write_str("starttls"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for EmailSmtpServerOutputSecurity {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "tls" => Ok(Self::Tls),
+                "starttls" => Ok(Self::Starttls),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for EmailSmtpServerOutputSecurity {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for EmailSmtpServerOutputSecurity {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
     ///`GetCredentialTokenResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct GetCredentialTokenResponse {
@@ -3370,6 +3765,9 @@ pub mod types {
         },
         #[serde(rename = "oauth")]
         Oauth {
+            ///Resource parameter (RFC 8707) used to obtain these tokens and reused for token refresh unless disabled
+            #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+            resource: ::std::option::Option<::std::string::String>,
             #[serde(rename = "tokenSet")]
             token_set: ServerCredentialsCredentialTokenSet,
         },
@@ -3873,6 +4271,32 @@ pub mod types {
             #[serde(rename = "specUrl")]
             spec_url: ::std::string::String,
         },
+        #[serde(rename = "email")]
+        Email {
+            access: EmailAccessLevel,
+            connection: ServerDtoTransportConfigConnection,
+            #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+            preset: ::std::option::Option<EmailPreset>,
+        },
+    }
+    ///`ServerDtoTransportConfigConnection`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(untagged)]
+    pub enum ServerDtoTransportConfigConnection {
+        ImapConnectionOutput(EmailImapConnectionOutput),
+        JmapConnectionOutput(EmailJmapConnectionOutput),
+    }
+    impl ::std::convert::From<EmailImapConnectionOutput>
+    for ServerDtoTransportConfigConnection {
+        fn from(value: EmailImapConnectionOutput) -> Self {
+            Self::ImapConnectionOutput(value)
+        }
+    }
+    impl ::std::convert::From<EmailJmapConnectionOutput>
+    for ServerDtoTransportConfigConnection {
+        fn from(value: EmailJmapConnectionOutput) -> Self {
+            Self::JmapConnectionOutput(value)
+        }
     }
     ///HTTP health check configuration for the process
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -4449,6 +4873,12 @@ pub mod types {
         pub no_dynamic_client_registration_reason: ::std::option::Option<
             ::std::string::String,
         >,
+        ///Omit the resource parameter (RFC 8707) from all OAuth requests if the authorization server rejects it
+        #[serde(
+            rename = "omitResourceIndicator",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub omit_resource_indicator: ::std::option::Option<bool>,
         ///URL of the dynamic client registration endpoint
         #[serde(
             rename = "registrationEndpoint",
@@ -4523,6 +4953,9 @@ pub mod types {
         pub no_dynamic_client_registration_reason: ::std::option::Option<
             ::std::string::String,
         >,
+        ///Omit the resource parameter (RFC 8707) from all OAuth requests if the authorization server rejects it
+        #[serde(rename = "omitResourceIndicator")]
+        pub omit_resource_indicator: bool,
         ///URL of the dynamic client registration endpoint
         #[serde(
             rename = "registrationEndpoint",

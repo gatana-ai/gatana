@@ -152,7 +152,7 @@ impl<'a, T> Call<'a, T> {
         };
         if !status.is_success() {
             return Err(Error::Status {
-                message: message_of(&value, status),
+                message: message_of(&value, status, &url),
                 status,
                 method: self.method,
                 url,
@@ -191,7 +191,11 @@ impl<T: DeserializeOwned> Response<T> {
 
 /// The backend answers errors as `{ message }`; older routes use `detail` or `error`. A body without
 /// any of them is shown whole, after the status.
-fn message_of(body: &Value, status: StatusCode) -> String {
+///
+/// A 502, 503 or 504 without such a message comes from a proxy in front of Gatana, or from a
+/// backend that is still starting. Its body is often an HTML page, so the message names the
+/// address instead.
+fn message_of(body: &Value, status: StatusCode, url: &Url) -> String {
     let text = ["message", "detail", "error"]
         .iter()
         .filter_map(|key| body.get(*key).and_then(Value::as_str))
@@ -200,11 +204,19 @@ fn message_of(body: &Value, status: StatusCode) -> String {
         return text.to_string();
     }
     let reason = format!("{} {}", status.as_u16(), status.canonical_reason().unwrap_or(""));
+    let reason = reason.trim_end();
+    let origin = url.origin().ascii_serialization();
+    if status == StatusCode::SERVICE_UNAVAILABLE && body.get("status").and_then(Value::as_str) == Some("starting") {
+        return format!("Gatana at {origin} is starting ({reason}). Try again in a moment.");
+    }
+    if matches!(status, StatusCode::BAD_GATEWAY | StatusCode::SERVICE_UNAVAILABLE | StatusCode::GATEWAY_TIMEOUT) {
+        return format!("Gatana at {origin} did not answer ({reason}).");
+    }
     match body {
-        Value::Null => reason.trim_end().to_string(),
+        Value::Null => reason.to_string(),
         Value::String(text) if !text.trim().is_empty() => text.trim().to_string(),
-        Value::String(_) => reason.trim_end().to_string(),
-        other => format!("{}: {}", reason.trim_end(), other),
+        Value::String(_) => reason.to_string(),
+        other => format!("{reason}: {other}"),
     }
 }
 
@@ -264,10 +276,33 @@ mod tests {
     #[test]
     fn error_messages_prefer_the_body() {
         let status = StatusCode::BAD_REQUEST;
-        assert_eq!(message_of(&serde_json::json!({"message": "Skill not found"}), status), "Skill not found");
-        assert_eq!(message_of(&serde_json::json!({"error": "nope"}), status), "nope");
-        assert_eq!(message_of(&Value::String("plain text".into()), status), "plain text");
-        assert_eq!(message_of(&Value::Null, StatusCode::NOT_FOUND), "404 Not Found");
-        assert_eq!(message_of(&serde_json::json!({"code": 1}), status), r#"400 Bad Request: {"code":1}"#);
+        let url = Url::parse("https://acme.gatana.ai/api/v1/tools?schemas=false").unwrap();
+        let message = |body: &Value, status| message_of(body, status, &url);
+        assert_eq!(message(&serde_json::json!({"message": "Skill not found"}), status), "Skill not found");
+        assert_eq!(message(&serde_json::json!({"error": "nope"}), status), "nope");
+        assert_eq!(message(&Value::String("plain text".into()), status), "plain text");
+        assert_eq!(message(&Value::Null, StatusCode::NOT_FOUND), "404 Not Found");
+        assert_eq!(message(&serde_json::json!({"code": 1}), status), r#"400 Bad Request: {"code":1}"#);
+    }
+
+    #[test]
+    fn gateway_errors_name_the_address() {
+        let url = Url::parse("https://acme.gatana.ai/api/v1/tools?schemas=false").unwrap();
+        assert_eq!(
+            message_of(&Value::Null, StatusCode::BAD_GATEWAY, &url),
+            "Gatana at https://acme.gatana.ai did not answer (502 Bad Gateway)."
+        );
+        let html = Value::String("<html><body>504 Gateway Time-out</body></html>".into());
+        assert_eq!(
+            message_of(&html, StatusCode::GATEWAY_TIMEOUT, &url),
+            "Gatana at https://acme.gatana.ai did not answer (504 Gateway Timeout)."
+        );
+        assert_eq!(
+            message_of(&serde_json::json!({"status": "starting"}), StatusCode::SERVICE_UNAVAILABLE, &url),
+            "Gatana at https://acme.gatana.ai is starting (503 Service Unavailable). Try again in a moment."
+        );
+        // A message from Gatana itself still wins.
+        let body = serde_json::json!({"message": "Upstream server failed"});
+        assert_eq!(message_of(&body, StatusCode::BAD_GATEWAY, &url), "Upstream server failed");
     }
 }

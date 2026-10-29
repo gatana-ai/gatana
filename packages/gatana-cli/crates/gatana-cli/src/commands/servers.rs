@@ -1,92 +1,17 @@
-//! Tool calls, deployments, effective credentials, FaaS servers and sandboxes.
+//! Deployments, effective credentials, FaaS servers and sandboxes.
 
-use super::resources::split_tool_name;
 use super::{Silent, text_at};
-use crate::cli::{CredsArgs, DeploymentCommand, FaasCommand, SandboxCommand, ToolArgs, ToolPart};
+use crate::cli::{CredsArgs, DeploymentCommand, FaasCommand, SandboxCommand};
 use crate::context::Context;
 use crate::faas::{self, deployment};
 use crate::output::{self, Options};
 use crate::sse::EventStream;
-use crate::util::{from_age, parse_inline_object, read_piped_stdin};
-use anyhow::{Context as _, Result, anyhow, bail};
+use crate::util::from_age;
+use anyhow::{Result, anyhow, bail};
 use gatana_api::{v1, v2};
-use serde_json::{Map, Value, json};
+use serde_json::{Value, json};
 use std::path::Path;
 use std::time::Duration;
-
-/// The arguments: `-f` file, else piped stdin, then `-a` on top.
-fn tool_arguments(args: &ToolArgs) -> Result<Map<String, Value>> {
-    let base = match &args.file {
-        Some(file) => Some(std::fs::read_to_string(file).with_context(|| format!("reading {}", file.display()))?),
-        None if args.arg.is_empty() => read_piped_stdin()?.filter(|text| !text.trim().is_empty()),
-        None => None,
-    };
-    let mut arguments = match base {
-        Some(text) => match serde_json::from_str(text.trim()).context("the arguments are not valid JSON")? {
-            Value::Object(map) => map,
-            _ => bail!("The arguments must be a JSON object"),
-        },
-        None => Map::new(),
-    };
-    if !args.arg.is_empty()
-        && let Value::Object(inline) = parse_inline_object(&args.arg)?
-    {
-        arguments.extend(inline);
-    }
-    Ok(arguments)
-}
-
-/// `gatana tool <server>_<tool>`: calls the tool through Gatana and prints the part asked for.
-pub async fn call_tool(context: &Context, args: ToolArgs) -> Result<()> {
-    let (server, tool) = split_tool_name(&args.tool_name)?;
-    let arguments = tool_arguments(&args)?;
-    let api = context.api().await?;
-    let body = v1::types::CallMcpServerToolBody { args: arguments };
-    let response = api.v1().call_mcp_server_tool(server, tool, &body).value().await?;
-    // The result is read raw: MCP keeps adding content types, and printing one must not need a
-    // new CLI.
-    let Some(result) = response.get("result").filter(|result| !result.is_null()) else {
-        bail!("Gatana returned success without a result. Contact Gatana support.");
-    };
-    if result.get("isError") == Some(&Value::Bool(true)) {
-        output::error(&result.to_string());
-        if text_at(result, "/errorCode") == Some("auth-required") {
-            let config = api.v2().get_server_v2(server).value().await.unwrap_or_default();
-            if text_at(&config, "/authorization/method") == Some("oauth") {
-                output::error(&format!(
-                    "The server is missing credentials. Run \"gatana create creds {server}\" to generate an authorization URL."
-                ));
-            } else {
-                output::error(&format!(
-                    "The server is missing credentials. Run \"gatana create creds {server}\" to set API key credentials."
-                ));
-            }
-        }
-        return Err(Silent.into());
-    }
-    match args.part {
-        ToolPart::Text => {
-            let text = result
-                .get("content")
-                .and_then(Value::as_array)
-                .and_then(|content| content.iter().find(|item| text_at(item, "/type") == Some("text")))
-                .and_then(|item| item.get("text"))
-                .and_then(Value::as_str)
-                .filter(|text| !text.is_empty());
-            match text {
-                Some(text) => output::print(&Value::String(text.to_string())),
-                None => bail!("no text content found in tool response"),
-            }
-        }
-        ToolPart::Structured => {
-            let structured =
-                result.get("structuredContent").filter(|value| !value.is_null()).cloned().unwrap_or(json!({}));
-            output::output(&structured, Options::yaml());
-        }
-        ToolPart::Unstructured => output::output(result.get("content").unwrap_or(&Value::Null), Options::yaml()),
-    }
-    Ok(())
-}
 
 /// `gatana creds <server>`: the token or API keys a tool call would use.
 pub async fn effective_credentials(context: &Context, args: CredsArgs) -> Result<()> {

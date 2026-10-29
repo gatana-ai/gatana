@@ -3,13 +3,16 @@
 //!
 //! The questions follow the page. For a remote or an OpenAPI specification: the URL, then the slug,
 //! made from the domain. For a command: the command, then the slug, made from the package. For
-//! code: the slug and the runtime. For a built-in server: which one. Each answer can also come from
+//! code: the slug and the runtime. For a built-in server: which one. For a mailbox: the provider,
+//! then the slug, the login and the access (see the module email). Each answer can also come from
 //! an argument. Without a terminal, a missing answer is an error, unless a default can stand in.
 //!
 //! For a URL, Gatana looks for the OAuth of the remote while the slug question is on screen. After
 //! the server is created, the CLI registers an OAuth client when the authorization server permits
 //! it, and saves both on the server, as the popular-server tiles do (server-oauth-setup.ts in the
 //! frontend).
+
+mod email;
 
 use super::text_at;
 use crate::cli::{
@@ -57,6 +60,7 @@ pub async fn run(context: &Context, kind: Option<ServerKind>) -> Result<()> {
         ServerKind::Local(args) => new.with_command(args).await,
         ServerKind::Code(args) => new.with_code(args).await,
         ServerKind::BuiltIn(BuiltInServerArgs { id }) => new.built_in(id).await,
+        ServerKind::Email(args) => new.with_mailbox(args).await,
     }
 }
 
@@ -68,12 +72,13 @@ fn choose_kind() -> Result<ServerKind> {
         );
     }
     let choices = [
-        ("Remote: HTTP streaming", "The standard for a hosted MCP server"),
-        ("Remote: server-sent events (legacy)", "The older remote transport, still used by some services"),
-        ("Runnable code", "Write the tools yourself, AWS Lambda-style"),
-        ("Executable app", "A command such as npx or uvx, run in a container of its own"),
-        ("Built-in", "Tools Gatana provides itself, with nothing to host"),
-        ("HTTP OpenAPI", "Turn an OpenAPI or Swagger specification into tools"),
+        ("MCP Remote: HTTP streaming", "The standard for a hosted MCP server"),
+        ("MCP Remote: SSE (legacy)", "The older remote transport, still used by some services"),
+        ("MCP: Executable app", "A command such as npx or uvx, run in a container of its own"),
+        ("FaaS/Runnable code", "Write the tools yourself, AWS Lambda-style"),
+        ("Email (IMAP or JMAP)", "Connect a mailbox through IMAP or JMAP"),
+        ("OpenAPI/Swagger", "Turn an OpenAPI or Swagger specification into tools"),
+        ("Gatana Built-in", "Tools Gatana provides itself, with nothing to host"),
     ];
     let labels: Vec<String> = choices
         .iter()
@@ -90,7 +95,8 @@ fn choose_kind() -> Result<ServerKind> {
         2 => ServerKind::Code(CodeServerArgs::default()),
         3 => ServerKind::Local(LocalServerArgs::default()),
         4 => ServerKind::BuiltIn(BuiltInServerArgs::default()),
-        _ => ServerKind::Openapi(Default::default()),
+        5 => ServerKind::Openapi(Default::default()),
+        _ => ServerKind::Email(Default::default()),
     })
 }
 
@@ -139,14 +145,18 @@ impl NewServer<'_> {
     }
 
     async fn create(&self, slug: &str, transport: TransportConfig, args: &NewServerArgs) -> Result<()> {
-        let mut request = new_server_request(slug, transport);
+        self.send(new_server_request(slug, transport), args).await
+    }
+
+    /// Creates the server, with the settings that every new server takes.
+    async fn send(&self, mut request: V2CreateServerRequest, args: &NewServerArgs) -> Result<()> {
         request.visibility = Some(match args.visibility {
             Visibility::Private => v2::types::ServerVisibility::Private,
             Visibility::Organization => v2::types::ServerVisibility::Organization,
         });
         request.is_output_compression_enabled = Some(args.output_compression);
         output::spinner("Creating the server...", self.api.v2().create_server_v2(&request).send()).await?;
-        output::success(&format!("Created server {slug}."));
+        output::success(&format!("Created server {}.", request.slug));
         Ok(())
     }
 
