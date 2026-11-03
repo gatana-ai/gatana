@@ -6,7 +6,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_user_request import CreateUserRequest
-from ...models.schema_494 import Schema494
+from ...models.create_user_response import CreateUserResponse
 from ...types import UNSET, Response, Unset
 
 
@@ -30,9 +30,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema494 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> CreateUserResponse | None:
     if response.status_code == 200:
-        response_200 = Schema494.from_dict(response.json())
+        response_200 = CreateUserResponse.from_dict(response.json())
 
         return response_200
 
@@ -42,7 +42,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema494]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[CreateUserResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -55,8 +55,9 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: CreateUserRequest | Unset = UNSET,
-) -> Response[Schema494]:
-    """Invite a new user by email, or create a service account
+) -> Response[CreateUserResponse]:
+    """Create a service account or invite a user by email, returning the invitation link only when email is
+    disabled
 
     Args:
         body (CreateUserRequest | Unset):
@@ -66,7 +67,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema494]
+        Response[CreateUserResponse]
     """
 
     kwargs = _get_kwargs(
@@ -84,8 +85,9 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: CreateUserRequest | Unset = UNSET,
-) -> Schema494 | None:
-    """Invite a new user by email, or create a service account
+) -> CreateUserResponse | None:
+    """Create a service account or invite a user by email, returning the invitation link only when email is
+    disabled
 
     Args:
         body (CreateUserRequest | Unset):
@@ -95,7 +97,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema494
+        CreateUserResponse
     """
 
     return sync_detailed(
@@ -108,8 +110,9 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: CreateUserRequest | Unset = UNSET,
-) -> Response[Schema494]:
-    """Invite a new user by email, or create a service account
+) -> Response[CreateUserResponse]:
+    """Create a service account or invite a user by email, returning the invitation link only when email is
+    disabled
 
     Args:
         body (CreateUserRequest | Unset):
@@ -119,7 +122,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema494]
+        Response[CreateUserResponse]
     """
 
     kwargs = _get_kwargs(
@@ -135,8 +138,9 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: CreateUserRequest | Unset = UNSET,
-) -> Schema494 | None:
-    """Invite a new user by email, or create a service account
+) -> CreateUserResponse | None:
+    """Create a service account or invite a user by email, returning the invitation link only when email is
+    disabled
 
     Args:
         body (CreateUserRequest | Unset):
@@ -146,7 +150,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema494
+        CreateUserResponse
     """
 
     return (

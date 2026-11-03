@@ -35,9 +35,9 @@ class ServerRunningStatusResponse:
         is_stabilizing = self.is_stabilizing
 
         pods = []
-        for componentsschemas_schema650_item_data in self.pods:
-            componentsschemas_schema650_item = componentsschemas_schema650_item_data.to_dict()
-            pods.append(componentsschemas_schema650_item)
+        for componentsschemas_schema743_item_data in self.pods:
+            componentsschemas_schema743_item = componentsschemas_schema743_item_data.to_dict()
+            pods.append(componentsschemas_schema743_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -65,10 +65,10 @@ class ServerRunningStatusResponse:
 
         pods = []
         _pods = d.pop("pods")
-        for componentsschemas_schema650_item_data in _pods:
-            componentsschemas_schema650_item = ServerPodStatus.from_dict(componentsschemas_schema650_item_data)
+        for componentsschemas_schema743_item_data in _pods:
+            componentsschemas_schema743_item = ServerPodStatus.from_dict(componentsschemas_schema743_item_data)
 
-            pods.append(componentsschemas_schema650_item)
+            pods.append(componentsschemas_schema743_item)
 
         server_running_status_response = cls(
             is_deployed=is_deployed,

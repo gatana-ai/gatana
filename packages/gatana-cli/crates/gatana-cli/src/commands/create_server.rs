@@ -224,19 +224,20 @@ impl NewServer<'_> {
         Ok(())
     }
 
-    /// Registers an OAuth client when the authorization server permits it, then saves the OAuth
-    /// metadata and the client on the server, with credentials per user (OAUTH_PER_USER in the
-    /// frontend).
+    /// Gets an OAuth client when the authorization server permits it, by dynamic registration or
+    /// with a client ID metadata document, then saves the OAuth metadata and the client on the
+    /// server, with credentials per user (OAUTH_PER_USER in the frontend).
     async fn set_up_oauth(&self, slug: &str, metadata: &Value) -> Result<OAuthSetup> {
         let issuer = text_at(metadata, "/as/issuer").filter(|issuer| !issuer.is_empty());
-        let can_register = text_at(metadata, "/as/registrationEndpoint").is_some_and(|endpoint| !endpoint.is_empty());
+        let can_register = text_at(metadata, "/as/registrationEndpoint").is_some_and(|endpoint| !endpoint.is_empty())
+            || metadata.pointer("/as/supportsClientIdMetadataDocument").and_then(Value::as_bool) == Some(true);
         let mut client = None;
         if can_register {
             let body = json!({ "oauthMetadata": metadata });
             let call = self.api.v1().register_mcp_server_oauth_client_without_saving_raw(slug, body).value();
-            match output::spinner("Registering an OAuth client...", call).await {
+            match output::spinner("Getting an OAuth client...", call).await {
                 Ok(answer) => client = answer.get("clientConfiguration").filter(|client| client.is_object()).cloned(),
-                Err(error) => warn(&format!("No OAuth client was registered: {error}")),
+                Err(error) => warn(&format!("No OAuth client: {error}")),
             }
         }
         let mut patch = json!({
@@ -249,7 +250,7 @@ impl NewServer<'_> {
         self.api.v2().patch_server_v2_raw(slug, patch).send().await?;
         Ok(match (&client, issuer) {
             (Some(_), _) => {
-                output::success(&format!("Registered an OAuth client at {}.", issuer.unwrap_or("the issuer")));
+                output::success(&format!("Set up an OAuth client for {}.", issuer.unwrap_or("the issuer")));
                 OAuthSetup::Client
             }
             (None, Some(_)) => OAuthSetup::Issuer,

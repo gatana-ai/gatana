@@ -103,40 +103,40 @@ class PatchSecretStoreBody:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema217_type_0 = AwsSecretsManagerConfiguration.from_dict(data)
+                componentsschemas_schema253_type_0 = AwsSecretsManagerConfiguration.from_dict(data)
 
-                return componentsschemas_schema217_type_0
+                return componentsschemas_schema253_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema217_type_1 = GcpSecretManagerConfiguration.from_dict(data)
+                componentsschemas_schema253_type_1 = GcpSecretManagerConfiguration.from_dict(data)
 
-                return componentsschemas_schema217_type_1
+                return componentsschemas_schema253_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema217_type_2 = HashiCorpVaultConfiguration.from_dict(data)
+                componentsschemas_schema253_type_2 = HashiCorpVaultConfiguration.from_dict(data)
 
-                return componentsschemas_schema217_type_2
+                return componentsschemas_schema253_type_2
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema217_type_3 = InfisicalConfiguration.from_dict(data)
+                componentsschemas_schema253_type_3 = InfisicalConfiguration.from_dict(data)
 
-                return componentsschemas_schema217_type_3
+                return componentsschemas_schema253_type_3
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             if not isinstance(data, dict):
                 raise TypeError()
-            componentsschemas_schema217_type_4 = AzureKeyVaultConfiguration.from_dict(data)
+            componentsschemas_schema253_type_4 = AzureKeyVaultConfiguration.from_dict(data)
 
-            return componentsschemas_schema217_type_4
+            return componentsschemas_schema253_type_4
 
         configuration = _parse_configuration(d.pop("configuration", UNSET))
 

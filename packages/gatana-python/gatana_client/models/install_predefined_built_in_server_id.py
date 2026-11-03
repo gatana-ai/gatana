@@ -6,6 +6,7 @@ class InstallPredefinedBuiltInServerId(str, Enum):
     CODEMODE = "codemode"
     COMPRESSION = "compression"
     FETCH = "fetch"
+    GATANA = "gatana"
     GATANA_API = "gatana-api"
     GATANA_DEBUG = "gatana-debug"
     SKILLS = "skills"

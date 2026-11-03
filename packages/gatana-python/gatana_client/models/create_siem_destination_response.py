@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_1062 import Schema1062
+    from ..models.schema_1155 import Schema1155
 
 
 T = TypeVar("T", bound="CreateSiemDestinationResponse")
@@ -16,11 +16,11 @@ T = TypeVar("T", bound="CreateSiemDestinationResponse")
 class CreateSiemDestinationResponse:
     """
     Attributes:
-        destination (Schema1062):
+        destination (Schema1155):
         signing_secret (str): Secret used to compute the HMAC signature of delivered batches
     """
 
-    destination: Schema1062
+    destination: Schema1155
     signing_secret: str
 
     def to_dict(self) -> dict[str, Any]:
@@ -41,10 +41,10 @@ class CreateSiemDestinationResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_1062 import Schema1062
+        from ..models.schema_1155 import Schema1155
 
         d = dict(src_dict)
-        destination = Schema1062.from_dict(d.pop("destination"))
+        destination = Schema1155.from_dict(d.pop("destination"))
 
         signing_secret = d.pop("signingSecret")
 

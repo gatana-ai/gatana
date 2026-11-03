@@ -6,8 +6,8 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_657 import Schema657
-from ...models.schema_658 import Schema658
+from ...models.schema_750 import Schema750
+from ...models.schema_751 import Schema751
 from ...models.test_open_api_spec_request import TestOpenApiSpecRequest
 from ...types import UNSET, Response, Unset
 
@@ -35,21 +35,21 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema657 | Schema658 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema750 | Schema751 | None:
     if response.status_code == 200:
 
-        def _parse_response_200(data: object) -> Schema657 | Schema658:
+        def _parse_response_200(data: object) -> Schema750 | Schema751:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_test_open_api_spec_response_type_0 = Schema657.from_dict(data)
+                componentsschemas_test_open_api_spec_response_type_0 = Schema750.from_dict(data)
 
                 return componentsschemas_test_open_api_spec_response_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             if not isinstance(data, dict):
                 raise TypeError()
-            componentsschemas_test_open_api_spec_response_type_1 = Schema658.from_dict(data)
+            componentsschemas_test_open_api_spec_response_type_1 = Schema751.from_dict(data)
 
             return componentsschemas_test_open_api_spec_response_type_1
 
@@ -65,7 +65,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Schema657 | Schema658]:
+) -> Response[Schema750 | Schema751]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -79,7 +79,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: TestOpenApiSpecRequest | Unset = UNSET,
-) -> Response[Schema657 | Schema658]:
+) -> Response[Schema750 | Schema751]:
     """Fetch a remote OpenAPI/Swagger specification from the given URL and validate that it is a valid spec
 
     Args:
@@ -91,7 +91,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema657 | Schema658]
+        Response[Schema750 | Schema751]
     """
 
     kwargs = _get_kwargs(
@@ -111,7 +111,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: TestOpenApiSpecRequest | Unset = UNSET,
-) -> Schema657 | Schema658 | None:
+) -> Schema750 | Schema751 | None:
     """Fetch a remote OpenAPI/Swagger specification from the given URL and validate that it is a valid spec
 
     Args:
@@ -123,7 +123,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema657 | Schema658
+        Schema750 | Schema751
     """
 
     return sync_detailed(
@@ -138,7 +138,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: TestOpenApiSpecRequest | Unset = UNSET,
-) -> Response[Schema657 | Schema658]:
+) -> Response[Schema750 | Schema751]:
     """Fetch a remote OpenAPI/Swagger specification from the given URL and validate that it is a valid spec
 
     Args:
@@ -150,7 +150,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema657 | Schema658]
+        Response[Schema750 | Schema751]
     """
 
     kwargs = _get_kwargs(
@@ -168,7 +168,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: TestOpenApiSpecRequest | Unset = UNSET,
-) -> Schema657 | Schema658 | None:
+) -> Schema750 | Schema751 | None:
     """Fetch a remote OpenAPI/Swagger specification from the given URL and validate that it is a valid spec
 
     Args:
@@ -180,7 +180,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema657 | Schema658
+        Schema750 | Schema751
     """
 
     return (

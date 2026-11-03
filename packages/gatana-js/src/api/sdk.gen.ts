@@ -471,7 +471,7 @@ export const getUsersMe = <ThrowOnError extends boolean = true>(options?: Option
   });
 
 /**
- * Update the current user; password and email changes require a browser login within the last 12 hours
+ * Update the current user; require a browser session for password or email changes and a login within 12 hours except for a first password with email disabled and no SSO identity
  */
 export const updateUsersMe = <ThrowOnError extends boolean = true>(
   options?: Options<UpdateUsersMeData, ThrowOnError>
@@ -522,7 +522,7 @@ export const listUsers = <ThrowOnError extends boolean = true>(options?: Options
   });
 
 /**
- * Invite a new user by email, or create a service account
+ * Create a service account or invite a user by email, returning the invitation link only when email is disabled
  */
 export const createUser = <ThrowOnError extends boolean = true>(options?: Options<CreateUserData, ThrowOnError>) =>
   (options?.client ?? client).post<CreateUserResponses, unknown, ThrowOnError>({
@@ -2477,7 +2477,7 @@ export const listSandboxes = <ThrowOnError extends boolean = true>(
   });
 
 /**
- * Create a new sandbox for the authenticated user. Requires a paid subscription and is limited to 10 concurrent sandboxes per organization
+ * Create a sandbox for the authenticated user with a paid subscription and Kubernetes, up to 10 concurrent sandboxes per organization
  */
 export const createSandbox = <ThrowOnError extends boolean = true>(
   options?: Options<CreateSandboxData, ThrowOnError>

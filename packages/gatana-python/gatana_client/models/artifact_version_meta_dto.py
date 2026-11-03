@@ -5,7 +5,7 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1186 import Schema1186
+from ..models.schema_1280 import Schema1280
 
 T = TypeVar("T", bound="ArtifactVersionMetaDto")
 
@@ -16,14 +16,14 @@ class ArtifactVersionMetaDto:
     Attributes:
         version (float):
         size_bytes (float):
-        content_type (Schema1186):
+        content_type (Schema1280):
         created_by_user_id (str):
         created_at (str):
     """
 
     version: float
     size_bytes: float
-    content_type: Schema1186
+    content_type: Schema1280
     created_by_user_id: str
     created_at: str
 
@@ -59,7 +59,7 @@ class ArtifactVersionMetaDto:
 
         size_bytes = d.pop("sizeBytes")
 
-        content_type = Schema1186(d.pop("contentType"))
+        content_type = Schema1280(d.pop("contentType"))
 
         created_by_user_id = d.pop("createdByUserId")
 

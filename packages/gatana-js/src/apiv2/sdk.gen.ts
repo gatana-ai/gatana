@@ -27,6 +27,8 @@ import type {
   PatchServerV2Responses,
   RefreshCredentialV2Data,
   RefreshCredentialV2Responses,
+  TestServerFirewallV2Data,
+  TestServerFirewallV2Responses,
   UpdateServerV2Data,
   UpdateServerV2Responses,
 } from './types.gen.js';
@@ -140,6 +142,25 @@ export const updateServerV2 = <ThrowOnError extends boolean = true>(
       { scheme: 'bearer', type: 'http' },
     ],
     url: '/servers/{slug}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * Test unsaved firewall rules against one call without running the tool or writing audit records
+ */
+export const testServerFirewallV2 = <ThrowOnError extends boolean = true>(
+  options: Options<TestServerFirewallV2Data, ThrowOnError>
+) =>
+  (options.client ?? client).post<TestServerFirewallV2Responses, unknown, ThrowOnError>({
+    security: [
+      { scheme: 'bearer', type: 'http' },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/servers/{slug}/firewall/test',
     ...options,
     headers: {
       'Content-Type': 'application/json',

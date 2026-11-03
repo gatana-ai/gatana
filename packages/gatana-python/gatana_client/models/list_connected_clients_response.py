@@ -23,9 +23,9 @@ class ListConnectedClientsResponse:
 
     def to_dict(self) -> dict[str, Any]:
         clients = []
-        for componentsschemas_schema1149_item_data in self.clients:
-            componentsschemas_schema1149_item = componentsschemas_schema1149_item_data.to_dict()
-            clients.append(componentsschemas_schema1149_item)
+        for componentsschemas_schema1243_item_data in self.clients:
+            componentsschemas_schema1243_item = componentsschemas_schema1243_item_data.to_dict()
+            clients.append(componentsschemas_schema1243_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -44,10 +44,10 @@ class ListConnectedClientsResponse:
         d = dict(src_dict)
         clients = []
         _clients = d.pop("clients")
-        for componentsschemas_schema1149_item_data in _clients:
-            componentsschemas_schema1149_item = ConnectedClient.from_dict(componentsschemas_schema1149_item_data)
+        for componentsschemas_schema1243_item_data in _clients:
+            componentsschemas_schema1243_item = ConnectedClient.from_dict(componentsschemas_schema1243_item_data)
 
-            clients.append(componentsschemas_schema1149_item)
+            clients.append(componentsschemas_schema1243_item)
 
         list_connected_clients_response = cls(
             clients=clients,

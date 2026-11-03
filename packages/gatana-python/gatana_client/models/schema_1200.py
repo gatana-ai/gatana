@@ -12,29 +12,34 @@ T = TypeVar("T", bound="Schema1200")
 class Schema1200:
     """
     Attributes:
-        id (str):
-        name (str):
-        member_count (float):
+        id (str): Unique ID of the user
+        email (str): Email address of the user
+        name (str): Display name of the user
+        added_at (str): Time when the maintainer was added
     """
 
     id: str
+    email: str
     name: str
-    member_count: float
+    added_at: str
 
     def to_dict(self) -> dict[str, Any]:
         id = self.id
 
+        email = self.email
+
         name = self.name
 
-        member_count = self.member_count
+        added_at = self.added_at
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
                 "id": id,
+                "email": email,
                 "name": name,
-                "memberCount": member_count,
+                "addedAt": added_at,
             }
         )
 
@@ -45,14 +50,17 @@ class Schema1200:
         d = dict(src_dict)
         id = d.pop("id")
 
+        email = d.pop("email")
+
         name = d.pop("name")
 
-        member_count = d.pop("memberCount")
+        added_at = d.pop("addedAt")
 
         schema_1200 = cls(
             id=id,
+            email=email,
             name=name,
-            member_count=member_count,
+            added_at=added_at,
         )
 
         return schema_1200

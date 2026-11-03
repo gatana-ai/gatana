@@ -6,11 +6,11 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_161 import Schema161
+from ..models.schema_195 import Schema195
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_162 import Schema162
+    from ..models.schema_196 import Schema196
 
 
 T = TypeVar("T", bound="TestOpenApiSpecRequest")
@@ -20,14 +20,14 @@ T = TypeVar("T", bound="TestOpenApiSpecRequest")
 class TestOpenApiSpecRequest:
     """
     Attributes:
-        method (Schema161): Whether to test a spec string or a spec URL.
-        headers (Schema162 | Unset):
+        method (Schema195): Whether to test a spec string or a spec URL.
+        headers (Schema196 | Unset):
         spec (str | Unset):
         spec_url (str | Unset):
     """
 
-    method: Schema161
-    headers: Schema162 | Unset = UNSET
+    method: Schema195
+    headers: Schema196 | Unset = UNSET
     spec: str | Unset = UNSET
     spec_url: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -61,17 +61,17 @@ class TestOpenApiSpecRequest:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_162 import Schema162
+        from ..models.schema_196 import Schema196
 
         d = dict(src_dict)
-        method = Schema161(d.pop("method"))
+        method = Schema195(d.pop("method"))
 
         _headers = d.pop("headers", UNSET)
-        headers: Schema162 | Unset
+        headers: Schema196 | Unset
         if isinstance(_headers, Unset):
             headers = UNSET
         else:
-            headers = Schema162.from_dict(_headers)
+            headers = Schema196.from_dict(_headers)
 
         spec = d.pop("spec", UNSET)
 

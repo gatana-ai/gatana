@@ -6,9 +6,11 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_402 import Schema402
-    from ..models.schema_404 import Schema404
-    from ..models.schema_425 import Schema425
+    from ..models.features import Features
+    from ..models.schema_439 import Schema439
+    from ..models.schema_457 import Schema457
+    from ..models.schema_459 import Schema459
+    from ..models.schema_480 import Schema480
 
 
 T = TypeVar("T", bound="AuthMetadata")
@@ -22,20 +24,26 @@ class AuthMetadata:
         has_paid_subscription (bool):
         has_assistant (bool):
         has_glama_registry (bool):
-        user (Schema402):
-        tenant (Schema404):
+        has_sign_in_method (bool): Whether the user has a password or an SSO identity
+        capabilities (Schema439):
+        features (Features):
+        user (Schema457):
+        tenant (Schema459):
         rules (list[Any]):
-        quota (Schema425):
+        quota (Schema480):
     """
 
     is_playground: bool
     has_paid_subscription: bool
     has_assistant: bool
     has_glama_registry: bool
-    user: Schema402
-    tenant: Schema404
+    has_sign_in_method: bool
+    capabilities: Schema439
+    features: Features
+    user: Schema457
+    tenant: Schema459
     rules: list[Any]
-    quota: Schema425
+    quota: Schema480
 
     def to_dict(self) -> dict[str, Any]:
         is_playground = self.is_playground
@@ -45,6 +53,12 @@ class AuthMetadata:
         has_assistant = self.has_assistant
 
         has_glama_registry = self.has_glama_registry
+
+        has_sign_in_method = self.has_sign_in_method
+
+        capabilities = self.capabilities.to_dict()
+
+        features = self.features.to_dict()
 
         user = self.user.to_dict()
 
@@ -62,6 +76,9 @@ class AuthMetadata:
                 "hasPaidSubscription": has_paid_subscription,
                 "hasAssistant": has_assistant,
                 "hasGlamaRegistry": has_glama_registry,
+                "hasSignInMethod": has_sign_in_method,
+                "capabilities": capabilities,
+                "features": features,
                 "user": user,
                 "tenant": tenant,
                 "rules": rules,
@@ -73,9 +90,11 @@ class AuthMetadata:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_402 import Schema402
-        from ..models.schema_404 import Schema404
-        from ..models.schema_425 import Schema425
+        from ..models.features import Features
+        from ..models.schema_439 import Schema439
+        from ..models.schema_457 import Schema457
+        from ..models.schema_459 import Schema459
+        from ..models.schema_480 import Schema480
 
         d = dict(src_dict)
         is_playground = d.pop("isPlayground")
@@ -86,19 +105,28 @@ class AuthMetadata:
 
         has_glama_registry = d.pop("hasGlamaRegistry")
 
-        user = Schema402.from_dict(d.pop("user"))
+        has_sign_in_method = d.pop("hasSignInMethod")
 
-        tenant = Schema404.from_dict(d.pop("tenant"))
+        capabilities = Schema439.from_dict(d.pop("capabilities"))
+
+        features = Features.from_dict(d.pop("features"))
+
+        user = Schema457.from_dict(d.pop("user"))
+
+        tenant = Schema459.from_dict(d.pop("tenant"))
 
         rules = cast(list[Any], d.pop("rules"))
 
-        quota = Schema425.from_dict(d.pop("quota"))
+        quota = Schema480.from_dict(d.pop("quota"))
 
         auth_metadata = cls(
             is_playground=is_playground,
             has_paid_subscription=has_paid_subscription,
             has_assistant=has_assistant,
             has_glama_registry=has_glama_registry,
+            has_sign_in_method=has_sign_in_method,
+            capabilities=capabilities,
+            features=features,
             user=user,
             tenant=tenant,
             rules=rules,

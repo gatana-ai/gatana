@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
-
-from ..models.schema_962 import Schema962
 
 T = TypeVar("T", bound="Schema965")
 
@@ -14,49 +12,24 @@ T = TypeVar("T", bound="Schema965")
 class Schema965:
     """
     Attributes:
-        tenant_id (str): ID of the tenant that owns the membership
-        server_id (str): ID of the server that the membership grants access to
-        role (Schema962):
-        created_at (str): Time when the membership was created
-        updated_at (str): Time when the membership was last updated
-        user_id (None): Always null for a team membership
-        team_id (str): ID of the member team
+        type_ (Literal['error']): Event type discriminator, always "error"
+        message (str): Error message
     """
 
-    tenant_id: str
-    server_id: str
-    role: Schema962
-    created_at: str
-    updated_at: str
-    user_id: None
-    team_id: str
+    type_: Literal["error"]
+    message: str
 
     def to_dict(self) -> dict[str, Any]:
-        tenant_id = self.tenant_id
+        type_ = self.type_
 
-        server_id = self.server_id
-
-        role = self.role.value
-
-        created_at = self.created_at
-
-        updated_at = self.updated_at
-
-        user_id = self.user_id
-
-        team_id = self.team_id
+        message = self.message
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "tenantId": tenant_id,
-                "serverId": server_id,
-                "role": role,
-                "createdAt": created_at,
-                "updatedAt": updated_at,
-                "userId": user_id,
-                "teamId": team_id,
+                "type": type_,
+                "message": message,
             }
         )
 
@@ -65,28 +38,15 @@ class Schema965:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        tenant_id = d.pop("tenantId")
+        type_ = cast(Literal["error"], d.pop("type"))
+        if type_ != "error":
+            raise ValueError(f"type must match const 'error', got '{type_}'")
 
-        server_id = d.pop("serverId")
-
-        role = Schema962(d.pop("role"))
-
-        created_at = d.pop("createdAt")
-
-        updated_at = d.pop("updatedAt")
-
-        user_id = d.pop("userId")
-
-        team_id = d.pop("teamId")
+        message = d.pop("message")
 
         schema_965 = cls(
-            tenant_id=tenant_id,
-            server_id=server_id,
-            role=role,
-            created_at=created_at,
-            updated_at=updated_at,
-            user_id=user_id,
-            team_id=team_id,
+            type_=type_,
+            message=message,
         )
 
         return schema_965

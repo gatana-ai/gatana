@@ -9,7 +9,7 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_192 import Schema192
+    from ..models.schema_228 import Schema228
     from ..models.server_o_auth_client_configuration_client_credentials import (
         ServerOAuthClientConfigurationClientCredentials,
     )
@@ -24,12 +24,12 @@ class ServerCredentialsOauthClientCredentials:
     Attributes:
         type_ (Literal['oauth-client-credentials']): Credential type discriminator, always "oauth-client-credentials"
         client_config (ServerOAuthClientConfigurationClientCredentials | Unset):
-        token_set (Schema192 | Unset):
+        token_set (Schema228 | Unset):
     """
 
     type_: Literal["oauth-client-credentials"]
     client_config: ServerOAuthClientConfigurationClientCredentials | Unset = UNSET
-    token_set: Schema192 | Unset = UNSET
+    token_set: Schema228 | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -59,7 +59,7 @@ class ServerCredentialsOauthClientCredentials:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_192 import Schema192
+        from ..models.schema_228 import Schema228
         from ..models.server_o_auth_client_configuration_client_credentials import (
             ServerOAuthClientConfigurationClientCredentials,
         )
@@ -77,11 +77,11 @@ class ServerCredentialsOauthClientCredentials:
             client_config = ServerOAuthClientConfigurationClientCredentials.from_dict(_client_config)
 
         _token_set = d.pop("tokenSet", UNSET)
-        token_set: Schema192 | Unset
+        token_set: Schema228 | Unset
         if isinstance(_token_set, Unset):
             token_set = UNSET
         else:
-            token_set = Schema192.from_dict(_token_set)
+            token_set = Schema228.from_dict(_token_set)
 
         server_credentials_oauth_client_credentials = cls(
             type_=type_,

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_1091 import Schema1091
+    from ..models.schema_1184 import Schema1184
 
 
 T = TypeVar("T", bound="ProfileDetailsDto")
@@ -27,7 +27,7 @@ class ProfileDetailsDto:
         is_code_mode_forced (bool): Whether MCP sessions that use the profile are forced into code mode
         created_at (str): Time when the profile was created
         updated_at (str): Time when the profile was last updated
-        servers (list[Schema1091]): Servers included in the profile
+        servers (list[Schema1184]): Servers included in the profile
     """
 
     tenant_id: str
@@ -40,7 +40,7 @@ class ProfileDetailsDto:
     is_code_mode_forced: bool
     created_at: str
     updated_at: str
-    servers: list[Schema1091]
+    servers: list[Schema1184]
 
     def to_dict(self) -> dict[str, Any]:
         tenant_id = self.tenant_id
@@ -64,9 +64,9 @@ class ProfileDetailsDto:
         updated_at = self.updated_at
 
         servers = []
-        for componentsschemas_schema1090_item_data in self.servers:
-            componentsschemas_schema1090_item = componentsschemas_schema1090_item_data.to_dict()
-            servers.append(componentsschemas_schema1090_item)
+        for componentsschemas_schema1183_item_data in self.servers:
+            componentsschemas_schema1183_item = componentsschemas_schema1183_item_data.to_dict()
+            servers.append(componentsschemas_schema1183_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -90,7 +90,7 @@ class ProfileDetailsDto:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_1091 import Schema1091
+        from ..models.schema_1184 import Schema1184
 
         d = dict(src_dict)
         tenant_id = d.pop("tenantId")
@@ -115,10 +115,10 @@ class ProfileDetailsDto:
 
         servers = []
         _servers = d.pop("servers")
-        for componentsschemas_schema1090_item_data in _servers:
-            componentsschemas_schema1090_item = Schema1091.from_dict(componentsschemas_schema1090_item_data)
+        for componentsschemas_schema1183_item_data in _servers:
+            componentsschemas_schema1183_item = Schema1184.from_dict(componentsschemas_schema1183_item_data)
 
-            servers.append(componentsschemas_schema1090_item)
+            servers.append(componentsschemas_schema1183_item)
 
         profile_details_dto = cls(
             tenant_id=tenant_id,

@@ -128,7 +128,12 @@ async fn in_terminal(context: &Context, args: SignupArgs) -> Result<bool> {
         created.get(name).and_then(Value::as_str).ok_or_else(|| anyhow!("the answer of the server has no {name}"))
     };
     let (org_id, client_id, refresh_token) = (field("tenantId")?, field("clientId")?, field("refreshToken")?);
-    let base_url = crate::apex::organization_url(&apex, org_id)?;
+    // In single-tenant mode the organization is on the public URL, not on <org>.<host>. Older
+    // backends do not send `url`.
+    let base_url = match created.get("url").and_then(Value::as_str) {
+        Some(url) => url.trim_end_matches('/').to_string(),
+        None => crate::apex::organization_url(&apex, org_id)?,
+    };
     output::success(&format!("Created {name} at {base_url}"));
 
     let tokens =

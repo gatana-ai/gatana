@@ -5,7 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_659 import Schema659
+from ...models.schema_752 import Schema752
 from ...types import UNSET, Response, Unset
 
 
@@ -32,9 +32,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema659 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema752 | None:
     if response.status_code == 200:
-        response_200 = Schema659.from_dict(response.json())
+        response_200 = Schema752.from_dict(response.json())
 
         return response_200
 
@@ -44,7 +44,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema659]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema752]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -58,7 +58,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
     schemas: str | Unset = UNSET,
-) -> Response[Schema659]:
+) -> Response[Schema752]:
     """List all cached tools of every MCP server the caller has access to, including the disabled ones
 
     Args:
@@ -70,7 +70,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema659]
+        Response[Schema752]
     """
 
     kwargs = _get_kwargs(
@@ -90,7 +90,7 @@ def sync(
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
     schemas: str | Unset = UNSET,
-) -> Schema659 | None:
+) -> Schema752 | None:
     """List all cached tools of every MCP server the caller has access to, including the disabled ones
 
     Args:
@@ -102,7 +102,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema659
+        Schema752
     """
 
     return sync_detailed(
@@ -117,7 +117,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
     schemas: str | Unset = UNSET,
-) -> Response[Schema659]:
+) -> Response[Schema752]:
     """List all cached tools of every MCP server the caller has access to, including the disabled ones
 
     Args:
@@ -129,7 +129,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema659]
+        Response[Schema752]
     """
 
     kwargs = _get_kwargs(
@@ -147,7 +147,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
     schemas: str | Unset = UNSET,
-) -> Schema659 | None:
+) -> Schema752 | None:
     """List all cached tools of every MCP server the caller has access to, including the disabled ones
 
     Args:
@@ -159,7 +159,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema659
+        Schema752
     """
 
     return (

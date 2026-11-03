@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_858 import Schema858
-    from ..models.schema_863 import Schema863
-    from ..models.schema_864 import Schema864
-    from ..models.schema_870 import Schema870
+    from ..models.schema_951 import Schema951
+    from ..models.schema_956 import Schema956
+    from ..models.schema_957 import Schema957
+    from ..models.schema_963 import Schema963
 
 
 T = TypeVar("T", bound="DeploymentMetricsResponse")
@@ -19,20 +19,20 @@ T = TypeVar("T", bound="DeploymentMetricsResponse")
 class DeploymentMetricsResponse:
     """
     Attributes:
-        cpu (Schema858):
-        memory (Schema863):
-        resource_limits (Schema864):
-        storage (None | Schema870): Usage of the server's persistent volume, or null when it keeps no state or reports
+        cpu (Schema951):
+        memory (Schema956):
+        resource_limits (Schema957):
+        storage (None | Schema963): Usage of the server's persistent volume, or null when it keeps no state or reports
             no usage
     """
 
-    cpu: Schema858
-    memory: Schema863
-    resource_limits: Schema864
-    storage: None | Schema870
+    cpu: Schema951
+    memory: Schema956
+    resource_limits: Schema957
+    storage: None | Schema963
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.schema_870 import Schema870
+        from ..models.schema_963 import Schema963
 
         cpu = self.cpu.to_dict()
 
@@ -41,7 +41,7 @@ class DeploymentMetricsResponse:
         resource_limits = self.resource_limits.to_dict()
 
         storage: dict[str, Any] | None
-        if isinstance(self.storage, Schema870):
+        if isinstance(self.storage, Schema963):
             storage = self.storage.to_dict()
         else:
             storage = self.storage
@@ -61,30 +61,30 @@ class DeploymentMetricsResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_858 import Schema858
-        from ..models.schema_863 import Schema863
-        from ..models.schema_864 import Schema864
-        from ..models.schema_870 import Schema870
+        from ..models.schema_951 import Schema951
+        from ..models.schema_956 import Schema956
+        from ..models.schema_957 import Schema957
+        from ..models.schema_963 import Schema963
 
         d = dict(src_dict)
-        cpu = Schema858.from_dict(d.pop("cpu"))
+        cpu = Schema951.from_dict(d.pop("cpu"))
 
-        memory = Schema863.from_dict(d.pop("memory"))
+        memory = Schema956.from_dict(d.pop("memory"))
 
-        resource_limits = Schema864.from_dict(d.pop("resourceLimits"))
+        resource_limits = Schema957.from_dict(d.pop("resourceLimits"))
 
-        def _parse_storage(data: object) -> None | Schema870:
+        def _parse_storage(data: object) -> None | Schema963:
             if data is None:
                 return data
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema869_type_0 = Schema870.from_dict(data)
+                componentsschemas_schema962_type_0 = Schema963.from_dict(data)
 
-                return componentsschemas_schema869_type_0
+                return componentsschemas_schema962_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema870, data)
+            return cast(None | Schema963, data)
 
         storage = _parse_storage(d.pop("storage"))
 

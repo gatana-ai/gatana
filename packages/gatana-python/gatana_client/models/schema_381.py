@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class Schema381(str, Enum):
-    ORGANIZATION = "organization"
-    PRIVATE = "private"
+    JETBRAINS_MONO = "jetbrains-mono"
+    SYSTEM_MONO = "system-mono"
 
     def __str__(self) -> str:
         return str(self.value)

@@ -46,7 +46,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[CreateSandboxResponse]:
-    """Create a new sandbox for the authenticated user. Requires a paid subscription and is limited to 10
+    """Create a sandbox for the authenticated user with a paid subscription and Kubernetes, up to 10
     concurrent sandboxes per organization
 
     Raises:
@@ -70,7 +70,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 ) -> CreateSandboxResponse | None:
-    """Create a new sandbox for the authenticated user. Requires a paid subscription and is limited to 10
+    """Create a sandbox for the authenticated user with a paid subscription and Kubernetes, up to 10
     concurrent sandboxes per organization
 
     Raises:
@@ -90,7 +90,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[CreateSandboxResponse]:
-    """Create a new sandbox for the authenticated user. Requires a paid subscription and is limited to 10
+    """Create a sandbox for the authenticated user with a paid subscription and Kubernetes, up to 10
     concurrent sandboxes per organization
 
     Raises:
@@ -112,7 +112,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 ) -> CreateSandboxResponse | None:
-    """Create a new sandbox for the authenticated user. Requires a paid subscription and is limited to 10
+    """Create a sandbox for the authenticated user with a paid subscription and Kubernetes, up to 10
     concurrent sandboxes per organization
 
     Raises:

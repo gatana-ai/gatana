@@ -325,6 +325,8 @@ fn oauth(provider: EmailProvider) -> Option<(ServerOAuthMetadata, ServerOAuthCli
         grant_type: OAuthGrantType::AuthorizationCode,
         client_auth_method: client_auth_method.to_string(),
         scopes: Some(scopes.join(" ")),
+        // The backend sets it when it saves the server
+        is_client_id_metadata_document: None,
     };
     let (issuer, client) = match provider {
         EmailProvider::Gmail => {

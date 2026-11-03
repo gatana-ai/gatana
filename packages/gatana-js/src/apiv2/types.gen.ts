@@ -7,27 +7,27 @@ export type ClientOptions = {
 export type V2CreateServerRequest = {
   slug: Schema0;
   transportConfig?: Schema1;
-  transportConfigType?: Schema60;
-  description?: Schema63;
-  authorization?: Schema65;
-  oauthMetadata?: Schema74;
-  oauthClientConfiguration?: Schema97;
-  isEnabled?: Schema112;
-  timeoutProtocol?: Schema114;
-  timeoutTotal?: Schema116;
-  resetTimeoutOnProgressNotification?: Schema118;
-  isOutputCompressionEnabled?: Schema120;
-  isOutputCompressionTransformEnabled?: Schema122;
-  outputCompressionThresholdBytes?: Schema124;
-  firewallRules?: Schema126;
-  visibility?: Schema129;
-  id?: Schema130;
-  tenantId?: Schema132;
-  lastToolRefreshAt?: Schema134;
-  mcpProtocolVersion?: Schema136;
-  mcpProtocolDetectedAt?: Schema138;
-  createdAt?: Schema140;
-  updatedAt?: Schema142;
+  transportConfigType?: Schema91;
+  description?: Schema94;
+  authorization?: Schema96;
+  oauthMetadata?: Schema105;
+  oauthClientConfiguration?: Schema130;
+  isEnabled?: Schema147;
+  timeoutProtocol?: Schema149;
+  timeoutTotal?: Schema151;
+  resetTimeoutOnProgressNotification?: Schema153;
+  isOutputCompressionEnabled?: Schema155;
+  isOutputCompressionTransformEnabled?: Schema157;
+  outputCompressionThresholdBytes?: Schema159;
+  firewallRules?: Schema161;
+  visibility?: Schema164;
+  id?: Schema165;
+  tenantId?: Schema167;
+  lastToolRefreshAt?: Schema169;
+  mcpProtocolVersion?: Schema171;
+  mcpProtocolDetectedAt?: Schema173;
+  createdAt?: Schema175;
+  updatedAt?: Schema177;
 };
 
 export type HttpStreamingTransportConfig = {
@@ -96,29 +96,74 @@ export type OpenApiTransportConfig = {
   headers?: Schema58;
 };
 
+export type EmailTransportConfig = {
+  type: Schema60;
+  preset?: Schema61;
+  access?: Schema62;
+  connection: Schema63;
+};
+
+/**
+ * Email provider shown on the settings page
+ */
+export type EmailPreset = 'gmail' | 'microsoft365' | 'fastmail' | 'icloud' | 'imap' | 'jmap';
+
+/**
+ * What the tools may do. "read" reads mail and attachments. "organize" also flags, moves and trashes messages and writes drafts. "send" also sends mail
+ */
+export type EmailAccessLevel = 'read' | 'organize' | 'send';
+
+export type EmailImapConnection = {
+  protocol: Schema64;
+  host?: Schema65;
+  port?: Schema67;
+  security?: Schema69;
+  username?: Schema71;
+  password?: Schema73;
+  smtp?: Schema75;
+  saveSentCopy?: Schema82;
+};
+
+/**
+ * SMTP server used to send mail. Uses the same credentials as IMAP
+ */
+export type EmailSmtpServer = {
+  host: Schema77;
+  port?: Schema78;
+  security?: Schema80;
+};
+
+export type EmailJmapConnection = {
+  protocol: Schema84;
+  sessionUrl?: Schema85;
+  headers?: Schema87;
+  accountId?: Schema89;
+};
+
 /**
  * Controls how tool refresh is authorized. "server-scoped" means only server-scoped credentials are required, "skip" means refresh is done without authorization, and "any" means any available credentials (server, user, profile) can be used. Defaults to "server-scoped".
  */
-export type ToolRefreshCredentialPolicy = Schema72;
+export type ToolRefreshCredentialPolicy = Schema103;
 
 export type ServerAuthorization = {
-  method: Schema66;
-  credentialsScope: Schema67;
-  apikeys?: Schema70;
+  method: Schema97;
+  credentialsScope: Schema98;
+  apikeys?: Schema101;
   toolRefreshCredentialPolicy?: ToolRefreshCredentialPolicy;
 };
 
 export type ServerOAuthMetadata = {
-  resource?: Schema76;
-  as?: Schema81;
+  resource?: Schema107;
+  as?: Schema112;
 };
 
 export type ServerOAuthClientConfiguration = {
-  clientId?: Schema99;
-  clientSecret?: Schema101;
-  grantType: Schema103;
-  clientAuthMethod: Schema104;
-  scopes?: Schema109;
+  clientId?: Schema132;
+  clientSecret?: Schema134;
+  grantType: Schema136;
+  clientAuthMethod: Schema137;
+  scopes?: Schema142;
+  isClientIdMetadataDocument?: Schema144;
 };
 
 export type OAuthGrantType = 'authorization_code' | 'device_code';
@@ -126,33 +171,38 @@ export type OAuthGrantType = 'authorization_code' | 'device_code';
 export type ServerVisibility = 'private' | 'organization';
 
 export type V2UpdateServerRequest = {
-  slug?: Schema145;
-  description?: Schema63;
-  authorization?: Schema65;
-  transportConfig?: Schema149;
-  oauthMetadata?: Schema74;
-  oauthClientConfiguration?: Schema97;
-  isEnabled?: Schema112;
-  timeoutProtocol?: Schema114;
-  timeoutTotal?: Schema116;
-  resetTimeoutOnProgressNotification?: Schema118;
-  isOutputCompressionEnabled?: Schema120;
-  isOutputCompressionTransformEnabled?: Schema122;
-  outputCompressionThresholdBytes?: Schema124;
-  firewallRules?: Schema126;
-  visibility?: Schema129;
-  id?: Schema162;
-  tenantId?: Schema164;
-  name?: Schema166;
-  lastToolRefreshAt?: Schema168;
-  mcpProtocolVersion?: Schema170;
-  mcpProtocolDetectedAt?: Schema172;
-  createdAt?: Schema174;
-  updatedAt?: Schema176;
+  slug?: Schema180;
+  description?: Schema94;
+  authorization?: Schema96;
+  transportConfig?: Schema184;
+  oauthMetadata?: Schema105;
+  oauthClientConfiguration?: Schema130;
+  isEnabled?: Schema147;
+  timeoutProtocol?: Schema149;
+  timeoutTotal?: Schema151;
+  resetTimeoutOnProgressNotification?: Schema153;
+  isOutputCompressionEnabled?: Schema155;
+  isOutputCompressionTransformEnabled?: Schema157;
+  outputCompressionThresholdBytes?: Schema159;
+  firewallRules?: Schema161;
+  visibility?: Schema164;
+  id?: Schema197;
+  tenantId?: Schema199;
+  name?: Schema201;
+  lastToolRefreshAt?: Schema203;
+  mcpProtocolVersion?: Schema205;
+  mcpProtocolDetectedAt?: Schema207;
+  createdAt?: Schema209;
+  updatedAt?: Schema211;
 };
 
 export type V2PatchServerRequest = {
-  [key in Schema178]?: Schema179;
+  [key in Schema213]?: Schema214;
+};
+
+export type V2TestFirewallRulesRequest = {
+  rules: Schema215;
+  call: Schema216;
 };
 
 /**
@@ -170,7 +220,8 @@ export type Schema2 =
   | StdioTransportConfig
   | SseTransportConfig
   | HostedTransportConfig
-  | OpenApiTransportConfig;
+  | OpenApiTransportConfig
+  | EmailTransportConfig;
 
 /**
  * Transport type discriminator, always "httpstreaming"
@@ -449,275 +500,413 @@ export type Schema58 = Schema59;
 export type Schema59 = Array<[string, string]>;
 
 /**
+ * Transport type discriminator, always "email"
+ */
+export type Schema60 = 'email';
+
+export type Schema61 = EmailPreset | null;
+
+export type Schema62 = EmailAccessLevel;
+
+/**
+ * Mailbox connection settings. The protocol cannot change after server creation
+ */
+export type Schema63 =
+  | ({
+      protocol: 'imap';
+    } & EmailImapConnection)
+  | ({
+      protocol: 'jmap';
+    } & EmailJmapConnection);
+
+/**
+ * Protocol discriminator, always "imap"
+ */
+export type Schema64 = 'imap';
+
+/**
+ * Host name of the IMAP server, for example imap.gmail.com
+ */
+export type Schema65 = Schema66;
+
+export type Schema66 = string;
+
+/**
+ * Port of the IMAP server: usually 993 with "tls" and 143 with "starttls"
+ */
+export type Schema67 = Schema68;
+
+export type Schema68 = number;
+
+/**
+ * Encryption method. "tls" encrypts from the start. "starttls" requires a TLS upgrade before sign-in and stops if the upgrade fails
+ */
+export type Schema69 = Schema70;
+
+export type Schema70 = 'tls' | 'starttls';
+
+/**
+ * User name for the login, usually the email address. Can reference credentials and secrets
+ */
+export type Schema71 = Schema72;
+
+export type Schema72 = string;
+
+/**
+ * Password for the login, for example an app password. Can reference credentials and secrets
+ */
+export type Schema73 = Schema74;
+
+export type Schema74 = string;
+
+/**
+ * The server that sends mail. Without one, the server cannot send
+ */
+export type Schema75 = Schema76;
+
+export type Schema76 = EmailSmtpServer | null;
+
+/**
+ * Host name of the SMTP server, for example smtp.gmail.com
+ */
+export type Schema77 = string;
+
+/**
+ * Port of the SMTP server: usually 465 with "tls" and 587 with "starttls"
+ */
+export type Schema78 = Schema79;
+
+export type Schema79 = number;
+
+/**
+ * How the connection is encrypted. "starttls" refuses to continue if the server cannot upgrade the connection
+ */
+export type Schema80 = Schema81;
+
+export type Schema81 = 'tls' | 'starttls';
+
+/**
+ * Save a copy in Sent after sending. Disable if the SMTP server saves a copy automatically, as Gmail does
+ */
+export type Schema82 = Schema83;
+
+export type Schema83 = boolean;
+
+/**
+ * Protocol discriminator, always "jmap"
+ */
+export type Schema84 = 'jmap';
+
+/**
+ * URL of the JMAP session resource, for example https://api.fastmail.com/jmap/session
+ */
+export type Schema85 = Schema86;
+
+export type Schema86 = string | '';
+
+/**
+ * HTTP headers to send with each JMAP request, as [name, value] pairs. Values can reference credentials and secrets
+ */
+export type Schema87 = Schema88;
+
+export type Schema88 = Array<[string, string]>;
+
+/**
+ * ID of the JMAP account to use. Defaults to the primary mail account of the session
+ */
+export type Schema89 = Schema90 | null;
+
+export type Schema90 = string;
+
+/**
  * Transport type to create with a default configuration, used instead of transportConfig
  */
-export type Schema60 = Schema61;
+export type Schema91 = Schema92;
 
-export type Schema61 = 'httpstreaming' | 'sse' | 'stdio' | 'hosted' | 'openapi';
+export type Schema92 = 'httpstreaming' | 'sse' | 'stdio' | 'hosted' | 'openapi' | 'email';
 
-export type Schema62 = Schema63;
+export type Schema93 = Schema94;
 
 /**
  * Human-readable description of the server
  */
-export type Schema63 = string;
+export type Schema94 = string;
 
-export type Schema64 = Schema65;
+export type Schema95 = Schema96;
 
 /**
  * Authorization configuration for the server
  */
-export type Schema65 = ServerAuthorization;
+export type Schema96 = ServerAuthorization;
 
 /**
  * Authorization method that the server uses
  */
-export type Schema66 = 'none' | 'oauth' | 'oauth-client-credentials' | 'apikey';
+export type Schema97 = 'none' | 'oauth' | 'oauth-client-credentials' | 'apikey';
 
 /**
  * Whether credentials are shared for the whole server or stored per user
  */
-export type Schema67 = Schema68 | Schema69;
+export type Schema98 = Schema99 | Schema100;
 
-export type Schema68 = 'server';
+export type Schema99 = 'server';
 
-export type Schema69 = 'user';
+export type Schema100 = 'user';
 
 /**
  * Names of the API keys that the server expects
  */
-export type Schema70 = Schema71;
+export type Schema101 = Schema102;
 
-export type Schema71 = Array<string>;
+export type Schema102 = Array<string>;
 
-export type Schema72 = 'server-scoped' | 'skip' | 'any';
+export type Schema103 = 'server-scoped' | 'skip' | 'any';
 
-export type Schema73 = Schema74;
+export type Schema104 = Schema105;
 
 /**
  * Discovered OAuth metadata, or null when not discovered
  */
-export type Schema74 = Schema75 | ServerOAuthMetadata;
+export type Schema105 = Schema106 | ServerOAuthMetadata;
 
-export type Schema75 = null;
+export type Schema106 = null;
 
 /**
  * Discovered protected resource metadata (RFC 9728)
  */
-export type Schema76 = Schema77;
+export type Schema107 = Schema108;
 
-export type Schema77 = {
+export type Schema108 = {
   /**
    * Resource identifier from the protected resource metadata
    */
-  id?: Schema78;
+  id?: Schema109;
   /**
    * Scopes that the protected resource supports
    */
-  availableScopes?: Schema79;
+  availableScopes?: Schema110;
   /**
    * URL where the protected resource metadata was fetched from
    */
-  metadataUrl?: Schema80;
+  metadataUrl?: Schema111;
 };
 
-export type Schema78 = string;
+export type Schema109 = string;
 
-export type Schema79 = Array<string>;
+export type Schema110 = Array<string>;
 
-export type Schema80 = string;
+export type Schema111 = string;
 
 /**
  * Discovered authorization server metadata (RFC 8414)
  */
-export type Schema81 = Schema82;
+export type Schema112 = Schema113;
 
-export type Schema82 = {
+export type Schema113 = {
   /**
    * Issuer identifier of the authorization server
    */
-  issuer?: Schema83;
+  issuer?: Schema114;
   /**
    * URL of the authorization endpoint
    */
-  authorizeEndpoint?: Schema84;
+  authorizeEndpoint?: Schema115;
   /**
    * URL of the device authorization endpoint
    */
-  deviceAuthorizationEndpoint?: Schema85;
+  deviceAuthorizationEndpoint?: Schema116;
   /**
    * URL of the token endpoint
    */
-  tokenEndpoint?: Schema86;
+  tokenEndpoint?: Schema117;
   /**
    * Extra query parameters to add to the authorization request
    */
-  extraAuthorizationParameters?: Schema87;
+  extraAuthorizationParameters?: Schema118;
+  /**
+   * Omit the resource parameter (RFC 8707) from all OAuth requests if the authorization server rejects it
+   */
+  omitResourceIndicator?: Schema119;
   /**
    * URL of the dynamic client registration endpoint
    */
-  registrationEndpoint?: Schema88;
+  registrationEndpoint?: Schema120;
   /**
    * Whether the authorization server supports PKCE
    */
-  supportsPKCE?: Schema89;
+  supportsPKCE?: Schema121;
   /**
    * Client authentication methods that the token endpoint supports
    */
-  supportedClientAuthMethods?: Schema90;
+  supportedClientAuthMethods?: Schema122;
   /**
    * Whether the authorization server supports dynamic client registration
    */
-  supportsDynamicClientRegistration?: Schema91;
+  supportsDynamicClientRegistration?: Schema123;
   /**
    * Reason why dynamic client registration is not available
    */
-  noDynamicClientRegistrationReason?: Schema92;
+  noDynamicClientRegistrationReason?: Schema124;
+  /**
+   * Whether the authorization server accepts the URL of a client ID metadata document as client ID
+   */
+  supportsClientIdMetadataDocument?: Schema125;
   /**
    * URL of the authorization server documentation
    */
-  serviceDocumentation?: Schema93;
+  serviceDocumentation?: Schema126;
   /**
    * URL where the authorization server metadata was fetched from
    */
-  metadataUrl?: Schema94;
+  metadataUrl?: Schema127;
   /**
    * Scopes that the authorization server supports
    */
-  availableScopes?: Schema95;
+  availableScopes?: Schema128;
 };
 
-export type Schema83 = string;
+export type Schema114 = string;
 
-export type Schema84 = string;
+export type Schema115 = string;
 
-export type Schema85 = string;
+export type Schema116 = string;
 
-export type Schema86 = string;
+export type Schema117 = string;
 
-export type Schema87 = string;
+export type Schema118 = string;
 
-export type Schema88 = string;
+export type Schema119 = boolean;
 
-export type Schema89 = boolean;
+export type Schema120 = string;
 
-export type Schema90 = Array<string>;
+export type Schema121 = boolean;
 
-export type Schema91 = boolean;
+export type Schema122 = Array<string>;
 
-export type Schema92 = string | null;
+export type Schema123 = boolean;
 
-export type Schema93 = string;
+export type Schema124 = string | null;
 
-export type Schema94 = string;
+export type Schema125 = boolean;
 
-export type Schema95 = Array<string>;
+export type Schema126 = string;
 
-export type Schema96 = Schema97;
+export type Schema127 = string;
+
+export type Schema128 = Array<string>;
+
+export type Schema129 = Schema130;
 
 /**
  * OAuth client configuration, or null when not configured
  */
-export type Schema97 = Schema98 | ServerOAuthClientConfiguration;
+export type Schema130 = Schema131 | ServerOAuthClientConfiguration;
 
-export type Schema98 = null;
+export type Schema131 = null;
 
 /**
  * OAuth client ID
  */
-export type Schema99 = Schema100;
+export type Schema132 = Schema133;
 
-export type Schema100 = string;
+export type Schema133 = string;
 
 /**
  * OAuth client secret
  */
-export type Schema101 = Schema102;
+export type Schema134 = Schema135;
 
-export type Schema102 = string;
+export type Schema135 = string;
 
 /**
  * OAuth grant type used to obtain tokens
  */
-export type Schema103 = OAuthGrantType;
+export type Schema136 = OAuthGrantType;
 
 /**
  * Client authentication method used at the token endpoint
  */
-export type Schema104 = Schema105 | Schema106 | Schema107 | Schema108;
+export type Schema137 = Schema138 | Schema139 | Schema140 | Schema141;
 
-export type Schema105 = 'client_secret_basic';
+export type Schema138 = 'client_secret_basic';
 
-export type Schema106 = 'client_secret_post';
+export type Schema139 = 'client_secret_post';
 
-export type Schema107 = 'none';
+export type Schema140 = 'none';
 
-export type Schema108 = string;
+export type Schema141 = string;
 
 /**
  * Space-separated OAuth scopes to request
  */
-export type Schema109 = Schema110;
+export type Schema142 = Schema143;
 
-export type Schema110 = string;
+export type Schema143 = string;
 
-export type Schema111 = Schema112;
+/**
+ * Whether the client ID is the URL of the client ID metadata document that Gatana publishes for this server. Gatana sets it when the server is saved; a value in a request is ignored
+ */
+export type Schema144 = Schema145;
+
+export type Schema145 = boolean;
+
+export type Schema146 = Schema147;
 
 /**
  * Whether the server is enabled
  */
-export type Schema112 = boolean;
+export type Schema147 = boolean;
 
-export type Schema113 = Schema114;
+export type Schema148 = Schema149;
 
 /**
  * Timeout in seconds for a single protocol request to the server
  */
-export type Schema114 = number;
+export type Schema149 = number;
 
-export type Schema115 = Schema116;
+export type Schema150 = Schema151;
 
 /**
  * Total timeout in seconds for a tool call, including progress notifications
  */
-export type Schema116 = number;
+export type Schema151 = number;
 
-export type Schema117 = Schema118;
+export type Schema152 = Schema153;
 
 /**
  * Whether a progress notification resets the protocol timeout
  */
-export type Schema118 = boolean;
+export type Schema153 = boolean;
 
-export type Schema119 = Schema120;
+export type Schema154 = Schema155;
 
 /**
  * Whether large tool outputs are compressed before they are returned to the client
  */
-export type Schema120 = boolean;
+export type Schema155 = boolean;
 
-export type Schema121 = Schema122;
+export type Schema156 = Schema157;
 
 /**
  * Whether the compression transform step is applied to tool outputs
  */
-export type Schema122 = boolean;
+export type Schema157 = boolean;
 
-export type Schema123 = Schema124;
+export type Schema158 = Schema159;
 
 /**
  * Minimum output size in bytes before compression is applied
  */
-export type Schema124 = number;
+export type Schema159 = number;
 
-export type Schema125 = Schema126;
+export type Schema160 = Schema161;
 
 /**
  * Firewall rules evaluated against tool calls to the server
  */
-export type Schema126 = Array<Schema127>;
+export type Schema161 = Array<Schema162>;
 
-export type Schema127 = {
+export type Schema162 = {
   /**
    * CEL representing the condition
    */
@@ -728,87 +917,88 @@ export type Schema127 = {
   action: 'deny' | 'modify' | 'log';
 };
 
-export type Schema128 = Schema129;
+export type Schema163 = Schema164;
 
 /**
  * Who can see the server: only members or the whole organization
  */
-export type Schema129 = ServerVisibility;
+export type Schema164 = ServerVisibility;
 
 /**
  * Read-only; input is ignored
  */
-export type Schema130 = Schema131;
+export type Schema165 = Schema166;
 
-export type Schema131 = string;
-
-/**
- * Read-only; input is ignored
- */
-export type Schema132 = Schema133;
-
-export type Schema133 = string;
+export type Schema166 = string;
 
 /**
  * Read-only; input is ignored
  */
-export type Schema134 = Schema135;
+export type Schema167 = Schema168;
 
-export type Schema135 = string | null;
-
-/**
- * Read-only; input is ignored
- */
-export type Schema136 = Schema137;
-
-export type Schema137 = string;
+export type Schema168 = string;
 
 /**
  * Read-only; input is ignored
  */
-export type Schema138 = Schema139;
+export type Schema169 = Schema170;
 
-export type Schema139 = string | null;
-
-/**
- * Read-only; input is ignored
- */
-export type Schema140 = Schema141;
-
-export type Schema141 = string;
+export type Schema170 = string | null;
 
 /**
  * Read-only; input is ignored
  */
-export type Schema142 = Schema143;
+export type Schema171 = Schema172;
 
-export type Schema143 = string;
+export type Schema172 = string;
 
-export type Schema144 = string;
+/**
+ * Read-only; input is ignored
+ */
+export type Schema173 = Schema174;
+
+export type Schema174 = string | null;
+
+/**
+ * Read-only; input is ignored
+ */
+export type Schema175 = Schema176;
+
+export type Schema176 = string;
+
+/**
+ * Read-only; input is ignored
+ */
+export type Schema177 = Schema178;
+
+export type Schema178 = string;
+
+export type Schema179 = string;
 
 /**
  * URL-friendly name of the server, unique within the tenant
  */
-export type Schema145 = Schema146;
+export type Schema180 = Schema181;
 
-export type Schema146 = string;
+export type Schema181 = string;
 
-export type Schema147 = Schema63;
+export type Schema182 = Schema94;
 
-export type Schema148 = Schema65;
+export type Schema183 = Schema96;
 
 /**
  * Transport configuration used to connect to the server
  */
-export type Schema149 =
+export type Schema184 =
   | HttpStreamingTransportConfig
   | StdioTransportConfig
   | SseTransportConfig
-  | Schema150
+  | Schema185
   | HostedTransportConfig
-  | OpenApiTransportConfig;
+  | OpenApiTransportConfig
+  | EmailTransportConfig;
 
-export type Schema150 = {
+export type Schema185 = {
   /**
    * Transport type discriminator, always "self"
    */
@@ -819,137 +1009,190 @@ export type Schema150 = {
   id: string;
 };
 
-export type Schema151 = Schema74;
+export type Schema186 = Schema105;
 
-export type Schema152 = Schema97;
+export type Schema187 = Schema130;
 
-export type Schema153 = Schema112;
+export type Schema188 = Schema147;
 
-export type Schema154 = Schema114;
+export type Schema189 = Schema149;
 
-export type Schema155 = Schema116;
+export type Schema190 = Schema151;
 
-export type Schema156 = Schema118;
+export type Schema191 = Schema153;
 
-export type Schema157 = Schema120;
+export type Schema192 = Schema155;
 
-export type Schema158 = Schema122;
+export type Schema193 = Schema157;
 
-export type Schema159 = Schema124;
+export type Schema194 = Schema159;
 
-export type Schema160 = Schema126;
+export type Schema195 = Schema161;
 
-export type Schema161 = Schema129;
-
-/**
- * Read-only; input is ignored
- */
-export type Schema162 = Schema163;
-
-export type Schema163 = string;
+export type Schema196 = Schema164;
 
 /**
  * Read-only; input is ignored
  */
-export type Schema164 = Schema165;
+export type Schema197 = Schema198;
 
-export type Schema165 = string;
+export type Schema198 = string;
+
+/**
+ * Read-only; input is ignored
+ */
+export type Schema199 = Schema200;
+
+export type Schema200 = string;
 
 /**
  * Deprecated; accepted and ignored
  */
-export type Schema166 = Schema167;
+export type Schema201 = Schema202;
 
-export type Schema167 = string;
-
-/**
- * Read-only; input is ignored
- */
-export type Schema168 = Schema169;
-
-export type Schema169 = string | null;
+export type Schema202 = string;
 
 /**
  * Read-only; input is ignored
  */
-export type Schema170 = Schema171;
+export type Schema203 = Schema204;
 
-export type Schema171 = string;
-
-/**
- * Read-only; input is ignored
- */
-export type Schema172 = Schema173;
-
-export type Schema173 = string | null;
+export type Schema204 = string | null;
 
 /**
  * Read-only; input is ignored
  */
-export type Schema174 = Schema175;
+export type Schema205 = Schema206;
 
-export type Schema175 = string;
+export type Schema206 = string;
 
 /**
  * Read-only; input is ignored
  */
-export type Schema176 = Schema177;
+export type Schema207 = Schema208;
 
-export type Schema177 = string;
+export type Schema208 = string | null;
 
-export type Schema178 = string;
+/**
+ * Read-only; input is ignored
+ */
+export type Schema209 = Schema210;
 
-export type Schema179 = unknown;
+export type Schema210 = string;
 
-export type Schema180 = string;
+/**
+ * Read-only; input is ignored
+ */
+export type Schema211 = Schema212;
+
+export type Schema212 = string;
+
+export type Schema213 = string;
+
+export type Schema214 = unknown;
+
+/**
+ * Rules in evaluation order; they do not need to be saved
+ */
+export type Schema215 = Array<Schema162>;
+
+export type Schema216 = {
+  /**
+   * Tool name on this server, without the server prefix
+   */
+  tool: string;
+  /**
+   * Tool call arguments
+   */
+  args: {
+    [key in Schema217]?: Schema218;
+  };
+  /**
+   * User ID for the call; rules use this user and their current teams
+   */
+  userId: string;
+  /**
+   * IDs of profiles through which the call is made
+   */
+  profiles?: Schema219;
+  /**
+   * Token claims for the call
+   */
+  claims?: Schema220;
+  /**
+   * Authentication method, such as session-cookie
+   */
+  authMethod?: Schema221;
+};
+
+export type Schema217 = string;
+
+export type Schema218 = unknown;
+
+export type Schema219 = Array<string>;
+
+export type Schema220 = {
+  [key: string]: unknown;
+};
+
+export type Schema221 = string;
+
+export type Schema222 = string;
 
 export type V2ListServersResponse = {
-  servers: Schema181;
+  servers: Schema223;
 };
 
 export type V2ServerDto = {
-  id: Schema182;
-  slug: Schema183;
-  tenantId: Schema184;
-  description: Schema185;
-  authorization: Schema186;
-  transportConfig: Schema194;
-  oauthClientConfiguration: Schema253;
-  oauthMetadata: Schema267;
-  visibility: Schema289;
-  isEnabled: Schema290;
-  lastToolRefreshAt: Schema291;
-  mcpProtocolVersion: Schema293;
-  mcpProtocolDetectedAt: Schema294;
-  timeoutProtocol: Schema296;
-  timeoutTotal: Schema297;
-  resetTimeoutOnProgressNotification: Schema298;
-  isOutputCompressionEnabled: Schema299;
-  isOutputCompressionTransformEnabled: Schema300;
-  outputCompressionThresholdBytes: Schema301;
-  firewallRules: Schema302;
-  createdAt: Schema304;
-  updatedAt: Schema305;
+  id: Schema224;
+  slug: Schema225;
+  tenantId: Schema226;
+  description: Schema227;
+  authorization: Schema228;
+  transportConfig: Schema236;
+  oauthClientConfiguration: Schema326;
+  oauthMetadata: Schema342;
+  visibility: Schema366;
+  isEnabled: Schema367;
+  lastToolRefreshAt: Schema368;
+  mcpProtocolVersion: Schema370;
+  mcpProtocolDetectedAt: Schema371;
+  timeoutProtocol: Schema373;
+  timeoutTotal: Schema374;
+  resetTimeoutOnProgressNotification: Schema375;
+  isOutputCompressionEnabled: Schema376;
+  isOutputCompressionTransformEnabled: Schema377;
+  outputCompressionThresholdBytes: Schema378;
+  firewallRules: Schema379;
+  createdAt: Schema381;
+  updatedAt: Schema382;
+};
+
+export type FirewallTestResult = {
+  outcome: Schema383;
+  ruleIndex?: Schema384;
+  rules: Schema386;
+  context: Schema389;
 };
 
 export type CredentialDtoV2 = {
-  id: Schema307;
-  tenantId: Schema308;
-  scope: Schema309;
-  userId: Schema310;
-  profileId: Schema312;
-  lastUsedAt: Schema314;
-  authorizedAt: Schema316;
-  authorizedByUserId: Schema317;
-  type: Schema319;
-  createdAt: Schema320;
-  updatedAt: Schema321;
-  serverSlug: Schema322;
-  userEmail: Schema323;
-  userName: Schema325;
-  profileName: Schema327;
-  authorizedByName: Schema329;
-  authorizedByEmail: Schema331;
+  id: Schema409;
+  tenantId: Schema410;
+  scope: Schema411;
+  userId: Schema412;
+  profileId: Schema414;
+  lastUsedAt: Schema416;
+  authorizedAt: Schema418;
+  authorizedByUserId: Schema419;
+  type: Schema421;
+  createdAt: Schema422;
+  updatedAt: Schema423;
+  serverSlug: Schema424;
+  userEmail: Schema425;
+  userName: Schema427;
+  profileName: Schema429;
+  authorizedByName: Schema431;
+  authorizedByEmail: Schema433;
 };
 
 export type ServerCredentialsCredential =
@@ -964,174 +1207,176 @@ export type ServerCredentialsCredential =
     } & ServerCredentialsOauthClientCredentials);
 
 export type ServerCredentialsApiKeys = {
-  type: Schema333;
-  apikeys: Schema334;
+  type: Schema435;
+  apikeys: Schema436;
 };
 
 export type ServerCredentialsOauthTokens = {
-  type: Schema336;
-  tokenSet: Schema337;
+  type: Schema438;
+  tokenSet: Schema439;
+  resource?: Schema448;
 };
 
 export type ServerCredentialsOauthClientCredentials = {
-  type: Schema346;
+  type: Schema450;
   clientConfig?: ServerOAuthClientConfigurationClientCredentials;
-  tokenSet?: Schema348;
+  tokenSet?: Schema452;
 };
 
 /**
  * Client configuration for OAuth client credentials
  */
-export type ServerOAuthClientConfigurationClientCredentials = Schema347;
+export type ServerOAuthClientConfigurationClientCredentials = Schema451;
 
 export type CredentialRefreshResponse = {
-  id: Schema349;
-  accessTokenExpiresAt: Schema350;
+  id: Schema453;
+  accessTokenExpiresAt: Schema454;
 };
 
 export type PaginatedCredentialAuditLog = {
-  pagination: Schema352;
-  data: Schema359;
+  pagination: Schema456;
+  data: Schema463;
 };
 
 export type CredentialAuditLog = {
-  tenantId: Schema360;
-  id: Schema361;
-  credentialId: Schema362;
-  userId: Schema363;
-  eventName: Schema365;
-  details: Schema366;
-  createdAt: Schema369;
-  updatedAt: Schema370;
+  tenantId: Schema464;
+  id: Schema465;
+  credentialId: Schema466;
+  userId: Schema467;
+  eventName: Schema469;
+  details: Schema470;
+  createdAt: Schema473;
+  updatedAt: Schema474;
 };
 
-export type Schema181 = Array<V2ServerDto>;
+export type Schema223 = Array<V2ServerDto>;
 
 /**
  * Unique ID of the server
  */
-export type Schema182 = string;
+export type Schema224 = string;
 
 /**
  * URL-friendly name of the server, unique within the tenant
  */
-export type Schema183 = string;
+export type Schema225 = string;
 
 /**
  * ID of the tenant that owns the server
  */
-export type Schema184 = string;
+export type Schema226 = string;
 
 /**
  * Human-readable description of the server
  */
-export type Schema185 = string;
+export type Schema227 = string;
 
 /**
  * Authorization configuration for the server
  */
-export type Schema186 = ServerAuthorizationOutput;
+export type Schema228 = ServerAuthorizationOutput;
 
 /**
  * Authorization method that the server uses
  */
-export type Schema187 = 'none' | 'oauth' | 'oauth-client-credentials' | 'apikey';
+export type Schema229 = 'none' | 'oauth' | 'oauth-client-credentials' | 'apikey';
 
 /**
  * Whether credentials are shared for the whole server or stored per user
  */
-export type Schema188 = Schema189 | Schema190;
+export type Schema230 = Schema231 | Schema232;
 
-export type Schema189 = 'server';
+export type Schema231 = 'server';
 
-export type Schema190 = 'user';
+export type Schema232 = 'user';
 
 /**
  * Names of the API keys that the server expects
  */
-export type Schema191 = Schema192;
+export type Schema233 = Schema234;
 
-export type Schema192 = Array<string>;
+export type Schema234 = Array<string>;
 
-export type Schema193 = 'server-scoped' | 'skip' | 'any';
+export type Schema235 = 'server-scoped' | 'skip' | 'any';
 
 /**
  * Transport configuration used to connect to the server
  */
-export type Schema194 =
+export type Schema236 =
   | HttpStreamingTransportConfigOutput
   | StdioTransportConfigOutput
   | SseTransportConfigOutput
-  | Schema231
+  | Schema273
   | HostedTransportConfigOutput
-  | OpenApiTransportConfigOutput;
+  | OpenApiTransportConfigOutput
+  | EmailTransportConfigOutput;
 
 /**
  * Transport type discriminator, always "httpstreaming"
  */
-export type Schema195 = 'httpstreaming';
+export type Schema237 = 'httpstreaming';
 
 /**
  * URL of the MCP streamable HTTP endpoint
  */
-export type Schema196 = string;
+export type Schema238 = string;
 
 /**
  * Extra HTTP headers to send with each request, as [name, value] pairs
  */
-export type Schema197 = Schema198;
+export type Schema239 = Schema240;
 
-export type Schema198 = Array<[string, string]>;
+export type Schema240 = Array<[string, string]>;
 
 /**
  * Transport type discriminator, always "stdio"
  */
-export type Schema199 = 'stdio';
+export type Schema241 = 'stdio';
 
 /**
  * Command line that starts the MCP server process
  */
-export type Schema200 = string;
+export type Schema242 = string;
 
 /**
  * Docker image that the command runs in
  */
-export type Schema201 = Schema202;
+export type Schema243 = Schema244;
 
-export type Schema202 = string;
+export type Schema244 = string;
 
 /**
  * Environment variables for the process, as [name, value] pairs
  */
-export type Schema203 = Schema204;
+export type Schema245 = Schema246;
 
-export type Schema204 = Array<[string, string]>;
+export type Schema246 = Array<[string, string]>;
 
 /**
  * Protocol that the launched process speaks
  */
-export type Schema205 = 'sse' | 'httpstreaming' | 'stdio';
+export type Schema247 = 'sse' | 'httpstreaming' | 'stdio';
 
 /**
  * Port that the process listens on when transport is HTTP-based
  */
-export type Schema206 = Schema207 | null;
+export type Schema248 = Schema249 | null;
 
-export type Schema207 = number;
+export type Schema249 = number;
 
 /**
  * URL path of the MCP endpoint when transport is HTTP-based
  */
-export type Schema208 = Schema209 | null;
+export type Schema250 = Schema251 | null;
 
-export type Schema209 = string;
+export type Schema251 = string;
 
 /**
  * HTTP health check configuration for the process
  */
-export type Schema210 = Schema211;
+export type Schema252 = Schema253;
 
-export type Schema211 = {
+export type Schema253 = {
   /**
    * Whether the health check is active
    */
@@ -1139,77 +1384,77 @@ export type Schema211 = {
   /**
    * URL that the health check polls
    */
-  url: Schema212;
+  url: Schema254;
   /**
    * Seconds to wait before the first health check
    */
-  delaySeconds: Schema213 | null;
+  delaySeconds: Schema255 | null;
   /**
    * Seconds between health checks
    */
-  intervalSeconds: Schema214 | null;
+  intervalSeconds: Schema256 | null;
   /**
    * Number of consecutive failures before the process counts as unhealthy
    */
-  failureThreshold: Schema215 | null;
+  failureThreshold: Schema257 | null;
 };
 
-export type Schema212 = string;
+export type Schema254 = string;
 
-export type Schema213 = number;
+export type Schema255 = number;
 
-export type Schema214 = number;
+export type Schema256 = number;
 
-export type Schema215 = number;
+export type Schema257 = number;
 
 /**
  * Deprecated: former resource ceiling, no longer applied to deployments. Use requests to reserve capacity instead
  */
-export type Schema216 = Schema217 | null;
+export type Schema258 = Schema259 | null;
 
-export type Schema217 = {
-  cpu?: Schema218;
-  memory?: Schema219;
+export type Schema259 = {
+  cpu?: Schema260;
+  memory?: Schema261;
 };
 
 /**
  * CPU limit in Kubernetes quantity format (e.g. "500m" or "1")
  */
-export type Schema218 = string;
+export type Schema260 = string;
 
 /**
  * Memory limit in Kubernetes quantity format (e.g. "512Mi" or "1Gi")
  */
-export type Schema219 = string;
+export type Schema261 = string;
 
 /**
  * Resources reserved for the process: the minimum it is guaranteed when the hardware is busy. Overrides the organization default
  */
-export type Schema220 = Schema221 | null;
+export type Schema262 = Schema263 | null;
 
-export type Schema221 = {
-  cpu?: Schema222;
-  memory?: Schema223;
+export type Schema263 = {
+  cpu?: Schema264;
+  memory?: Schema265;
 };
 
 /**
  * CPU reserved for the deployment, in Kubernetes quantity format (e.g. "250m" or "1"). This is the minimum the deployment is guaranteed when the hardware is busy; when capacity is free it may use more. Reserved capacity counts against the organization total even while the server idles, so keep it at what the server needs, not what it may burst to
  */
-export type Schema222 = string;
+export type Schema264 = string;
 
 /**
  * Memory reserved for the deployment, in Kubernetes quantity format (e.g. "384Mi" or "1Gi"). Unlike CPU this is also the hard ceiling: a process that exceeds it is terminated
  */
-export type Schema223 = string;
+export type Schema265 = string;
 
-export type Schema224 = {
+export type Schema266 = {
   /**
    * Whether the server gets a persistent volume
    */
   enabled: boolean;
 };
 
-export type Schema225 = {
+export type Schema267 = {
   /**
    * Whether the server joins the tailnet
    */
@@ -1221,29 +1466,29 @@ export type Schema225 = {
   /**
    * Machine name on the tailnet. Defaults to gatana-<server slug>
    */
-  hostname?: Schema226 | null;
+  hostname?: Schema268 | null;
 };
 
-export type Schema226 = string;
+export type Schema268 = string;
 
 /**
  * Transport type discriminator, always "sse"
  */
-export type Schema227 = 'sse';
+export type Schema269 = 'sse';
 
 /**
  * URL of the MCP SSE endpoint
  */
-export type Schema228 = string;
+export type Schema270 = string;
 
 /**
  * Extra HTTP headers to send with each request, as [name, value] pairs
  */
-export type Schema229 = Schema230;
+export type Schema271 = Schema272;
 
-export type Schema230 = Array<[string, string]>;
+export type Schema272 = Array<[string, string]>;
 
-export type Schema231 = {
+export type Schema273 = {
   /**
    * Transport type discriminator, always "self"
    */
@@ -1257,48 +1502,48 @@ export type Schema231 = {
 /**
  * Transport type discriminator, always "hosted"
  */
-export type Schema232 = 'hosted';
+export type Schema274 = 'hosted';
 
 /**
  * Runtime that executes the hosted tool functions
  */
-export type Schema233 = 'node24' | 'python313';
+export type Schema275 = 'node24' | 'python313';
 
 /**
  * Environment variables for the hosted runtime, as [name, value] pairs
  */
-export type Schema234 = Schema235;
+export type Schema276 = Schema277;
 
-export type Schema235 = Array<[string, string]>;
+export type Schema277 = Array<[string, string]>;
 
 /**
  * Deprecated: former resource ceiling, no longer applied to deployments. Use requests to reserve capacity instead
  */
-export type Schema236 = Schema237 | null;
+export type Schema278 = Schema279 | null;
 
-export type Schema237 = {
-  cpu?: Schema218;
-  memory?: Schema219;
+export type Schema279 = {
+  cpu?: Schema260;
+  memory?: Schema261;
 };
 
 /**
  * Resources reserved for the hosted runtime: the minimum it is guaranteed when the hardware is busy. Overrides the organization default
  */
-export type Schema238 = Schema239 | null;
+export type Schema280 = Schema281 | null;
 
-export type Schema239 = {
-  cpu?: Schema222;
-  memory?: Schema223;
+export type Schema281 = {
+  cpu?: Schema264;
+  memory?: Schema265;
 };
 
-export type Schema240 = {
+export type Schema282 = {
   /**
    * Whether the server gets a persistent volume
    */
   enabled: boolean;
 };
 
-export type Schema241 = {
+export type Schema283 = {
   /**
    * Whether the server joins the tailnet
    */
@@ -1310,279 +1555,417 @@ export type Schema241 = {
   /**
    * Machine name on the tailnet. Defaults to gatana-<server slug>
    */
-  hostname?: Schema242 | null;
+  hostname?: Schema284 | null;
 };
 
-export type Schema242 = string;
+export type Schema284 = string;
 
 /**
  * Transport type discriminator, always "openapi"
  */
-export type Schema243 = 'openapi';
+export type Schema285 = 'openapi';
 
 /**
  * How the OpenAPI spec is supplied: from a URL or as inline content
  */
-export type Schema244 = 'specUrl' | 'spec';
+export type Schema286 = 'specUrl' | 'spec';
 
 /**
  * URL to fetch the OpenAPI spec from, used when method is "specUrl"
  */
-export type Schema245 = Schema246;
+export type Schema287 = Schema288;
 
-export type Schema246 = string | '';
+export type Schema288 = string | '';
 
 /**
  * Inline OpenAPI spec content, used when method is "spec"
  */
-export type Schema247 = Schema248;
+export type Schema289 = Schema290;
 
-export type Schema248 = string;
+export type Schema290 = string;
 
 /**
  * Base URL for the API requests generated from the spec
  */
-export type Schema249 = Schema250;
+export type Schema291 = Schema292;
 
-export type Schema250 = string | '';
+export type Schema292 = string | '';
 
 /**
  * Extra HTTP headers to send with each request, as [name, value] pairs
  */
-export type Schema251 = Schema252;
+export type Schema293 = Schema294;
 
-export type Schema252 = Array<[string, string]>;
+export type Schema294 = Array<[string, string]>;
+
+/**
+ * Transport type discriminator, always "email"
+ */
+export type Schema295 = 'email';
+
+export type Schema296 = EmailPreset | null;
+
+export type Schema297 = EmailAccessLevel;
+
+/**
+ * Mailbox connection settings. The protocol cannot change after server creation
+ */
+export type Schema298 =
+  | ({
+      protocol: 'imap';
+    } & EmailImapConnectionOutput)
+  | ({
+      protocol: 'jmap';
+    } & EmailJmapConnectionOutput);
+
+/**
+ * Protocol discriminator, always "imap"
+ */
+export type Schema299 = 'imap';
+
+/**
+ * Host name of the IMAP server, for example imap.gmail.com
+ */
+export type Schema300 = Schema301;
+
+export type Schema301 = string;
+
+/**
+ * Port of the IMAP server: usually 993 with "tls" and 143 with "starttls"
+ */
+export type Schema302 = Schema303;
+
+export type Schema303 = number;
+
+/**
+ * Encryption method. "tls" encrypts from the start. "starttls" requires a TLS upgrade before sign-in and stops if the upgrade fails
+ */
+export type Schema304 = Schema305;
+
+export type Schema305 = 'tls' | 'starttls';
+
+/**
+ * User name for the login, usually the email address. Can reference credentials and secrets
+ */
+export type Schema306 = Schema307;
+
+export type Schema307 = string;
+
+/**
+ * Password for the login, for example an app password. Can reference credentials and secrets
+ */
+export type Schema308 = Schema309;
+
+export type Schema309 = string;
+
+/**
+ * The server that sends mail. Without one, the server cannot send
+ */
+export type Schema310 = Schema311;
+
+export type Schema311 = EmailSmtpServerOutput | null;
+
+/**
+ * Host name of the SMTP server, for example smtp.gmail.com
+ */
+export type Schema312 = string;
+
+/**
+ * Port of the SMTP server: usually 465 with "tls" and 587 with "starttls"
+ */
+export type Schema313 = Schema314;
+
+export type Schema314 = number;
+
+/**
+ * How the connection is encrypted. "starttls" refuses to continue if the server cannot upgrade the connection
+ */
+export type Schema315 = Schema316;
+
+export type Schema316 = 'tls' | 'starttls';
+
+/**
+ * Save a copy in Sent after sending. Disable if the SMTP server saves a copy automatically, as Gmail does
+ */
+export type Schema317 = Schema318;
+
+export type Schema318 = boolean;
+
+/**
+ * Protocol discriminator, always "jmap"
+ */
+export type Schema319 = 'jmap';
+
+/**
+ * URL of the JMAP session resource, for example https://api.fastmail.com/jmap/session
+ */
+export type Schema320 = Schema321;
+
+export type Schema321 = string | '';
+
+/**
+ * HTTP headers to send with each JMAP request, as [name, value] pairs. Values can reference credentials and secrets
+ */
+export type Schema322 = Schema323;
+
+export type Schema323 = Array<[string, string]>;
+
+/**
+ * ID of the JMAP account to use. Defaults to the primary mail account of the session
+ */
+export type Schema324 = Schema325 | null;
+
+export type Schema325 = string;
 
 /**
  * OAuth client configuration, or null when not configured
  */
-export type Schema253 = Schema254 | ServerOAuthClientConfigurationOutput;
+export type Schema326 = Schema327 | ServerOAuthClientConfigurationOutput;
 
-export type Schema254 = null;
+export type Schema327 = null;
 
 /**
  * OAuth client ID
  */
-export type Schema255 = Schema256;
+export type Schema328 = Schema329;
 
-export type Schema256 = string;
+export type Schema329 = string;
 
 /**
  * OAuth client secret
  */
-export type Schema257 = Schema258;
+export type Schema330 = Schema331;
 
-export type Schema258 = string;
+export type Schema331 = string;
 
 /**
  * OAuth grant type used to obtain tokens
  */
-export type Schema259 = OAuthGrantType;
+export type Schema332 = OAuthGrantType;
 
 /**
  * Client authentication method used at the token endpoint
  */
-export type Schema260 = Schema261 | Schema262 | Schema263 | Schema264;
+export type Schema333 = Schema334 | Schema335 | Schema336 | Schema337;
 
-export type Schema261 = 'client_secret_basic';
+export type Schema334 = 'client_secret_basic';
 
-export type Schema262 = 'client_secret_post';
+export type Schema335 = 'client_secret_post';
 
-export type Schema263 = 'none';
+export type Schema336 = 'none';
 
-export type Schema264 = string;
+export type Schema337 = string;
 
 /**
  * Space-separated OAuth scopes to request
  */
-export type Schema265 = Schema266;
+export type Schema338 = Schema339;
 
-export type Schema266 = string;
+export type Schema339 = string;
+
+/**
+ * Whether the client ID is the URL of the client ID metadata document that Gatana publishes for this server. Gatana sets it when the server is saved; a value in a request is ignored
+ */
+export type Schema340 = Schema341;
+
+export type Schema341 = boolean;
 
 /**
  * Discovered OAuth metadata, or null when not discovered
  */
-export type Schema267 = Schema268 | ServerOAuthMetadataOutput;
+export type Schema342 = Schema343 | ServerOAuthMetadataOutput;
 
-export type Schema268 = null;
+export type Schema343 = null;
 
 /**
  * Discovered protected resource metadata (RFC 9728)
  */
-export type Schema269 = Schema270;
+export type Schema344 = Schema345;
 
-export type Schema270 = {
+export type Schema345 = {
   /**
    * Resource identifier from the protected resource metadata
    */
-  id: Schema271;
+  id: Schema346;
   /**
    * Scopes that the protected resource supports
    */
-  availableScopes: Schema272;
+  availableScopes: Schema347;
   /**
    * URL where the protected resource metadata was fetched from
    */
-  metadataUrl: Schema273;
+  metadataUrl: Schema348;
 };
 
-export type Schema271 = string;
+export type Schema346 = string;
 
-export type Schema272 = Array<string>;
+export type Schema347 = Array<string>;
 
-export type Schema273 = string;
+export type Schema348 = string;
 
 /**
  * Discovered authorization server metadata (RFC 8414)
  */
-export type Schema274 = Schema275;
+export type Schema349 = Schema350;
 
-export type Schema275 = {
+export type Schema350 = {
   /**
    * Issuer identifier of the authorization server
    */
-  issuer: Schema276;
+  issuer: Schema351;
   /**
    * URL of the authorization endpoint
    */
-  authorizeEndpoint: Schema277;
+  authorizeEndpoint: Schema352;
   /**
    * URL of the device authorization endpoint
    */
-  deviceAuthorizationEndpoint: Schema278;
+  deviceAuthorizationEndpoint: Schema353;
   /**
    * URL of the token endpoint
    */
-  tokenEndpoint: Schema279;
+  tokenEndpoint: Schema354;
   /**
    * Extra query parameters to add to the authorization request
    */
-  extraAuthorizationParameters: Schema280;
+  extraAuthorizationParameters: Schema355;
+  /**
+   * Omit the resource parameter (RFC 8707) from all OAuth requests if the authorization server rejects it
+   */
+  omitResourceIndicator: Schema356;
   /**
    * URL of the dynamic client registration endpoint
    */
-  registrationEndpoint?: Schema281;
+  registrationEndpoint?: Schema357;
   /**
    * Whether the authorization server supports PKCE
    */
-  supportsPKCE: Schema282;
+  supportsPKCE: Schema358;
   /**
    * Client authentication methods that the token endpoint supports
    */
-  supportedClientAuthMethods: Schema283;
+  supportedClientAuthMethods: Schema359;
   /**
    * Whether the authorization server supports dynamic client registration
    */
-  supportsDynamicClientRegistration: Schema284;
+  supportsDynamicClientRegistration: Schema360;
   /**
    * Reason why dynamic client registration is not available
    */
-  noDynamicClientRegistrationReason?: Schema285;
+  noDynamicClientRegistrationReason?: Schema361;
+  /**
+   * Whether the authorization server accepts the URL of a client ID metadata document as client ID
+   */
+  supportsClientIdMetadataDocument: Schema362;
   /**
    * URL of the authorization server documentation
    */
-  serviceDocumentation: Schema286;
+  serviceDocumentation: Schema363;
   /**
    * URL where the authorization server metadata was fetched from
    */
-  metadataUrl: Schema287;
+  metadataUrl: Schema364;
   /**
    * Scopes that the authorization server supports
    */
-  availableScopes: Schema288;
+  availableScopes: Schema365;
 };
 
-export type Schema276 = string;
+export type Schema351 = string;
 
-export type Schema277 = string;
+export type Schema352 = string;
 
-export type Schema278 = string;
+export type Schema353 = string;
 
-export type Schema279 = string;
+export type Schema354 = string;
 
-export type Schema280 = string;
+export type Schema355 = string;
 
-export type Schema281 = string;
+export type Schema356 = boolean;
 
-export type Schema282 = boolean;
+export type Schema357 = string;
 
-export type Schema283 = Array<string>;
+export type Schema358 = boolean;
 
-export type Schema284 = boolean;
+export type Schema359 = Array<string>;
 
-export type Schema285 = string | null;
+export type Schema360 = boolean;
 
-export type Schema286 = string;
+export type Schema361 = string | null;
 
-export type Schema287 = string;
+export type Schema362 = boolean;
 
-export type Schema288 = Array<string>;
+export type Schema363 = string;
+
+export type Schema364 = string;
+
+export type Schema365 = Array<string>;
 
 /**
  * Who can see the server: only members or the whole organization
  */
-export type Schema289 = ServerVisibility;
+export type Schema366 = ServerVisibility;
 
 /**
  * Whether the server is enabled
  */
-export type Schema290 = boolean;
+export type Schema367 = boolean;
 
 /**
  * Time of the last tool refresh, or null if tools were never refreshed
  */
-export type Schema291 = Schema292 | null;
+export type Schema368 = Schema369 | null;
 
-export type Schema292 = string;
+export type Schema369 = string;
 
 /**
  * Last detected MCP protocol version, or an empty string if unknown
  */
-export type Schema293 = string;
+export type Schema370 = string;
 
 /**
  * Time of the last MCP protocol detection, or null if unknown
  */
-export type Schema294 = Schema295 | null;
+export type Schema371 = Schema372 | null;
 
-export type Schema295 = string;
+export type Schema372 = string;
 
 /**
  * Timeout in seconds for a single protocol request to the server
  */
-export type Schema296 = number;
+export type Schema373 = number;
 
 /**
  * Total timeout in seconds for a tool call, including progress notifications
  */
-export type Schema297 = number;
+export type Schema374 = number;
 
 /**
  * Whether a progress notification resets the protocol timeout
  */
-export type Schema298 = boolean;
+export type Schema375 = boolean;
 
 /**
  * Whether large tool outputs are compressed before they are returned to the client
  */
-export type Schema299 = boolean;
+export type Schema376 = boolean;
 
 /**
  * Whether the compression transform step is applied to tool outputs
  */
-export type Schema300 = boolean;
+export type Schema377 = boolean;
 
 /**
  * Minimum output size in bytes before compression is applied
  */
-export type Schema301 = number;
+export type Schema378 = number;
 
 /**
  * Firewall rules evaluated against tool calls to the server
  */
-export type Schema302 = Array<Schema303>;
+export type Schema379 = Array<Schema380>;
 
-export type Schema303 = {
+export type Schema380 = {
   /**
    * CEL representing the condition
    */
@@ -1596,14 +1979,129 @@ export type Schema303 = {
 /**
  * Time when the server was created
  */
-export type Schema304 = string;
+export type Schema381 = string;
 
 /**
  * Time when the server was last updated
  */
-export type Schema305 = string;
+export type Schema382 = string;
 
-export type Schema306 = {
+/**
+ * Call outcome; refused means a rule could not be evaluated
+ */
+export type Schema383 = 'allowed' | 'denied' | 'refused';
+
+/**
+ * Zero-based index of the rule that denied or refused the call
+ */
+export type Schema384 = Schema385;
+
+export type Schema385 = number;
+
+/**
+ * Results in request order
+ */
+export type Schema386 = Array<Schema387>;
+
+export type Schema387 = {
+  /**
+   * Condition result; a missing key means no match
+   */
+  result: 'match' | 'no-match' | 'missing-key' | 'error';
+  /**
+   * Evaluation error message
+   */
+  error?: Schema388;
+  /**
+   * Whether a real call reaches this rule before a denial or error stops evaluation
+   */
+  reached: boolean;
+};
+
+export type Schema388 = string;
+
+/**
+ * Values used to evaluate the conditions
+ */
+export type Schema389 = {
+  tool: Schema390;
+  args: Schema391;
+  user: Schema394;
+  teams: Schema401;
+  profiles: Schema403;
+  claims?: Schema405;
+  authMethod: Schema407;
+};
+
+export type Schema390 = string;
+
+/**
+ * The arguments of the tool call, which might have been modified by earlier firewall rules
+ */
+export type Schema391 = {
+  [key in Schema392]?: Schema393;
+};
+
+export type Schema392 = string;
+
+export type Schema393 = unknown;
+
+export type Schema394 = {
+  id: Schema395;
+  name: Schema396;
+  email: Schema397;
+  role: Schema398;
+  isDisabled: Schema399;
+  isServiceAccount: Schema400;
+};
+
+/**
+ * Unique ID of the user
+ */
+export type Schema395 = string;
+
+/**
+ * Display name of the user
+ */
+export type Schema396 = string;
+
+/**
+ * Email address of the user
+ */
+export type Schema397 = string;
+
+/**
+ * Role of the user in the tenant: member or owner
+ */
+export type Schema398 = 'member' | 'owner';
+
+/**
+ * Whether the user is disabled
+ */
+export type Schema399 = boolean;
+
+/**
+ * Whether the user is a service account
+ */
+export type Schema400 = boolean;
+
+export type Schema401 = Array<Schema402>;
+
+export type Schema402 = string;
+
+export type Schema403 = Array<Schema404>;
+
+export type Schema404 = string;
+
+export type Schema405 = Schema406;
+
+export type Schema406 = {
+  [key: string]: unknown;
+};
+
+export type Schema407 = string;
+
+export type Schema408 = {
   /**
    * Credentials the caller can read, without secret values
    */
@@ -1613,314 +2111,321 @@ export type Schema306 = {
 /**
  * Unique ID of the credential record
  */
-export type Schema307 = string;
+export type Schema409 = string;
 
 /**
  * ID of the tenant that owns the credential
  */
-export type Schema308 = string;
+export type Schema410 = string;
 
 /**
  * Scope that the credential applies to: server, user, or profile
  */
-export type Schema309 = 'server' | 'user' | 'profile';
+export type Schema411 = 'server' | 'user' | 'profile';
 
 /**
  * ID of the owning user, or null
  */
-export type Schema310 = Schema311 | null;
+export type Schema412 = Schema413 | null;
 
-export type Schema311 = string;
+export type Schema413 = string;
 
 /**
  * ID of the owning profile when scope is "profile", otherwise null
  */
-export type Schema312 = Schema313 | null;
+export type Schema414 = Schema415 | null;
 
-export type Schema313 = string;
+export type Schema415 = string;
 
 /**
  * Time when the credential was last used, or null if never used
  */
-export type Schema314 = Schema315 | null;
+export type Schema416 = Schema417 | null;
 
-export type Schema315 = string;
+export type Schema417 = string;
 
 /**
  * Time when the credential was authorized
  */
-export type Schema316 = string;
+export type Schema418 = string;
 
 /**
  * Last authorizing user ID, or null if unknown
  */
-export type Schema317 = Schema318 | null;
+export type Schema419 = Schema420 | null;
 
-export type Schema318 = string;
+export type Schema420 = string;
 
 /**
  * Authorization method that the credential was created with
  */
-export type Schema319 = 'oauth' | 'apikey' | 'oauth-client-credentials';
+export type Schema421 = 'oauth' | 'apikey' | 'oauth-client-credentials';
 
 /**
  * Time when the credential record was created
  */
-export type Schema320 = string;
+export type Schema422 = string;
 
 /**
  * Time when the credential record was last updated
  */
-export type Schema321 = string;
+export type Schema423 = string;
 
 /**
  * Slug of the server that the credential authorizes access to
  */
-export type Schema322 = string;
+export type Schema424 = string;
 
 /**
  * Email address of the owning user, or null
  */
-export type Schema323 = Schema324 | null;
+export type Schema425 = Schema426 | null;
 
-export type Schema324 = string;
+export type Schema426 = string;
 
 /**
  * Display name of the owning user, or null
  */
-export type Schema325 = Schema326 | null;
+export type Schema427 = Schema428 | null;
 
-export type Schema326 = string;
+export type Schema428 = string;
 
 /**
  * Name of the owning profile, or null
  */
-export type Schema327 = Schema328 | null;
+export type Schema429 = Schema430 | null;
 
-export type Schema328 = string;
+export type Schema430 = string;
 
 /**
  * Last authorizing user name, or null
  */
-export type Schema329 = Schema330 | null;
+export type Schema431 = Schema432 | null;
 
-export type Schema330 = string;
+export type Schema432 = string;
 
 /**
  * Last authorizing user email, or null
  */
-export type Schema331 = Schema332 | null;
+export type Schema433 = Schema434 | null;
 
-export type Schema332 = string;
+export type Schema434 = string;
 
 /**
  * Credential type discriminator, always "apikey"
  */
-export type Schema333 = 'apikey';
+export type Schema435 = 'apikey';
 
 /**
  * API keys as [name, value] pairs
  */
-export type Schema334 = Array<Schema335>;
+export type Schema436 = Array<Schema437>;
 
-export type Schema335 = [string, string];
+export type Schema437 = [string, string];
 
 /**
  * Credential type discriminator, always "oauth"
  */
-export type Schema336 = 'oauth';
+export type Schema438 = 'oauth';
 
 /**
  * OAuth tokens obtained from the authorization flow
  */
-export type Schema337 = Schema345;
+export type Schema439 = Schema447;
 
 /**
  * OAuth access token
  */
-export type Schema338 = string;
+export type Schema440 = string;
 
 /**
  * Expiry time of the access token, as a Unix epoch timestamp in milliseconds
  */
-export type Schema339 = Schema340;
+export type Schema441 = Schema442;
 
-export type Schema340 = number;
+export type Schema442 = number;
 
 /**
  * OpenID Connect ID token, if the authorization server issued one
  */
-export type Schema341 = Schema342;
+export type Schema443 = Schema444;
 
-export type Schema342 = string;
+export type Schema444 = string;
 
 /**
  * OAuth refresh token, if the authorization server issued one
  */
-export type Schema343 = Schema344;
+export type Schema445 = Schema446;
 
-export type Schema344 = string;
+export type Schema446 = string;
 
-export type Schema345 = {
-  accessToken: Schema338;
-  accessTokenExpiresAt?: Schema339;
-  idToken?: Schema341;
-  refreshToken?: Schema343;
+export type Schema447 = {
+  accessToken: Schema440;
+  accessTokenExpiresAt?: Schema441;
+  idToken?: Schema443;
+  refreshToken?: Schema445;
 };
+
+/**
+ * Resource parameter (RFC 8707) used to obtain these tokens and reused for token refresh unless disabled
+ */
+export type Schema448 = Schema449;
+
+export type Schema449 = string;
 
 /**
  * Credential type discriminator, always "oauth-client-credentials"
  */
-export type Schema346 = 'oauth-client-credentials';
+export type Schema450 = 'oauth-client-credentials';
 
-export type Schema347 = {
-  clientId: Schema255;
-  clientSecret: Schema257;
-  clientAuthMethod: Schema260;
-  scopes: Schema265;
+export type Schema451 = {
+  clientId: Schema328;
+  clientSecret: Schema330;
+  clientAuthMethod: Schema333;
+  scopes: Schema338;
 };
 
 /**
  * Cached tokenset for client credentials
  */
-export type Schema348 = Schema345;
+export type Schema452 = Schema447;
 
 /**
  * ID of the refreshed credential
  */
-export type Schema349 = string;
+export type Schema453 = string;
 
 /**
  * Expiry time of the refreshed access token, as a Unix epoch timestamp, or null if unknown
  */
-export type Schema350 = Schema351 | null;
+export type Schema454 = Schema455 | null;
 
-export type Schema351 = number;
+export type Schema455 = number;
 
 /**
  * Pagination metadata
  */
-export type Schema352 = {
-  page: Schema353;
-  limit: Schema354;
-  total: Schema355;
-  totalPages: Schema356;
-  hasNext: Schema357;
-  hasPrev: Schema358;
+export type Schema456 = {
+  page: Schema457;
+  limit: Schema458;
+  total: Schema459;
+  totalPages: Schema460;
+  hasNext: Schema461;
+  hasPrev: Schema462;
 };
 
 /**
  * Current page number
  */
-export type Schema353 = number;
+export type Schema457 = number;
 
 /**
  * Maximum number of items per page
  */
-export type Schema354 = number;
+export type Schema458 = number;
 
 /**
  * Total number of items across all pages
  */
-export type Schema355 = number;
+export type Schema459 = number;
 
 /**
  * Total number of pages
  */
-export type Schema356 = number;
+export type Schema460 = number;
 
 /**
  * Whether a next page exists
  */
-export type Schema357 = boolean;
+export type Schema461 = boolean;
 
 /**
  * Whether a previous page exists
  */
-export type Schema358 = boolean;
+export type Schema462 = boolean;
 
 /**
  * Items on the current page
  */
-export type Schema359 = Array<CredentialAuditLog>;
+export type Schema463 = Array<CredentialAuditLog>;
 
 /**
  * ID of the tenant that owns the entry
  */
-export type Schema360 = string;
+export type Schema464 = string;
 
 /**
  * Unique ID of the audit log entry
  */
-export type Schema361 = string;
+export type Schema465 = string;
 
 /**
  * ID of the credential that the entry belongs to
  */
-export type Schema362 = string;
+export type Schema466 = string;
 
 /**
  * ID of the user who performed the action, or null
  */
-export type Schema363 = Schema364 | null;
+export type Schema467 = Schema468 | null;
 
-export type Schema364 = string;
+export type Schema468 = string;
 
 /**
  * Name of the audited event (e.g. "create", "update", "delete")
  */
-export type Schema365 = string;
+export type Schema469 = string;
 
 /**
  * Event-specific details; update events include a diff of the change
  */
-export type Schema366 = {
-  [key in Schema367]?: Schema368;
+export type Schema470 = {
+  [key in Schema471]?: Schema472;
 };
 
-export type Schema367 = string;
+export type Schema471 = string;
 
-export type Schema368 = unknown;
+export type Schema472 = unknown;
 
 /**
  * Time when the entry was created
  */
-export type Schema369 = string;
+export type Schema473 = string;
 
 /**
  * Time when the entry was last updated
  */
-export type Schema370 = string;
+export type Schema474 = string;
 
 /**
  * Controls how tool refresh is authorized. "server-scoped" means only server-scoped credentials are required, "skip" means refresh is done without authorization, and "any" means any available credentials (server, user, profile) can be used. Defaults to "server-scoped".
  */
-export type ToolRefreshCredentialPolicyOutput = Schema193;
+export type ToolRefreshCredentialPolicyOutput = Schema235;
 
 export type ServerAuthorizationOutput = {
-  method: Schema187;
-  credentialsScope: Schema188;
-  apikeys?: Schema191;
+  method: Schema229;
+  credentialsScope: Schema230;
+  apikeys?: Schema233;
   toolRefreshCredentialPolicy: ToolRefreshCredentialPolicyOutput;
 };
 
 export type HttpStreamingTransportConfigOutput = {
-  type: Schema195;
-  url: Schema196;
-  headers?: Schema197;
+  type: Schema237;
+  url: Schema238;
+  headers?: Schema239;
 };
 
 export type StdioTransportConfigOutput = {
-  type: Schema199;
-  command: Schema200;
-  dockerImage?: Schema201;
-  env?: Schema203;
-  transport: Schema205;
-  httpPort?: Schema206;
-  urlPath?: Schema208;
-  healthCheck?: Schema210;
-  limits?: Schema216;
-  requests?: Schema220;
+  type: Schema241;
+  command: Schema242;
+  dockerImage?: Schema243;
+  env?: Schema245;
+  transport: Schema247;
+  httpPort?: Schema248;
+  urlPath?: Schema250;
+  healthCheck?: Schema252;
+  limits?: Schema258;
+  requests?: Schema262;
   storage?: StdioTransportStorageOutput;
   tailscale?: StdioTransportTailscaleOutput;
 };
@@ -1928,25 +2433,25 @@ export type StdioTransportConfigOutput = {
 /**
  * Persistent storage for the server. When enabled the server keeps one volume, mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the deployment and counts against the organization storage quota
  */
-export type StdioTransportStorageOutput = Schema224 | null;
+export type StdioTransportStorageOutput = Schema266 | null;
 
 /**
  * Egress-only Tailscale access. When enabled the server can open connections to hosts on your tailnet, and to the subnets its routers advertise. Nothing on the tailnet can reach the server
  */
-export type StdioTransportTailscaleOutput = Schema225 | null;
+export type StdioTransportTailscaleOutput = Schema267 | null;
 
 export type SseTransportConfigOutput = {
-  type: Schema227;
-  url: Schema228;
-  headers?: Schema229;
+  type: Schema269;
+  url: Schema270;
+  headers?: Schema271;
 };
 
 export type HostedTransportConfigOutput = {
-  type: Schema232;
-  runtime: Schema233;
-  env?: Schema234;
-  limits?: Schema236;
-  requests?: Schema238;
+  type: Schema274;
+  runtime: Schema275;
+  env?: Schema276;
+  limits?: Schema278;
+  requests?: Schema280;
   storage?: HostedTransportStorageOutput;
   tailscale?: HostedTransportTailscaleOutput;
 };
@@ -1954,33 +2459,68 @@ export type HostedTransportConfigOutput = {
 /**
  * Persistent storage for the server. When enabled the server keeps one volume, mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the deployment and counts against the organization storage quota
  */
-export type HostedTransportStorageOutput = Schema240 | null;
+export type HostedTransportStorageOutput = Schema282 | null;
 
 /**
  * Egress-only Tailscale access. When enabled the server can open connections to hosts on your tailnet, and to the subnets its routers advertise. Nothing on the tailnet can reach the server
  */
-export type HostedTransportTailscaleOutput = Schema241 | null;
+export type HostedTransportTailscaleOutput = Schema283 | null;
 
 export type OpenApiTransportConfigOutput = {
-  type: Schema243;
-  method: Schema244;
-  specUrl: Schema245;
-  spec: Schema247;
-  baseUrl: Schema249;
-  headers?: Schema251;
+  type: Schema285;
+  method: Schema286;
+  specUrl: Schema287;
+  spec: Schema289;
+  baseUrl: Schema291;
+  headers?: Schema293;
+};
+
+export type EmailTransportConfigOutput = {
+  type: Schema295;
+  preset?: Schema296;
+  access: Schema297;
+  connection: Schema298;
+};
+
+export type EmailImapConnectionOutput = {
+  protocol: Schema299;
+  host: Schema300;
+  port: Schema302;
+  security: Schema304;
+  username: Schema306;
+  password: Schema308;
+  smtp: Schema310;
+  saveSentCopy: Schema317;
+};
+
+/**
+ * SMTP server used to send mail. Uses the same credentials as IMAP
+ */
+export type EmailSmtpServerOutput = {
+  host: Schema312;
+  port: Schema313;
+  security: Schema315;
+};
+
+export type EmailJmapConnectionOutput = {
+  protocol: Schema319;
+  sessionUrl: Schema320;
+  headers: Schema322;
+  accountId?: Schema324;
 };
 
 export type ServerOAuthClientConfigurationOutput = {
-  clientId: Schema255;
-  clientSecret: Schema257;
-  grantType: Schema259;
-  clientAuthMethod: Schema260;
-  scopes: Schema265;
+  clientId: Schema328;
+  clientSecret: Schema330;
+  grantType: Schema332;
+  clientAuthMethod: Schema333;
+  scopes: Schema338;
+  isClientIdMetadataDocument: Schema340;
 };
 
 export type ServerOAuthMetadataOutput = {
-  resource?: Schema269;
-  as?: Schema274;
+  resource?: Schema344;
+  as?: Schema349;
 };
 
 export type ListServersV2Data = {
@@ -2018,7 +2558,7 @@ export type CreateServerV2Response = CreateServerV2Responses[keyof CreateServerV
 export type DeleteServerV2Data = {
   body?: never;
   path: {
-    slug: Schema144;
+    slug: Schema179;
   };
   query?: never;
   url: '/servers/{slug}';
@@ -2034,7 +2574,7 @@ export type DeleteServerV2Responses = {
 export type GetServerV2Data = {
   body?: never;
   path: {
-    slug: Schema144;
+    slug: Schema179;
   };
   query?: never;
   url: '/servers/{slug}';
@@ -2052,7 +2592,7 @@ export type GetServerV2Response = GetServerV2Responses[keyof GetServerV2Response
 export type PatchServerV2Data = {
   body?: V2PatchServerRequest;
   path: {
-    slug: Schema144;
+    slug: Schema179;
   };
   query?: never;
   url: '/servers/{slug}';
@@ -2070,7 +2610,7 @@ export type PatchServerV2Response = PatchServerV2Responses[keyof PatchServerV2Re
 export type UpdateServerV2Data = {
   body?: V2UpdateServerRequest;
   path: {
-    slug: Schema144;
+    slug: Schema179;
   };
   query?: never;
   url: '/servers/{slug}';
@@ -2085,6 +2625,24 @@ export type UpdateServerV2Responses = {
 
 export type UpdateServerV2Response = UpdateServerV2Responses[keyof UpdateServerV2Responses];
 
+export type TestServerFirewallV2Data = {
+  body?: V2TestFirewallRulesRequest;
+  path: {
+    slug: Schema179;
+  };
+  query?: never;
+  url: '/servers/{slug}/firewall/test';
+};
+
+export type TestServerFirewallV2Responses = {
+  /**
+   * Successful response
+   */
+  200: FirewallTestResult;
+};
+
+export type TestServerFirewallV2Response = TestServerFirewallV2Responses[keyof TestServerFirewallV2Responses];
+
 export type ListCredentialsV2Data = {
   body?: never;
   path?: never;
@@ -2092,7 +2650,7 @@ export type ListCredentialsV2Data = {
     /**
      * Filter to credentials of a single server, by server ID
      */
-    serverId?: Schema180;
+    serverId?: Schema222;
   };
   url: '/credentials';
 };
@@ -2101,7 +2659,7 @@ export type ListCredentialsV2Responses = {
   /**
    * Successful response
    */
-  200: Schema306;
+  200: Schema408;
 };
 
 export type ListCredentialsV2Response = ListCredentialsV2Responses[keyof ListCredentialsV2Responses];
@@ -2122,7 +2680,7 @@ export type DeleteCredentialV2Responses = {
   /**
    * Successful response
    */
-  200: Schema306;
+  200: Schema408;
 };
 
 export type DeleteCredentialV2Response = DeleteCredentialV2Responses[keyof DeleteCredentialV2Responses];

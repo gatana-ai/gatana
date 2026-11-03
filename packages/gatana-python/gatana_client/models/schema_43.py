@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class Schema43(str, Enum):
+    EMAIL = "email"
     HOSTED = "hosted"
     HTTPSTREAMING = "httpstreaming"
     OPENAPI = "openapi"

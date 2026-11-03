@@ -31,29 +31,29 @@ class AuditLogFilterOptions:
 
     def to_dict(self) -> dict[str, Any]:
         event_name = []
-        for componentsschemas_schema426_item_data in self.event_name:
-            componentsschemas_schema426_item = componentsschemas_schema426_item_data.to_dict()
-            event_name.append(componentsschemas_schema426_item)
+        for componentsschemas_schema481_item_data in self.event_name:
+            componentsschemas_schema481_item = componentsschemas_schema481_item_data.to_dict()
+            event_name.append(componentsschemas_schema481_item)
 
         entity_type = []
-        for componentsschemas_schema431_item_data in self.entity_type:
-            componentsschemas_schema431_item = componentsschemas_schema431_item_data.to_dict()
-            entity_type.append(componentsschemas_schema431_item)
+        for componentsschemas_schema486_item_data in self.entity_type:
+            componentsschemas_schema486_item = componentsschemas_schema486_item_data.to_dict()
+            entity_type.append(componentsschemas_schema486_item)
 
         client_id = []
-        for componentsschemas_schema432_item_data in self.client_id:
-            componentsschemas_schema432_item = componentsschemas_schema432_item_data.to_dict()
-            client_id.append(componentsschemas_schema432_item)
+        for componentsschemas_schema487_item_data in self.client_id:
+            componentsschemas_schema487_item = componentsschemas_schema487_item_data.to_dict()
+            client_id.append(componentsschemas_schema487_item)
 
         pat_id = []
-        for componentsschemas_schema433_item_data in self.pat_id:
-            componentsschemas_schema433_item = componentsschemas_schema433_item_data.to_dict()
-            pat_id.append(componentsschemas_schema433_item)
+        for componentsschemas_schema488_item_data in self.pat_id:
+            componentsschemas_schema488_item = componentsschemas_schema488_item_data.to_dict()
+            pat_id.append(componentsschemas_schema488_item)
 
         tool_name = []
-        for componentsschemas_schema434_item_data in self.tool_name:
-            componentsschemas_schema434_item = componentsschemas_schema434_item_data.to_dict()
-            tool_name.append(componentsschemas_schema434_item)
+        for componentsschemas_schema489_item_data in self.tool_name:
+            componentsschemas_schema489_item = componentsschemas_schema489_item_data.to_dict()
+            tool_name.append(componentsschemas_schema489_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -76,38 +76,38 @@ class AuditLogFilterOptions:
         d = dict(src_dict)
         event_name = []
         _event_name = d.pop("eventName")
-        for componentsschemas_schema426_item_data in _event_name:
-            componentsschemas_schema426_item = AuditLogFilterOption.from_dict(componentsschemas_schema426_item_data)
+        for componentsschemas_schema481_item_data in _event_name:
+            componentsschemas_schema481_item = AuditLogFilterOption.from_dict(componentsschemas_schema481_item_data)
 
-            event_name.append(componentsschemas_schema426_item)
+            event_name.append(componentsschemas_schema481_item)
 
         entity_type = []
         _entity_type = d.pop("entityType")
-        for componentsschemas_schema431_item_data in _entity_type:
-            componentsschemas_schema431_item = AuditLogFilterOption.from_dict(componentsschemas_schema431_item_data)
+        for componentsschemas_schema486_item_data in _entity_type:
+            componentsschemas_schema486_item = AuditLogFilterOption.from_dict(componentsschemas_schema486_item_data)
 
-            entity_type.append(componentsschemas_schema431_item)
+            entity_type.append(componentsschemas_schema486_item)
 
         client_id = []
         _client_id = d.pop("clientId")
-        for componentsschemas_schema432_item_data in _client_id:
-            componentsschemas_schema432_item = AuditLogFilterOption.from_dict(componentsschemas_schema432_item_data)
+        for componentsschemas_schema487_item_data in _client_id:
+            componentsschemas_schema487_item = AuditLogFilterOption.from_dict(componentsschemas_schema487_item_data)
 
-            client_id.append(componentsschemas_schema432_item)
+            client_id.append(componentsschemas_schema487_item)
 
         pat_id = []
         _pat_id = d.pop("patId")
-        for componentsschemas_schema433_item_data in _pat_id:
-            componentsschemas_schema433_item = AuditLogFilterOption.from_dict(componentsschemas_schema433_item_data)
+        for componentsschemas_schema488_item_data in _pat_id:
+            componentsschemas_schema488_item = AuditLogFilterOption.from_dict(componentsschemas_schema488_item_data)
 
-            pat_id.append(componentsschemas_schema433_item)
+            pat_id.append(componentsschemas_schema488_item)
 
         tool_name = []
         _tool_name = d.pop("toolName")
-        for componentsschemas_schema434_item_data in _tool_name:
-            componentsschemas_schema434_item = AuditLogFilterOption.from_dict(componentsschemas_schema434_item_data)
+        for componentsschemas_schema489_item_data in _tool_name:
+            componentsschemas_schema489_item = AuditLogFilterOption.from_dict(componentsschemas_schema489_item_data)
 
-            tool_name.append(componentsschemas_schema434_item)
+            tool_name.append(componentsschemas_schema489_item)
 
         audit_log_filter_options = cls(
             event_name=event_name,

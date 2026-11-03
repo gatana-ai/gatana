@@ -6,7 +6,7 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_327 import Schema327
+from ..models.schema_363 import Schema363
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="PatchArtifactBody")
@@ -17,13 +17,13 @@ class PatchArtifactBody:
     """
     Attributes:
         title (str | Unset):
-        visibility (Schema327 | Unset):
+        visibility (Schema363 | Unset):
         theme (str | Unset): 'gatana' (Gatana styling), 'none' (the document as published), or an organization theme by
             id or by name
     """
 
     title: str | Unset = UNSET
-    visibility: Schema327 | Unset = UNSET
+    visibility: Schema363 | Unset = UNSET
     theme: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -54,11 +54,11 @@ class PatchArtifactBody:
         title = d.pop("title", UNSET)
 
         _visibility = d.pop("visibility", UNSET)
-        visibility: Schema327 | Unset
+        visibility: Schema363 | Unset
         if isinstance(_visibility, Unset):
             visibility = UNSET
         else:
-            visibility = Schema327(_visibility)
+            visibility = Schema363(_visibility)
 
         theme = d.pop("theme", UNSET)
 

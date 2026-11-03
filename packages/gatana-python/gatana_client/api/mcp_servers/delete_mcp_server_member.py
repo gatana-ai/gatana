@@ -7,13 +7,13 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.delete_mcp_server_member_response_200 import DeleteMcpServerMemberResponse200
-from ...models.schema_175 import Schema175
+from ...models.schema_209 import Schema209
 from ...types import Response
 
 
 def _get_kwargs(
     server_slug: str,
-    member_type: Schema175,
+    member_type: Schema209,
     member_id: str,
 ) -> dict[str, Any]:
 
@@ -56,7 +56,7 @@ def _build_response(
 
 def sync_detailed(
     server_slug: str,
-    member_type: Schema175,
+    member_type: Schema209,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -65,7 +65,7 @@ def sync_detailed(
 
     Args:
         server_slug (str):
-        member_type (Schema175):
+        member_type (Schema209):
         member_id (str):
 
     Raises:
@@ -91,7 +91,7 @@ def sync_detailed(
 
 def sync(
     server_slug: str,
-    member_type: Schema175,
+    member_type: Schema209,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -100,7 +100,7 @@ def sync(
 
     Args:
         server_slug (str):
-        member_type (Schema175):
+        member_type (Schema209):
         member_id (str):
 
     Raises:
@@ -121,7 +121,7 @@ def sync(
 
 async def asyncio_detailed(
     server_slug: str,
-    member_type: Schema175,
+    member_type: Schema209,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -130,7 +130,7 @@ async def asyncio_detailed(
 
     Args:
         server_slug (str):
-        member_type (Schema175):
+        member_type (Schema209):
         member_id (str):
 
     Raises:
@@ -154,7 +154,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     server_slug: str,
-    member_type: Schema175,
+    member_type: Schema209,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -163,7 +163,7 @@ async def asyncio(
 
     Args:
         server_slug (str):
-        member_type (Schema175):
+        member_type (Schema209):
         member_id (str):
 
     Raises:

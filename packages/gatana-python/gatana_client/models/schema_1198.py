@@ -12,21 +12,25 @@ T = TypeVar("T", bound="Schema1198")
 class Schema1198:
     """
     Attributes:
-        id (str):
-        name (str):
-        email (str):
+        id (str): ID of the assigned team
+        name (str): Name of the assigned team
+        assigned_at (str): Time when the profile was assigned
+        is_locked_by_org_owner (bool): Whether an organization owner locked the assignment
     """
 
     id: str
     name: str
-    email: str
+    assigned_at: str
+    is_locked_by_org_owner: bool
 
     def to_dict(self) -> dict[str, Any]:
         id = self.id
 
         name = self.name
 
-        email = self.email
+        assigned_at = self.assigned_at
+
+        is_locked_by_org_owner = self.is_locked_by_org_owner
 
         field_dict: dict[str, Any] = {}
 
@@ -34,7 +38,8 @@ class Schema1198:
             {
                 "id": id,
                 "name": name,
-                "email": email,
+                "assignedAt": assigned_at,
+                "isLockedByOrgOwner": is_locked_by_org_owner,
             }
         )
 
@@ -47,12 +52,15 @@ class Schema1198:
 
         name = d.pop("name")
 
-        email = d.pop("email")
+        assigned_at = d.pop("assignedAt")
+
+        is_locked_by_org_owner = d.pop("isLockedByOrgOwner")
 
         schema_1198 = cls(
             id=id,
             name=name,
-            email=email,
+            assigned_at=assigned_at,
+            is_locked_by_org_owner=is_locked_by_org_owner,
         )
 
         return schema_1198

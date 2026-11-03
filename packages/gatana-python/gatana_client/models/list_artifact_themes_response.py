@@ -26,9 +26,9 @@ class ListArtifactThemesResponse:
 
     def to_dict(self) -> dict[str, Any]:
         themes = []
-        for componentsschemas_schema1201_item_data in self.themes:
-            componentsschemas_schema1201_item = componentsschemas_schema1201_item_data.to_dict()
-            themes.append(componentsschemas_schema1201_item)
+        for componentsschemas_schema1295_item_data in self.themes:
+            componentsschemas_schema1295_item = componentsschemas_schema1295_item_data.to_dict()
+            themes.append(componentsschemas_schema1295_item)
 
         default_theme = self.default_theme
 
@@ -50,12 +50,12 @@ class ListArtifactThemesResponse:
         d = dict(src_dict)
         themes = []
         _themes = d.pop("themes")
-        for componentsschemas_schema1201_item_data in _themes:
-            componentsschemas_schema1201_item = ArtifactThemeSummaryDto.from_dict(
-                componentsschemas_schema1201_item_data
+        for componentsschemas_schema1295_item_data in _themes:
+            componentsschemas_schema1295_item = ArtifactThemeSummaryDto.from_dict(
+                componentsschemas_schema1295_item_data
             )
 
-            themes.append(componentsschemas_schema1201_item)
+            themes.append(componentsschemas_schema1295_item)
 
         default_theme = d.pop("defaultTheme")
 

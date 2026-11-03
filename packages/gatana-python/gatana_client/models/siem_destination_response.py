@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1021 import Schema1021
-from ..models.schema_1046 import Schema1046
+from ..models.schema_1114 import Schema1114
+from ..models.schema_1139 import Schema1139
 
 if TYPE_CHECKING:
     from ..models.siem_gcs_target_settings import SiemGcsTargetSettings
@@ -23,14 +23,14 @@ class SiemDestinationResponse:
     Attributes:
         id (str): Unique ID of the destination
         name (str): Display name of the destination
-        kind (Schema1021): Destination type: HTTPS, S3, or GCS
+        kind (Schema1114): Destination type: HTTPS, S3, or GCS
         url (str): HTTPS delivery URL; empty for buckets
         target (SiemGcsTargetSettings | SiemHttpsTargetSettings | SiemS3TargetSettings):
         has_credentials (bool): Whether bucket credentials are stored; credentials are never returned
         auth_header_name (None | str): Name of the custom auth header, or null when none is configured
         has_auth_header_value (bool): Whether a custom auth header value is stored. The value itself is never returned
         is_enabled (bool): The tenant admin's on/off switch
-        status (Schema1046): Delivery status, maintained by the export job
+        status (Schema1139): Delivery status, maintained by the export job
         export_audit_logs (bool): Whether audit log events are streamed
         export_credential_audit_logs (bool): Whether credential audit log events are streamed
         consecutive_failures (float): Number of delivery attempts that failed in a row
@@ -45,14 +45,14 @@ class SiemDestinationResponse:
 
     id: str
     name: str
-    kind: Schema1021
+    kind: Schema1114
     url: str
     target: SiemGcsTargetSettings | SiemHttpsTargetSettings | SiemS3TargetSettings
     has_credentials: bool
     auth_header_name: None | str
     has_auth_header_value: bool
     is_enabled: bool
-    status: Schema1046
+    status: Schema1139
     export_audit_logs: bool
     export_credential_audit_logs: bool
     consecutive_failures: float
@@ -160,7 +160,7 @@ class SiemDestinationResponse:
 
         name = d.pop("name")
 
-        kind = Schema1021(d.pop("kind"))
+        kind = Schema1114(d.pop("kind"))
 
         url = d.pop("url")
 
@@ -168,24 +168,24 @@ class SiemDestinationResponse:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema1023_type_0 = SiemHttpsTargetSettings.from_dict(data)
+                componentsschemas_schema1116_type_0 = SiemHttpsTargetSettings.from_dict(data)
 
-                return componentsschemas_schema1023_type_0
+                return componentsschemas_schema1116_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema1023_type_1 = SiemS3TargetSettings.from_dict(data)
+                componentsschemas_schema1116_type_1 = SiemS3TargetSettings.from_dict(data)
 
-                return componentsschemas_schema1023_type_1
+                return componentsschemas_schema1116_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             if not isinstance(data, dict):
                 raise TypeError()
-            componentsschemas_schema1023_type_2 = SiemGcsTargetSettings.from_dict(data)
+            componentsschemas_schema1116_type_2 = SiemGcsTargetSettings.from_dict(data)
 
-            return componentsschemas_schema1023_type_2
+            return componentsschemas_schema1116_type_2
 
         target = _parse_target(d.pop("target"))
 
@@ -202,7 +202,7 @@ class SiemDestinationResponse:
 
         is_enabled = d.pop("isEnabled")
 
-        status = Schema1046(d.pop("status"))
+        status = Schema1139(d.pop("status"))
 
         export_audit_logs = d.pop("exportAuditLogs")
 

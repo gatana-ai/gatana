@@ -2,12 +2,9 @@ from enum import Enum
 
 
 class Schema885(str, Enum):
-    COMPLETED = "completed"
-    CRASHBACKOFF = "crashBackOff"
-    FAILED = "failed"
-    PENDING = "pending"
-    READY = "ready"
-    RUNNING = "running"
+    DELETE = "delete"
+    DISABLE = "disable"
+    KEEP = "keep"
 
     def __str__(self) -> str:
         return str(self.value)

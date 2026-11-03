@@ -228,12 +228,17 @@ pub mod types {
     ///`AuthMetadata`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct AuthMetadata {
+        pub capabilities: DeploymentCapabilities,
+        pub features: Features,
         #[serde(rename = "hasAssistant")]
         pub has_assistant: bool,
         #[serde(rename = "hasGlamaRegistry")]
         pub has_glama_registry: bool,
         #[serde(rename = "hasPaidSubscription")]
         pub has_paid_subscription: bool,
+        ///Whether the user has a password or an SSO identity
+        #[serde(rename = "hasSignInMethod")]
+        pub has_sign_in_method: bool,
         #[serde(rename = "isPlayground")]
         pub is_playground: bool,
         pub quota: AuthMetadataQuota,
@@ -1086,6 +1091,12 @@ pub mod types {
     ///`CreateUserResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct CreateUserResponse {
+        ///Invitation link, returned only when email is disabled. Give it to the user. It is shown once and expires after 30 days
+        #[serde(
+            rename = "setPasswordUrl",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub set_password_url: ::std::option::Option<::std::string::String>,
         pub user: User,
     }
     ///`DeleteMcpServerMemberResponse`
@@ -1137,6 +1148,31 @@ pub mod types {
     pub struct DeleteTeamMemberResponse {
         ///Whether the operation succeeded
         pub success: bool,
+    }
+    ///`DeploymentCapabilities`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DeploymentCapabilities {
+        ///Code Mode can use a worker URL or start worker pods in Kubernetes
+        #[serde(rename = "codeModeWorker")]
+        pub code_mode_worker: bool,
+        ///An email provider is configured for invitations and notices (EMAIL_PROVIDER)
+        pub email: bool,
+        ///The embedding service passed its health check (EMBEDDING_SERVICE_URL). Without it, searches of compressed results use keywords only
+        pub embeddings: bool,
+        ///A Kubernetes cluster is configured for executable (npx, uvx) and hosted servers, sandboxes, server volumes and Code Mode worker pods
+        pub kubernetes: bool,
+        ///Hosted server code can be stored in a bucket (FUNCTIONS_STORAGE_BUCKET) or the database
+        #[serde(rename = "objectStorage")]
+        pub object_storage: bool,
+        ///Server pods can download stored files. False for database storage
+        #[serde(rename = "sharedObjectStorage")]
+        pub shared_object_storage: bool,
+        ///A storage class for server volumes is configured (WORKLOAD_STORAGE_CLASS_NAME)
+        #[serde(rename = "storageClass")]
+        pub storage_class: bool,
+        ///A Tailscale sidecar image is configured (WORKLOAD_TAILSCALE_IMAGE)
+        #[serde(rename = "tailscaleImage")]
+        pub tailscale_image: bool,
     }
     ///`DeploymentContainerStatus`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -2239,6 +2275,157 @@ pub mod types {
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
+    }
+    ///`Feature`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct Feature {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub reason: ::std::option::Option<FeatureUnavailableReason>,
+        ///available: the organization can use it. upgrade: the plan does not include it. unavailable: the installation cannot run it
+        pub status: FeatureStatus,
+    }
+    ///available: the organization can use it. upgrade: the plan does not include it. unavailable: the installation cannot run it
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum FeatureStatus {
+        #[serde(rename = "available")]
+        Available,
+        #[serde(rename = "upgrade")]
+        Upgrade,
+        #[serde(rename = "unavailable")]
+        Unavailable,
+    }
+    impl ::std::fmt::Display for FeatureStatus {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Available => f.write_str("available"),
+                Self::Upgrade => f.write_str("upgrade"),
+                Self::Unavailable => f.write_str("unavailable"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for FeatureStatus {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "available" => Ok(Self::Available),
+                "upgrade" => Ok(Self::Upgrade),
+                "unavailable" => Ok(Self::Unavailable),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for FeatureStatus {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for FeatureStatus {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///The service or resource missing from the installation
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum FeatureUnavailableReason {
+        #[serde(rename = "no-kubernetes")]
+        NoKubernetes,
+        #[serde(rename = "no-object-storage")]
+        NoObjectStorage,
+        #[serde(rename = "no-shared-object-storage")]
+        NoSharedObjectStorage,
+        #[serde(rename = "no-storage-class")]
+        NoStorageClass,
+        #[serde(rename = "no-tailscale-image")]
+        NoTailscaleImage,
+        #[serde(rename = "no-code-mode-worker")]
+        NoCodeModeWorker,
+    }
+    impl ::std::fmt::Display for FeatureUnavailableReason {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::NoKubernetes => f.write_str("no-kubernetes"),
+                Self::NoObjectStorage => f.write_str("no-object-storage"),
+                Self::NoSharedObjectStorage => f.write_str("no-shared-object-storage"),
+                Self::NoStorageClass => f.write_str("no-storage-class"),
+                Self::NoTailscaleImage => f.write_str("no-tailscale-image"),
+                Self::NoCodeModeWorker => f.write_str("no-code-mode-worker"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for FeatureUnavailableReason {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "no-kubernetes" => Ok(Self::NoKubernetes),
+                "no-object-storage" => Ok(Self::NoObjectStorage),
+                "no-shared-object-storage" => Ok(Self::NoSharedObjectStorage),
+                "no-storage-class" => Ok(Self::NoStorageClass),
+                "no-tailscale-image" => Ok(Self::NoTailscaleImage),
+                "no-code-mode-worker" => Ok(Self::NoCodeModeWorker),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for FeatureUnavailableReason {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for FeatureUnavailableReason {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`Features`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct Features {
+        #[serde(rename = "codeMode")]
+        pub code_mode: Feature,
+        pub hosted: Feature,
+        pub sandbox: Feature,
+        #[serde(rename = "serverFiles")]
+        pub server_files: Feature,
+        pub stdio: Feature,
+        pub storage: Feature,
+        pub tailscale: Feature,
     }
     ///`GetCredentialTokenResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -4795,6 +4982,9 @@ pub mod types {
         pub client_secret: ::std::string::String,
         #[serde(rename = "grantType")]
         pub grant_type: OAuthGrantType,
+        ///Whether the client ID is the URL of the client ID metadata document that Gatana publishes for this server. Gatana sets it when the server is saved; a value in a request is ignored
+        #[serde(rename = "isClientIdMetadataDocument")]
+        pub is_client_id_metadata_document: bool,
         ///Space-separated OAuth scopes to request
         pub scopes: ::std::string::String,
     }
@@ -4898,6 +5088,12 @@ pub mod types {
             skip_serializing_if = "::std::vec::Vec::is_empty"
         )]
         pub supported_client_auth_methods: ::std::vec::Vec<::std::string::String>,
+        ///Whether the authorization server accepts the URL of a client ID metadata document as client ID
+        #[serde(
+            rename = "supportsClientIdMetadataDocument",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub supports_client_id_metadata_document: ::std::option::Option<bool>,
         ///Whether the authorization server supports dynamic client registration
         #[serde(
             rename = "supportsDynamicClientRegistration",
@@ -4968,6 +5164,9 @@ pub mod types {
         ///Client authentication methods that the token endpoint supports
         #[serde(rename = "supportedClientAuthMethods")]
         pub supported_client_auth_methods: ::std::vec::Vec<::std::string::String>,
+        ///Whether the authorization server accepts the URL of a client ID metadata document as client ID
+        #[serde(rename = "supportsClientIdMetadataDocument")]
+        pub supports_client_id_metadata_document: bool,
         ///Whether the authorization server supports dynamic client registration
         #[serde(rename = "supportsDynamicClientRegistration")]
         pub supports_dynamic_client_registration: bool,
@@ -7807,7 +8006,7 @@ impl<'a> Api<'a> {
     }
     /** `POST /mcp-servers/{serverSlug}/oauth/dynamic-oauth-client-no-save`
 
- Register an OAuth client dynamically with the remote MCP server and return its configuration without saving it*/
+ Get an OAuth client for the remote MCP server by dynamic registration or from a client ID metadata document, and return its configuration without saving it*/
     pub fn register_mcp_server_oauth_client_without_saving(
         &self,
         server_slug: &str,
@@ -8187,7 +8386,7 @@ impl<'a> Api<'a> {
     }
     /** `POST /sandboxes`
 
- Create a new sandbox for the authenticated user. Requires a paid subscription and is limited to 10 concurrent sandboxes per organization*/
+ Create a sandbox for the authenticated user with a paid subscription and Kubernetes, up to 10 concurrent sandboxes per organization*/
     pub fn create_sandbox(&self) -> crate::Call<'a, CreateSandboxResponse> {
         let path = format!("{}/sandboxes", BASE_PATH);
         let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
@@ -8312,7 +8511,7 @@ impl<'a> Api<'a> {
     }
     /** `POST /users`
 
- Invite a new user by email, or create a service account*/
+ Create a service account or invite a user by email, returning the invitation link only when email is disabled*/
     pub fn create_user(
         &self,
         body: &CreateUserRequest,

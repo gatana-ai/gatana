@@ -23,9 +23,9 @@ class ListArtifactsResponse:
 
     def to_dict(self) -> dict[str, Any]:
         artifacts = []
-        for componentsschemas_schema1181_item_data in self.artifacts:
-            componentsschemas_schema1181_item = componentsschemas_schema1181_item_data.to_dict()
-            artifacts.append(componentsschemas_schema1181_item)
+        for componentsschemas_schema1275_item_data in self.artifacts:
+            componentsschemas_schema1275_item = componentsschemas_schema1275_item_data.to_dict()
+            artifacts.append(componentsschemas_schema1275_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -44,10 +44,10 @@ class ListArtifactsResponse:
         d = dict(src_dict)
         artifacts = []
         _artifacts = d.pop("artifacts")
-        for componentsschemas_schema1181_item_data in _artifacts:
-            componentsschemas_schema1181_item = ArtifactDto.from_dict(componentsschemas_schema1181_item_data)
+        for componentsschemas_schema1275_item_data in _artifacts:
+            componentsschemas_schema1275_item = ArtifactDto.from_dict(componentsschemas_schema1275_item_data)
 
-            artifacts.append(componentsschemas_schema1181_item)
+            artifacts.append(componentsschemas_schema1275_item)
 
         list_artifacts_response = cls(
             artifacts=artifacts,

@@ -6,17 +6,17 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.deployment_log_payload_pod_info import DeploymentLogPayloadPodInfo
-from ...models.schema_872 import Schema872
-from ...models.schema_909 import Schema909
-from ...models.schema_910 import Schema910
-from ...models.schema_912 import Schema912
-from ...models.schema_913 import Schema913
-from ...models.schema_917 import Schema917
-from ...models.schema_918 import Schema918
-from ...models.schema_922 import Schema922
-from ...models.schema_923 import Schema923
-from ...models.schema_924 import Schema924
-from ...models.schema_926 import Schema926
+from ...models.schema_965 import Schema965
+from ...models.schema_1002 import Schema1002
+from ...models.schema_1003 import Schema1003
+from ...models.schema_1005 import Schema1005
+from ...models.schema_1006 import Schema1006
+from ...models.schema_1010 import Schema1010
+from ...models.schema_1011 import Schema1011
+from ...models.schema_1015 import Schema1015
+from ...models.schema_1016 import Schema1016
+from ...models.schema_1017 import Schema1017
+from ...models.schema_1019 import Schema1019
 from ...types import UNSET, Response, Unset
 
 
@@ -50,17 +50,17 @@ def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
 ) -> (
     DeploymentLogPayloadPodInfo
-    | Schema872
-    | Schema909
-    | Schema910
-    | Schema912
-    | Schema913
-    | Schema917
-    | Schema918
-    | Schema922
-    | Schema923
-    | Schema924
-    | Schema926
+    | Schema1002
+    | Schema1003
+    | Schema1005
+    | Schema1006
+    | Schema1010
+    | Schema1011
+    | Schema1015
+    | Schema1016
+    | Schema1017
+    | Schema1019
+    | Schema965
     | None
 ):
     if response.status_code == 200:
@@ -69,22 +69,22 @@ def _parse_response(
             data: object,
         ) -> (
             DeploymentLogPayloadPodInfo
-            | Schema872
-            | Schema909
-            | Schema910
-            | Schema912
-            | Schema913
-            | Schema917
-            | Schema918
-            | Schema922
-            | Schema923
-            | Schema924
-            | Schema926
+            | Schema1002
+            | Schema1003
+            | Schema1005
+            | Schema1006
+            | Schema1010
+            | Schema1011
+            | Schema1015
+            | Schema1016
+            | Schema1017
+            | Schema1019
+            | Schema965
         ):
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_deployment_log_payload_type_0 = Schema872.from_dict(data)
+                componentsschemas_deployment_log_payload_type_0 = Schema965.from_dict(data)
 
                 return componentsschemas_deployment_log_payload_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -100,7 +100,7 @@ def _parse_response(
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_deployment_log_payload_type_2 = Schema909.from_dict(data)
+                componentsschemas_deployment_log_payload_type_2 = Schema1002.from_dict(data)
 
                 return componentsschemas_deployment_log_payload_type_2
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -108,7 +108,7 @@ def _parse_response(
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_deployment_log_payload_type_3 = Schema910.from_dict(data)
+                componentsschemas_deployment_log_payload_type_3 = Schema1003.from_dict(data)
 
                 return componentsschemas_deployment_log_payload_type_3
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -116,7 +116,7 @@ def _parse_response(
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_deployment_log_payload_type_4 = Schema912.from_dict(data)
+                componentsschemas_deployment_log_payload_type_4 = Schema1005.from_dict(data)
 
                 return componentsschemas_deployment_log_payload_type_4
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -124,7 +124,7 @@ def _parse_response(
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_deployment_log_payload_type_5 = Schema913.from_dict(data)
+                componentsschemas_deployment_log_payload_type_5 = Schema1006.from_dict(data)
 
                 return componentsschemas_deployment_log_payload_type_5
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -132,7 +132,7 @@ def _parse_response(
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_deployment_log_payload_type_6 = Schema917.from_dict(data)
+                componentsschemas_deployment_log_payload_type_6 = Schema1010.from_dict(data)
 
                 return componentsschemas_deployment_log_payload_type_6
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -140,7 +140,7 @@ def _parse_response(
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_deployment_log_payload_type_7 = Schema918.from_dict(data)
+                componentsschemas_deployment_log_payload_type_7 = Schema1011.from_dict(data)
 
                 return componentsschemas_deployment_log_payload_type_7
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -148,7 +148,7 @@ def _parse_response(
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_deployment_log_payload_type_8 = Schema922.from_dict(data)
+                componentsschemas_deployment_log_payload_type_8 = Schema1015.from_dict(data)
 
                 return componentsschemas_deployment_log_payload_type_8
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -156,7 +156,7 @@ def _parse_response(
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_deployment_log_payload_type_9 = Schema923.from_dict(data)
+                componentsschemas_deployment_log_payload_type_9 = Schema1016.from_dict(data)
 
                 return componentsschemas_deployment_log_payload_type_9
             except (TypeError, ValueError, AttributeError, KeyError):
@@ -164,14 +164,14 @@ def _parse_response(
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_deployment_log_payload_type_10 = Schema924.from_dict(data)
+                componentsschemas_deployment_log_payload_type_10 = Schema1017.from_dict(data)
 
                 return componentsschemas_deployment_log_payload_type_10
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             if not isinstance(data, dict):
                 raise TypeError()
-            componentsschemas_deployment_log_payload_type_11 = Schema926.from_dict(data)
+            componentsschemas_deployment_log_payload_type_11 = Schema1019.from_dict(data)
 
             return componentsschemas_deployment_log_payload_type_11
 
@@ -189,17 +189,17 @@ def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
 ) -> Response[
     DeploymentLogPayloadPodInfo
-    | Schema872
-    | Schema909
-    | Schema910
-    | Schema912
-    | Schema913
-    | Schema917
-    | Schema918
-    | Schema922
-    | Schema923
-    | Schema924
-    | Schema926
+    | Schema1002
+    | Schema1003
+    | Schema1005
+    | Schema1006
+    | Schema1010
+    | Schema1011
+    | Schema1015
+    | Schema1016
+    | Schema1017
+    | Schema1019
+    | Schema965
 ]:
     return Response(
         status_code=HTTPStatus(response.status_code),
@@ -217,17 +217,17 @@ def sync_detailed(
     pod_name: str | Unset = UNSET,
 ) -> Response[
     DeploymentLogPayloadPodInfo
-    | Schema872
-    | Schema909
-    | Schema910
-    | Schema912
-    | Schema913
-    | Schema917
-    | Schema918
-    | Schema922
-    | Schema923
-    | Schema924
-    | Schema926
+    | Schema1002
+    | Schema1003
+    | Schema1005
+    | Schema1006
+    | Schema1010
+    | Schema1011
+    | Schema1015
+    | Schema1016
+    | Schema1017
+    | Schema1019
+    | Schema965
 ]:
     """Stream the deployment and pod events of an MCP server as server-sent events. Requires read
     permission on the server and the Accept header text/event-stream; hostedFunctionId is no longer
@@ -243,7 +243,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[DeploymentLogPayloadPodInfo | Schema872 | Schema909 | Schema910 | Schema912 | Schema913 | Schema917 | Schema918 | Schema922 | Schema923 | Schema924 | Schema926]
+        Response[DeploymentLogPayloadPodInfo | Schema1002 | Schema1003 | Schema1005 | Schema1006 | Schema1010 | Schema1011 | Schema1015 | Schema1016 | Schema1017 | Schema1019 | Schema965]
     """
 
     kwargs = _get_kwargs(
@@ -267,17 +267,17 @@ def sync(
     pod_name: str | Unset = UNSET,
 ) -> (
     DeploymentLogPayloadPodInfo
-    | Schema872
-    | Schema909
-    | Schema910
-    | Schema912
-    | Schema913
-    | Schema917
-    | Schema918
-    | Schema922
-    | Schema923
-    | Schema924
-    | Schema926
+    | Schema1002
+    | Schema1003
+    | Schema1005
+    | Schema1006
+    | Schema1010
+    | Schema1011
+    | Schema1015
+    | Schema1016
+    | Schema1017
+    | Schema1019
+    | Schema965
     | None
 ):
     """Stream the deployment and pod events of an MCP server as server-sent events. Requires read
@@ -294,7 +294,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        DeploymentLogPayloadPodInfo | Schema872 | Schema909 | Schema910 | Schema912 | Schema913 | Schema917 | Schema918 | Schema922 | Schema923 | Schema924 | Schema926
+        DeploymentLogPayloadPodInfo | Schema1002 | Schema1003 | Schema1005 | Schema1006 | Schema1010 | Schema1011 | Schema1015 | Schema1016 | Schema1017 | Schema1019 | Schema965
     """
 
     return sync_detailed(
@@ -313,17 +313,17 @@ async def asyncio_detailed(
     pod_name: str | Unset = UNSET,
 ) -> Response[
     DeploymentLogPayloadPodInfo
-    | Schema872
-    | Schema909
-    | Schema910
-    | Schema912
-    | Schema913
-    | Schema917
-    | Schema918
-    | Schema922
-    | Schema923
-    | Schema924
-    | Schema926
+    | Schema1002
+    | Schema1003
+    | Schema1005
+    | Schema1006
+    | Schema1010
+    | Schema1011
+    | Schema1015
+    | Schema1016
+    | Schema1017
+    | Schema1019
+    | Schema965
 ]:
     """Stream the deployment and pod events of an MCP server as server-sent events. Requires read
     permission on the server and the Accept header text/event-stream; hostedFunctionId is no longer
@@ -339,7 +339,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[DeploymentLogPayloadPodInfo | Schema872 | Schema909 | Schema910 | Schema912 | Schema913 | Schema917 | Schema918 | Schema922 | Schema923 | Schema924 | Schema926]
+        Response[DeploymentLogPayloadPodInfo | Schema1002 | Schema1003 | Schema1005 | Schema1006 | Schema1010 | Schema1011 | Schema1015 | Schema1016 | Schema1017 | Schema1019 | Schema965]
     """
 
     kwargs = _get_kwargs(
@@ -361,17 +361,17 @@ async def asyncio(
     pod_name: str | Unset = UNSET,
 ) -> (
     DeploymentLogPayloadPodInfo
-    | Schema872
-    | Schema909
-    | Schema910
-    | Schema912
-    | Schema913
-    | Schema917
-    | Schema918
-    | Schema922
-    | Schema923
-    | Schema924
-    | Schema926
+    | Schema1002
+    | Schema1003
+    | Schema1005
+    | Schema1006
+    | Schema1010
+    | Schema1011
+    | Schema1015
+    | Schema1016
+    | Schema1017
+    | Schema1019
+    | Schema965
     | None
 ):
     """Stream the deployment and pod events of an MCP server as server-sent events. Requires read
@@ -388,7 +388,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        DeploymentLogPayloadPodInfo | Schema872 | Schema909 | Schema910 | Schema912 | Schema913 | Schema917 | Schema918 | Schema922 | Schema923 | Schema924 | Schema926
+        DeploymentLogPayloadPodInfo | Schema1002 | Schema1003 | Schema1005 | Schema1006 | Schema1010 | Schema1011 | Schema1015 | Schema1016 | Schema1017 | Schema1019 | Schema965
     """
 
     return (

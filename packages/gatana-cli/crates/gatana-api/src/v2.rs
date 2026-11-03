@@ -1322,6 +1322,12 @@ pub mod types {
         pub client_secret: ::std::option::Option<::std::string::String>,
         #[serde(rename = "grantType")]
         pub grant_type: OAuthGrantType,
+        ///Whether the client ID is the URL of the client ID metadata document that Gatana publishes for this server. Gatana sets it when the server is saved; a value in a request is ignored
+        #[serde(
+            rename = "isClientIdMetadataDocument",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_client_id_metadata_document: ::std::option::Option<bool>,
         ///Space-separated OAuth scopes to request
         #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         pub scopes: ::std::option::Option<::std::string::String>,
@@ -1355,6 +1361,9 @@ pub mod types {
         pub client_secret: ::std::string::String,
         #[serde(rename = "grantType")]
         pub grant_type: OAuthGrantType,
+        ///Whether the client ID is the URL of the client ID metadata document that Gatana publishes for this server. Gatana sets it when the server is saved; a value in a request is ignored
+        #[serde(rename = "isClientIdMetadataDocument")]
+        pub is_client_id_metadata_document: bool,
         ///Space-separated OAuth scopes to request
         pub scopes: ::std::string::String,
     }
@@ -1436,6 +1445,12 @@ pub mod types {
             skip_serializing_if = "::std::vec::Vec::is_empty"
         )]
         pub supported_client_auth_methods: ::std::vec::Vec<::std::string::String>,
+        ///Whether the authorization server accepts the URL of a client ID metadata document as client ID
+        #[serde(
+            rename = "supportsClientIdMetadataDocument",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub supports_client_id_metadata_document: ::std::option::Option<bool>,
         ///Whether the authorization server supports dynamic client registration
         #[serde(
             rename = "supportsDynamicClientRegistration",
@@ -1506,6 +1521,9 @@ pub mod types {
         ///Client authentication methods that the token endpoint supports
         #[serde(rename = "supportedClientAuthMethods")]
         pub supported_client_auth_methods: ::std::vec::Vec<::std::string::String>,
+        ///Whether the authorization server accepts the URL of a client ID metadata document as client ID
+        #[serde(rename = "supportsClientIdMetadataDocument")]
+        pub supports_client_id_metadata_document: bool,
         ///Whether the authorization server supports dynamic client registration
         #[serde(rename = "supportsDynamicClientRegistration")]
         pub supports_dynamic_client_registration: bool,

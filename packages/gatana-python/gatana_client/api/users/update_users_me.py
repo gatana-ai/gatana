@@ -60,7 +60,8 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: UpdateUserMeRequest | Unset = UNSET,
 ) -> Response[UpdateUsersMeResponse200]:
-    """Update the current user; password and email changes require a browser login within the last 12 hours
+    """Update the current user; require a browser session for password or email changes and a login within
+    12 hours except for a first password with email disabled and no SSO identity
 
     Args:
         body (UpdateUserMeRequest | Unset):
@@ -89,7 +90,8 @@ def sync(
     client: AuthenticatedClient | Client,
     body: UpdateUserMeRequest | Unset = UNSET,
 ) -> UpdateUsersMeResponse200 | None:
-    """Update the current user; password and email changes require a browser login within the last 12 hours
+    """Update the current user; require a browser session for password or email changes and a login within
+    12 hours except for a first password with email disabled and no SSO identity
 
     Args:
         body (UpdateUserMeRequest | Unset):
@@ -113,7 +115,8 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: UpdateUserMeRequest | Unset = UNSET,
 ) -> Response[UpdateUsersMeResponse200]:
-    """Update the current user; password and email changes require a browser login within the last 12 hours
+    """Update the current user; require a browser session for password or email changes and a login within
+    12 hours except for a first password with email disabled and no SSO identity
 
     Args:
         body (UpdateUserMeRequest | Unset):
@@ -140,7 +143,8 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: UpdateUserMeRequest | Unset = UNSET,
 ) -> UpdateUsersMeResponse200 | None:
-    """Update the current user; password and email changes require a browser login within the last 12 hours
+    """Update the current user; require a browser session for password or email changes and a login within
+    12 hours except for a first password with email disabled and no SSO identity
 
     Args:
         body (UpdateUserMeRequest | Unset):

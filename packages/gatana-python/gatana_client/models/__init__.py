@@ -60,6 +60,7 @@ from .create_team_member_response_200 import CreateTeamMemberResponse200
 from .create_team_profile_assignment_request import CreateTeamProfileAssignmentRequest
 from .create_user_profile_assignment_request import CreateUserProfileAssignmentRequest
 from .create_user_request import CreateUserRequest
+from .create_user_response import CreateUserResponse
 from .delete_artifact_response_200 import DeleteArtifactResponse200
 from .delete_artifact_theme_response_200 import DeleteArtifactThemeResponse200
 from .delete_connected_client_response_200 import DeleteConnectedClientResponse200
@@ -82,13 +83,27 @@ from .delete_team_response_200 import DeleteTeamResponse200
 from .delete_user_personal_access_token_response_200 import DeleteUserPersonalAccessTokenResponse200
 from .delete_user_profile_response_200 import DeleteUserProfileResponse200
 from .delete_user_response_200 import DeleteUserResponse200
+from .deployment_capabilities import DeploymentCapabilities
 from .deployment_container_status import DeploymentContainerStatus
 from .deployment_log_payload_pod_info import DeploymentLogPayloadPodInfo
 from .deployment_metrics_response import DeploymentMetricsResponse
 from .deployment_status import DeploymentStatus
 from .deployment_status_response import DeploymentStatusResponse
 from .discover_mcp_server_oauth_response_200 import DiscoverMcpServerOauthResponse200
+from .email_access_level import EmailAccessLevel
+from .email_imap_connection import EmailImapConnection
+from .email_imap_connection_output import EmailImapConnectionOutput
+from .email_jmap_connection import EmailJmapConnection
+from .email_jmap_connection_output import EmailJmapConnectionOutput
+from .email_preset import EmailPreset
+from .email_smtp_server import EmailSmtpServer
+from .email_smtp_server_output import EmailSmtpServerOutput
+from .email_transport_config import EmailTransportConfig
+from .email_transport_config_output import EmailTransportConfigOutput
 from .exec_command_body import ExecCommandBody
+from .feature import Feature
+from .feature_unavailable_reason import FeatureUnavailableReason
+from .features import Features
 from .gcp_secret_manager_configuration import GcpSecretManagerConfiguration
 from .gcp_secret_manager_configuration_output import GcpSecretManagerConfigurationOutput
 from .get_artifact_response import GetArtifactResponse
@@ -200,179 +215,200 @@ from .schema_107 import Schema107
 from .schema_108 import Schema108
 from .schema_109 import Schema109
 from .schema_112 import Schema112
-from .schema_122 import Schema122
-from .schema_122_as_type_0 import Schema122AsType0
-from .schema_122_resource_type_0 import Schema122ResourceType0
-from .schema_140 import Schema140
-from .schema_159 import Schema159
-from .schema_159_action import Schema159Action
-from .schema_160 import Schema160
-from .schema_161 import Schema161
-from .schema_162 import Schema162
-from .schema_163 import Schema163
-from .schema_172 import Schema172
-from .schema_175 import Schema175
-from .schema_181 import Schema181
-from .schema_189 import Schema189
-from .schema_191 import Schema191
-from .schema_192 import Schema192
+from .schema_123 import Schema123
+from .schema_130 import Schema130
+from .schema_131 import Schema131
+from .schema_141 import Schema141
+from .schema_142 import Schema142
+from .schema_153 import Schema153
+from .schema_153_as_type_0 import Schema153AsType0
+from .schema_153_resource_type_0 import Schema153ResourceType0
+from .schema_173 import Schema173
 from .schema_193 import Schema193
-from .schema_201 import Schema201
-from .schema_204 import Schema204
-from .schema_211 import Schema211
-from .schema_260 import Schema260
-from .schema_261 import Schema261
-from .schema_292 import Schema292
-from .schema_300 import Schema300
-from .schema_327 import Schema327
+from .schema_193_action import Schema193Action
+from .schema_194 import Schema194
+from .schema_195 import Schema195
+from .schema_196 import Schema196
+from .schema_197 import Schema197
+from .schema_206 import Schema206
+from .schema_209 import Schema209
+from .schema_215 import Schema215
+from .schema_223 import Schema223
+from .schema_227 import Schema227
+from .schema_228 import Schema228
+from .schema_229 import Schema229
+from .schema_237 import Schema237
+from .schema_240 import Schema240
+from .schema_247 import Schema247
+from .schema_296 import Schema296
+from .schema_297 import Schema297
 from .schema_328 import Schema328
-from .schema_331 import Schema331
-from .schema_340 import Schema340
-from .schema_341 import Schema341
-from .schema_342 import Schema342
-from .schema_343 import Schema343
-from .schema_344 import Schema344
-from .schema_345 import Schema345
-from .schema_346 import Schema346
-from .schema_354 import Schema354
-from .schema_355 import Schema355
-from .schema_356 import Schema356
-from .schema_369 import Schema369
-from .schema_370 import Schema370
-from .schema_371 import Schema371
+from .schema_336 import Schema336
+from .schema_363 import Schema363
+from .schema_364 import Schema364
+from .schema_367 import Schema367
+from .schema_376 import Schema376
+from .schema_377 import Schema377
+from .schema_378 import Schema378
+from .schema_379 import Schema379
+from .schema_380 import Schema380
 from .schema_381 import Schema381
-from .schema_384 import Schema384
-from .schema_386 import Schema386
+from .schema_382 import Schema382
 from .schema_390 import Schema390
 from .schema_391 import Schema391
-from .schema_395 import Schema395
-from .schema_402 import Schema402
-from .schema_403 import Schema403
-from .schema_404 import Schema404
+from .schema_392 import Schema392
 from .schema_405 import Schema405
 from .schema_406 import Schema406
-from .schema_425 import Schema425
-from .schema_425_enabled_servers import Schema425EnabledServers
+from .schema_407 import Schema407
+from .schema_417 import Schema417
+from .schema_420 import Schema420
+from .schema_422 import Schema422
+from .schema_426 import Schema426
+from .schema_427 import Schema427
+from .schema_431 import Schema431
+from .schema_439 import Schema439
+from .schema_448 import Schema448
+from .schema_449 import Schema449
+from .schema_450 import Schema450
+from .schema_451 import Schema451
+from .schema_452 import Schema452
+from .schema_453 import Schema453
+from .schema_454 import Schema454
+from .schema_455 import Schema455
+from .schema_456 import Schema456
+from .schema_457 import Schema457
 from .schema_458 import Schema458
-from .schema_466 import Schema466
-from .schema_471 import Schema471
-from .schema_490 import Schema490
-from .schema_494 import Schema494
-from .schema_495 import Schema495
-from .schema_496 import Schema496
-from .schema_507 import Schema507
-from .schema_512 import Schema512
+from .schema_459 import Schema459
+from .schema_460 import Schema460
+from .schema_461 import Schema461
+from .schema_480 import Schema480
+from .schema_480_enabled_servers import Schema480EnabledServers
 from .schema_513 import Schema513
-from .schema_519 import Schema519
-from .schema_531 import Schema531
-from .schema_536 import Schema536
-from .schema_537 import Schema537
-from .schema_543 import Schema543
+from .schema_521 import Schema521
+from .schema_526 import Schema526
 from .schema_545 import Schema545
-from .schema_546 import Schema546
-from .schema_547 import Schema547
+from .schema_549 import Schema549
+from .schema_552 import Schema552
 from .schema_553 import Schema553
-from .schema_555 import Schema555
-from .schema_559 import Schema559
-from .schema_561 import Schema561
-from .schema_562 import Schema562
-from .schema_563 import Schema563
-from .schema_566 import Schema566
-from .schema_581 import Schema581
-from .schema_591 import Schema591
-from .schema_592 import Schema592
-from .schema_596 import Schema596
-from .schema_597 import Schema597
+from .schema_554 import Schema554
+from .schema_565 import Schema565
+from .schema_570 import Schema570
+from .schema_571 import Schema571
+from .schema_577 import Schema577
+from .schema_589 import Schema589
+from .schema_594 import Schema594
+from .schema_595 import Schema595
+from .schema_601 import Schema601
+from .schema_603 import Schema603
+from .schema_604 import Schema604
+from .schema_605 import Schema605
 from .schema_611 import Schema611
-from .schema_625 import Schema625
-from .schema_625_action import Schema625Action
-from .schema_628 import Schema628
-from .schema_657 import Schema657
-from .schema_657_endpoints_item import Schema657EndpointsItem
-from .schema_658 import Schema658
-from .schema_659 import Schema659
-from .schema_663 import Schema663
-from .schema_665 import Schema665
-from .schema_667 import Schema667
-from .schema_671 import Schema671
-from .schema_678 import Schema678
-from .schema_679 import Schema679
-from .schema_680_item import Schema680Item
-from .schema_681_item import Schema681Item
-from .schema_684 import Schema684
-from .schema_685 import Schema685
-from .schema_695 import Schema695
-from .schema_715 import Schema715
-from .schema_740 import Schema740
-from .schema_767 import Schema767
+from .schema_613 import Schema613
+from .schema_617 import Schema617
+from .schema_619 import Schema619
+from .schema_620 import Schema620
+from .schema_621 import Schema621
+from .schema_624 import Schema624
+from .schema_635 import Schema635
+from .schema_642 import Schema642
+from .schema_643 import Schema643
+from .schema_653 import Schema653
+from .schema_654 import Schema654
+from .schema_670 import Schema670
+from .schema_682 import Schema682
+from .schema_683 import Schema683
+from .schema_687 import Schema687
+from .schema_688 import Schema688
+from .schema_704 import Schema704
+from .schema_718 import Schema718
+from .schema_718_action import Schema718Action
+from .schema_721 import Schema721
+from .schema_750 import Schema750
+from .schema_750_endpoints_item import Schema750EndpointsItem
+from .schema_751 import Schema751
+from .schema_752 import Schema752
+from .schema_756 import Schema756
+from .schema_758 import Schema758
+from .schema_760 import Schema760
+from .schema_764 import Schema764
 from .schema_771 import Schema771
-from .schema_773 import Schema773
-from .schema_774 import Schema774
-from .schema_775 import Schema775
-from .schema_791 import Schema791
-from .schema_792 import Schema792
-from .schema_794 import Schema794
-from .schema_810 import Schema810
-from .schema_814 import Schema814
+from .schema_772 import Schema772
+from .schema_773_item import Schema773Item
+from .schema_774_item import Schema774Item
+from .schema_777 import Schema777
+from .schema_778 import Schema778
+from .schema_788 import Schema788
+from .schema_808 import Schema808
 from .schema_833 import Schema833
-from .schema_839 import Schema839
-from .schema_840 import Schema840
-from .schema_858 import Schema858
-from .schema_863 import Schema863
+from .schema_860 import Schema860
 from .schema_864 import Schema864
-from .schema_870 import Schema870
-from .schema_872 import Schema872
-from .schema_874 import Schema874
+from .schema_866 import Schema866
+from .schema_867 import Schema867
+from .schema_868 import Schema868
+from .schema_884 import Schema884
 from .schema_885 import Schema885
-from .schema_902 import Schema902
-from .schema_904 import Schema904
-from .schema_909 import Schema909
-from .schema_910 import Schema910
-from .schema_912 import Schema912
-from .schema_913 import Schema913
-from .schema_917 import Schema917
-from .schema_918 import Schema918
-from .schema_922 import Schema922
-from .schema_923 import Schema923
-from .schema_924 import Schema924
+from .schema_887 import Schema887
+from .schema_903 import Schema903
+from .schema_907 import Schema907
 from .schema_926 import Schema926
-from .schema_937 import Schema937
-from .schema_938 import Schema938
-from .schema_941 import Schema941
-from .schema_942 import Schema942
+from .schema_932 import Schema932
+from .schema_933 import Schema933
 from .schema_951 import Schema951
-from .schema_958 import Schema958
-from .schema_959 import Schema959
-from .schema_962 import Schema962
+from .schema_956 import Schema956
+from .schema_957 import Schema957
+from .schema_963 import Schema963
 from .schema_965 import Schema965
-from .schema_972 import Schema972
-from .schema_982 import Schema982
-from .schema_1021 import Schema1021
-from .schema_1033 import Schema1033
+from .schema_967 import Schema967
+from .schema_978 import Schema978
+from .schema_995 import Schema995
+from .schema_997 import Schema997
+from .schema_1002 import Schema1002
+from .schema_1003 import Schema1003
+from .schema_1005 import Schema1005
+from .schema_1006 import Schema1006
+from .schema_1010 import Schema1010
+from .schema_1011 import Schema1011
+from .schema_1015 import Schema1015
+from .schema_1016 import Schema1016
+from .schema_1017 import Schema1017
+from .schema_1019 import Schema1019
+from .schema_1030 import Schema1030
+from .schema_1031 import Schema1031
 from .schema_1034 import Schema1034
-from .schema_1040 import Schema1040
-from .schema_1046 import Schema1046
-from .schema_1062 import Schema1062
-from .schema_1091 import Schema1091
-from .schema_1100 import Schema1100
-from .schema_1105 import Schema1105
-from .schema_1107 import Schema1107
-from .schema_1132 import Schema1132
-from .schema_1146 import Schema1146
+from .schema_1035 import Schema1035
+from .schema_1044 import Schema1044
+from .schema_1051 import Schema1051
+from .schema_1052 import Schema1052
+from .schema_1055 import Schema1055
+from .schema_1058 import Schema1058
+from .schema_1065 import Schema1065
+from .schema_1075 import Schema1075
+from .schema_1114 import Schema1114
+from .schema_1126 import Schema1126
+from .schema_1127 import Schema1127
+from .schema_1133 import Schema1133
+from .schema_1139 import Schema1139
 from .schema_1155 import Schema1155
-from .schema_1165 import Schema1165
-from .schema_1171 import Schema1171
-from .schema_1186 import Schema1186
-from .schema_1192 import Schema1192
+from .schema_1184 import Schema1184
+from .schema_1193 import Schema1193
 from .schema_1198 import Schema1198
 from .schema_1200 import Schema1200
-from .schema_1205 import Schema1205
-from .schema_1206 import Schema1206
-from .schema_1219 import Schema1219
-from .schema_1270 import Schema1270
-from .schema_1271 import Schema1271
-from .schema_1273 import Schema1273
-from .schema_1275 import Schema1275
+from .schema_1225 import Schema1225
+from .schema_1240 import Schema1240
+from .schema_1249 import Schema1249
+from .schema_1259 import Schema1259
+from .schema_1265 import Schema1265
+from .schema_1280 import Schema1280
+from .schema_1286 import Schema1286
+from .schema_1292 import Schema1292
+from .schema_1294 import Schema1294
+from .schema_1299 import Schema1299
+from .schema_1300 import Schema1300
+from .schema_1313 import Schema1313
+from .schema_1364 import Schema1364
+from .schema_1365 import Schema1365
+from .schema_1367 import Schema1367
+from .schema_1369 import Schema1369
 from .scim_token import ScimToken
 from .secret_mapping_list_response import SecretMappingListResponse
 from .secret_mapping_response import SecretMappingResponse
@@ -531,6 +567,7 @@ __all__ = (
     "CreateTeamProfileAssignmentRequest",
     "CreateUserProfileAssignmentRequest",
     "CreateUserRequest",
+    "CreateUserResponse",
     "DeleteArtifactResponse200",
     "DeleteArtifactThemeResponse200",
     "DeleteConnectedClientResponse200",
@@ -551,13 +588,27 @@ __all__ = (
     "DeleteUserPersonalAccessTokenResponse200",
     "DeleteUserProfileResponse200",
     "DeleteUserResponse200",
+    "DeploymentCapabilities",
     "DeploymentContainerStatus",
     "DeploymentLogPayloadPodInfo",
     "DeploymentMetricsResponse",
     "DeploymentStatus",
     "DeploymentStatusResponse",
     "DiscoverMcpServerOauthResponse200",
+    "EmailAccessLevel",
+    "EmailImapConnection",
+    "EmailImapConnectionOutput",
+    "EmailJmapConnection",
+    "EmailJmapConnectionOutput",
+    "EmailPreset",
+    "EmailSmtpServer",
+    "EmailSmtpServerOutput",
+    "EmailTransportConfig",
+    "EmailTransportConfigOutput",
     "ExecCommandBody",
+    "Feature",
+    "Features",
+    "FeatureUnavailableReason",
     "GcpSecretManagerConfiguration",
     "GcpSecretManagerConfigurationOutput",
     "GetArtifactResponse",
@@ -644,202 +695,223 @@ __all__ = (
     "ResourceLimits",
     "SandboxAuditLog",
     "SandboxDto",
+    "Schema1002",
+    "Schema1003",
+    "Schema1005",
+    "Schema1006",
     "Schema101",
-    "Schema1021",
-    "Schema1033",
+    "Schema1010",
+    "Schema1011",
+    "Schema1015",
+    "Schema1016",
+    "Schema1017",
+    "Schema1019",
+    "Schema1030",
+    "Schema1031",
     "Schema1034",
-    "Schema1040",
-    "Schema1046",
+    "Schema1035",
+    "Schema1044",
     "Schema105",
-    "Schema1062",
+    "Schema1051",
+    "Schema1052",
+    "Schema1055",
+    "Schema1058",
+    "Schema1065",
     "Schema107",
+    "Schema1075",
     "Schema108",
     "Schema109",
-    "Schema1091",
-    "Schema1100",
-    "Schema1105",
-    "Schema1107",
+    "Schema1114",
     "Schema112",
-    "Schema1132",
-    "Schema1146",
+    "Schema1126",
+    "Schema1127",
+    "Schema1133",
+    "Schema1139",
     "Schema1155",
-    "Schema1165",
-    "Schema1171",
-    "Schema1186",
-    "Schema1192",
+    "Schema1184",
+    "Schema1193",
     "Schema1198",
     "Schema12",
     "Schema1200",
-    "Schema1205",
-    "Schema1206",
-    "Schema1219",
-    "Schema122",
-    "Schema122AsType0",
-    "Schema122ResourceType0",
-    "Schema1270",
-    "Schema1271",
-    "Schema1273",
-    "Schema1275",
-    "Schema140",
+    "Schema1225",
+    "Schema123",
+    "Schema1240",
+    "Schema1249",
+    "Schema1259",
+    "Schema1265",
+    "Schema1280",
+    "Schema1286",
+    "Schema1292",
+    "Schema1294",
+    "Schema1299",
+    "Schema130",
+    "Schema1300",
+    "Schema131",
+    "Schema1313",
+    "Schema1364",
+    "Schema1365",
+    "Schema1367",
+    "Schema1369",
+    "Schema141",
+    "Schema142",
     "Schema15",
-    "Schema159",
-    "Schema159Action",
+    "Schema153",
+    "Schema153AsType0",
+    "Schema153ResourceType0",
     "Schema16",
-    "Schema160",
-    "Schema161",
-    "Schema162",
-    "Schema163",
-    "Schema172",
-    "Schema175",
-    "Schema181",
-    "Schema189",
-    "Schema191",
-    "Schema192",
+    "Schema173",
     "Schema193",
-    "Schema201",
-    "Schema204",
-    "Schema211",
+    "Schema193Action",
+    "Schema194",
+    "Schema195",
+    "Schema196",
+    "Schema197",
+    "Schema206",
+    "Schema209",
+    "Schema215",
+    "Schema223",
+    "Schema227",
+    "Schema228",
+    "Schema229",
     "Schema23",
-    "Schema260",
-    "Schema261",
-    "Schema292",
-    "Schema300",
-    "Schema327",
+    "Schema237",
+    "Schema240",
+    "Schema247",
+    "Schema296",
+    "Schema297",
     "Schema328",
-    "Schema331",
-    "Schema340",
-    "Schema341",
-    "Schema342",
-    "Schema343",
-    "Schema344",
-    "Schema345",
-    "Schema346",
-    "Schema354",
-    "Schema355",
-    "Schema356",
-    "Schema369",
-    "Schema370",
-    "Schema371",
+    "Schema336",
+    "Schema363",
+    "Schema364",
+    "Schema367",
+    "Schema376",
+    "Schema377",
+    "Schema378",
+    "Schema379",
+    "Schema380",
     "Schema381",
-    "Schema384",
-    "Schema386",
+    "Schema382",
     "Schema390",
     "Schema391",
-    "Schema395",
-    "Schema402",
-    "Schema403",
-    "Schema404",
+    "Schema392",
     "Schema405",
     "Schema406",
-    "Schema425",
-    "Schema425EnabledServers",
+    "Schema407",
+    "Schema417",
+    "Schema420",
+    "Schema422",
+    "Schema426",
+    "Schema427",
     "Schema43",
+    "Schema431",
+    "Schema439",
+    "Schema448",
+    "Schema449",
+    "Schema450",
+    "Schema451",
+    "Schema452",
+    "Schema453",
+    "Schema454",
+    "Schema455",
+    "Schema456",
+    "Schema457",
     "Schema458",
-    "Schema466",
+    "Schema459",
+    "Schema460",
+    "Schema461",
     "Schema47",
-    "Schema471",
-    "Schema490",
-    "Schema494",
-    "Schema495",
-    "Schema496",
-    "Schema507",
-    "Schema512",
+    "Schema480",
+    "Schema480EnabledServers",
     "Schema513",
-    "Schema519",
-    "Schema531",
-    "Schema536",
-    "Schema537",
+    "Schema521",
+    "Schema526",
     "Schema54",
-    "Schema543",
     "Schema545",
-    "Schema546",
-    "Schema547",
+    "Schema549",
     "Schema55",
+    "Schema552",
     "Schema553",
-    "Schema555",
-    "Schema559",
-    "Schema561",
-    "Schema562",
-    "Schema563",
-    "Schema566",
-    "Schema581",
-    "Schema591",
-    "Schema592",
-    "Schema596",
-    "Schema597",
+    "Schema554",
+    "Schema565",
+    "Schema570",
+    "Schema571",
+    "Schema577",
+    "Schema589",
+    "Schema594",
+    "Schema595",
+    "Schema601",
+    "Schema603",
+    "Schema604",
+    "Schema605",
     "Schema61",
     "Schema611",
-    "Schema625",
-    "Schema625Action",
-    "Schema628",
-    "Schema657",
-    "Schema657EndpointsItem",
-    "Schema658",
-    "Schema659",
-    "Schema663",
-    "Schema665",
-    "Schema667",
-    "Schema671",
-    "Schema678",
-    "Schema679",
-    "Schema680Item",
-    "Schema681Item",
-    "Schema684",
-    "Schema685",
-    "Schema695",
-    "Schema715",
+    "Schema613",
+    "Schema617",
+    "Schema619",
+    "Schema620",
+    "Schema621",
+    "Schema624",
+    "Schema635",
+    "Schema642",
+    "Schema643",
+    "Schema653",
+    "Schema654",
+    "Schema670",
+    "Schema682",
+    "Schema683",
+    "Schema687",
+    "Schema688",
+    "Schema704",
+    "Schema718",
+    "Schema718Action",
+    "Schema721",
     "Schema73",
-    "Schema740",
-    "Schema767",
+    "Schema750",
+    "Schema750EndpointsItem",
+    "Schema751",
+    "Schema752",
+    "Schema756",
+    "Schema758",
+    "Schema760",
+    "Schema764",
     "Schema771",
-    "Schema773",
-    "Schema774",
-    "Schema775",
+    "Schema772",
+    "Schema773Item",
+    "Schema774Item",
+    "Schema777",
+    "Schema778",
     "Schema78",
+    "Schema788",
     "Schema79",
-    "Schema791",
-    "Schema792",
-    "Schema794",
-    "Schema810",
-    "Schema814",
+    "Schema808",
     "Schema833",
-    "Schema839",
-    "Schema840",
     "Schema85",
-    "Schema858",
-    "Schema863",
+    "Schema860",
     "Schema864",
-    "Schema870",
-    "Schema872",
-    "Schema874",
+    "Schema866",
+    "Schema867",
+    "Schema868",
+    "Schema884",
     "Schema885",
+    "Schema887",
     "Schema89",
-    "Schema902",
-    "Schema904",
-    "Schema909",
-    "Schema910",
-    "Schema912",
-    "Schema913",
-    "Schema917",
-    "Schema918",
+    "Schema903",
+    "Schema907",
     "Schema92",
-    "Schema922",
-    "Schema923",
-    "Schema924",
     "Schema926",
     "Schema93",
-    "Schema937",
-    "Schema938",
-    "Schema941",
-    "Schema942",
+    "Schema932",
+    "Schema933",
     "Schema951",
-    "Schema958",
-    "Schema959",
-    "Schema962",
+    "Schema956",
+    "Schema957",
+    "Schema963",
     "Schema965",
-    "Schema972",
-    "Schema982",
+    "Schema967",
+    "Schema978",
     "Schema99",
+    "Schema995",
+    "Schema997",
     "ScimToken",
     "SecretMappingListResponse",
     "SecretMappingResponse",

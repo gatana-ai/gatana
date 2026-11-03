@@ -6,8 +6,10 @@ from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..types import UNSET, Unset
+
 if TYPE_CHECKING:
-    from ..models.schema_181 import Schema181
+    from ..models.schema_215 import Schema215
 
 
 T = TypeVar("T", bound="ServerCredentialsOauthTokens")
@@ -18,17 +20,21 @@ class ServerCredentialsOauthTokens:
     """
     Attributes:
         type_ (Literal['oauth']): Credential type discriminator, always "oauth"
-        token_set (Schema181):
+        token_set (Schema215):
+        resource (str | Unset):
     """
 
     type_: Literal["oauth"]
-    token_set: Schema181
+    token_set: Schema215
+    resource: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         type_ = self.type_
 
         token_set = self.token_set.to_dict()
+
+        resource = self.resource
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -38,23 +44,28 @@ class ServerCredentialsOauthTokens:
                 "tokenSet": token_set,
             }
         )
+        if resource is not UNSET:
+            field_dict["resource"] = resource
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_181 import Schema181
+        from ..models.schema_215 import Schema215
 
         d = dict(src_dict)
         type_ = cast(Literal["oauth"], d.pop("type"))
         if type_ != "oauth":
             raise ValueError(f"type must match const 'oauth', got '{type_}'")
 
-        token_set = Schema181.from_dict(d.pop("tokenSet"))
+        token_set = Schema215.from_dict(d.pop("tokenSet"))
+
+        resource = d.pop("resource", UNSET)
 
         server_credentials_oauth_tokens = cls(
             type_=type_,
             token_set=token_set,
+            resource=resource,
         )
 
         server_credentials_oauth_tokens.additional_properties = d
