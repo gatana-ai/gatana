@@ -33,6 +33,30 @@ pub async fn team(api: &gatana_api::Client, name: &str) -> Result<Value> {
     find(&array_at(&list, "teams"), name, "name", "team", "\"gatana get teams\"")
 }
 
+/// An alert rule, as the rule list shows it without its match counts, which are slow to count.
+pub async fn alert(api: &gatana_api::Client, name: &str) -> Result<Value> {
+    let query = query::ListAlertRules { match_counts: Some("false".into()) };
+    let list = api.v1().list_alert_rules(&query).value().await?;
+    find_one(&array_at(&list, "rules"), name, "alert", "\"gatana get alerts\"")
+}
+
+/// A notification channel, as the channel list shows it.
+pub async fn channel(api: &gatana_api::Client, name: &str) -> Result<Value> {
+    let list = api.v1().list_notification_channels().value().await?;
+    find_one(&array_at(&list, "channels"), name, "channel", "\"gatana get channels\"")
+}
+
+/// `find` by name for rows whose names are not unique: a name that several rows have is refused,
+/// with their IDs, so that a command never changes the wrong one.
+pub(crate) fn find_one(rows: &[Value], name: &str, kind: &str, where_listed: &str) -> Result<Value> {
+    let same: Vec<&str> =
+        rows.iter().filter(|row| row.get("name").and_then(Value::as_str) == Some(name)).map(id).collect();
+    if same.len() > 1 && !rows.iter().any(|row| id(row) == name) {
+        bail!("{} {kind}s have the name \"{name}\". Use an ID: {}", same.len(), same.join(", "));
+    }
+    find(rows, name, "name", kind, where_listed)
+}
+
 /// The account or the team of `--account` or `--team`.
 pub enum Member {
     Account(Value),
@@ -121,6 +145,15 @@ mod tests {
         let error = found("sales").unwrap_err().to_string();
         assert_eq!(error, "No profile \"sales\". Did you mean \"Sales team\"?");
         assert!(found("marketing").unwrap_err().to_string().starts_with("No profile \"marketing\". See x"));
+    }
+
+    #[test]
+    fn a_name_that_several_rows_have_needs_an_id() {
+        let rows =
+            vec![json!({ "id": "alertrule_1", "name": "Denied" }), json!({ "id": "alertrule_2", "name": "Denied" })];
+        let error = find_one(&rows, "Denied", "alert", "x").unwrap_err().to_string();
+        assert_eq!(error, "2 alerts have the name \"Denied\". Use an ID: alertrule_1, alertrule_2");
+        assert_eq!(id(&find_one(&rows, "alertrule_2", "alert", "x").unwrap()), "alertrule_2");
     }
 
     #[test]

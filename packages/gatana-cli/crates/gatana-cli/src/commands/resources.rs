@@ -144,6 +144,11 @@ pub async fn get(context: &Context, resource: GetCommand) -> Result<()> {
             super::accounts::get_tokens(context, &account, show_secrets).await?
         }
         GetCommand::Org { show_secrets } => super::org::get(context, show_secrets).await?,
+        GetCommand::Alert { name } => super::alerts::get(context, name.as_deref()).await?,
+        GetCommand::Channel { name, show_secrets } => {
+            super::alerts::get_channel(context, name.as_deref(), show_secrets).await?
+        }
+        GetCommand::ChannelNotificationHistory { limit, page } => super::alerts::history(context, limit, page).await?,
     }
     Ok(())
 }
@@ -208,6 +213,10 @@ pub async fn describe(context: &Context, resource: DescribeCommand) -> Result<()
         DescribeCommand::Team { name } => super::teams::describe(context, &name).await?,
         DescribeCommand::Profile { name } => super::profiles::describe(context, &name).await?,
         DescribeCommand::Org => super::org::describe(context).await?,
+        DescribeCommand::Alert { name } => super::alerts::describe(context, &name).await?,
+        DescribeCommand::Channel { name, show_secrets } => {
+            super::alerts::describe_channel(context, &name, show_secrets).await?
+        }
     }
     Ok(())
 }
@@ -235,6 +244,8 @@ pub async fn create(context: &Context, resource: CreateCommand) -> Result<()> {
         CreateCommand::Team(args) => super::teams::create(context, args).await?,
         CreateCommand::Profile(args) => super::profiles::create(context, args).await?,
         CreateCommand::Pat(args) => super::accounts::create_token(context, args).await?,
+        CreateCommand::Alert(args) => super::alerts::create(context, args).await?,
+        CreateCommand::Channel(args) => super::alerts::create_channel(context, args).await?,
     }
     Ok(())
 }
@@ -322,6 +333,8 @@ pub async fn delete(context: &Context, resource: DeleteCommand) -> Result<()> {
         DeleteCommand::Team { name } => super::teams::delete(context, &name).await?,
         DeleteCommand::Profile { name } => super::profiles::delete(context, &name).await?,
         DeleteCommand::Pat { token, account } => super::accounts::delete_token(context, &account, &token).await?,
+        DeleteCommand::Alert { name } => super::alerts::delete(context, &name).await?,
+        DeleteCommand::Channel { name } => super::alerts::delete_channel(context, &name).await?,
     }
     Ok(())
 }
@@ -364,6 +377,10 @@ pub async fn patch(context: &Context, resource: PatchCommand) -> Result<()> {
         PatchCommand::Team { name, input } => super::teams::patch(context, &name, required_patch(&input)?).await?,
         PatchCommand::Profile { name, input } => {
             super::profiles::patch(context, &name, required_patch(&input)?).await?
+        }
+        PatchCommand::Alert { name, input } => super::alerts::patch(context, &name, required_patch(&input)?).await?,
+        PatchCommand::Channel { name, input } => {
+            super::alerts::patch_channel(context, &name, required_patch(&input)?).await?
         }
         PatchCommand::Org { input, logo, remove_logo } => {
             super::org::patch(context, read_patch(&input)?, logo.as_deref(), remove_logo).await?;

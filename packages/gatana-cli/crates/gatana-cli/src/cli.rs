@@ -15,14 +15,16 @@ Get Started:
   install       Sign in and connect the AI agents on this machine: gateway, skills and hooks
 
 Basic Commands:
-  get           List or show resources: server, tool, creds, account, team, profile, pat, org, sandbox, skill
+  get           List or show resources: server, tool, creds, account, team, profile, pat, org, sandbox, skill,
+                alert, channel
   describe      Show details of a specific resource
-  create        Create a resource: a server, credentials, an account, a team, a profile, a token or a sandbox
+  create        Create a resource: a server, credentials, an account, a team, a profile, a token, a sandbox,
+                an alert or a channel
   delete        Delete resources
   patch         Patch a resource
 
 Server Management:
-  tools         List tools, show the arguments of a tool, and call it (alias: tool)
+  tools         List, load and call tools, and show the arguments of a tool (alias: tool)
   deployment    Manage server deployments (alias: deploy)
   creds         Get the effective credentials for a server
   faas          Manage FaaS servers (hosted source code)
@@ -32,6 +34,10 @@ Access:
   server        Show who has access to a server, and give or take away roles on it
   team          Manage the members, invitations and claim mappings of a team
   profile       Manage the servers, members, maintainers and tools of a profile
+
+Alerts:
+  alert         Enable, disable and preview alert rules, and change the channels they notify
+  channel       Test notification channels, rotate their secrets, and list the channel kinds
 
 Skills:
   skills        Managing skills and installing them to this computer
@@ -85,7 +91,8 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Command {
-    /// List or show resources: server, tool, creds, account, team, profile, pat, org, sandbox, skill
+    /// List or show resources: server, tool, creds, account, team, profile, pat, org, sandbox, skill,
+    /// alert, channel
     Get {
         #[command(subcommand)]
         resource: GetCommand,
@@ -110,7 +117,7 @@ pub enum Command {
         #[command(subcommand)]
         resource: PatchCommand,
     },
-    /// List the enabled tools, show the arguments of a tool, and call it
+    /// List, load and call tools, and show the arguments of a tool
     #[command(
         visible_alias = "tool",
         after_help = TOOLS_EXAMPLES,
@@ -153,6 +160,20 @@ pub enum Command {
     Profile {
         #[command(subcommand)]
         command: ProfileCommand,
+    },
+    /// Enable, disable and preview alert rules, and change the channels they notify (organization
+    /// owners only)
+    #[command(after_help = ALERT_EXAMPLES)]
+    Alert {
+        #[command(subcommand)]
+        command: AlertCommand,
+    },
+    /// Test notification channels, rotate their secrets, and list the channel kinds (organization
+    /// owners only)
+    #[command(after_help = CHANNEL_EXAMPLES)]
+    Channel {
+        #[command(subcommand)]
+        command: ChannelCommand,
     },
     /// Install skills for AI agents, follow collections, and push local changes to Gatana
     Skills {
@@ -287,6 +308,31 @@ pub enum GetCommand {
         #[arg(long = "show-secrets")]
         show_secrets: bool,
     },
+    /// List alert rules or show one alert rule (organization owners only)
+    #[command(visible_aliases = ["alerts", "alert-rule", "alert-rules"])]
+    Alert {
+        /// Rule name or ID (omit to list all)
+        name: Option<String>,
+    },
+    /// List notification channels or show one channel (organization owners only)
+    #[command(visible_aliases = ["channels", "notification-channel", "notification-channels"])]
+    Channel {
+        /// Channel name or ID (omit to list all)
+        name: Option<String>,
+        /// Show the secrets that Gatana generated, such as a signing secret, instead of hiding them
+        #[arg(long = "show-secrets")]
+        show_secrets: bool,
+    },
+    /// List the notifications that Gatana sent, newest first, with the delivery to each channel
+    /// (organization owners only)
+    ChannelNotificationHistory {
+        /// Notifications to show, at most 100
+        #[arg(long, value_name = "N", default_value_t = 20, value_parser = clap::value_parser!(u32).range(1..=100))]
+        limit: u32,
+        /// Page number, from 1
+        #[arg(long, value_name = "N", default_value_t = 1, value_parser = clap::value_parser!(u32).range(1..))]
+        page: u32,
+    },
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
@@ -330,6 +376,21 @@ pub enum DescribeCommand {
     /// Show the plan, the accounts and the quotas of the organization (organization owners only)
     #[command(visible_alias = "organization")]
     Org,
+    /// Show an alert rule with its conditions, its channels and the daily limit of the organization
+    #[command(visible_alias = "alert-rule")]
+    Alert {
+        /// Rule name or ID
+        name: String,
+    },
+    /// Show a notification channel with its settings, its delivery status and the alert rules that use it
+    #[command(visible_alias = "notification-channel")]
+    Channel {
+        /// Channel name or ID
+        name: String,
+        /// Show the secrets that Gatana generated, such as a signing secret, instead of hiding them
+        #[arg(long = "show-secrets")]
+        show_secrets: bool,
+    },
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
@@ -375,6 +436,84 @@ pub enum CreateCommand {
     /// Create a personal access token for a service account and print its API key
     #[command(visible_alias = "token")]
     Pat(CreatePatArgs),
+    /// Create an alert rule: an audit log filter that notifies channels when enough events match
+    #[command(visible_alias = "alert-rule", after_help = CREATE_ALERT_EXAMPLES)]
+    Alert(CreateAlertArgs),
+    /// Create a notification channel: a destination for alerts, such as email addresses or a webhook
+    #[command(visible_alias = "notification-channel", after_help = CREATE_CHANNEL_EXAMPLES)]
+    Channel(CreateChannelArgs),
+}
+
+const CREATE_ALERT_EXAMPLES: &str = r#"A condition is field:operator:value, as in the address of the Audit Logs page. The operators are
+eq, neq and contains. The fields are in "gatana schema alert".
+
+Examples:
+  # Notify one channel on every denied tool call of the GitHub server
+  $ gatana create alert "GitHub denials" --where outcome:eq:denied --where serverSlug:eq:github --channel ops-email
+
+  # Notify every channel when 10 events match within 5 minutes, at most once an hour
+  $ gatana create alert "Many denials" --where outcome:eq:denied --threshold 10 --window 5 --cooldown 60 --all-channels
+
+  # See how often the conditions matched before you create the rule
+  $ gatana alert preview --where outcome:eq:denied"#;
+
+const CREATE_CHANNEL_EXAMPLES: &str = r#"The kinds and the fields of each kind are in "gatana channel kinds".
+
+Examples:
+  $ gatana create channel ops-email --kind email -s recipients=ada@example.com,bob@example.com
+  $ gatana create channel pager --kind webhook -s url=https://hooks.example.com/gatana
+
+  # A secret from a file, or from stdin with "-", so that it stays out of the shell history
+  $ gatana create channel pager --kind webhook -s url=https://hooks.example.com/gatana \
+      -s authHeaderName=X-Api-Key --secret authHeaderValue=@key.txt"#;
+
+#[derive(Args, Debug)]
+pub struct CreateAlertArgs {
+    /// Rule name. It is the title of each alert
+    pub name: String,
+    #[command(flatten)]
+    pub conditions: WhereArgs,
+    /// Notify when at least this many events match within the window. Default: 1
+    #[arg(long, value_name = "COUNT")]
+    pub threshold: Option<u32>,
+    /// The length of the window for the threshold, in minutes. Default: 5
+    #[arg(long, value_name = "MINUTES")]
+    pub window: Option<u32>,
+    /// The shortest time between two alerts of this rule, in minutes. Default: 60
+    #[arg(long, value_name = "MINUTES")]
+    pub cooldown: Option<u32>,
+    /// A channel that gets the alerts: name or ID. Repeat for more channels
+    #[arg(short = 'c', long = "channel", value_name = "CHANNEL")]
+    pub channels: Vec<String>,
+    /// Send the alerts to every channel of the organization, also channels created later
+    #[arg(long = "all-channels", conflicts_with = "channels")]
+    pub all_channels: bool,
+    /// Create the rule disabled. Enable it later with "gatana alert enable"
+    #[arg(long)]
+    pub disabled: bool,
+}
+
+/// The conditions of an alert rule. An event must match all of them.
+#[derive(Args, Debug)]
+pub struct WhereArgs {
+    /// A condition on the audit log, as field:operator:value. Repeat for more conditions
+    #[arg(short = 'w', long = "where", value_name = "CONDITION", required = true)]
+    pub conditions: Vec<String>,
+}
+
+#[derive(Args, Debug)]
+pub struct CreateChannelArgs {
+    /// Channel name
+    pub name: String,
+    /// The channel kind, for example email or webhook. See "gatana channel kinds"
+    #[arg(short = 'k', long, value_name = "KIND")]
+    pub kind: String,
+    /// A setting of the channel. A list, such as recipients, takes commas. Repeat for more settings
+    #[arg(short = 's', long = "set", value_name = "FIELD=VALUE")]
+    pub settings: Vec<String>,
+    /// A secret setting. The value can also be @<file>, or - to read it from stdin
+    #[arg(long = "secret", value_name = "FIELD=VALUE")]
+    pub secrets: Vec<String>,
 }
 
 #[derive(Args, Debug)]
@@ -718,7 +857,40 @@ pub enum DeleteCommand {
         #[arg(short = 'a', long, value_name = "ACCOUNT")]
         account: String,
     },
+    /// Delete an alert rule
+    #[command(visible_alias = "alert-rule")]
+    Alert {
+        /// Rule name or ID
+        name: String,
+    },
+    /// Delete a notification channel. The alert rules that use it stop sending to it
+    #[command(visible_alias = "notification-channel")]
+    Channel {
+        /// Channel name or ID
+        name: String,
+    },
 }
+
+const PATCH_ALERT_EXAMPLES: &str = r#"To get the schema, run "gatana schema alert".
+
+Examples:
+  $ gatana patch alert "GitHub denials" -p threshold=5 -p windowMinutes=10
+  $ gatana patch alert "GitHub denials" -p name="GitHub: denied calls"
+
+  # New conditions replace the full list. The rule then starts again at the newest event
+  $ gatana patch alert "GitHub denials" -p '{"conditions": [{"field": "outcome", "operator": "eq", "value": "denied"}]}'
+
+  # To add or remove one channel, use "gatana alert add-channel" and "gatana alert remove-channel""#;
+
+const PATCH_CHANNEL_EXAMPLES: &str = r#"To get the schema, run "gatana schema channel". The fields of each kind are in "gatana channel kinds".
+
+Examples:
+  $ gatana patch channel pager -p name=on-call
+  $ gatana patch channel pager -p values.url=https://hooks.example.com/new
+  $ gatana patch channel ops-email -p values.recipients=ada@example.com,carol@example.com
+
+  # A new value for a secret, or null to remove it. A secret you leave out keeps its value
+  $ gatana patch channel pager -p values.authHeaderValue=new-key"#;
 
 const PATCH_EXAMPLES: &str = r#"To get the schema, run "gatana schema server".
 
@@ -816,6 +988,23 @@ pub enum PatchCommand {
         #[arg(long = "remove-logo")]
         remove_logo: bool,
     },
+    /// Patch an alert rule. The keys you leave out keep their values
+    #[command(after_help = PATCH_ALERT_EXAMPLES, visible_alias = "alert-rule")]
+    Alert {
+        /// Rule name or ID
+        name: String,
+        #[command(flatten)]
+        input: PatchInput,
+    },
+    /// Patch a notification channel: its name, isEnabled, or its settings under "values". The
+    /// settings you leave out keep their values
+    #[command(after_help = PATCH_CHANNEL_EXAMPLES, visible_alias = "notification-channel")]
+    Channel {
+        /// Channel name or ID
+        name: String,
+        #[command(flatten)]
+        input: PatchInput,
+    },
 }
 
 /// The patch of a `patch` command: one of these, or JSON piped to stdin.
@@ -838,7 +1027,10 @@ const TOOLS_EXAMPLES: &str = r#"Examples:
   $ gatana tools github_search_issues
 
   # Call a tool (alias: x)
-  $ gatana tools call github_search_issues -a query="is:open label:bug""#;
+  $ gatana tools call github_search_issues -a query="is:open label:bug"
+
+  # Load the tools of a server again, for example after you add its API key
+  $ gatana tools refresh --server github"#;
 
 const TOOL_CALL_EXAMPLES: &str = r#"See the arguments of a tool with "gatana tools <tool_name>"
 Examples:
@@ -878,6 +1070,13 @@ pub enum ToolsCommand {
     /// Call a tool. See "gatana tools <tool_name>" for its arguments
     #[command(visible_alias = "x", after_help = TOOL_CALL_EXAMPLES)]
     Call(ToolArgs),
+    /// Load the tools again from the servers, from every server or from one server. A new server
+    /// has no tools in Gatana until they are loaded
+    Refresh {
+        /// Load only the tools of this server
+        #[arg(short = 's', long = "server", value_name = "SLUG")]
+        server: Option<String>,
+    },
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum, PartialEq)]
@@ -1333,6 +1532,101 @@ pub enum TeamClaimCommand {
     },
 }
 
+const ALERT_EXAMPLES: &str = r#"Examples:
+  # A channel, and a rule that notifies it on every denied tool call
+  $ gatana create channel ops-email --kind email -s recipients=ada@example.com
+  $ gatana create alert "Denied calls" --where outcome:eq:denied --channel ops-email
+
+  # How often conditions matched in the last 7, 30 and 90 days
+  $ gatana alert preview --where outcome:eq:denied --where serverSlug:eq:github
+
+  # Stop a rule for a time, and start it again
+  $ gatana alert disable "Denied calls"
+  $ gatana alert enable "Denied calls"
+
+  # Add a channel to a rule
+  $ gatana alert add-channel "Denied calls" pager
+
+  # What was sent, and whether each channel got it
+  $ gatana get channel-notification-history"#;
+
+#[derive(Subcommand, Debug)]
+pub enum AlertCommand {
+    /// Enable an alert rule. It starts at the newest audit log event
+    Enable {
+        /// Rule name or ID
+        alert: String,
+    },
+    /// Disable an alert rule. It sends nothing until you enable it
+    Disable {
+        /// Rule name or ID
+        alert: String,
+    },
+    /// Count the audit log events of the last 7, 30 and 90 days that conditions match. Creates nothing
+    Preview {
+        #[command(flatten)]
+        conditions: WhereArgs,
+    },
+    /// Add channels to an alert rule
+    AddChannel {
+        /// Rule name or ID
+        alert: String,
+        /// The channels: names or IDs
+        #[arg(required = true, value_name = "CHANNEL")]
+        channels: Vec<String>,
+    },
+    /// Remove channels from an alert rule. A rule without channels sends nothing
+    RemoveChannel {
+        /// Rule name or ID
+        alert: String,
+        /// The channels: names or IDs
+        #[arg(required = true, value_name = "CHANNEL")]
+        channels: Vec<String>,
+    },
+}
+
+const CHANNEL_EXAMPLES: &str = r#"Examples:
+  # The kinds of channel, and the settings of each kind
+  $ gatana channel kinds
+
+  # Send a test message. The exit code is 1 if the delivery fails
+  $ gatana channel test pager
+
+  # A new signing secret for a webhook. The old one stops working at once
+  $ gatana channel rotate-secret pager
+
+  # Stop every delivery to a channel for a time
+  $ gatana channel disable pager"#;
+
+#[derive(Subcommand, Debug)]
+pub enum ChannelCommand {
+    /// List the channel kinds of this installation, with the settings that each kind takes
+    Kinds,
+    /// Send a test message through a channel. The exit code is 1 if the delivery fails
+    Test {
+        /// Channel name or ID
+        channel: String,
+    },
+    /// Replace a secret that Gatana generated, such as the signing secret of a webhook, and print
+    /// the new value. The old value stops working at once
+    RotateSecret {
+        /// Channel name or ID
+        channel: String,
+        /// The secret field. Omit it if the channel kind has only one generated secret
+        field: Option<String>,
+    },
+    /// Enable a channel
+    Enable {
+        /// Channel name or ID
+        channel: String,
+    },
+    /// Disable a channel. It gets no notifications until you enable it
+    Disable {
+        /// Channel name or ID
+        channel: String,
+    },
+}
+
 #[derive(Subcommand, Debug)]
 pub enum SkillsCommand {
     /// Download and install one or more skills
@@ -1568,6 +1862,12 @@ pub enum SchemaCommand {
     /// What "gatana patch org" takes
     #[command(visible_aliases = ["organization", "settings"])]
     Org,
+    /// What "gatana patch alert" takes, with the fields and operators of a condition
+    #[command(visible_alias = "alert-rule")]
+    Alert,
+    /// What "gatana patch channel" takes
+    #[command(visible_alias = "notification-channel")]
+    Channel,
 }
 
 #[cfg(test)]
@@ -1620,6 +1920,11 @@ mod tests {
             panic!("not a call")
         };
         assert_eq!(args.tool_name, "github_search");
+        let Some(ToolsCommand::Refresh { server }) = tools(&["refresh", "-s", "github"]).command else {
+            panic!("not refresh")
+        };
+        assert_eq!(server.as_deref(), Some("github"));
+        assert!(matches!(tools(&["refresh"]).command, Some(ToolsCommand::Refresh { server: None })));
         let cli = Cli::try_parse_from(["gatana", "tool", "github_search"]).unwrap();
         assert!(matches!(cli.command, Command::Tools(ToolsArgs { tool: Some(_), .. })));
         assert!(Cli::try_parse_from(["gatana", "tools", "--server", "github"]).is_err());
@@ -1730,5 +2035,67 @@ mod tests {
         assert_eq!(logo.as_deref(), Some(std::path::Path::new("logo.png")));
         assert!(input.patch.is_empty());
         assert!(Cli::try_parse_from(["gatana", "patch", "org", "--logo", "a.png", "--remove-logo"]).is_err());
+    }
+
+    #[test]
+    fn alerts_and_channels_parse() {
+        let cli = Cli::try_parse_from([
+            "gatana",
+            "create",
+            "alert",
+            "Denied",
+            "-w",
+            "outcome:eq:denied",
+            "--where",
+            "serverSlug:eq:github",
+            "--threshold",
+            "3",
+            "-c",
+            "ops",
+            "-c",
+            "pager",
+        ])
+        .unwrap();
+        let Command::Create { resource: CreateCommand::Alert(args) } = cli.command else { panic!("not create alert") };
+        assert_eq!(args.conditions.conditions, vec!["outcome:eq:denied", "serverSlug:eq:github"]);
+        assert_eq!((args.threshold, args.window, args.channels.len()), (Some(3), None, 2));
+        // A rule needs a condition, and "every channel" leaves no room for a named one
+        assert!(Cli::try_parse_from(["gatana", "create", "alert", "Denied"]).is_err());
+        assert!(
+            Cli::try_parse_from(["gatana", "create", "alert", "x", "-w", "a:eq:b", "-c", "ops", "--all-channels"])
+                .is_err()
+        );
+        assert!(Cli::try_parse_from(["gatana", "alert", "preview"]).is_err());
+
+        let cli = Cli::try_parse_from([
+            "gatana",
+            "create",
+            "channel",
+            "pager",
+            "--kind",
+            "webhook",
+            "-s",
+            "url=https://x",
+            "--secret",
+            "authHeaderValue=@key.txt",
+        ])
+        .unwrap();
+        let Command::Create { resource: CreateCommand::Channel(args) } = cli.command else {
+            panic!("not create channel")
+        };
+        assert_eq!((args.kind.as_str(), args.settings.len(), args.secrets.len()), ("webhook", 1, 1));
+        assert!(Cli::try_parse_from(["gatana", "create", "channel", "pager"]).is_err());
+
+        let cli = Cli::try_parse_from(["gatana", "get", "alert-rules"]).unwrap();
+        assert!(matches!(cli.command, Command::Get { resource: GetCommand::Alert { name: None } }));
+        let cli = Cli::try_parse_from(["gatana", "get", "channel-notification-history", "--limit", "5"]).unwrap();
+        assert!(matches!(
+            cli.command,
+            Command::Get { resource: GetCommand::ChannelNotificationHistory { limit: 5, page: 1 } }
+        ));
+        assert!(Cli::try_parse_from(["gatana", "get", "channel-notification-history", "--limit", "101"]).is_err());
+        let cli = Cli::try_parse_from(["gatana", "channel", "rotate-secret", "pager"]).unwrap();
+        assert!(matches!(cli.command, Command::Channel { command: ChannelCommand::RotateSecret { field: None, .. } }));
+        assert!(Cli::try_parse_from(["gatana", "alert", "add-channel", "Denied"]).is_err());
     }
 }

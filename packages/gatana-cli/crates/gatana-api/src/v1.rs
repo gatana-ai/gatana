@@ -7,6 +7,108 @@
 pub const BASE_PATH: &str = "/api/v1";
 /// Request and response types.
 pub mod types {
+    ///`AlertDailyLimitResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct AlertDailyLimitResponse {
+        ///Whether alerts are paused until midnight UTC because the organization reached the limit
+        #[serde(rename = "isReached")]
+        pub is_reached: bool,
+        ///Alert notifications the organization can get in one UTC day
+        pub limit: f64,
+        ///Alert notifications of today (UTC)
+        pub used: f64,
+    }
+    ///`AlertRuleChannelResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct AlertRuleChannelResponse {
+        ///ID of the notification channel
+        pub id: ::std::string::String,
+        ///Whether the channel is enabled. A disabled channel gets no alert
+        #[serde(rename = "isEnabled")]
+        pub is_enabled: bool,
+        ///Name of the channel kind
+        pub kind: ::std::string::String,
+        ///Kind display name. The stored kind name if unknown
+        #[serde(rename = "kindLabel")]
+        pub kind_label: ::std::string::String,
+        ///Channel display name
+        pub name: ::std::string::String,
+    }
+    ///`AlertRuleListResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct AlertRuleListResponse {
+        #[serde(rename = "dailyLimit")]
+        pub daily_limit: AlertDailyLimitResponse,
+        ///Rules an organization can have
+        #[serde(rename = "maxRules")]
+        pub max_rules: f64,
+        ///The rules of the organization
+        pub rules: ::std::vec::Vec<AlertRuleResponse>,
+    }
+    ///`AlertRulePreviewInput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct AlertRulePreviewInput {
+        ///Audit log filter conditions, at least one
+        pub conditions: ::std::vec::Vec<AuditLogFilterCondition>,
+    }
+    ///`AlertRulePreviewResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct AlertRulePreviewResponse {
+        ///Match counts for the last 7, 30 and 90 days
+        pub periods: ::std::vec::Vec<AlertRulePreviewResponsePeriodsItem>,
+    }
+    ///`AlertRulePreviewResponsePeriodsItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct AlertRulePreviewResponsePeriodsItem {
+        ///Number of days counted
+        pub days: f64,
+        ///Audit log events of the last days that match the conditions
+        pub matches: f64,
+    }
+    ///`AlertRuleResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct AlertRuleResponse {
+        ///Whether every channel of the organization gets the alerts, also channels created later
+        #[serde(rename = "allChannels")]
+        pub all_channels: bool,
+        ///The selected channels that get the alerts. Empty if allChannels is true. A rule without channels sends nothing
+        pub channels: ::std::vec::Vec<AlertRuleChannelResponse>,
+        ///Audit log filter conditions. An event must match all of them
+        pub conditions: ::std::vec::Vec<AuditLogFilterConditionOutput>,
+        ///Shortest time between two alerts of this rule, in minutes
+        #[serde(rename = "cooldownMinutes")]
+        pub cooldown_minutes: f64,
+        ///When the rule was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///Unique ID of the rule
+        pub id: ::std::string::String,
+        ///Whether the rule is evaluated
+        #[serde(rename = "isEnabled")]
+        pub is_enabled: bool,
+        ///Time of the last alert of this rule
+        #[serde(
+            rename = "lastNotifiedAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub last_notified_at: ::std::option::Option<::std::string::String>,
+        ///Audit log events of the last 7 days that match the conditions. Null if not requested
+        #[serde(
+            rename = "matchesLastSevenDays",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub matches_last_seven_days: ::std::option::Option<f64>,
+        ///Rule name. It is the title of each alert
+        pub name: ::std::string::String,
+        ///Matching events that no alert has reported yet
+        #[serde(rename = "pendingCount")]
+        pub pending_count: f64,
+        ///Notify when at least this many events match within the window
+        pub threshold: f64,
+        ///Length of the window for the threshold, in minutes
+        #[serde(rename = "windowMinutes")]
+        pub window_minutes: f64,
+    }
     ///`AssistantLlmConfigurationInput`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     #[serde(tag = "provider")]
@@ -172,6 +274,394 @@ pub mod types {
             value.parse()
         }
     }
+    ///`AuditLogFilterCondition`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct AuditLogFilterCondition {
+        ///Field the condition applies to
+        pub field: AuditLogFilterConditionField,
+        ///How the value is compared
+        pub operator: AuditLogFilterConditionOperator,
+        ///Value to compare against
+        pub value: ::std::string::String,
+    }
+    ///Field the condition applies to
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum AuditLogFilterConditionField {
+        #[serde(rename = "eventName")]
+        EventName,
+        #[serde(rename = "entityType")]
+        EntityType,
+        #[serde(rename = "entityId")]
+        EntityId,
+        #[serde(rename = "userId")]
+        UserId,
+        #[serde(rename = "date")]
+        Date,
+        #[serde(rename = "clientId")]
+        ClientId,
+        #[serde(rename = "patId")]
+        PatId,
+        #[serde(rename = "serverSlug")]
+        ServerSlug,
+        #[serde(rename = "toolName")]
+        ToolName,
+        #[serde(rename = "outcome")]
+        Outcome,
+        #[serde(rename = "reason")]
+        Reason,
+        #[serde(rename = "protectionCheck")]
+        ProtectionCheck,
+        #[serde(rename = "protectionAction")]
+        ProtectionAction,
+        #[serde(rename = "profileId")]
+        ProfileId,
+        #[serde(rename = "teamId")]
+        TeamId,
+        #[serde(rename = "credentialId")]
+        CredentialId,
+        #[serde(rename = "secretStoreId")]
+        SecretStoreId,
+    }
+    impl ::std::fmt::Display for AuditLogFilterConditionField {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::EventName => f.write_str("eventName"),
+                Self::EntityType => f.write_str("entityType"),
+                Self::EntityId => f.write_str("entityId"),
+                Self::UserId => f.write_str("userId"),
+                Self::Date => f.write_str("date"),
+                Self::ClientId => f.write_str("clientId"),
+                Self::PatId => f.write_str("patId"),
+                Self::ServerSlug => f.write_str("serverSlug"),
+                Self::ToolName => f.write_str("toolName"),
+                Self::Outcome => f.write_str("outcome"),
+                Self::Reason => f.write_str("reason"),
+                Self::ProtectionCheck => f.write_str("protectionCheck"),
+                Self::ProtectionAction => f.write_str("protectionAction"),
+                Self::ProfileId => f.write_str("profileId"),
+                Self::TeamId => f.write_str("teamId"),
+                Self::CredentialId => f.write_str("credentialId"),
+                Self::SecretStoreId => f.write_str("secretStoreId"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for AuditLogFilterConditionField {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "eventName" => Ok(Self::EventName),
+                "entityType" => Ok(Self::EntityType),
+                "entityId" => Ok(Self::EntityId),
+                "userId" => Ok(Self::UserId),
+                "date" => Ok(Self::Date),
+                "clientId" => Ok(Self::ClientId),
+                "patId" => Ok(Self::PatId),
+                "serverSlug" => Ok(Self::ServerSlug),
+                "toolName" => Ok(Self::ToolName),
+                "outcome" => Ok(Self::Outcome),
+                "reason" => Ok(Self::Reason),
+                "protectionCheck" => Ok(Self::ProtectionCheck),
+                "protectionAction" => Ok(Self::ProtectionAction),
+                "profileId" => Ok(Self::ProfileId),
+                "teamId" => Ok(Self::TeamId),
+                "credentialId" => Ok(Self::CredentialId),
+                "secretStoreId" => Ok(Self::SecretStoreId),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for AuditLogFilterConditionField {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for AuditLogFilterConditionField {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///How the value is compared
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum AuditLogFilterConditionOperator {
+        #[serde(rename = "eq")]
+        Eq,
+        #[serde(rename = "neq")]
+        Neq,
+        #[serde(rename = "contains")]
+        Contains,
+        #[serde(rename = "before")]
+        Before,
+        #[serde(rename = "after")]
+        After,
+    }
+    impl ::std::fmt::Display for AuditLogFilterConditionOperator {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Eq => f.write_str("eq"),
+                Self::Neq => f.write_str("neq"),
+                Self::Contains => f.write_str("contains"),
+                Self::Before => f.write_str("before"),
+                Self::After => f.write_str("after"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for AuditLogFilterConditionOperator {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "eq" => Ok(Self::Eq),
+                "neq" => Ok(Self::Neq),
+                "contains" => Ok(Self::Contains),
+                "before" => Ok(Self::Before),
+                "after" => Ok(Self::After),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for AuditLogFilterConditionOperator {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for AuditLogFilterConditionOperator {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`AuditLogFilterConditionOutput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct AuditLogFilterConditionOutput {
+        ///Field the condition applies to
+        pub field: AuditLogFilterConditionOutputField,
+        ///How the value is compared
+        pub operator: AuditLogFilterConditionOutputOperator,
+        ///Value to compare against
+        pub value: ::std::string::String,
+    }
+    ///Field the condition applies to
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum AuditLogFilterConditionOutputField {
+        #[serde(rename = "eventName")]
+        EventName,
+        #[serde(rename = "entityType")]
+        EntityType,
+        #[serde(rename = "entityId")]
+        EntityId,
+        #[serde(rename = "userId")]
+        UserId,
+        #[serde(rename = "date")]
+        Date,
+        #[serde(rename = "clientId")]
+        ClientId,
+        #[serde(rename = "patId")]
+        PatId,
+        #[serde(rename = "serverSlug")]
+        ServerSlug,
+        #[serde(rename = "toolName")]
+        ToolName,
+        #[serde(rename = "outcome")]
+        Outcome,
+        #[serde(rename = "reason")]
+        Reason,
+        #[serde(rename = "protectionCheck")]
+        ProtectionCheck,
+        #[serde(rename = "protectionAction")]
+        ProtectionAction,
+        #[serde(rename = "profileId")]
+        ProfileId,
+        #[serde(rename = "teamId")]
+        TeamId,
+        #[serde(rename = "credentialId")]
+        CredentialId,
+        #[serde(rename = "secretStoreId")]
+        SecretStoreId,
+    }
+    impl ::std::fmt::Display for AuditLogFilterConditionOutputField {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::EventName => f.write_str("eventName"),
+                Self::EntityType => f.write_str("entityType"),
+                Self::EntityId => f.write_str("entityId"),
+                Self::UserId => f.write_str("userId"),
+                Self::Date => f.write_str("date"),
+                Self::ClientId => f.write_str("clientId"),
+                Self::PatId => f.write_str("patId"),
+                Self::ServerSlug => f.write_str("serverSlug"),
+                Self::ToolName => f.write_str("toolName"),
+                Self::Outcome => f.write_str("outcome"),
+                Self::Reason => f.write_str("reason"),
+                Self::ProtectionCheck => f.write_str("protectionCheck"),
+                Self::ProtectionAction => f.write_str("protectionAction"),
+                Self::ProfileId => f.write_str("profileId"),
+                Self::TeamId => f.write_str("teamId"),
+                Self::CredentialId => f.write_str("credentialId"),
+                Self::SecretStoreId => f.write_str("secretStoreId"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for AuditLogFilterConditionOutputField {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "eventName" => Ok(Self::EventName),
+                "entityType" => Ok(Self::EntityType),
+                "entityId" => Ok(Self::EntityId),
+                "userId" => Ok(Self::UserId),
+                "date" => Ok(Self::Date),
+                "clientId" => Ok(Self::ClientId),
+                "patId" => Ok(Self::PatId),
+                "serverSlug" => Ok(Self::ServerSlug),
+                "toolName" => Ok(Self::ToolName),
+                "outcome" => Ok(Self::Outcome),
+                "reason" => Ok(Self::Reason),
+                "protectionCheck" => Ok(Self::ProtectionCheck),
+                "protectionAction" => Ok(Self::ProtectionAction),
+                "profileId" => Ok(Self::ProfileId),
+                "teamId" => Ok(Self::TeamId),
+                "credentialId" => Ok(Self::CredentialId),
+                "secretStoreId" => Ok(Self::SecretStoreId),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for AuditLogFilterConditionOutputField {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for AuditLogFilterConditionOutputField {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///How the value is compared
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum AuditLogFilterConditionOutputOperator {
+        #[serde(rename = "eq")]
+        Eq,
+        #[serde(rename = "neq")]
+        Neq,
+        #[serde(rename = "contains")]
+        Contains,
+        #[serde(rename = "before")]
+        Before,
+        #[serde(rename = "after")]
+        After,
+    }
+    impl ::std::fmt::Display for AuditLogFilterConditionOutputOperator {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Eq => f.write_str("eq"),
+                Self::Neq => f.write_str("neq"),
+                Self::Contains => f.write_str("contains"),
+                Self::Before => f.write_str("before"),
+                Self::After => f.write_str("after"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for AuditLogFilterConditionOutputOperator {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "eq" => Ok(Self::Eq),
+                "neq" => Ok(Self::Neq),
+                "contains" => Ok(Self::Contains),
+                "before" => Ok(Self::Before),
+                "after" => Ok(Self::After),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for AuditLogFilterConditionOutputOperator {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for AuditLogFilterConditionOutputOperator {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
     ///`AuditLogResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct AuditLogResponse {
@@ -290,6 +780,8 @@ pub mod types {
         pub logo_updated_at: ::std::option::Option<::std::string::String>,
         #[serde(rename = "memberDefaultRole")]
         pub member_default_role: AuthMetadataTenantMemberDefaultRole,
+        #[serde(rename = "newServerProtectionModes")]
+        pub new_server_protection_modes: NewServerProtectionModes,
         #[serde(
             rename = "numberOfEnabledUsers",
             skip_serializing_if = "::std::option::Option::is_none"
@@ -655,6 +1147,85 @@ pub mod types {
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
+    }
+    ///`CreateAlertRuleInput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateAlertRuleInput {
+        ///Send the alerts to every channel of the organization, also channels created later
+        #[serde(
+            rename = "allChannels",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub all_channels: ::std::option::Option<bool>,
+        ///IDs of the notification channels that get the alerts. Must be empty if allChannels is true
+        #[serde(
+            rename = "channelIds",
+            default,
+            skip_serializing_if = "::std::vec::Vec::is_empty"
+        )]
+        pub channel_ids: ::std::vec::Vec<::std::string::String>,
+        ///Audit log filter conditions, at least one. The date field is not allowed
+        pub conditions: ::std::vec::Vec<AuditLogFilterCondition>,
+        ///Shortest time between two alerts of this rule, in minutes
+        #[serde(
+            rename = "cooldownMinutes",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub cooldown_minutes: ::std::option::Option<i64>,
+        ///Whether the rule is evaluated
+        #[serde(
+            rename = "isEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_enabled: ::std::option::Option<bool>,
+        ///Rule name. It is the title of each alert
+        pub name: ::std::string::String,
+        ///Notify when at least this many events match within the window
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub threshold: ::std::option::Option<i64>,
+        ///Length of the window for the threshold, in minutes
+        #[serde(
+            rename = "windowMinutes",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub window_minutes: ::std::option::Option<i64>,
+    }
+    ///`CreateNotificationChannelInput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateNotificationChannelInput {
+        ///Name of an available channel kind
+        pub kind: ::std::string::String,
+        ///Display name of the channel
+        pub name: ::std::string::String,
+        ///Field values by key. Gatana creates generated secrets
+        pub values: ::std::collections::HashMap<
+            ::std::string::String,
+            ::std::option::Option<CreateNotificationChannelInputValuesValue>,
+        >,
+    }
+    ///`CreateNotificationChannelInputValuesValue`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(untagged)]
+    pub enum CreateNotificationChannelInputValuesValue {
+        String(::std::string::String),
+        Array(::std::vec::Vec<::std::string::String>),
+    }
+    impl ::std::convert::From<::std::vec::Vec<::std::string::String>>
+    for CreateNotificationChannelInputValuesValue {
+        fn from(value: ::std::vec::Vec<::std::string::String>) -> Self {
+            Self::Array(value)
+        }
+    }
+    ///`CreateNotificationChannelResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CreateNotificationChannelResponse {
+        pub channel: NotificationChannelResponse,
+        ///Generated secrets by key
+        #[serde(rename = "generatedSecrets")]
+        pub generated_secrets: ::std::collections::HashMap<
+            ::std::string::String,
+            ::std::string::String,
+        >,
     }
     ///`CreatePersonalAccessTokenRequest`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -3285,6 +3856,390 @@ pub mod types {
             value.parse()
         }
     }
+    ///Protection modes for new servers. Use organization defaults, then built-in values
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NewServerProtectionModes {
+        pub injection: ProtectionMode,
+        pub pii: ProtectionMode,
+        pub secrets: ProtectionMode,
+    }
+    ///`NotificationChannelFieldResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationChannelFieldResponse {
+        ///Help text of the form input
+        pub description: ::std::string::String,
+        ///Whether a value is required
+        #[serde(rename = "isRequired")]
+        pub is_required: bool,
+        ///Field key in values and settings
+        pub key: ::std::string::String,
+        ///Label of the form input
+        pub label: ::std::string::String,
+        ///Prefix for generated secrets
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub prefix: ::std::option::Option<::std::string::String>,
+        ///Input type. Secrets are encrypted. Only generated secrets are returned
+        #[serde(rename = "type")]
+        pub type_: NotificationChannelFieldResponseType,
+    }
+    ///Input type. Secrets are encrypted. Only generated secrets are returned
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum NotificationChannelFieldResponseType {
+        #[serde(rename = "text")]
+        Text,
+        #[serde(rename = "url")]
+        Url,
+        #[serde(rename = "email-list")]
+        EmailList,
+        #[serde(rename = "secret")]
+        Secret,
+        #[serde(rename = "generated-secret")]
+        GeneratedSecret,
+    }
+    impl ::std::fmt::Display for NotificationChannelFieldResponseType {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Text => f.write_str("text"),
+                Self::Url => f.write_str("url"),
+                Self::EmailList => f.write_str("email-list"),
+                Self::Secret => f.write_str("secret"),
+                Self::GeneratedSecret => f.write_str("generated-secret"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for NotificationChannelFieldResponseType {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "text" => Ok(Self::Text),
+                "url" => Ok(Self::Url),
+                "email-list" => Ok(Self::EmailList),
+                "secret" => Ok(Self::Secret),
+                "generated-secret" => Ok(Self::GeneratedSecret),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for NotificationChannelFieldResponseType {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for NotificationChannelFieldResponseType {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`NotificationChannelKindListResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationChannelKindListResponse {
+        ///The kinds available in this installation
+        pub kinds: ::std::vec::Vec<NotificationChannelKindResponse>,
+    }
+    ///`NotificationChannelKindResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationChannelKindResponse {
+        ///The form fields of a channel of this kind
+        pub fields: ::std::vec::Vec<NotificationChannelFieldResponse>,
+        ///Name of the kind, for example email or webhook
+        pub kind: ::std::string::String,
+        ///Display name of the kind
+        pub label: ::std::string::String,
+    }
+    ///`NotificationChannelListResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationChannelListResponse {
+        ///The channels of the organization
+        pub channels: ::std::vec::Vec<NotificationChannelResponse>,
+    }
+    ///`NotificationChannelResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationChannelResponse {
+        ///Failed deliveries since the last successful one
+        #[serde(rename = "consecutiveFailures")]
+        pub consecutive_failures: f64,
+        ///When the channel was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///First failure since the last successful delivery
+        #[serde(
+            rename = "failingSince",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub failing_since: ::std::option::Option<::std::string::String>,
+        ///Unique ID of the channel
+        pub id: ::std::string::String,
+        ///Whether the channel is enabled
+        #[serde(rename = "isEnabled")]
+        pub is_enabled: bool,
+        ///Whether this installation can send to channels of this kind
+        #[serde(rename = "isKindAvailable")]
+        pub is_kind_available: bool,
+        ///Name of the channel kind
+        pub kind: ::std::string::String,
+        ///Kind display name. Use the stored kind name if unknown
+        #[serde(rename = "kindLabel")]
+        pub kind_label: ::std::string::String,
+        ///Error of the last failed delivery
+        #[serde(
+            rename = "lastError",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub last_error: ::std::option::Option<::std::string::String>,
+        ///Time of the last successful delivery
+        #[serde(
+            rename = "lastSuccessAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub last_success_at: ::std::option::Option<::std::string::String>,
+        ///Channel display name, also shown in the email footer
+        pub name: ::std::string::String,
+        ///Whether each secret has a stored value. Only generated secrets include the value
+        pub secrets: ::std::collections::HashMap<
+            ::std::string::String,
+            NotificationChannelResponseSecretsValue,
+        >,
+        ///The plain field values
+        pub settings: ::std::collections::HashMap<
+            ::std::string::String,
+            NotificationChannelResponseSettingsValue,
+        >,
+        ///When the channel was last changed
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+    }
+    ///`NotificationChannelResponseSecretsValue`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationChannelResponseSecretsValue {
+        #[serde(rename = "hasValue")]
+        pub has_value: bool,
+        ///The value of a generated secret
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub value: ::std::option::Option<::std::string::String>,
+    }
+    ///`NotificationChannelResponseSettingsValue`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(untagged)]
+    pub enum NotificationChannelResponseSettingsValue {
+        String(::std::string::String),
+        Array(::std::vec::Vec<::std::string::String>),
+    }
+    impl ::std::convert::From<::std::vec::Vec<::std::string::String>>
+    for NotificationChannelResponseSettingsValue {
+        fn from(value: ::std::vec::Vec<::std::string::String>) -> Self {
+            Self::Array(value)
+        }
+    }
+    ///`NotificationChannelTestResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationChannelTestResponse {
+        ///Delivery duration in milliseconds
+        #[serde(rename = "durationMs")]
+        pub duration_ms: f64,
+        ///Delivery error, or null on success
+        #[serde(deserialize_with = "::std::option::Option::deserialize")]
+        pub error: ::std::option::Option<::std::string::String>,
+        ///ID of the test message, as the receiver sees it
+        #[serde(rename = "messageId")]
+        pub message_id: ::std::string::String,
+        ///Whether the channel sent the test message
+        pub success: bool,
+    }
+    ///`NotificationDeliveryResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationDeliveryResponse {
+        ///Delivery attempts made
+        pub attempts: f64,
+        ///ID of the channel, or null after the channel was deleted
+        #[serde(
+            rename = "channelId",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub channel_id: ::std::option::Option<::std::string::String>,
+        ///Name of the channel kind at the time of the send
+        #[serde(rename = "channelKind")]
+        pub channel_kind: ::std::string::String,
+        ///Kind display name. The stored kind name if this installation does not know the kind
+        #[serde(rename = "channelKindLabel")]
+        pub channel_kind_label: ::std::string::String,
+        ///Channel name at the time of the send
+        #[serde(rename = "channelName")]
+        pub channel_name: ::std::string::String,
+        ///When the channel accepted the message
+        #[serde(
+            rename = "deliveredAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub delivered_at: ::std::option::Option<::std::string::String>,
+        ///Unique ID of the delivery
+        pub id: ::std::string::String,
+        ///Error of the last failed attempt
+        #[serde(
+            rename = "lastError",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub last_error: ::std::option::Option<::std::string::String>,
+        ///pending until the channel accepts the message or the last attempt fails
+        pub status: NotificationDeliveryResponseStatus,
+    }
+    ///pending until the channel accepts the message or the last attempt fails
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum NotificationDeliveryResponseStatus {
+        #[serde(rename = "pending")]
+        Pending,
+        #[serde(rename = "delivered")]
+        Delivered,
+        #[serde(rename = "failed")]
+        Failed,
+    }
+    impl ::std::fmt::Display for NotificationDeliveryResponseStatus {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Pending => f.write_str("pending"),
+                Self::Delivered => f.write_str("delivered"),
+                Self::Failed => f.write_str("failed"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for NotificationDeliveryResponseStatus {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "pending" => Ok(Self::Pending),
+                "delivered" => Ok(Self::Delivered),
+                "failed" => Ok(Self::Failed),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for NotificationDeliveryResponseStatus {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for NotificationDeliveryResponseStatus {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`NotificationMessage`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationMessage {
+        ///Structured data for this message type. Empty for a test
+        pub data: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+        ///Notification ID. Reused across channels and retries so receivers can detect duplicates
+        pub id: ::std::string::String,
+        ///ID of the organization
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///One or two sentences without markup
+        pub text: ::std::string::String,
+        ///When the message was created, ISO 8601 in UTC
+        pub time: ::std::string::String,
+        ///Short message title
+        pub title: ::std::string::String,
+        ///Message type, for example alert or test
+        #[serde(rename = "type")]
+        pub type_: ::std::string::String,
+        ///Gatana page URL. Sign-in is required
+        pub url: ::std::string::String,
+        ///Message version. Changes only for a breaking change
+        pub version: NotificationMessageVersion,
+    }
+    ///Message version. Changes only for a breaking change
+    #[derive(::serde::Serialize, Clone, Debug)]
+    #[serde(transparent)]
+    pub struct NotificationMessageVersion(f64);
+    impl ::std::ops::Deref for NotificationMessageVersion {
+        type Target = f64;
+        fn deref(&self) -> &f64 {
+            &self.0
+        }
+    }
+    impl ::std::convert::From<NotificationMessageVersion> for f64 {
+        fn from(value: NotificationMessageVersion) -> Self {
+            value.0
+        }
+    }
+    impl ::std::convert::TryFrom<f64> for NotificationMessageVersion {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: f64,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            if ![1_f64].contains(&value) {
+                Err("invalid value".into())
+            } else {
+                Ok(Self(value))
+            }
+        }
+    }
+    impl<'de> ::serde::Deserialize<'de> for NotificationMessageVersion {
+        fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+        where
+            D: ::serde::Deserializer<'de>,
+        {
+            Self::try_from(<f64>::deserialize(deserializer)?)
+                .map_err(|e| { <D::Error as ::serde::de::Error>::custom(e.to_string()) })
+        }
+    }
+    ///`NotificationResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationResponse {
+        ///When the notification was sent
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///One delivery for each channel
+        pub deliveries: ::std::vec::Vec<NotificationDeliveryResponse>,
+        ///Unique ID of the notification
+        pub id: ::std::string::String,
+        pub message: NotificationMessage,
+        ///Message type, for example alert
+        #[serde(rename = "type")]
+        pub type_: ::std::string::String,
+        ///Display name of the message type
+        #[serde(rename = "typeLabel")]
+        pub type_label: ::std::string::String,
+    }
     ///`OAuthGrantType`
     #[derive(
         ::serde::Deserialize,
@@ -3397,6 +4352,32 @@ pub mod types {
     ///Pagination metadata
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct PaginatedAuditLogResponsePagination {
+        ///Whether a next page exists
+        #[serde(rename = "hasNext")]
+        pub has_next: bool,
+        ///Whether a previous page exists
+        #[serde(rename = "hasPrev")]
+        pub has_prev: bool,
+        ///Maximum number of items per page
+        pub limit: f64,
+        ///Current page number
+        pub page: f64,
+        ///Total number of items across all pages
+        pub total: f64,
+        ///Total number of pages
+        #[serde(rename = "totalPages")]
+        pub total_pages: f64,
+    }
+    ///`PaginatedNotificationResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct PaginatedNotificationResponse {
+        ///Items on the current page
+        pub data: ::std::vec::Vec<NotificationResponse>,
+        pub pagination: PaginatedNotificationResponsePagination,
+    }
+    ///Pagination metadata
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct PaginatedNotificationResponsePagination {
         ///Whether a next page exists
         #[serde(rename = "hasNext")]
         pub has_next: bool,
@@ -3545,6 +4526,12 @@ pub mod types {
         ///Whether the profile restricts its users to only the servers in the profile; applies even to tenant owners
         #[serde(rename = "isRestrictive")]
         pub is_restrictive: bool,
+        ///Time of the last MCP request that used the profile, accurate to 5 minutes; null when never used
+        #[serde(
+            rename = "lastUsedAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub last_used_at: ::std::option::Option<::std::string::String>,
         ///Display name of the profile
         pub name: ::std::string::String,
         ///Servers included in the profile
@@ -3659,6 +4646,12 @@ pub mod types {
         ///Whether the profile restricts its users to only the servers in the profile; applies even to tenant owners
         #[serde(rename = "isRestrictive")]
         pub is_restrictive: bool,
+        ///Time of the last MCP request that used the profile, accurate to 5 minutes; null when never used
+        #[serde(
+            rename = "lastUsedAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub last_used_at: ::std::option::Option<::std::string::String>,
         ///Display name of the profile
         pub name: ::std::string::String,
         ///Number of teams assigned to the profile
@@ -3758,6 +4751,359 @@ pub mod types {
         #[serde(rename = "toolNameOverride")]
         pub tool_name_override: ::std::string::String,
     }
+    ///Actions for On mode. Missing targets use organization defaults or built-in values
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ProtectionActions {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub arguments: ::std::option::Option<ProtectionOnAction>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub result: ::std::option::Option<ProtectionOnAction>,
+    }
+    ///Actions for On mode. Missing targets use organization defaults or built-in values
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ProtectionActionsOutput {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub arguments: ::std::option::Option<ProtectionOnAction>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub result: ::std::option::Option<ProtectionOnAction>,
+    }
+    ///`ProtectionCheckTarget`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProtectionCheckTarget {
+        #[serde(rename = "arguments")]
+        Arguments,
+        #[serde(rename = "result")]
+        Result,
+    }
+    impl ::std::fmt::Display for ProtectionCheckTarget {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Arguments => f.write_str("arguments"),
+                Self::Result => f.write_str("result"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProtectionCheckTarget {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "arguments" => Ok(Self::Arguments),
+                "result" => Ok(Self::Result),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProtectionCheckTarget {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ProtectionCheckTarget {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ProtectionCheckType`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProtectionCheckType {
+        #[serde(rename = "secrets")]
+        Secrets,
+        #[serde(rename = "pii")]
+        Pii,
+        #[serde(rename = "injection")]
+        Injection,
+    }
+    impl ::std::fmt::Display for ProtectionCheckType {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Secrets => f.write_str("secrets"),
+                Self::Pii => f.write_str("pii"),
+                Self::Injection => f.write_str("injection"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProtectionCheckType {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "secrets" => Ok(Self::Secrets),
+                "pii" => Ok(Self::Pii),
+                "injection" => Ok(Self::Injection),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProtectionCheckType {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ProtectionCheckType {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ProtectionDefault`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ProtectionDefault {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub actions: ::std::option::Option<ProtectionActions>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub mode: ::std::option::Option<ProtectionMode>,
+        ///Settings for servers without their own values
+        #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
+        pub settings: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    }
+    ///`ProtectionDefaultOutput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ProtectionDefaultOutput {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub actions: ::std::option::Option<ProtectionActionsOutput>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub mode: ::std::option::Option<ProtectionMode>,
+        ///Settings for servers without their own values
+        #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
+        pub settings: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    }
+    ///Organization protection defaults. Actions and settings apply to servers without their own values. An update replaces all defaults
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ProtectionDefaults {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub injection: ::std::option::Option<ProtectionDefault>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub pii: ::std::option::Option<ProtectionDefault>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub secrets: ::std::option::Option<ProtectionDefault>,
+    }
+    ///Organization protection defaults. Actions and settings apply to servers without their own values. An update replaces all defaults
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ProtectionDefaultsOutput {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub injection: ::std::option::Option<ProtectionDefaultOutput>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub pii: ::std::option::Option<ProtectionDefaultOutput>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub secrets: ::std::option::Option<ProtectionDefaultOutput>,
+    }
+    ///`ProtectionMode`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProtectionMode {
+        #[serde(rename = "off")]
+        Off,
+        #[serde(rename = "audit")]
+        Audit,
+        #[serde(rename = "on")]
+        On,
+    }
+    impl ::std::fmt::Display for ProtectionMode {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Off => f.write_str("off"),
+                Self::Audit => f.write_str("audit"),
+                Self::On => f.write_str("on"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProtectionMode {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "off" => Ok(Self::Off),
+                "audit" => Ok(Self::Audit),
+                "on" => Ok(Self::On),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProtectionMode {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ProtectionMode {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ProtectionOnAction`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProtectionOnAction {
+        #[serde(rename = "off")]
+        Off,
+        #[serde(rename = "audit")]
+        Audit,
+        #[serde(rename = "redact")]
+        Redact,
+        #[serde(rename = "block")]
+        Block,
+    }
+    impl ::std::fmt::Display for ProtectionOnAction {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Off => f.write_str("off"),
+                Self::Audit => f.write_str("audit"),
+                Self::Redact => f.write_str("redact"),
+                Self::Block => f.write_str("block"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProtectionOnAction {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "off" => Ok(Self::Off),
+                "audit" => Ok(Self::Audit),
+                "redact" => Ok(Self::Redact),
+                "block" => Ok(Self::Block),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProtectionOnAction {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ProtectionOnAction {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ProtectionValueSource`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProtectionValueSource {
+        #[serde(rename = "server")]
+        Server,
+        #[serde(rename = "organization")]
+        Organization,
+        #[serde(rename = "builtin")]
+        Builtin,
+    }
+    impl ::std::fmt::Display for ProtectionValueSource {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Server => f.write_str("server"),
+                Self::Organization => f.write_str("organization"),
+                Self::Builtin => f.write_str("builtin"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProtectionValueSource {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "server" => Ok(Self::Server),
+                "organization" => Ok(Self::Organization),
+                "builtin" => Ok(Self::Builtin),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProtectionValueSource {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ProtectionValueSource {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
     ///`RegisterMcpServerOauthClientWithoutSavingBody`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct RegisterMcpServerOauthClientWithoutSavingBody {
@@ -3790,6 +5136,60 @@ pub mod types {
     pub struct RegisterMcpServerOauthClientWithoutSavingResponse {
         #[serde(rename = "clientConfiguration")]
         pub client_configuration: ServerOAuthClientConfiguration,
+    }
+    ///`ResolvedProtection`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ResolvedProtection {
+        pub actions: ResolvedProtectionActions,
+        ///The value and source of each option
+        pub settings: ::std::collections::HashMap<
+            ::std::string::String,
+            ResolvedProtectionSettingsValue,
+        >,
+    }
+    ///`ResolvedProtectionAction`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ResolvedProtectionAction {
+        pub action: ProtectionOnAction,
+        pub inherited: ProtectionOnAction,
+        pub source: ProtectionValueSource,
+    }
+    ///Actions for each supported target in On mode, regardless of the current mode
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ResolvedProtectionActions {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub arguments: ::std::option::Option<ResolvedProtectionAction>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub result: ::std::option::Option<ResolvedProtectionAction>,
+    }
+    ///`ResolvedProtectionSettingsValue`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ResolvedProtectionSettingsValue {
+        ///The value used when the server has no override
+        pub inherited: ::serde_json::Value,
+        pub source: ProtectionValueSource,
+        pub value: ::serde_json::Value,
+    }
+    ///`ResolvedProtections`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ResolvedProtections {
+        pub injection: ResolvedProtection,
+        pub pii: ResolvedProtection,
+        pub secrets: ResolvedProtection,
+    }
+    ///`RotateNotificationChannelSecretInput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct RotateNotificationChannelSecretInput {
+        ///Key of a generated-secret field of the channel kind
+        pub field: ::std::string::String,
+    }
+    ///`RotateNotificationChannelSecretResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct RotateNotificationChannelSecretResponse {
+        ///Key of the rotated field
+        pub field: ::std::string::String,
+        ///The new value
+        pub value: ::std::string::String,
     }
     ///`SandboxDto`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -4220,7 +5620,7 @@ pub mod types {
         pub created_at: ::std::string::String,
         ///Human-readable description of the server
         pub description: ::std::string::String,
-        ///Firewall rules evaluated against tool calls to the server
+        ///Rules in order. Rules with a condition run before the call and the first deny stops it. A rule with a protection replaces the default of that protection for its tools
         #[serde(rename = "firewallRules")]
         pub firewall_rules: ::std::vec::Vec<ServerDtoFirewallRulesItem>,
         ///Unique ID of the server
@@ -4266,9 +5666,12 @@ pub mod types {
         ///Minimum output size in bytes before compression is applied
         #[serde(rename = "outputCompressionThresholdBytes")]
         pub output_compression_threshold_bytes: i64,
+        pub protections: ServerProtectionsOutput,
         ///Whether a progress notification resets the protocol timeout
         #[serde(rename = "resetTimeoutOnProgressNotification")]
         pub reset_timeout_on_progress_notification: bool,
+        #[serde(rename = "resolvedProtections")]
+        pub resolved_protections: ResolvedProtections,
         ///URL-friendly name of the server, unique within the tenant
         pub slug: ::std::string::String,
         ///ID of the tenant that owns the server
@@ -4291,12 +5694,16 @@ pub mod types {
     ///`ServerDtoFirewallRulesItem`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ServerDtoFirewallRulesItem {
-        ///Action to take when the condition matches
+        ///Condition actions: deny, audit or allow. Allow makes protections record matches without blocking or redacting. Deny rules still apply. Protection actions: block, redact or audit. Block refuses calls with argument matches or withholds results with matches. Redact replaces matched text. Audit records matches and changes nothing
         pub action: ServerDtoFirewallRulesItemAction,
-        ///CEL representing the condition
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub check: ::std::option::Option<ServerDtoFirewallRulesItemCheck>,
+        ///CEL condition on the call; empty matches every call. Must be empty when check is set
         pub condition: ::std::string::String,
+        ///Names of the tools that the rule applies to; empty applies it to every tool call
+        pub tools: ::std::vec::Vec<::std::string::String>,
     }
-    ///Action to take when the condition matches
+    ///Condition actions: deny, audit or allow. Allow makes protections record matches without blocking or redacting. Deny rules still apply. Protection actions: block, redact or audit. Block refuses calls with argument matches or withholds results with matches. Redact replaces matched text. Audit records matches and changes nothing
     #[derive(
         ::serde::Deserialize,
         ::serde::Serialize,
@@ -4312,17 +5719,23 @@ pub mod types {
     pub enum ServerDtoFirewallRulesItemAction {
         #[serde(rename = "deny")]
         Deny,
-        #[serde(rename = "modify")]
-        Modify,
-        #[serde(rename = "log")]
-        Log,
+        #[serde(rename = "audit")]
+        Audit,
+        #[serde(rename = "block")]
+        Block,
+        #[serde(rename = "redact")]
+        Redact,
+        #[serde(rename = "allow")]
+        Allow,
     }
     impl ::std::fmt::Display for ServerDtoFirewallRulesItemAction {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
                 Self::Deny => f.write_str("deny"),
-                Self::Modify => f.write_str("modify"),
-                Self::Log => f.write_str("log"),
+                Self::Audit => f.write_str("audit"),
+                Self::Block => f.write_str("block"),
+                Self::Redact => f.write_str("redact"),
+                Self::Allow => f.write_str("allow"),
             }
         }
     }
@@ -4333,8 +5746,10 @@ pub mod types {
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             match value {
                 "deny" => Ok(Self::Deny),
-                "modify" => Ok(Self::Modify),
-                "log" => Ok(Self::Log),
+                "audit" => Ok(Self::Audit),
+                "block" => Ok(Self::Block),
+                "redact" => Ok(Self::Redact),
+                "allow" => Ok(Self::Allow),
                 _ => Err("invalid value".into()),
             }
         }
@@ -4355,6 +5770,13 @@ pub mod types {
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
+    }
+    ///A protection instead of a condition. The rule then sets the action of that protection for its tools and replaces the default of the protection
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ServerDtoFirewallRulesItemCheck {
+        pub target: ProtectionCheckTarget,
+        #[serde(rename = "type")]
+        pub type_: ProtectionCheckType,
     }
     ///Transport configuration used to connect to the server
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -5209,6 +6631,25 @@ pub mod types {
         )]
         pub metadata_url: ::std::option::Option<::std::string::String>,
     }
+    ///`ServerProtectionOutput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ServerProtectionOutput {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub actions: ::std::option::Option<ProtectionActionsOutput>,
+        pub mode: ProtectionMode,
+        ///Check options. These also apply to protection rules. Missing options use organization defaults or built-in values. Secrets: includeGeneric (boolean) also detects generic key=value secrets. Prompt injection: phrases (boolean, default true) detects injection phrases. Set false to scan only for hidden characters
+        pub settings: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    }
+    ///Built-in protections of the server. A missing protection is off
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ServerProtectionsOutput {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub injection: ::std::option::Option<ServerProtectionOutput>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub pii: ::std::option::Option<ServerProtectionOutput>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub secrets: ::std::option::Option<ServerProtectionOutput>,
+    }
     ///`ServerResourceRequests`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ServerResourceRequests {
@@ -5891,6 +7332,8 @@ pub mod types {
         pub can_have_multiple_users: bool,
         #[serde(rename = "canUseAiCompression")]
         pub can_use_ai_compression: bool,
+        #[serde(rename = "canUseAlerts")]
+        pub can_use_alerts: bool,
         #[serde(rename = "canUseCodeMode")]
         pub can_use_code_mode: bool,
         #[serde(rename = "canUseDeploymentStorage")]
@@ -6047,6 +7490,8 @@ pub mod types {
         ///Model variant used for AI-based output compression
         #[serde(rename = "outputCompressionAiModel")]
         pub output_compression_ai_model: TenantDtoOutputCompressionAiModel,
+        #[serde(rename = "protectionDefaults")]
+        pub protection_defaults: ProtectionDefaultsOutput,
         ///What happens to a team when its SCIM group is deleted
         #[serde(rename = "scimGroupDeleteBehavior")]
         pub scim_group_delete_behavior: TenantDtoScimGroupDeleteBehavior,
@@ -6610,6 +8055,50 @@ pub mod types {
             value.parse()
         }
     }
+    ///`UpdateAlertRuleInput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct UpdateAlertRuleInput {
+        ///true sends the alerts to every channel and removes the selected channels
+        #[serde(
+            rename = "allChannels",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub all_channels: ::std::option::Option<bool>,
+        ///Replaces the channels of the rule. Must be empty while allChannels is true
+        #[serde(
+            rename = "channelIds",
+            default,
+            skip_serializing_if = "::std::vec::Vec::is_empty"
+        )]
+        pub channel_ids: ::std::vec::Vec<::std::string::String>,
+        ///New conditions. The rule then starts again at the newest audit log event
+        #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+        pub conditions: ::std::vec::Vec<AuditLogFilterCondition>,
+        ///New cooldown, in minutes
+        #[serde(
+            rename = "cooldownMinutes",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub cooldown_minutes: ::std::option::Option<i64>,
+        ///Enable or disable the rule. An enabled rule starts at the newest audit log event
+        #[serde(
+            rename = "isEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_enabled: ::std::option::Option<bool>,
+        ///New rule name
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub name: ::std::option::Option<::std::string::String>,
+        ///New threshold
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub threshold: ::std::option::Option<i64>,
+        ///New window, in minutes
+        #[serde(
+            rename = "windowMinutes",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub window_minutes: ::std::option::Option<i64>,
+    }
     ///`UpdateMcpServerCredentialsServerResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct UpdateMcpServerCredentialsServerResponse {
@@ -6689,6 +8178,41 @@ pub mod types {
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct UpdateMcpServerMemberResponse {
         pub success: bool,
+    }
+    ///`UpdateNotificationChannelInput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct UpdateNotificationChannelInput {
+        ///Whether the channel is enabled
+        #[serde(
+            rename = "isEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_enabled: ::std::option::Option<bool>,
+        ///Display name of the channel
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub name: ::std::option::Option<::std::string::String>,
+        ///Replace plain settings. An absent or empty secret keeps its value; null clears it. Rotate generated secrets separately
+        #[serde(
+            default,
+            skip_serializing_if = ":: std :: collections :: HashMap::is_empty"
+        )]
+        pub values: ::std::collections::HashMap<
+            ::std::string::String,
+            ::std::option::Option<UpdateNotificationChannelInputValuesValue>,
+        >,
+    }
+    ///`UpdateNotificationChannelInputValuesValue`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(untagged)]
+    pub enum UpdateNotificationChannelInputValuesValue {
+        String(::std::string::String),
+        Array(::std::vec::Vec<::std::string::String>),
+    }
+    impl ::std::convert::From<::std::vec::Vec<::std::string::String>>
+    for UpdateNotificationChannelInputValuesValue {
+        fn from(value: ::std::vec::Vec<::std::string::String>) -> Self {
+            Self::Array(value)
+        }
     }
     ///`UpdateProfileBody`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
@@ -7102,6 +8626,11 @@ pub mod types {
         pub output_compression_ai_model: ::std::option::Option<
             UpdateTenantRequestOutputCompressionAiModel,
         >,
+        #[serde(
+            rename = "protectionDefaults",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub protection_defaults: ::std::option::Option<ProtectionDefaults>,
         ///What happens to a team when its SCIM group is deleted
         #[serde(
             rename = "scimGroupDeleteBehavior",
@@ -7947,6 +9476,39 @@ pub mod query {
             call
         }
     }
+    /// Optional query parameters of `listAlertRules`.
+    #[derive(Debug, Clone, Default)]
+    pub struct ListAlertRules {
+        /// `matchCounts`. false leaves out the 7-day match counts, which can take seconds on a large audit log One of: true, false.
+        pub match_counts: Option<String>,
+    }
+    impl ListAlertRules {
+        pub fn apply<'c, T>(&self, mut call: crate::Call<'c, T>) -> crate::Call<'c, T> {
+            if let Some(value) = &self.match_counts {
+                call = call.query("matchCounts", value);
+            }
+            call
+        }
+    }
+    /// Optional query parameters of `listNotifications`.
+    #[derive(Debug, Clone, Default)]
+    pub struct ListNotifications {
+        /// `page`. Page number, from 1
+        pub page: Option<String>,
+        /// `limit`. Items per page, at most 100. Default 20
+        pub limit: Option<String>,
+    }
+    impl ListNotifications {
+        pub fn apply<'c, T>(&self, mut call: crate::Call<'c, T>) -> crate::Call<'c, T> {
+            if let Some(value) = &self.page {
+                call = call.query("page", value);
+            }
+            if let Some(value) = &self.limit {
+                call = call.query("limit", value);
+            }
+            call
+        }
+    }
 }
 use types::*;
 /// The operations of this API.
@@ -8353,7 +9915,7 @@ impl<'a> Api<'a> {
     }
     /** `GET /audit-logs`
 
- List audit log entries page by page. Callers without full access only see their own entries*/
+ List audit log summaries page by page, limited to entries for the caller unless full access is granted; get one entry for complete details*/
     pub fn list_audit_logs(
         &self,
         query: &query::ListAuditLogs,
@@ -9283,6 +10845,215 @@ impl<'a> Api<'a> {
     pub fn get_quota_and_usage(&self) -> crate::Call<'a, GetQuotaAndUsageResponse> {
         let path = format!("{}/quota-and-usage", BASE_PATH);
         let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `GET /alert-rules`
+
+ List alert rules with their channels, 7-day match counts and the daily notification limit*/
+    pub fn list_alert_rules(
+        &self,
+        query: &query::ListAlertRules,
+    ) -> crate::Call<'a, AlertRuleListResponse> {
+        let path = format!("{}/alert-rules", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        let call = query.apply(call);
+        call
+    }
+    /** `POST /alert-rules`
+
+ Create an alert rule that starts at the newest audit log event*/
+    pub fn create_alert_rule(
+        &self,
+        body: &CreateAlertRuleInput,
+    ) -> crate::Call<'a, AlertRuleResponse> {
+        let path = format!("{}/alert-rules", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /alert-rules` with a body that is sent as given, unchecked.
+    pub fn create_alert_rule_raw(
+        &self,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, AlertRuleResponse> {
+        let path = format!("{}/alert-rules", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `POST /alert-rules/preview`
+
+ Count the audit log events of the last 7 days that a list of conditions matches*/
+    pub fn preview_alert_rule(
+        &self,
+        body: &AlertRulePreviewInput,
+    ) -> crate::Call<'a, AlertRulePreviewResponse> {
+        let path = format!("{}/alert-rules/preview", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /alert-rules/preview` with a body that is sent as given, unchecked.
+    pub fn preview_alert_rule_raw(
+        &self,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, AlertRulePreviewResponse> {
+        let path = format!("{}/alert-rules/preview", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `PUT /alert-rules/{id}`
+
+ Update an alert rule and replace its channels if channel IDs are given*/
+    pub fn update_alert_rule(
+        &self,
+        id: &str,
+        body: &UpdateAlertRuleInput,
+    ) -> crate::Call<'a, AlertRuleResponse> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/alert-rules/{}", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json(body)
+    }
+    /// `PUT /alert-rules/{id}` with a body that is sent as given, unchecked.
+    pub fn update_alert_rule_raw(
+        &self,
+        id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, AlertRuleResponse> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/alert-rules/{}", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json_value(body)
+    }
+    /** `DELETE /alert-rules/{id}`
+
+ Delete an alert rule*/
+    pub fn delete_alert_rule(&self, id: &str) -> crate::Call<'a, ::serde_json::Value> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/alert-rules/{}", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `GET /notification-channel-kinds`
+
+ List available notification channel kinds and their form fields*/
+    pub fn list_notification_channel_kinds(
+        &self,
+    ) -> crate::Call<'a, NotificationChannelKindListResponse> {
+        let path = format!("{}/notification-channel-kinds", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `GET /notification-channels`
+
+ List notification channels for the organization with their settings and delivery status*/
+    pub fn list_notification_channels(
+        &self,
+    ) -> crate::Call<'a, NotificationChannelListResponse> {
+        let path = format!("{}/notification-channels", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `POST /notification-channels`
+
+ Create a notification channel and return its generated secrets*/
+    pub fn create_notification_channel(
+        &self,
+        body: &CreateNotificationChannelInput,
+    ) -> crate::Call<'a, CreateNotificationChannelResponse> {
+        let path = format!("{}/notification-channels", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /notification-channels` with a body that is sent as given, unchecked.
+    pub fn create_notification_channel_raw(
+        &self,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, CreateNotificationChannelResponse> {
+        let path = format!("{}/notification-channels", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `PUT /notification-channels/{id}`
+
+ Update a notification channel and keep secrets omitted from the request*/
+    pub fn update_notification_channel(
+        &self,
+        id: &str,
+        body: &UpdateNotificationChannelInput,
+    ) -> crate::Call<'a, NotificationChannelResponse> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/notification-channels/{}", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json(body)
+    }
+    /// `PUT /notification-channels/{id}` with a body that is sent as given, unchecked.
+    pub fn update_notification_channel_raw(
+        &self,
+        id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, NotificationChannelResponse> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/notification-channels/{}", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json_value(body)
+    }
+    /** `DELETE /notification-channels/{id}`
+
+ Delete a notification channel*/
+    pub fn delete_notification_channel(
+        &self,
+        id: &str,
+    ) -> crate::Call<'a, ::serde_json::Value> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/notification-channels/{}", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::DELETE, path);
+        call
+    }
+    /** `POST /notification-channels/{id}/rotate-secret`
+
+ Replace a generated secret of a notification channel and return the new value*/
+    pub fn rotate_notification_channel_secret(
+        &self,
+        id: &str,
+        body: &RotateNotificationChannelSecretInput,
+    ) -> crate::Call<'a, RotateNotificationChannelSecretResponse> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/notification-channels/{}/rotate-secret", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json(body)
+    }
+    /// `POST /notification-channels/{id}/rotate-secret` with a body that is sent as given, unchecked.
+    pub fn rotate_notification_channel_secret_raw(
+        &self,
+        id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, RotateNotificationChannelSecretResponse> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/notification-channels/{}/rotate-secret", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
+    }
+    /** `POST /notification-channels/{id}/test`
+
+ Send a test message through a notification channel and report the result*/
+    pub fn test_notification_channel(
+        &self,
+        id: &str,
+    ) -> crate::Call<'a, NotificationChannelTestResponse> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/notification-channels/{}/test", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call
+    }
+    /** `GET /notifications`
+
+ List sent notifications page by page, newest first, with the delivery status for each channel*/
+    pub fn list_notifications(
+        &self,
+        query: &query::ListNotifications,
+    ) -> crate::Call<'a, PaginatedNotificationResponse> {
+        let path = format!("{}/notifications", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        let call = query.apply(call);
         call
     }
 }

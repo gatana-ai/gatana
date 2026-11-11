@@ -1,6 +1,7 @@
 //! What each command does.
 
 mod accounts;
+mod alerts;
 mod config;
 mod create_server;
 mod install;
@@ -49,6 +50,8 @@ pub async fn run(cli: Cli) -> Result<()> {
         Command::Server { command } => server_access::run(&context, command).await,
         Command::Team { command } => teams::run(&context, command).await,
         Command::Profile { command } => profiles::run(&context, command).await,
+        Command::Alert { command } => alerts::run(&context, command).await,
+        Command::Channel { command } => alerts::run_channel(&context, command).await,
         Command::Skills { command } => skills::run(&context, command).await,
         Command::Config { command } => config::run(&context, command).await,
         Command::AuthInfo => config::auth_info(&context).await,

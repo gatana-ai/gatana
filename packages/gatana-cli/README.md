@@ -179,6 +179,7 @@ Deployments, tool calls, FaaS servers and effective credentials.
 | **tools ls**      | `gatana tools ls [-s slug] [--all]`                                             | List the enabled tools, of all servers or of one server                |
 | **tools \<name>** | `gatana tools <name>`                                                           | Show the description and arguments of a tool, and an example call      |
 | **tools call**    | `gatana tools call <name> [-a kv...] [-f file] [-p part]`                       | Call a tool by its universal name (`serverSlug_toolName`). Alias: `x`  |
+| **tools refresh** | `gatana tools refresh [-s slug]`                                                | Load the tools again from all servers or from one server               |
 | **deploy get**    | `gatana deploy get <name>`                                                      | Get the deployment status of a server                                  |
 | **deploy logs**   | `gatana deploy logs <name> [-f] [-p] [--id <deploymentId>]`                     | Show the logs of a stdio or hosted server                              |
 | **deploy wait**   | `gatana deploy wait <name> [--timeout 10m]`                                     | Wait until the deployment is ready                                     |
@@ -294,6 +295,48 @@ The settings, plan and quotas of the organization. Only organization owners can 
 > A patch that holds the mask `********` is refused, so output pasted back in cannot overwrite a
 > secret. `--logo` takes a PNG, JPEG, WebP or SVG file of at most 256 KB.
 
+### Alerts
+
+An alert rule is an audit log filter with a threshold. When enough events match, Gatana notifies
+the channels of the rule. A channel is a destination of one kind, such as email addresses or a
+webhook. Only organization owners can use these commands, and the organization needs a paid plan.
+A rule and a channel go by their name or their ID. Names are not unique, so the CLI asks for the
+ID when several have the name.
+
+| Command                              | Syntax                                                                                                                                       | Description                                                                                  |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **get alert**                        | `gatana get alert [name]`                                                                                                                    | List the rules with their channels and 7-day match counts, or show one rule                  |
+| **describe alert**                   | `gatana describe alert <name>`                                                                                                               | Show a rule with its conditions and channels, and the daily limit of the organization        |
+| **create alert**                     | `gatana create alert <name> -w <condition>... [--threshold n] [--window min] [--cooldown min] [-c channel...] [--all-channels] [--disabled]` | Create a rule. Defaults: 1 event in 5 minutes, at most one alert in 60 minutes               |
+| **patch alert**                      | `gatana patch alert <name> [-p kv...] [-f file]`                                                                                             | Change a rule. `conditions` and `channelIds` replace the full list                           |
+| **delete alert**                     | `gatana delete alert <name>`                                                                                                                 | Delete a rule                                                                                |
+| **alert enable\|disable**            | `gatana alert enable <alert>`                                                                                                                | Start or stop a rule. An enabled rule starts at the newest audit log event                   |
+| **alert preview**                    | `gatana alert preview -w <condition>...`                                                                                                     | Count the events of the last 7, 30 and 90 days that conditions match. Creates nothing        |
+| **alert add-channel**                | `gatana alert add-channel <alert> <channel...>`                                                                                              | Add channels to a rule                                                                       |
+| **alert remove-channel**             | `gatana alert remove-channel <alert> <channel...>`                                                                                           | Remove channels from a rule. A rule without channels sends nothing                           |
+| **get channel**                      | `gatana get channel [name] [--show-secrets]`                                                                                                 | List the channels with their delivery status, or show one channel                            |
+| **describe channel**                 | `gatana describe channel <name> [--show-secrets]`                                                                                            | Show a channel with its settings and the rules that send to it                               |
+| **create channel**                   | `gatana create channel <name> --kind <kind> [-s field=value...] [--secret field=value...]`                                                   | Create a channel, and print the secrets that Gatana generated for it                         |
+| **patch channel**                    | `gatana patch channel <name> [-p kv...] [-f file]`                                                                                           | Change `name`, `isEnabled` or the settings under `values`                                    |
+| **delete channel**                   | `gatana delete channel <name>`                                                                                                               | Delete a channel. The rules that use it stop sending to it                                   |
+| **channel kinds**                    | `gatana channel kinds`                                                                                                                       | List the channel kinds of this installation, with the fields of each kind                    |
+| **channel test**                     | `gatana channel test <channel>`                                                                                                              | Send a test message. The exit code is 1 if the delivery fails                                |
+| **channel rotate-secret**            | `gatana channel rotate-secret <channel> [field]`                                                                                             | Replace a generated secret, such as the signing secret of a webhook, and print the new value |
+| **channel enable\|disable**          | `gatana channel disable <channel>`                                                                                                           | Start or stop every delivery to a channel                                                    |
+| **get channel-notification-history** | `gatana get channel-notification-history [--limit n] [--page n]`                                                                             | List what Gatana sent, newest first, with the delivery status for each channel               |
+
+> **Conditions**: a condition is `field:operator:value`, the same form as a filter in the address
+> of the Audit Logs page, so you can build a filter there and copy it. The operators are `eq`,
+> `neq` and `contains`. An event must match every condition of a rule. `gatana schema alert` lists
+> the fields.
+>
+> **Channel settings**: the CLI reads the kinds and their fields from the API, so `create channel`
+> has no flag per kind. `-s` sets a plain field, and a list such as `recipients` takes commas.
+> `--secret` sets a secret field: the value itself, `@<file>`, or `-` for stdin. `patch channel`
+> keeps the settings and the secrets that the patch leaves out. In a patch, `null` removes a value.
+> The API never returns a secret that you typed. It returns the secrets that Gatana generated, and
+> the CLI hides them unless you pass `--show-secrets`.
+
 ### Skills
 
 Install the skills of your organization into the folders that AI agents read, and push local
@@ -330,37 +373,41 @@ changes back. See the [skills documentation](https://docs.gatana.ai/skills) for 
 
 Configuration, authentication and schemas.
 
-| Command                | Syntax                                                        | Description                                             |
-| ---------------------- | ------------------------------------------------------------- | ------------------------------------------------------- |
-| **config current**     | `gatana config current`                                       | Show the resolved organization and configuration        |
-| **config token**       | `gatana config token`                                         | Print the token that requests use                       |
-| **config login**       | `gatana config login [org-id-or-url] [-p pat] [--no-browser]` | Log in in the browser or with a personal access token   |
-| **config ls**          | `gatana config ls`                                            | List all configured organizations                       |
-| **config set-default** | `gatana config set-default <name-or-url>`                     | Set the default organization                            |
-| **config remove**      | `gatana config remove <name-or-url>`                          | Remove an organization from the config file             |
-| **auth-info**          | `gatana auth-info`                                            | Show the authenticated user and organization            |
-| **schema server**      | `gatana schema server`                                        | Print the resolved OpenAPI schema of the Server DTO     |
-| **schema account**     | `gatana schema account`                                       | Print what `patch account` takes                        |
-| **schema team**        | `gatana schema team`                                          | Print what `patch team` takes                           |
-| **schema profile**     | `gatana schema profile`                                       | Print what `patch profile` takes                        |
-| **schema org**         | `gatana schema org`                                           | Print what `patch org` takes                            |
-| **upgrade**            | `gatana upgrade [--dry-run]`                                  | Upgrade to the latest release, the way it was installed |
+| Command                | Syntax                                                        | Description                                                                  |
+| ---------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **config current**     | `gatana config current`                                       | Show the resolved organization and configuration                             |
+| **config token**       | `gatana config token`                                         | Print the token that requests use                                            |
+| **config login**       | `gatana config login [org-id-or-url] [-p pat] [--no-browser]` | Log in in the browser or with a personal access token                        |
+| **config ls**          | `gatana config ls`                                            | List all configured organizations                                            |
+| **config set-default** | `gatana config set-default <name-or-url>`                     | Set the default organization                                                 |
+| **config remove**      | `gatana config remove <name-or-url>`                          | Remove an organization from the config file                                  |
+| **auth-info**          | `gatana auth-info`                                            | Show the authenticated user and organization                                 |
+| **schema server**      | `gatana schema server`                                        | Print the resolved OpenAPI schema of the Server DTO                          |
+| **schema account**     | `gatana schema account`                                       | Print what `patch account` takes                                             |
+| **schema team**        | `gatana schema team`                                          | Print what `patch team` takes                                                |
+| **schema profile**     | `gatana schema profile`                                       | Print what `patch profile` takes                                             |
+| **schema org**         | `gatana schema org`                                           | Print what `patch org` takes                                                 |
+| **schema alert**       | `gatana schema alert`                                         | Print what `patch alert` takes, with the fields and operators of a condition |
+| **schema channel**     | `gatana schema channel`                                       | Print what `patch channel` takes                                             |
+| **upgrade**            | `gatana upgrade [--dry-run]`                                  | Upgrade to the latest release, the way it was installed                      |
 
 ---
 
 ## Resource types
 
-| Resource  | Aliases                     | Description                                 |
-| --------- | --------------------------- | ------------------------------------------- |
-| `server`  | `servers`                   | MCP server registrations                    |
-| `tool`    | `tools`                     | Tools that the servers expose               |
-| `creds`   | `credential`, `credentials` | Credentials for servers                     |
-| `sandbox` | `sandboxes`                 | Sandboxes (early access)                    |
-| `skill`   | `skills`                    | Markdown instructions that agents follow    |
-| `account` | `accounts`, `user`, `users` | Users and service accounts                  |
-| `profile` | `profiles`                  | Sets of servers, tools and credentials      |
-| `pat`     | `pats`, `token`, `tokens`   | Personal access tokens of a service account |
-| `org`     | `organization`, `settings`  | The settings of the organization            |
+| Resource  | Aliases                            | Description                                 |
+| --------- | ---------------------------------- | ------------------------------------------- |
+| `server`  | `servers`                          | MCP server registrations                    |
+| `tool`    | `tools`                            | Tools that the servers expose               |
+| `creds`   | `credential`, `credentials`        | Credentials for servers                     |
+| `sandbox` | `sandboxes`                        | Sandboxes (early access)                    |
+| `skill`   | `skills`                           | Markdown instructions that agents follow    |
+| `account` | `accounts`, `user`, `users`        | Users and service accounts                  |
+| `profile` | `profiles`                         | Sets of servers, tools and credentials      |
+| `pat`     | `pats`, `token`, `tokens`          | Personal access tokens of a service account |
+| `org`     | `organization`, `settings`         | The settings of the organization            |
+| `alert`   | `alerts`, `alert-rule`             | Alert rules on the audit log                |
+| `channel` | `channels`, `notification-channel` | Destinations for notifications              |
 
 ---
 
@@ -430,6 +477,29 @@ gatana create pat --account ci-runner@service-account.acme.gatana --name deploy 
 # Turn off local servers for members, and point the sign-in at a new client ID
 gatana patch org -p allowMemberAddLocalServers=false
 gatana patch org -p upstreamOidcConfiguration.clientId=new-client-id
+```
+
+### Alerts
+
+```bash
+# A channel for email, and a webhook with a key from a file
+gatana create channel ops-email --kind email -s recipients=ada@example.com,bob@example.com
+gatana create channel pager --kind webhook -s url=https://hooks.example.com/gatana \
+  -s authHeaderName=X-Api-Key --secret authHeaderValue=@key.txt
+
+# Check that the channel delivers
+gatana channel test pager
+
+# How often the conditions matched, then the rule
+gatana alert preview -w outcome:eq:denied -w serverSlug:eq:github
+gatana create alert "GitHub denials" -w outcome:eq:denied -w serverSlug:eq:github --threshold 3 --window 10 -c ops-email
+
+# Add the webhook, and change the threshold
+gatana alert add-channel "GitHub denials" pager
+gatana patch alert "GitHub denials" -p threshold=5
+
+# What was sent, and whether each channel got it
+gatana get channel-notification-history
 ```
 
 ### Develop a FaaS server

@@ -201,7 +201,10 @@ fn message_of(body: &Value, status: StatusCode, url: &Url) -> String {
         .filter_map(|key| body.get(*key).and_then(Value::as_str))
         .find(|text| !text.is_empty());
     if let Some(text) = text {
-        return text.to_string();
+        return match validation_errors(body) {
+            Some(errors) => format!("{text}: {errors}"),
+            None => text.to_string(),
+        };
     }
     let reason = format!("{} {}", status.as_u16(), status.canonical_reason().unwrap_or(""));
     let reason = reason.trim_end();
@@ -218,6 +221,28 @@ fn message_of(body: &Value, status: StatusCode, url: &Url) -> String {
         Value::String(_) => reason.to_string(),
         other => format!("{reason}: {other}"),
     }
+}
+
+/// What a failed validation names: each wrong field of the request with what is wrong with it, as
+/// `conditions.0.field: Invalid option`. Without it, "Failed body validation" says nothing.
+fn validation_errors(body: &Value) -> Option<String> {
+    let errors: Vec<String> = body
+        .get("errors")?
+        .as_array()?
+        .iter()
+        .filter_map(|error| {
+            let message = error.get("message")?.as_str()?;
+            let path: Vec<String> = error
+                .get("path")
+                .and_then(Value::as_array)
+                .map(|keys| {
+                    keys.iter().map(|key| key.as_str().map(str::to_string).unwrap_or_else(|| key.to_string())).collect()
+                })
+                .unwrap_or_default();
+            Some(if path.is_empty() { message.to_string() } else { format!("{}: {message}", path.join(".")) })
+        })
+        .collect();
+    if errors.is_empty() { None } else { Some(errors.join("; ")) }
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -283,6 +308,18 @@ mod tests {
         assert_eq!(message(&Value::String("plain text".into()), status), "plain text");
         assert_eq!(message(&Value::Null, StatusCode::NOT_FOUND), "404 Not Found");
         assert_eq!(message(&serde_json::json!({"code": 1}), status), r#"400 Bad Request: {"code":1}"#);
+        // A failed validation names the fields
+        let invalid = serde_json::json!({
+            "message": "Failed body validation",
+            "errors": [
+                { "path": ["conditions", 0, "operator"], "message": "Invalid option: expected one of \"eq\"|\"neq\"" },
+                { "path": [], "message": "Unrecognized key" },
+            ],
+        });
+        assert_eq!(
+            message(&invalid, status),
+            r#"Failed body validation: conditions.0.operator: Invalid option: expected one of "eq"|"neq"; Unrecognized key"#
+        );
     }
 
     #[test]

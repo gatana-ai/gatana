@@ -10,11 +10,12 @@
 //! For a URL, Gatana looks for the OAuth of the remote while the slug question is on screen. After
 //! the server is created, the CLI registers an OAuth client when the authorization server permits
 //! it, and saves both on the server, as the popular-server tiles do (server-oauth-setup.ts in the
-//! frontend).
+//! frontend). Without OAuth, it then loads the tools, because Gatana lists no tool of a server
+//! before a refresh.
 
 mod email;
 
-use super::text_at;
+use super::{text_at, tools};
 use crate::cli::{
     BuiltIn, BuiltInServerArgs, CodeServerArgs, LocalServerArgs, NewServerArgs, RemoteServerArgs, Runtime, ServerKind,
     Visibility,
@@ -207,21 +208,49 @@ impl NewServer<'_> {
 
         let page = self.page(&slug);
         let sign_in = format!("Sign in to the service: gatana create creds {slug}");
+        let load_tools = format!("Load its tools: gatana tools refresh --server {slug}");
         let steps = match setup {
-            Some(OAuthSetup::Client) => vec![sign_in, format!("Choose who can use it: {page}")],
+            Some(OAuthSetup::Client) => vec![sign_in, load_tools, format!("Choose who can use it: {page}")],
             Some(OAuthSetup::Issuer) => {
-                vec![format!("Add an OAuth client ID and secret: {page}?tab=settings#oauth-issuer"), sign_in]
+                vec![
+                    format!("Add an OAuth client ID and secret: {page}?tab=settings#oauth-issuer"),
+                    sign_in,
+                    load_tools,
+                ]
             }
             Some(OAuthSetup::Unfinished) => {
-                vec![format!("Set the OAuth issuer and client: {page}?tab=settings#oauth-issuer"), sign_in]
+                vec![format!("Set the OAuth issuer and client: {page}?tab=settings#oauth-issuer"), sign_in, load_tools]
             }
+            // Without OAuth the server can answer at once
+            None if self.load_tools(&slug).await => vec![format!("Choose who can use it: {page}")],
             None => vec![
                 format!("If the server needs an API key or a header, add it: {page}?tab=settings"),
+                load_tools,
                 format!("Choose who can use it: {page}"),
             ],
         };
         next_steps(&steps);
         Ok(())
+    }
+
+    /// Loads the tools of a new server, so that `gatana tools` finds them. A server that needs an
+    /// API key fails until somebody adds it, so a failure is a warning and not an error.
+    async fn load_tools(&self, slug: &str) -> bool {
+        let error = match output::spinner("Loading the tools...", tools::refresh_tools(self.api, Some(slug))).await {
+            Ok(results) => match results.first() {
+                Some(result) => match tools::refresh_error(result) {
+                    None => {
+                        output::success(&format!("Loaded {} tool(s).", tools::tool_count(result)));
+                        return true;
+                    }
+                    Some(error) => error,
+                },
+                None => "no answer".to_string(),
+            },
+            Err(error) => error.to_string(),
+        };
+        warn(&format!("Could not load the tools: {error}"));
+        false
     }
 
     /// Gets an OAuth client when the authorization server permits it, by dynamic registration or
@@ -497,6 +526,7 @@ pub(crate) fn new_server_request(slug: &str, transport: TransportConfig) -> V2Cr
         oauth_client_configuration: None,
         oauth_metadata: None,
         output_compression_threshold_bytes: None,
+        protections: None,
         reset_timeout_on_progress_notification: None,
         tenant_id: None,
         timeout_protocol: None,

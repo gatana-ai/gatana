@@ -215,11 +215,18 @@ pub async fn schema(context: &Context, command: SchemaCommand) -> Result<()> {
             (document, schema)
         }
         // What the patch command sends: the body of the update operation
-        SchemaCommand::Account | SchemaCommand::Team | SchemaCommand::Profile | SchemaCommand::Org => {
+        SchemaCommand::Account
+        | SchemaCommand::Team
+        | SchemaCommand::Profile
+        | SchemaCommand::Org
+        | SchemaCommand::Alert
+        | SchemaCommand::Channel => {
             let operation = match command {
                 SchemaCommand::Account => "updateUser",
                 SchemaCommand::Team => "updateTeam",
                 SchemaCommand::Profile => "updateProfile",
+                SchemaCommand::Alert => "updateAlertRule",
+                SchemaCommand::Channel => "updateNotificationChannel",
                 _ => "updateTenant",
             };
             let document = fetch_document(context, base.join("/api/v1/openapi.json?private=true")?).await?;

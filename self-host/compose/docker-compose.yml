@@ -12,7 +12,7 @@ name: gatana
 
 services:
   app:
-    image: ghcr.io/gatana-ai/gatana:${GATANA_VERSION:-v1.48.6}
+    image: ghcr.io/gatana-ai/gatana:${GATANA_VERSION:-v1.51.3}
     restart: unless-stopped
     # Every Gatana setting in .env reaches the app. This file fixes the settings below.
     env_file: .env
@@ -78,7 +78,7 @@ services:
       start_period: 30s
 
   worker:
-    image: ghcr.io/gatana-ai/gatana-worker:${GATANA_WORKER_VERSION:-v1.3.2}
+    image: ghcr.io/gatana-ai/gatana-worker:${GATANA_WORKER_VERSION:-v1.3.3}
     restart: unless-stopped
     # The worker runs all code that it receives. Never publish its port.
     networks:
@@ -100,7 +100,7 @@ services:
       start_period: 30s
 
   fetcher:
-    image: ghcr.io/gatana-ai/gatana-web-fetcher:${GATANA_FETCHER_VERSION:-v1.14.5}
+    image: ghcr.io/gatana-ai/gatana-web-fetcher:${GATANA_FETCHER_VERSION:-v1.14.6}
     restart: unless-stopped
     healthcheck:
       test: ['CMD', 'wget', '-q', '-O', '/dev/null', 'http://127.0.0.1:8080/healthz']

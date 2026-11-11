@@ -972,6 +972,357 @@ pub mod types {
             value.parse()
         }
     }
+    ///Actions for On mode. Missing targets use organization defaults or built-in values
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ProtectionActions {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub arguments: ::std::option::Option<ProtectionOnAction>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub result: ::std::option::Option<ProtectionOnAction>,
+    }
+    ///Actions for On mode. Missing targets use organization defaults or built-in values
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ProtectionActionsOutput {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub arguments: ::std::option::Option<ProtectionOnAction>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub result: ::std::option::Option<ProtectionOnAction>,
+    }
+    ///`ProtectionCheckTarget`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProtectionCheckTarget {
+        #[serde(rename = "arguments")]
+        Arguments,
+        #[serde(rename = "result")]
+        Result,
+    }
+    impl ::std::fmt::Display for ProtectionCheckTarget {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Arguments => f.write_str("arguments"),
+                Self::Result => f.write_str("result"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProtectionCheckTarget {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "arguments" => Ok(Self::Arguments),
+                "result" => Ok(Self::Result),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProtectionCheckTarget {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ProtectionCheckTarget {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ProtectionCheckType`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProtectionCheckType {
+        #[serde(rename = "secrets")]
+        Secrets,
+        #[serde(rename = "pii")]
+        Pii,
+        #[serde(rename = "injection")]
+        Injection,
+    }
+    impl ::std::fmt::Display for ProtectionCheckType {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Secrets => f.write_str("secrets"),
+                Self::Pii => f.write_str("pii"),
+                Self::Injection => f.write_str("injection"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProtectionCheckType {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "secrets" => Ok(Self::Secrets),
+                "pii" => Ok(Self::Pii),
+                "injection" => Ok(Self::Injection),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProtectionCheckType {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ProtectionCheckType {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ProtectionMode`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProtectionMode {
+        #[serde(rename = "off")]
+        Off,
+        #[serde(rename = "audit")]
+        Audit,
+        #[serde(rename = "on")]
+        On,
+    }
+    impl ::std::fmt::Display for ProtectionMode {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Off => f.write_str("off"),
+                Self::Audit => f.write_str("audit"),
+                Self::On => f.write_str("on"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProtectionMode {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "off" => Ok(Self::Off),
+                "audit" => Ok(Self::Audit),
+                "on" => Ok(Self::On),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProtectionMode {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ProtectionMode {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ProtectionOnAction`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProtectionOnAction {
+        #[serde(rename = "off")]
+        Off,
+        #[serde(rename = "audit")]
+        Audit,
+        #[serde(rename = "redact")]
+        Redact,
+        #[serde(rename = "block")]
+        Block,
+    }
+    impl ::std::fmt::Display for ProtectionOnAction {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Off => f.write_str("off"),
+                Self::Audit => f.write_str("audit"),
+                Self::Redact => f.write_str("redact"),
+                Self::Block => f.write_str("block"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProtectionOnAction {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "off" => Ok(Self::Off),
+                "audit" => Ok(Self::Audit),
+                "redact" => Ok(Self::Redact),
+                "block" => Ok(Self::Block),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProtectionOnAction {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ProtectionOnAction {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ProtectionValueSource`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ProtectionValueSource {
+        #[serde(rename = "server")]
+        Server,
+        #[serde(rename = "organization")]
+        Organization,
+        #[serde(rename = "builtin")]
+        Builtin,
+    }
+    impl ::std::fmt::Display for ProtectionValueSource {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Server => f.write_str("server"),
+                Self::Organization => f.write_str("organization"),
+                Self::Builtin => f.write_str("builtin"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ProtectionValueSource {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "server" => Ok(Self::Server),
+                "organization" => Ok(Self::Organization),
+                "builtin" => Ok(Self::Builtin),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ProtectionValueSource {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ProtectionValueSource {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ResolvedProtection`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ResolvedProtection {
+        pub actions: ResolvedProtectionActions,
+        ///The value and source of each option
+        pub settings: ::std::collections::HashMap<
+            ::std::string::String,
+            ResolvedProtectionSettingsValue,
+        >,
+    }
+    ///`ResolvedProtectionAction`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ResolvedProtectionAction {
+        pub action: ProtectionOnAction,
+        pub inherited: ProtectionOnAction,
+        pub source: ProtectionValueSource,
+    }
+    ///Actions for each supported target in On mode, regardless of the current mode
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ResolvedProtectionActions {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub arguments: ::std::option::Option<ResolvedProtectionAction>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub result: ::std::option::Option<ResolvedProtectionAction>,
+    }
+    ///`ResolvedProtectionSettingsValue`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ResolvedProtectionSettingsValue {
+        ///The value used when the server has no override
+        pub inherited: ::serde_json::Value,
+        pub source: ProtectionValueSource,
+        pub value: ::serde_json::Value,
+    }
+    ///`ResolvedProtections`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ResolvedProtections {
+        pub injection: ResolvedProtection,
+        pub pii: ResolvedProtection,
+        pub secrets: ResolvedProtection,
+    }
     ///`ServerAuthorization`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ServerAuthorization {
@@ -1566,6 +1917,45 @@ pub mod types {
         )]
         pub metadata_url: ::std::option::Option<::std::string::String>,
     }
+    ///`ServerProtection`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ServerProtection {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub actions: ::std::option::Option<ProtectionActions>,
+        pub mode: ProtectionMode,
+        ///Check options. These also apply to protection rules. Missing options use organization defaults or built-in values. Secrets: includeGeneric (boolean) also detects generic key=value secrets. Prompt injection: phrases (boolean, default true) detects injection phrases. Set false to scan only for hidden characters
+        #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
+        pub settings: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    }
+    ///`ServerProtectionOutput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ServerProtectionOutput {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub actions: ::std::option::Option<ProtectionActionsOutput>,
+        pub mode: ProtectionMode,
+        ///Check options. These also apply to protection rules. Missing options use organization defaults or built-in values. Secrets: includeGeneric (boolean) also detects generic key=value secrets. Prompt injection: phrases (boolean, default true) detects injection phrases. Set false to scan only for hidden characters
+        pub settings: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    }
+    ///Built-in protections of the server. A missing protection is off
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ServerProtections {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub injection: ::std::option::Option<ServerProtection>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub pii: ::std::option::Option<ServerProtection>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub secrets: ::std::option::Option<ServerProtection>,
+    }
+    ///Built-in protections of the server. A missing protection is off
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ServerProtectionsOutput {
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub injection: ::std::option::Option<ServerProtectionOutput>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub pii: ::std::option::Option<ServerProtectionOutput>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub secrets: ::std::option::Option<ServerProtectionOutput>,
+    }
     ///`ServerVisibility`
     #[derive(
         ::serde::Deserialize,
@@ -1790,7 +2180,7 @@ pub mod types {
         ///Human-readable description of the server
         #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         pub description: ::std::option::Option<::std::string::String>,
-        ///Firewall rules evaluated against tool calls to the server
+        ///Rules in order. Rules with a condition run before the call and the first deny stops it. A rule with a protection replaces the default of that protection for its tools
         #[serde(
             rename = "firewallRules",
             default,
@@ -1856,6 +2246,8 @@ pub mod types {
             skip_serializing_if = "::std::option::Option::is_none"
         )]
         pub output_compression_threshold_bytes: ::std::option::Option<i64>,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub protections: ::std::option::Option<ServerProtections>,
         ///Whether a progress notification resets the protocol timeout
         #[serde(
             rename = "resetTimeoutOnProgressNotification",
@@ -1910,12 +2302,18 @@ pub mod types {
     ///`V2CreateServerRequestFirewallRulesItem`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct V2CreateServerRequestFirewallRulesItem {
-        ///Action to take when the condition matches
+        ///Condition actions: deny, audit or allow. Allow makes protections record matches without blocking or redacting. Deny rules still apply. Protection actions: block, redact or audit. Block refuses calls with argument matches or withholds results with matches. Redact replaces matched text. Audit records matches and changes nothing
         pub action: V2CreateServerRequestFirewallRulesItemAction,
-        ///CEL representing the condition
-        pub condition: ::std::string::String,
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub check: ::std::option::Option<V2CreateServerRequestFirewallRulesItemCheck>,
+        ///CEL condition on the call; empty matches every call. Must be empty when check is set
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub condition: ::std::option::Option<::std::string::String>,
+        ///Names of the tools that the rule applies to; empty applies it to every tool call
+        #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+        pub tools: ::std::vec::Vec<::std::string::String>,
     }
-    ///Action to take when the condition matches
+    ///Condition actions: deny, audit or allow. Allow makes protections record matches without blocking or redacting. Deny rules still apply. Protection actions: block, redact or audit. Block refuses calls with argument matches or withholds results with matches. Redact replaces matched text. Audit records matches and changes nothing
     #[derive(
         ::serde::Deserialize,
         ::serde::Serialize,
@@ -1931,17 +2329,23 @@ pub mod types {
     pub enum V2CreateServerRequestFirewallRulesItemAction {
         #[serde(rename = "deny")]
         Deny,
-        #[serde(rename = "modify")]
-        Modify,
-        #[serde(rename = "log")]
-        Log,
+        #[serde(rename = "audit")]
+        Audit,
+        #[serde(rename = "block")]
+        Block,
+        #[serde(rename = "redact")]
+        Redact,
+        #[serde(rename = "allow")]
+        Allow,
     }
     impl ::std::fmt::Display for V2CreateServerRequestFirewallRulesItemAction {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
                 Self::Deny => f.write_str("deny"),
-                Self::Modify => f.write_str("modify"),
-                Self::Log => f.write_str("log"),
+                Self::Audit => f.write_str("audit"),
+                Self::Block => f.write_str("block"),
+                Self::Redact => f.write_str("redact"),
+                Self::Allow => f.write_str("allow"),
             }
         }
     }
@@ -1952,8 +2356,10 @@ pub mod types {
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             match value {
                 "deny" => Ok(Self::Deny),
-                "modify" => Ok(Self::Modify),
-                "log" => Ok(Self::Log),
+                "audit" => Ok(Self::Audit),
+                "block" => Ok(Self::Block),
+                "redact" => Ok(Self::Redact),
+                "allow" => Ok(Self::Allow),
                 _ => Err("invalid value".into()),
             }
         }
@@ -1974,6 +2380,13 @@ pub mod types {
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
+    }
+    ///A protection instead of a condition. The rule then sets the action of that protection for its tools and replaces the default of the protection
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct V2CreateServerRequestFirewallRulesItemCheck {
+        pub target: ProtectionCheckTarget,
+        #[serde(rename = "type")]
+        pub type_: ProtectionCheckType,
     }
     ///Transport configuration used to connect to the server
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -2448,7 +2861,7 @@ pub mod types {
         pub created_at: ::std::string::String,
         ///Human-readable description of the server
         pub description: ::std::string::String,
-        ///Firewall rules evaluated against tool calls to the server
+        ///Rules in order. Rules with a condition run before the call and the first deny stops it. A rule with a protection replaces the default of that protection for its tools
         #[serde(rename = "firewallRules")]
         pub firewall_rules: ::std::vec::Vec<V2ServerDtoFirewallRulesItem>,
         ///Unique ID of the server
@@ -2494,9 +2907,12 @@ pub mod types {
         ///Minimum output size in bytes before compression is applied
         #[serde(rename = "outputCompressionThresholdBytes")]
         pub output_compression_threshold_bytes: i64,
+        pub protections: ServerProtectionsOutput,
         ///Whether a progress notification resets the protocol timeout
         #[serde(rename = "resetTimeoutOnProgressNotification")]
         pub reset_timeout_on_progress_notification: bool,
+        #[serde(rename = "resolvedProtections")]
+        pub resolved_protections: ResolvedProtections,
         ///URL-friendly name of the server, unique within the tenant
         pub slug: ::std::string::String,
         ///ID of the tenant that owns the server
@@ -2519,12 +2935,16 @@ pub mod types {
     ///`V2ServerDtoFirewallRulesItem`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct V2ServerDtoFirewallRulesItem {
-        ///Action to take when the condition matches
+        ///Condition actions: deny, audit or allow. Allow makes protections record matches without blocking or redacting. Deny rules still apply. Protection actions: block, redact or audit. Block refuses calls with argument matches or withholds results with matches. Redact replaces matched text. Audit records matches and changes nothing
         pub action: V2ServerDtoFirewallRulesItemAction,
-        ///CEL representing the condition
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub check: ::std::option::Option<V2ServerDtoFirewallRulesItemCheck>,
+        ///CEL condition on the call; empty matches every call. Must be empty when check is set
         pub condition: ::std::string::String,
+        ///Names of the tools that the rule applies to; empty applies it to every tool call
+        pub tools: ::std::vec::Vec<::std::string::String>,
     }
-    ///Action to take when the condition matches
+    ///Condition actions: deny, audit or allow. Allow makes protections record matches without blocking or redacting. Deny rules still apply. Protection actions: block, redact or audit. Block refuses calls with argument matches or withholds results with matches. Redact replaces matched text. Audit records matches and changes nothing
     #[derive(
         ::serde::Deserialize,
         ::serde::Serialize,
@@ -2540,17 +2960,23 @@ pub mod types {
     pub enum V2ServerDtoFirewallRulesItemAction {
         #[serde(rename = "deny")]
         Deny,
-        #[serde(rename = "modify")]
-        Modify,
-        #[serde(rename = "log")]
-        Log,
+        #[serde(rename = "audit")]
+        Audit,
+        #[serde(rename = "block")]
+        Block,
+        #[serde(rename = "redact")]
+        Redact,
+        #[serde(rename = "allow")]
+        Allow,
     }
     impl ::std::fmt::Display for V2ServerDtoFirewallRulesItemAction {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
                 Self::Deny => f.write_str("deny"),
-                Self::Modify => f.write_str("modify"),
-                Self::Log => f.write_str("log"),
+                Self::Audit => f.write_str("audit"),
+                Self::Block => f.write_str("block"),
+                Self::Redact => f.write_str("redact"),
+                Self::Allow => f.write_str("allow"),
             }
         }
     }
@@ -2561,8 +2987,10 @@ pub mod types {
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             match value {
                 "deny" => Ok(Self::Deny),
-                "modify" => Ok(Self::Modify),
-                "log" => Ok(Self::Log),
+                "audit" => Ok(Self::Audit),
+                "block" => Ok(Self::Block),
+                "redact" => Ok(Self::Redact),
+                "allow" => Ok(Self::Allow),
                 _ => Err("invalid value".into()),
             }
         }
@@ -2583,6 +3011,13 @@ pub mod types {
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
+    }
+    ///A protection instead of a condition. The rule then sets the action of that protection for its tools and replaces the default of the protection
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct V2ServerDtoFirewallRulesItemCheck {
+        pub target: ProtectionCheckTarget,
+        #[serde(rename = "type")]
+        pub type_: ProtectionCheckType,
     }
     ///Transport configuration used to connect to the server
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]

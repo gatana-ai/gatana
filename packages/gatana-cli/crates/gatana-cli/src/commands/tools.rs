@@ -1,5 +1,5 @@
 //! `gatana tools`: `ls` lists the enabled tools, shows the arguments of one tool with an example call,
-//! and calls a tool.
+//! calls a tool, and `refresh` loads the tools again from the servers.
 //!
 //! Tools are read raw: their schemas are free-form JSON Schema, and the server objects that say
 //! whether a server is enabled are a union the backend grows.
@@ -29,11 +29,14 @@ const ARGUMENT_COLUMNS: [Column; 4] = [
     Column::path("Required", "required"),
     Column::path("Description", "description"),
 ];
+const REFRESH_COLUMNS: [Column; 3] =
+    [Column::path("Server", "server"), Column::path("Tools", "tools"), Column::path("Error", "error")];
 
 pub async fn run(context: &Context, args: ToolsArgs) -> Result<()> {
     match (args.command, args.tool) {
         (Some(ToolsCommand::Ls { server, all }), _) => list(context, server.as_deref(), all).await,
         (Some(ToolsCommand::Call(call)), _) => call_tool(context, call).await,
+        (Some(ToolsCommand::Refresh { server }), _) => refresh(context, server.as_deref()).await,
         (None, Some(name)) => show(context, &name).await,
         // Only a global flag such as "-o json" was given; without any, clap prints the help.
         (None, None) => bail!("Give a tool name, or list the tools with \"gatana tools ls\""),
@@ -84,6 +87,9 @@ async fn list(context: &Context, server: Option<&str>, all: bool) -> Result<()> 
         } else {
             output::println(&format!("No enabled tools found{scope}. Add --all to see the disabled tools too."));
         }
+        if let Some(slug) = server {
+            output::println(&format!("To load the tools from the server, run: gatana tools refresh --server {slug}"));
+        }
         return Ok(());
     }
     let rows: Vec<Value> = tools
@@ -99,6 +105,70 @@ async fn list(context: &Context, server: Option<&str>, all: bool) -> Result<()> 
     let columns: &[Column] = if all { &ALL_TOOL_COLUMNS } else { &TOOL_COLUMNS };
     output::output(&Value::Array(rows), Options::columns(columns));
     Ok(())
+}
+
+/// `gatana tools refresh [--server <slug>]`. The exit code is 1 if a server did not answer.
+async fn refresh(context: &Context, server: Option<&str>) -> Result<()> {
+    let api = context.api().await?;
+    let results = output::spinner("Loading the tools...", refresh_tools(api, server)).await?;
+    let failed = results.iter().filter(|result| refresh_error(result).is_some()).count();
+    if output::machine_readable() {
+        output::print(&Value::Array(results));
+    } else if let (Some(slug), [result]) = (server, results.as_slice()) {
+        if let Some(error) = refresh_error(result) {
+            bail!("Could not load the tools of server '{slug}': {error}");
+        }
+        output::success(&format!("Loaded {} tool(s) from server '{slug}'.", tool_count(result)));
+    } else {
+        let rows: Vec<Value> = results
+            .iter()
+            .map(|result| {
+                json!({
+                    "server": text_at(result, "/serverSlug").unwrap_or_default(),
+                    "tools": tool_count(result),
+                    "error": refresh_error(result).unwrap_or_default(),
+                })
+            })
+            .collect();
+        output::output(&Value::Array(rows), Options::columns(&REFRESH_COLUMNS));
+    }
+    if failed > 0 {
+        bail!("Could not load the tools of {failed} server(s).");
+    }
+    Ok(())
+}
+
+/// Asks the servers for their tools and stores the lists in Gatana, which reads tools only from
+/// these lists. The route streams one `server-refreshed` event for each server, with `success`,
+/// `toolCount` and `error`. A `server-error` event has no server slug, and an `error` event (a
+/// missing or disabled server) has only `error`.
+pub async fn refresh_tools(api: &gatana_api::Client, server: Option<&str>) -> Result<Vec<Value>> {
+    let query = v1::query::RefreshTools { server_slug: server.map(str::to_string) };
+    let response = api.v1().refresh_tools(&query).header("accept", "text/event-stream").send().await?;
+    let stream = response.value.as_str().unwrap_or_default();
+    let results = stream
+        .split("\n\n")
+        .filter_map(|event| {
+            let name = event.lines().find_map(|line| line.strip_prefix("event: "))?;
+            let data = event.lines().find_map(|line| line.strip_prefix("data: "))?;
+            matches!(name, "server-refreshed" | "server-error" | "error")
+                .then(|| serde_json::from_str(data).ok())
+                .flatten()
+        })
+        .collect();
+    Ok(results)
+}
+
+/// The first line of the error of one server's refresh. OAuth errors add lines of detail.
+pub fn refresh_error(result: &Value) -> Option<String> {
+    if result.get("success") == Some(&Value::Bool(true)) {
+        return None;
+    }
+    Some(first_line(text_at(result, "/error").unwrap_or("Unknown error"), DESCRIPTION_WIDTH))
+}
+
+pub fn tool_count(result: &Value) -> u64 {
+    result.get("toolCount").and_then(Value::as_u64).unwrap_or(0)
 }
 
 /// `gatana tools <tool>`: the description, the arguments and an example call.

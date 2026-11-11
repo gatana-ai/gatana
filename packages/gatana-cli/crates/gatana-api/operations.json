@@ -86,7 +86,20 @@
         "getTenant",
         "updateTenant",
         "getTenantSubscription",
-        "getQuotaAndUsage"
+        "getQuotaAndUsage",
+        "listAlertRules",
+        "createAlertRule",
+        "previewAlertRule",
+        "updateAlertRule",
+        "deleteAlertRule",
+        "listNotificationChannelKinds",
+        "listNotificationChannels",
+        "createNotificationChannel",
+        "updateNotificationChannel",
+        "deleteNotificationChannel",
+        "rotateNotificationChannelSecret",
+        "testNotificationChannel",
+        "listNotifications"
       ],
       "schemas": ["DeploymentLogPayload"]
     },
