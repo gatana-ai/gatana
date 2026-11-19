@@ -1,7 +1,7 @@
 [package]
 name = "gatana-cli"
 description = "CLI for Gatana: manage servers, tools, credentials and skills"
-version = "5.2.0"
+version = "5.3.0"
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
