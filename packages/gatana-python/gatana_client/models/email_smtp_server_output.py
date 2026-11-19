@@ -5,7 +5,7 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_653 import Schema653
+from ..models.schema_683 import Schema683
 
 T = TypeVar("T", bound="EmailSmtpServerOutput")
 
@@ -17,12 +17,12 @@ class EmailSmtpServerOutput:
     Attributes:
         host (str): Host name of the SMTP server, for example smtp.gmail.com
         port (int):
-        security (Schema653):
+        security (Schema683):
     """
 
     host: str
     port: int
-    security: Schema653
+    security: Schema683
 
     def to_dict(self) -> dict[str, Any]:
         host = self.host
@@ -50,7 +50,7 @@ class EmailSmtpServerOutput:
 
         port = d.pop("port")
 
-        security = Schema653(d.pop("security"))
+        security = Schema683(d.pop("security"))
 
         email_smtp_server_output = cls(
             host=host,

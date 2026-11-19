@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_967 import Schema967
+from ..models.schema_1026 import Schema1026
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.deployment_container_status import DeploymentContainerStatus
-    from ..models.schema_926 import Schema926
-    from ..models.schema_995 import Schema995
-    from ..models.schema_997 import Schema997
+    from ..models.schema_985 import Schema985
+    from ..models.schema_1054 import Schema1054
+    from ..models.schema_1056 import Schema1056
 
 
 T = TypeVar("T", bound="DeploymentLogPayloadPodInfo")
@@ -23,7 +23,7 @@ class DeploymentLogPayloadPodInfo:
     """
     Attributes:
         type_ (Literal['podInfo']): Event type discriminator, always "podInfo"
-        status (Schema967): Status of the pod
+        status (Schema1026): Status of the pod
         created_at (str): Time when the pod was created
         pod (str): Name of the pod
         init_containers (list[str]): Names of the init containers
@@ -37,14 +37,14 @@ class DeploymentLogPayloadPodInfo:
         waiting_reason (None | str): Reason a container is waiting, or null
         restart_count (float): Number of container restarts
         has_previous_failure (bool): Whether a previous container instance failed
-        last_fail_condition (None | Schema926): Pod condition of the last failure, or null
+        last_fail_condition (None | Schema985): Pod condition of the last failure, or null
         is_sandbox (bool): Whether the pod belongs to a sandbox
-        resource_limits (Schema997): Resources reserved for the pod
-        last_failure (Schema995 | Unset):
+        resource_limits (Schema1056): Resources reserved for the pod
+        last_failure (Schema1054 | Unset):
     """
 
     type_: Literal["podInfo"]
-    status: Schema967
+    status: Schema1026
     created_at: str
     pod: str
     init_containers: list[str]
@@ -55,13 +55,13 @@ class DeploymentLogPayloadPodInfo:
     waiting_reason: None | str
     restart_count: float
     has_previous_failure: bool
-    last_fail_condition: None | Schema926
+    last_fail_condition: None | Schema985
     is_sandbox: bool
-    resource_limits: Schema997
-    last_failure: Schema995 | Unset = UNSET
+    resource_limits: Schema1056
+    last_failure: Schema1054 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.schema_926 import Schema926
+        from ..models.schema_985 import Schema985
 
         type_ = self.type_
 
@@ -78,9 +78,9 @@ class DeploymentLogPayloadPodInfo:
         readable_containers = self.readable_containers
 
         container_statuses = []
-        for componentsschemas_schema976_item_data in self.container_statuses:
-            componentsschemas_schema976_item = componentsschemas_schema976_item_data.to_dict()
-            container_statuses.append(componentsschemas_schema976_item)
+        for componentsschemas_schema1035_item_data in self.container_statuses:
+            componentsschemas_schema1035_item = componentsschemas_schema1035_item_data.to_dict()
+            container_statuses.append(componentsschemas_schema1035_item)
 
         containers = self.containers
 
@@ -92,7 +92,7 @@ class DeploymentLogPayloadPodInfo:
         has_previous_failure = self.has_previous_failure
 
         last_fail_condition: dict[str, Any] | None
-        if isinstance(self.last_fail_condition, Schema926):
+        if isinstance(self.last_fail_condition, Schema985):
             last_fail_condition = self.last_fail_condition.to_dict()
         else:
             last_fail_condition = self.last_fail_condition
@@ -134,16 +134,16 @@ class DeploymentLogPayloadPodInfo:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.deployment_container_status import DeploymentContainerStatus
-        from ..models.schema_926 import Schema926
-        from ..models.schema_995 import Schema995
-        from ..models.schema_997 import Schema997
+        from ..models.schema_985 import Schema985
+        from ..models.schema_1054 import Schema1054
+        from ..models.schema_1056 import Schema1056
 
         d = dict(src_dict)
         type_ = cast(Literal["podInfo"], d.pop("type"))
         if type_ != "podInfo":
             raise ValueError(f"type must match const 'podInfo', got '{type_}'")
 
-        status = Schema967(d.pop("status"))
+        status = Schema1026(d.pop("status"))
 
         created_at = d.pop("createdAt")
 
@@ -157,12 +157,12 @@ class DeploymentLogPayloadPodInfo:
 
         container_statuses = []
         _container_statuses = d.pop("containerStatuses")
-        for componentsschemas_schema976_item_data in _container_statuses:
-            componentsschemas_schema976_item = DeploymentContainerStatus.from_dict(
-                componentsschemas_schema976_item_data
+        for componentsschemas_schema1035_item_data in _container_statuses:
+            componentsschemas_schema1035_item = DeploymentContainerStatus.from_dict(
+                componentsschemas_schema1035_item_data
             )
 
-            container_statuses.append(componentsschemas_schema976_item)
+            container_statuses.append(componentsschemas_schema1035_item)
 
         containers = cast(list[str], d.pop("containers"))
 
@@ -177,31 +177,31 @@ class DeploymentLogPayloadPodInfo:
 
         has_previous_failure = d.pop("hasPreviousFailure")
 
-        def _parse_last_fail_condition(data: object) -> None | Schema926:
+        def _parse_last_fail_condition(data: object) -> None | Schema985:
             if data is None:
                 return data
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema994_type_0 = Schema926.from_dict(data)
+                componentsschemas_schema1053_type_0 = Schema985.from_dict(data)
 
-                return componentsschemas_schema994_type_0
+                return componentsschemas_schema1053_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema926, data)
+            return cast(None | Schema985, data)
 
         last_fail_condition = _parse_last_fail_condition(d.pop("lastFailCondition"))
 
         is_sandbox = d.pop("isSandbox")
 
-        resource_limits = Schema997.from_dict(d.pop("resourceLimits"))
+        resource_limits = Schema1056.from_dict(d.pop("resourceLimits"))
 
         _last_failure = d.pop("lastFailure", UNSET)
-        last_failure: Schema995 | Unset
+        last_failure: Schema1054 | Unset
         if isinstance(_last_failure, Unset):
             last_failure = UNSET
         else:
-            last_failure = Schema995.from_dict(_last_failure)
+            last_failure = Schema1054.from_dict(_last_failure)
 
         deployment_log_payload_pod_info = cls(
             type_=type_,

@@ -44,9 +44,9 @@ class DeploymentStatusResponse:
         is_stabilizing = self.is_stabilizing
 
         deployments = []
-        for componentsschemas_schema913_item_data in self.deployments:
-            componentsschemas_schema913_item = componentsschemas_schema913_item_data.to_dict()
-            deployments.append(componentsschemas_schema913_item)
+        for componentsschemas_schema972_item_data in self.deployments:
+            componentsschemas_schema972_item = componentsschemas_schema972_item_data.to_dict()
+            deployments.append(componentsschemas_schema972_item)
 
         current_replica_set = self.current_replica_set
 
@@ -89,10 +89,10 @@ class DeploymentStatusResponse:
 
         deployments = []
         _deployments = d.pop("deployments")
-        for componentsschemas_schema913_item_data in _deployments:
-            componentsschemas_schema913_item = DeploymentStatus.from_dict(componentsschemas_schema913_item_data)
+        for componentsschemas_schema972_item_data in _deployments:
+            componentsschemas_schema972_item = DeploymentStatus.from_dict(componentsschemas_schema972_item_data)
 
-            deployments.append(componentsschemas_schema913_item)
+            deployments.append(componentsschemas_schema972_item)
 
         current_replica_set = d.pop("currentReplicaSet", UNSET)
 
@@ -104,9 +104,9 @@ class DeploymentStatusResponse:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema940_type_0 = ServerStorageStatus.from_dict(data)
+                componentsschemas_schema999_type_0 = ServerStorageStatus.from_dict(data)
 
-                return componentsschemas_schema940_type_0
+                return componentsschemas_schema999_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | ServerStorageStatus | Unset, data)

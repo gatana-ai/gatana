@@ -6,8 +6,8 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_206 import Schema206
-from ...models.schema_771 import Schema771
+from ...models.schema_222 import Schema222
+from ...models.schema_823 import Schema823
 from ...types import UNSET, Response, Unset
 
 
@@ -15,7 +15,7 @@ def _get_kwargs(
     server_slug: str,
     tool_name: str,
     *,
-    body: Schema206 | Unset = UNSET,
+    body: Schema222 | Unset = UNSET,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
 
@@ -36,9 +36,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema771 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema823 | None:
     if response.status_code == 200:
-        response_200 = Schema771.from_dict(response.json())
+        response_200 = Schema823.from_dict(response.json())
 
         return response_200
 
@@ -48,7 +48,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema771]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema823]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -62,22 +62,22 @@ def sync_detailed(
     tool_name: str,
     *,
     client: AuthenticatedClient | Client,
-    body: Schema206 | Unset = UNSET,
-) -> Response[Schema771]:
+    body: Schema222 | Unset = UNSET,
+) -> Response[Schema823]:
     """Enable or disable a single tool of an MCP server. Tells the connected MCP clients that the tool list
     changed
 
     Args:
         server_slug (str):
         tool_name (str):
-        body (Schema206 | Unset):
+        body (Schema222 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema771]
+        Response[Schema823]
     """
 
     kwargs = _get_kwargs(
@@ -98,22 +98,22 @@ def sync(
     tool_name: str,
     *,
     client: AuthenticatedClient | Client,
-    body: Schema206 | Unset = UNSET,
-) -> Schema771 | None:
+    body: Schema222 | Unset = UNSET,
+) -> Schema823 | None:
     """Enable or disable a single tool of an MCP server. Tells the connected MCP clients that the tool list
     changed
 
     Args:
         server_slug (str):
         tool_name (str):
-        body (Schema206 | Unset):
+        body (Schema222 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema771
+        Schema823
     """
 
     return sync_detailed(
@@ -129,22 +129,22 @@ async def asyncio_detailed(
     tool_name: str,
     *,
     client: AuthenticatedClient | Client,
-    body: Schema206 | Unset = UNSET,
-) -> Response[Schema771]:
+    body: Schema222 | Unset = UNSET,
+) -> Response[Schema823]:
     """Enable or disable a single tool of an MCP server. Tells the connected MCP clients that the tool list
     changed
 
     Args:
         server_slug (str):
         tool_name (str):
-        body (Schema206 | Unset):
+        body (Schema222 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema771]
+        Response[Schema823]
     """
 
     kwargs = _get_kwargs(
@@ -163,22 +163,22 @@ async def asyncio(
     tool_name: str,
     *,
     client: AuthenticatedClient | Client,
-    body: Schema206 | Unset = UNSET,
-) -> Schema771 | None:
+    body: Schema222 | Unset = UNSET,
+) -> Schema823 | None:
     """Enable or disable a single tool of an MCP server. Tells the connected MCP clients that the tool list
     changed
 
     Args:
         server_slug (str):
         tool_name (str):
-        body (Schema206 | Unset):
+        body (Schema222 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema771
+        Schema823
     """
 
     return (

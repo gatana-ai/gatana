@@ -5,6 +5,8 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
+from ..models.protection_value_source import ProtectionValueSource
+
 T = TypeVar("T", bound="Schema772")
 
 
@@ -12,44 +14,29 @@ T = TypeVar("T", bound="Schema772")
 class Schema772:
     """
     Attributes:
-        tool_name (str): Tool name as reported by the MCP server
-        tool_name_override (str): Replacement tool name, applied when overrideToolName is true
-        description (str): Tool description as reported by the MCP server
-        description_override (str): Replacement description, applied when overrideDescription is true
-        server_slug (str):
-        is_enabled (bool): Whether the tool is enabled and exposed to clients
+        value (Any):
+        source (ProtectionValueSource):
+        inherited (Any): The value used when the server has no override
     """
 
-    tool_name: str
-    tool_name_override: str
-    description: str
-    description_override: str
-    server_slug: str
-    is_enabled: bool
+    value: Any
+    source: ProtectionValueSource
+    inherited: Any
 
     def to_dict(self) -> dict[str, Any]:
-        tool_name = self.tool_name
+        value = self.value
 
-        tool_name_override = self.tool_name_override
+        source = self.source.value
 
-        description = self.description
-
-        description_override = self.description_override
-
-        server_slug = self.server_slug
-
-        is_enabled = self.is_enabled
+        inherited = self.inherited
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "toolName": tool_name,
-                "toolNameOverride": tool_name_override,
-                "description": description,
-                "descriptionOverride": description_override,
-                "serverSlug": server_slug,
-                "isEnabled": is_enabled,
+                "value": value,
+                "source": source,
+                "inherited": inherited,
             }
         )
 
@@ -58,25 +45,16 @@ class Schema772:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        tool_name = d.pop("toolName")
+        value = d.pop("value")
 
-        tool_name_override = d.pop("toolNameOverride")
+        source = ProtectionValueSource(d.pop("source"))
 
-        description = d.pop("description")
-
-        description_override = d.pop("descriptionOverride")
-
-        server_slug = d.pop("serverSlug")
-
-        is_enabled = d.pop("isEnabled")
+        inherited = d.pop("inherited")
 
         schema_772 = cls(
-            tool_name=tool_name,
-            tool_name_override=tool_name_override,
-            description=description,
-            description_override=description_override,
-            server_slug=server_slug,
-            is_enabled=is_enabled,
+            value=value,
+            source=source,
+            inherited=inherited,
         )
 
         return schema_772

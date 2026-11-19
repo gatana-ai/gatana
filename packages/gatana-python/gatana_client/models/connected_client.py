@@ -5,7 +5,7 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1249 import Schema1249
+from ..models.schema_1304 import Schema1304
 
 T = TypeVar("T", bound="ConnectedClient")
 
@@ -19,7 +19,7 @@ class ConnectedClient:
         label (str): Name the user gave the connection; empty when unnamed
         client_info_name (str): Name the client reported over MCP; empty when it never reported one
         client_info_version (str): Version the client reported over MCP; empty when unknown
-        kind (Schema1249): How the client registered itself, or external when it did not
+        kind (Schema1304): How the client registered itself, external when it did not, or slack for Slackbot
         is_active (bool): Whether the connection can still be used: it holds a renewable refresh token, or for an
             external client, it made a request recently
         profile_ids (list[str]): Profiles the user attached to this connection
@@ -27,6 +27,9 @@ class ConnectedClient:
         last_authorized_at (None | str): When the client last completed an authorization; null when not seen since
             recording began, and always null for an external client
         last_used_at (None | str): When the client last made a request; null when it has not made one
+        last_skills_list_at (None | str): When the client last listed skills over MCP (`skills/list`); null when it has
+            not listed any since recording began
+        last_skills_list_version (str): Version the client reported when it last listed skills; empty when unknown
     """
 
     client_id: str
@@ -34,12 +37,14 @@ class ConnectedClient:
     label: str
     client_info_name: str
     client_info_version: str
-    kind: Schema1249
+    kind: Schema1304
     is_active: bool
     profile_ids: list[str]
     first_seen_at: None | str
     last_authorized_at: None | str
     last_used_at: None | str
+    last_skills_list_at: None | str
+    last_skills_list_version: str
 
     def to_dict(self) -> dict[str, Any]:
         client_id = self.client_id
@@ -67,6 +72,11 @@ class ConnectedClient:
         last_used_at: None | str
         last_used_at = self.last_used_at
 
+        last_skills_list_at: None | str
+        last_skills_list_at = self.last_skills_list_at
+
+        last_skills_list_version = self.last_skills_list_version
+
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
@@ -82,6 +92,8 @@ class ConnectedClient:
                 "firstSeenAt": first_seen_at,
                 "lastAuthorizedAt": last_authorized_at,
                 "lastUsedAt": last_used_at,
+                "lastSkillsListAt": last_skills_list_at,
+                "lastSkillsListVersion": last_skills_list_version,
             }
         )
 
@@ -100,7 +112,7 @@ class ConnectedClient:
 
         client_info_version = d.pop("clientInfoVersion")
 
-        kind = Schema1249(d.pop("kind"))
+        kind = Schema1304(d.pop("kind"))
 
         is_active = d.pop("isActive")
 
@@ -127,6 +139,15 @@ class ConnectedClient:
 
         last_used_at = _parse_last_used_at(d.pop("lastUsedAt"))
 
+        def _parse_last_skills_list_at(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        last_skills_list_at = _parse_last_skills_list_at(d.pop("lastSkillsListAt"))
+
+        last_skills_list_version = d.pop("lastSkillsListVersion")
+
         connected_client = cls(
             client_id=client_id,
             name=name,
@@ -139,6 +160,8 @@ class ConnectedClient:
             first_seen_at=first_seen_at,
             last_authorized_at=last_authorized_at,
             last_used_at=last_used_at,
+            last_skills_list_at=last_skills_list_at,
+            last_skills_list_version=last_skills_list_version,
         )
 
         return connected_client

@@ -5,7 +5,7 @@ from typing import Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_624 import Schema624
+from ..models.schema_654 import Schema654
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="OpenApiTransportConfigOutput")
@@ -16,7 +16,7 @@ class OpenApiTransportConfigOutput:
     """
     Attributes:
         type_ (Literal['openapi']): Transport type discriminator, always "openapi"
-        method (Schema624): How the OpenAPI spec is supplied: from a URL or as inline content
+        method (Schema654): How the OpenAPI spec is supplied: from a URL or as inline content
         spec_url (Literal[''] | str):
         spec (str):
         base_url (Literal[''] | str):
@@ -24,7 +24,7 @@ class OpenApiTransportConfigOutput:
     """
 
     type_: Literal["openapi"]
-    method: Schema624
+    method: Schema654
     spec_url: Literal[""] | str
     spec: str
     base_url: Literal[""] | str
@@ -46,14 +46,14 @@ class OpenApiTransportConfigOutput:
         headers: list[list[str]] | Unset = UNSET
         if not isinstance(self.headers, Unset):
             headers = []
-            for componentsschemas_schema631_item_data in self.headers:
-                componentsschemas_schema631_item = []
-                for componentsschemas_schema631_item_item_data in componentsschemas_schema631_item_data:
-                    componentsschemas_schema631_item_item: str
-                    componentsschemas_schema631_item_item = componentsschemas_schema631_item_item_data
-                    componentsschemas_schema631_item.append(componentsschemas_schema631_item_item)
+            for componentsschemas_schema661_item_data in self.headers:
+                componentsschemas_schema661_item = []
+                for componentsschemas_schema661_item_item_data in componentsschemas_schema661_item_data:
+                    componentsschemas_schema661_item_item: str
+                    componentsschemas_schema661_item_item = componentsschemas_schema661_item_item_data
+                    componentsschemas_schema661_item.append(componentsschemas_schema661_item_item)
 
-                headers.append(componentsschemas_schema631_item)
+                headers.append(componentsschemas_schema661_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -78,15 +78,15 @@ class OpenApiTransportConfigOutput:
         if type_ != "openapi":
             raise ValueError(f"type must match const 'openapi', got '{type_}'")
 
-        method = Schema624(d.pop("method"))
+        method = Schema654(d.pop("method"))
 
         def _parse_spec_url(data: object) -> Literal[""] | str:
-            componentsschemas_schema625_type_1 = cast(Literal[""], data)
-            if componentsschemas_schema625_type_1 != "":
+            componentsschemas_schema655_type_1 = cast(Literal[""], data)
+            if componentsschemas_schema655_type_1 != "":
                 raise ValueError(
-                    f"/components/schemas/__schema625_type_1 must match const '', got '{componentsschemas_schema625_type_1}'"
+                    f"/components/schemas/__schema655_type_1 must match const '', got '{componentsschemas_schema655_type_1}'"
                 )
-            return componentsschemas_schema625_type_1
+            return componentsschemas_schema655_type_1
             return cast(Literal[""] | str, data)
 
         spec_url = _parse_spec_url(d.pop("specUrl"))
@@ -94,12 +94,12 @@ class OpenApiTransportConfigOutput:
         spec = d.pop("spec")
 
         def _parse_base_url(data: object) -> Literal[""] | str:
-            componentsschemas_schema629_type_1 = cast(Literal[""], data)
-            if componentsschemas_schema629_type_1 != "":
+            componentsschemas_schema659_type_1 = cast(Literal[""], data)
+            if componentsschemas_schema659_type_1 != "":
                 raise ValueError(
-                    f"/components/schemas/__schema629_type_1 must match const '', got '{componentsschemas_schema629_type_1}'"
+                    f"/components/schemas/__schema659_type_1 must match const '', got '{componentsschemas_schema659_type_1}'"
                 )
-            return componentsschemas_schema629_type_1
+            return componentsschemas_schema659_type_1
             return cast(Literal[""] | str, data)
 
         base_url = _parse_base_url(d.pop("baseUrl"))
@@ -108,21 +108,21 @@ class OpenApiTransportConfigOutput:
         headers: list[list[str]] | Unset = UNSET
         if _headers is not UNSET:
             headers = []
-            for componentsschemas_schema631_item_data in _headers:
-                componentsschemas_schema631_item = []
-                _componentsschemas_schema631_item = componentsschemas_schema631_item_data
-                for componentsschemas_schema631_item_item_data in _componentsschemas_schema631_item:
+            for componentsschemas_schema661_item_data in _headers:
+                componentsschemas_schema661_item = []
+                _componentsschemas_schema661_item = componentsschemas_schema661_item_data
+                for componentsschemas_schema661_item_item_data in _componentsschemas_schema661_item:
 
-                    def _parse_componentsschemas_schema631_item_item(data: object) -> str:
+                    def _parse_componentsschemas_schema661_item_item(data: object) -> str:
                         return cast(str, data)
 
-                    componentsschemas_schema631_item_item = _parse_componentsschemas_schema631_item_item(
-                        componentsschemas_schema631_item_item_data
+                    componentsschemas_schema661_item_item = _parse_componentsschemas_schema661_item_item(
+                        componentsschemas_schema661_item_item_data
                     )
 
-                    componentsschemas_schema631_item.append(componentsschemas_schema631_item_item)
+                    componentsschemas_schema661_item.append(componentsschemas_schema661_item_item)
 
-                headers.append(componentsschemas_schema631_item)
+                headers.append(componentsschemas_schema661_item)
 
         open_api_transport_config_output = cls(
             type_=type_,

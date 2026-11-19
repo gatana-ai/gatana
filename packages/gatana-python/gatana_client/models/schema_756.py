@@ -5,21 +5,64 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
+from ..models.schema_757 import Schema757
+from ..models.schema_758 import Schema758
+from ..types import UNSET, Unset
+
 T = TypeVar("T", bound="Schema756")
 
 
 @_attrs_define
 class Schema756:
-    """JSON schema for the tool input"""
+    """Actions for On mode. Missing targets use organization defaults or built-in values
+
+    Attributes:
+        arguments (Schema757 | Unset):
+        result (Schema758 | Unset):
+    """
+
+    arguments: Schema757 | Unset = UNSET
+    result: Schema758 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
+        arguments: str | Unset = UNSET
+        if not isinstance(self.arguments, Unset):
+            arguments = self.arguments.value
+
+        result: str | Unset = UNSET
+        if not isinstance(self.result, Unset):
+            result = self.result.value
 
         field_dict: dict[str, Any] = {}
+
+        field_dict.update({})
+        if arguments is not UNSET:
+            field_dict["arguments"] = arguments
+        if result is not UNSET:
+            field_dict["result"] = result
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        schema_756 = cls()
+        d = dict(src_dict)
+        _arguments = d.pop("arguments", UNSET)
+        arguments: Schema757 | Unset
+        if isinstance(_arguments, Unset):
+            arguments = UNSET
+        else:
+            arguments = Schema757(_arguments)
+
+        _result = d.pop("result", UNSET)
+        result: Schema758 | Unset
+        if isinstance(_result, Unset):
+            result = UNSET
+        else:
+            result = Schema758(_result)
+
+        schema_756 = cls(
+            arguments=arguments,
+            result=result,
+        )
 
         return schema_756

@@ -6,14 +6,24 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.list_connected_clients_response import ListConnectedClientsResponse
-from ...types import Response
+from ...types import UNSET, Response, Unset
 
 
-def _get_kwargs() -> dict[str, Any]:
+def _get_kwargs(
+    *,
+    user_id: str | Unset = UNSET,
+) -> dict[str, Any]:
+
+    params: dict[str, Any] = {}
+
+    params["userId"] = user_id
+
+    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/connected-clients",
+        "params": params,
     }
 
     return _kwargs
@@ -47,8 +57,12 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
+    user_id: str | Unset = UNSET,
 ) -> Response[ListConnectedClientsResponse]:
-    """List the OAuth clients the signed-in user has authorized
+    """List authorized OAuth clients for the signed-in user or a user the caller can update
+
+    Args:
+        user_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -58,7 +72,9 @@ def sync_detailed(
         Response[ListConnectedClientsResponse]
     """
 
-    kwargs = _get_kwargs()
+    kwargs = _get_kwargs(
+        user_id=user_id,
+    )
 
     response = client.get_httpx_client().request(
         **kwargs,
@@ -70,8 +86,12 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient | Client,
+    user_id: str | Unset = UNSET,
 ) -> ListConnectedClientsResponse | None:
-    """List the OAuth clients the signed-in user has authorized
+    """List authorized OAuth clients for the signed-in user or a user the caller can update
+
+    Args:
+        user_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -83,14 +103,19 @@ def sync(
 
     return sync_detailed(
         client=client,
+        user_id=user_id,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
+    user_id: str | Unset = UNSET,
 ) -> Response[ListConnectedClientsResponse]:
-    """List the OAuth clients the signed-in user has authorized
+    """List authorized OAuth clients for the signed-in user or a user the caller can update
+
+    Args:
+        user_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -100,7 +125,9 @@ async def asyncio_detailed(
         Response[ListConnectedClientsResponse]
     """
 
-    kwargs = _get_kwargs()
+    kwargs = _get_kwargs(
+        user_id=user_id,
+    )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -110,8 +137,12 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient | Client,
+    user_id: str | Unset = UNSET,
 ) -> ListConnectedClientsResponse | None:
-    """List the OAuth clients the signed-in user has authorized
+    """List authorized OAuth clients for the signed-in user or a user the caller can update
+
+    Args:
+        user_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -124,5 +155,6 @@ async def asyncio(
     return (
         await asyncio_detailed(
             client=client,
+            user_id=user_id,
         )
     ).parsed

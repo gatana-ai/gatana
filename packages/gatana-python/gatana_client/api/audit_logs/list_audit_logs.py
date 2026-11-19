@@ -118,7 +118,8 @@ def sync_detailed(
     search: str | Unset = UNSET,
     filter_: list[str] | str | Unset = UNSET,
 ) -> Response[PaginatedAuditLogResponse]:
-    """List audit log entries page by page. Callers without full access only see their own entries
+    """List audit log summaries page by page, limited to entries for the caller unless full access is
+    granted; get one entry for complete details
 
     Args:
         page (str | Unset):
@@ -174,7 +175,8 @@ def sync(
     search: str | Unset = UNSET,
     filter_: list[str] | str | Unset = UNSET,
 ) -> PaginatedAuditLogResponse | None:
-    """List audit log entries page by page. Callers without full access only see their own entries
+    """List audit log summaries page by page, limited to entries for the caller unless full access is
+    granted; get one entry for complete details
 
     Args:
         page (str | Unset):
@@ -225,7 +227,8 @@ async def asyncio_detailed(
     search: str | Unset = UNSET,
     filter_: list[str] | str | Unset = UNSET,
 ) -> Response[PaginatedAuditLogResponse]:
-    """List audit log entries page by page. Callers without full access only see their own entries
+    """List audit log summaries page by page, limited to entries for the caller unless full access is
+    granted; get one entry for complete details
 
     Args:
         page (str | Unset):
@@ -279,7 +282,8 @@ async def asyncio(
     search: str | Unset = UNSET,
     filter_: list[str] | str | Unset = UNSET,
 ) -> PaginatedAuditLogResponse | None:
-    """List audit log entries page by page. Callers without full access only see their own entries
+    """List audit log summaries page by page, limited to entries for the caller unless full access is
+    granted; get one entry for complete details
 
     Args:
         page (str | Unset):

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
@@ -23,6 +23,8 @@ class ProfileListItemDto:
         is_code_mode_forced (bool): Whether MCP sessions that use the profile are forced into code mode
         created_at (str): Time when the profile was created
         updated_at (str): Time when the profile was last updated
+        last_used_at (None | str): Time of the last MCP request that used the profile, accurate to 5 minutes; null when
+            never used
         num_servers (float): Number of servers included in the profile
         num_assigned_users (float): Number of distinct users assigned to the profile, directly or through a team
         num_assigned_teams (float): Number of teams assigned to the profile
@@ -40,6 +42,7 @@ class ProfileListItemDto:
     is_code_mode_forced: bool
     created_at: str
     updated_at: str
+    last_used_at: None | str
     num_servers: float
     num_assigned_users: float
     num_assigned_teams: float
@@ -67,6 +70,9 @@ class ProfileListItemDto:
 
         updated_at = self.updated_at
 
+        last_used_at: None | str
+        last_used_at = self.last_used_at
+
         num_servers = self.num_servers
 
         num_assigned_users = self.num_assigned_users
@@ -91,6 +97,7 @@ class ProfileListItemDto:
                 "isCodeModeForced": is_code_mode_forced,
                 "createdAt": created_at,
                 "updatedAt": updated_at,
+                "lastUsedAt": last_used_at,
                 "numServers": num_servers,
                 "numAssignedUsers": num_assigned_users,
                 "numAssignedTeams": num_assigned_teams,
@@ -124,6 +131,13 @@ class ProfileListItemDto:
 
         updated_at = d.pop("updatedAt")
 
+        def _parse_last_used_at(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        last_used_at = _parse_last_used_at(d.pop("lastUsedAt"))
+
         num_servers = d.pop("numServers")
 
         num_assigned_users = d.pop("numAssignedUsers")
@@ -145,6 +159,7 @@ class ProfileListItemDto:
             is_code_mode_forced=is_code_mode_forced,
             created_at=created_at,
             updated_at=updated_at,
+            last_used_at=last_used_at,
             num_servers=num_servers,
             num_assigned_users=num_assigned_users,
             num_assigned_teams=num_assigned_teams,

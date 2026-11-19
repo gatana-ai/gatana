@@ -12,11 +12,14 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
     *,
     server_slug: str | Unset = UNSET,
+    maintainer_user_id: str | Unset = UNSET,
 ) -> dict[str, Any]:
 
     params: dict[str, Any] = {}
 
     params["serverSlug"] = server_slug
+
+    params["maintainerUserId"] = maintainer_user_id
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -58,11 +61,13 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     server_slug: str | Unset = UNSET,
+    maintainer_user_id: str | Unset = UNSET,
 ) -> Response[ListProfilesResponse200]:
-    """List the profiles the caller can read, optionally filtered to one MCP server
+    """List profiles the caller can read, with optional server or maintainer filters
 
     Args:
         server_slug (str | Unset):
+        maintainer_user_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -74,6 +79,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         server_slug=server_slug,
+        maintainer_user_id=maintainer_user_id,
     )
 
     response = client.get_httpx_client().request(
@@ -87,11 +93,13 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     server_slug: str | Unset = UNSET,
+    maintainer_user_id: str | Unset = UNSET,
 ) -> ListProfilesResponse200 | None:
-    """List the profiles the caller can read, optionally filtered to one MCP server
+    """List profiles the caller can read, with optional server or maintainer filters
 
     Args:
         server_slug (str | Unset):
+        maintainer_user_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -104,6 +112,7 @@ def sync(
     return sync_detailed(
         client=client,
         server_slug=server_slug,
+        maintainer_user_id=maintainer_user_id,
     ).parsed
 
 
@@ -111,11 +120,13 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     server_slug: str | Unset = UNSET,
+    maintainer_user_id: str | Unset = UNSET,
 ) -> Response[ListProfilesResponse200]:
-    """List the profiles the caller can read, optionally filtered to one MCP server
+    """List profiles the caller can read, with optional server or maintainer filters
 
     Args:
         server_slug (str | Unset):
+        maintainer_user_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -127,6 +138,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         server_slug=server_slug,
+        maintainer_user_id=maintainer_user_id,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -138,11 +150,13 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     server_slug: str | Unset = UNSET,
+    maintainer_user_id: str | Unset = UNSET,
 ) -> ListProfilesResponse200 | None:
-    """List the profiles the caller can read, optionally filtered to one MCP server
+    """List profiles the caller can read, with optional server or maintainer filters
 
     Args:
         server_slug (str | Unset):
+        maintainer_user_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -156,5 +170,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             server_slug=server_slug,
+            maintainer_user_id=maintainer_user_id,
         )
     ).parsed

@@ -1,25 +1,11 @@
-from __future__ import annotations
-
-from collections.abc import Mapping
-from typing import Any, TypeVar
-
-from attrs import define as _attrs_define
-
-T = TypeVar("T", bound="Schema758")
+from enum import Enum
 
 
-@_attrs_define
-class Schema758:
-    """ """
+class Schema758(str, Enum):
+    AUDIT = "audit"
+    BLOCK = "block"
+    OFF = "off"
+    REDACT = "redact"
 
-    def to_dict(self) -> dict[str, Any]:
-
-        field_dict: dict[str, Any] = {}
-
-        return field_dict
-
-    @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        schema_758 = cls()
-
-        return schema_758
+    def __str__(self) -> str:
+        return str(self.value)

@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-if TYPE_CHECKING:
-    from ..models.server_tool_dto import ServerToolDto
-
+from ..models.protection_check_target import ProtectionCheckTarget
+from ..models.protection_check_type import ProtectionCheckType
 
 T = TypeVar("T", bound="Schema752")
 
@@ -16,22 +15,24 @@ T = TypeVar("T", bound="Schema752")
 class Schema752:
     """
     Attributes:
-        tools (list[ServerToolDto]):
+        type_ (ProtectionCheckType):
+        target (ProtectionCheckTarget):
     """
 
-    tools: list[ServerToolDto]
+    type_: ProtectionCheckType
+    target: ProtectionCheckTarget
 
     def to_dict(self) -> dict[str, Any]:
-        tools = []
-        for tools_item_data in self.tools:
-            tools_item = tools_item_data.to_dict()
-            tools.append(tools_item)
+        type_ = self.type_.value
+
+        target = self.target.value
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "tools": tools,
+                "type": type_,
+                "target": target,
             }
         )
 
@@ -39,18 +40,14 @@ class Schema752:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.server_tool_dto import ServerToolDto
-
         d = dict(src_dict)
-        tools = []
-        _tools = d.pop("tools")
-        for tools_item_data in _tools:
-            tools_item = ServerToolDto.from_dict(tools_item_data)
+        type_ = ProtectionCheckType(d.pop("type"))
 
-            tools.append(tools_item)
+        target = ProtectionCheckTarget(d.pop("target"))
 
         schema_752 = cls(
-            tools=tools,
+            type_=type_,
+            target=target,
         )
 
         return schema_752

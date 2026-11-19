@@ -6,9 +6,9 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_390 import Schema390
-from ..models.schema_391 import Schema391
-from ..models.schema_392 import Schema392
+from ..models.schema_408 import Schema408
+from ..models.schema_409 import Schema409
+from ..models.schema_410 import Schema410
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="PreviewArtifactThemeBody")
@@ -23,9 +23,9 @@ class PreviewArtifactThemeBody:
             background, as a hex color (#rgb or #rrggbb)
         accent_color (str | Unset): Buttons, links on hover, the eyebrow line and the gradient, as a hex color (#rgb or
             #rrggbb)
-        heading_font (Schema390 | Unset):
-        body_font (Schema391 | Unset):
-        code_font (Schema392 | Unset): Font of code
+        heading_font (Schema408 | Unset):
+        body_font (Schema409 | Unset):
+        code_font (Schema410 | Unset): Font of code
         logo (str | Unset): Logo shown at the top of every page, as a base64 data: URL of a PNG, JPEG, WebP or SVG image
             of at most 256 KB, or an empty string for none
         extra_css (str | Unset): CSS added after the theme's own rules; the page's own styles still win over it
@@ -34,9 +34,9 @@ class PreviewArtifactThemeBody:
     background_color: str | Unset = UNSET
     text_color: str | Unset = UNSET
     accent_color: str | Unset = UNSET
-    heading_font: Schema390 | Unset = UNSET
-    body_font: Schema391 | Unset = UNSET
-    code_font: Schema392 | Unset = UNSET
+    heading_font: Schema408 | Unset = UNSET
+    body_font: Schema409 | Unset = UNSET
+    code_font: Schema410 | Unset = UNSET
     logo: str | Unset = UNSET
     extra_css: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -96,25 +96,25 @@ class PreviewArtifactThemeBody:
         accent_color = d.pop("accentColor", UNSET)
 
         _heading_font = d.pop("headingFont", UNSET)
-        heading_font: Schema390 | Unset
+        heading_font: Schema408 | Unset
         if isinstance(_heading_font, Unset):
             heading_font = UNSET
         else:
-            heading_font = Schema390(_heading_font)
+            heading_font = Schema408(_heading_font)
 
         _body_font = d.pop("bodyFont", UNSET)
-        body_font: Schema391 | Unset
+        body_font: Schema409 | Unset
         if isinstance(_body_font, Unset):
             body_font = UNSET
         else:
-            body_font = Schema391(_body_font)
+            body_font = Schema409(_body_font)
 
         _code_font = d.pop("codeFont", UNSET)
-        code_font: Schema392 | Unset
+        code_font: Schema410 | Unset
         if isinstance(_code_font, Unset):
             code_font = UNSET
         else:
-            code_font = Schema392(_code_font)
+            code_font = Schema410(_code_font)
 
         logo = d.pop("logo", UNSET)
 

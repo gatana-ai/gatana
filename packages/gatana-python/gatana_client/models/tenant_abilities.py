@@ -21,6 +21,7 @@ class TenantAbilities:
         max_users (float):
         can_use_code_mode (bool):
         can_use_siem_streaming (bool):
+        can_use_alerts (bool):
         can_use_deployment_storage (bool):
         can_use_tailscale (bool):
         has_paid_features (bool):
@@ -35,6 +36,7 @@ class TenantAbilities:
     max_users: float
     can_use_code_mode: bool
     can_use_siem_streaming: bool
+    can_use_alerts: bool
     can_use_deployment_storage: bool
     can_use_tailscale: bool
     has_paid_features: bool
@@ -58,6 +60,8 @@ class TenantAbilities:
 
         can_use_siem_streaming = self.can_use_siem_streaming
 
+        can_use_alerts = self.can_use_alerts
+
         can_use_deployment_storage = self.can_use_deployment_storage
 
         can_use_tailscale = self.can_use_tailscale
@@ -77,6 +81,7 @@ class TenantAbilities:
                 "maxUsers": max_users,
                 "canUseCodeMode": can_use_code_mode,
                 "canUseSiemStreaming": can_use_siem_streaming,
+                "canUseAlerts": can_use_alerts,
                 "canUseDeploymentStorage": can_use_deployment_storage,
                 "canUseTailscale": can_use_tailscale,
                 "hasPaidFeatures": has_paid_features,
@@ -106,6 +111,8 @@ class TenantAbilities:
 
         can_use_siem_streaming = d.pop("canUseSiemStreaming")
 
+        can_use_alerts = d.pop("canUseAlerts")
+
         can_use_deployment_storage = d.pop("canUseDeploymentStorage")
 
         can_use_tailscale = d.pop("canUseTailscale")
@@ -122,6 +129,7 @@ class TenantAbilities:
             max_users=max_users,
             can_use_code_mode=can_use_code_mode,
             can_use_siem_streaming=can_use_siem_streaming,
+            can_use_alerts=can_use_alerts,
             can_use_deployment_storage=can_use_deployment_storage,
             can_use_tailscale=can_use_tailscale,
             has_paid_features=has_paid_features,

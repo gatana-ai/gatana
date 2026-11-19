@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_194 import Schema194
+from ..models.schema_208 import Schema208
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
@@ -18,7 +18,8 @@ if TYPE_CHECKING:
     from ..models.schema_99 import Schema99
     from ..models.schema_153 import Schema153
     from ..models.schema_173 import Schema173
-    from ..models.schema_193 import Schema193
+    from ..models.schema_194 import Schema194
+    from ..models.schema_198 import Schema198
     from ..models.sse_transport_config import SseTransportConfig
     from ..models.stdio_transport_config import StdioTransportConfig
 
@@ -49,8 +50,12 @@ class UpdateServerRequest:
         is_output_compression_transform_enabled (bool | Unset): Whether the compression transform step is applied to
             tool outputs
         output_compression_threshold_bytes (int | Unset): Minimum output size in bytes before compression is applied
-        firewall_rules (list[Schema193] | Unset): Firewall rules evaluated against tool calls to the server
-        visibility (Schema194 | Unset):
+        is_skill_serving_enabled (bool | Unset): Whether to serve this server's MCP skills to agents with access to the
+            server
+        firewall_rules (list[Schema194] | Unset): Rules in order. Rules with a condition run before the call and the
+            first deny stops it. A rule with a protection replaces the default of that protection for its tools
+        protections (Schema198 | Unset): Built-in protections of the server. A missing protection is off
+        visibility (Schema208 | Unset):
     """
 
     slug: str | Unset = UNSET
@@ -75,8 +80,10 @@ class UpdateServerRequest:
     is_output_compression_enabled: bool | Unset = UNSET
     is_output_compression_transform_enabled: bool | Unset = UNSET
     output_compression_threshold_bytes: int | Unset = UNSET
-    firewall_rules: list[Schema193] | Unset = UNSET
-    visibility: Schema194 | Unset = UNSET
+    is_skill_serving_enabled: bool | Unset = UNSET
+    firewall_rules: list[Schema194] | Unset = UNSET
+    protections: Schema198 | Unset = UNSET
+    visibility: Schema208 | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -145,12 +152,18 @@ class UpdateServerRequest:
 
         output_compression_threshold_bytes = self.output_compression_threshold_bytes
 
+        is_skill_serving_enabled = self.is_skill_serving_enabled
+
         firewall_rules: list[dict[str, Any]] | Unset = UNSET
         if not isinstance(self.firewall_rules, Unset):
             firewall_rules = []
-            for componentsschemas_schema192_item_data in self.firewall_rules:
-                componentsschemas_schema192_item = componentsschemas_schema192_item_data.to_dict()
-                firewall_rules.append(componentsschemas_schema192_item)
+            for componentsschemas_schema193_item_data in self.firewall_rules:
+                componentsschemas_schema193_item = componentsschemas_schema193_item_data.to_dict()
+                firewall_rules.append(componentsschemas_schema193_item)
+
+        protections: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.protections, Unset):
+            protections = self.protections.to_dict()
 
         visibility: str | Unset = UNSET
         if not isinstance(self.visibility, Unset):
@@ -185,8 +198,12 @@ class UpdateServerRequest:
             field_dict["isOutputCompressionTransformEnabled"] = is_output_compression_transform_enabled
         if output_compression_threshold_bytes is not UNSET:
             field_dict["outputCompressionThresholdBytes"] = output_compression_threshold_bytes
+        if is_skill_serving_enabled is not UNSET:
+            field_dict["isSkillServingEnabled"] = is_skill_serving_enabled
         if firewall_rules is not UNSET:
             field_dict["firewallRules"] = firewall_rules
+        if protections is not UNSET:
+            field_dict["protections"] = protections
         if visibility is not UNSET:
             field_dict["visibility"] = visibility
 
@@ -202,7 +219,8 @@ class UpdateServerRequest:
         from ..models.schema_99 import Schema99
         from ..models.schema_153 import Schema153
         from ..models.schema_173 import Schema173
-        from ..models.schema_193 import Schema193
+        from ..models.schema_194 import Schema194
+        from ..models.schema_198 import Schema198
         from ..models.sse_transport_config import SseTransportConfig
         from ..models.stdio_transport_config import StdioTransportConfig
 
@@ -336,21 +354,30 @@ class UpdateServerRequest:
 
         output_compression_threshold_bytes = d.pop("outputCompressionThresholdBytes", UNSET)
 
+        is_skill_serving_enabled = d.pop("isSkillServingEnabled", UNSET)
+
         _firewall_rules = d.pop("firewallRules", UNSET)
-        firewall_rules: list[Schema193] | Unset = UNSET
+        firewall_rules: list[Schema194] | Unset = UNSET
         if _firewall_rules is not UNSET:
             firewall_rules = []
-            for componentsschemas_schema192_item_data in _firewall_rules:
-                componentsschemas_schema192_item = Schema193.from_dict(componentsschemas_schema192_item_data)
+            for componentsschemas_schema193_item_data in _firewall_rules:
+                componentsschemas_schema193_item = Schema194.from_dict(componentsschemas_schema193_item_data)
 
-                firewall_rules.append(componentsschemas_schema192_item)
+                firewall_rules.append(componentsschemas_schema193_item)
+
+        _protections = d.pop("protections", UNSET)
+        protections: Schema198 | Unset
+        if isinstance(_protections, Unset):
+            protections = UNSET
+        else:
+            protections = Schema198.from_dict(_protections)
 
         _visibility = d.pop("visibility", UNSET)
-        visibility: Schema194 | Unset
+        visibility: Schema208 | Unset
         if isinstance(_visibility, Unset):
             visibility = UNSET
         else:
-            visibility = Schema194(_visibility)
+            visibility = Schema208(_visibility)
 
         update_server_request = cls(
             slug=slug,
@@ -366,7 +393,9 @@ class UpdateServerRequest:
             is_output_compression_enabled=is_output_compression_enabled,
             is_output_compression_transform_enabled=is_output_compression_transform_enabled,
             output_compression_threshold_bytes=output_compression_threshold_bytes,
+            is_skill_serving_enabled=is_skill_serving_enabled,
             firewall_rules=firewall_rules,
+            protections=protections,
             visibility=visibility,
         )
 

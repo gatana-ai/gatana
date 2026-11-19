@@ -14,6 +14,7 @@ def _get_kwargs(
     server_id: str | Unset = UNSET,
     server_slug: str | Unset = UNSET,
     search: str | Unset = UNSET,
+    only_enabled: str | Unset = UNSET,
     page: str | Unset = UNSET,
     limit: str | Unset = UNSET,
 ) -> dict[str, Any]:
@@ -25,6 +26,8 @@ def _get_kwargs(
     params["serverSlug"] = server_slug
 
     params["search"] = search
+
+    params["onlyEnabled"] = only_enabled
 
     params["page"] = page
 
@@ -72,6 +75,7 @@ def sync_detailed(
     server_id: str | Unset = UNSET,
     server_slug: str | Unset = UNSET,
     search: str | Unset = UNSET,
+    only_enabled: str | Unset = UNSET,
     page: str | Unset = UNSET,
     limit: str | Unset = UNSET,
 ) -> Response[GetToolsSearchResponse200]:
@@ -82,6 +86,8 @@ def sync_detailed(
         server_id (str | Unset):
         server_slug (str | Unset):
         search (str | Unset):
+        only_enabled (str | Unset): Set to true to return only the enabled tools of enabled
+            servers
         page (str | Unset):
         limit (str | Unset):
 
@@ -97,6 +103,7 @@ def sync_detailed(
         server_id=server_id,
         server_slug=server_slug,
         search=search,
+        only_enabled=only_enabled,
         page=page,
         limit=limit,
     )
@@ -114,6 +121,7 @@ def sync(
     server_id: str | Unset = UNSET,
     server_slug: str | Unset = UNSET,
     search: str | Unset = UNSET,
+    only_enabled: str | Unset = UNSET,
     page: str | Unset = UNSET,
     limit: str | Unset = UNSET,
 ) -> GetToolsSearchResponse200 | None:
@@ -124,6 +132,8 @@ def sync(
         server_id (str | Unset):
         server_slug (str | Unset):
         search (str | Unset):
+        only_enabled (str | Unset): Set to true to return only the enabled tools of enabled
+            servers
         page (str | Unset):
         limit (str | Unset):
 
@@ -140,6 +150,7 @@ def sync(
         server_id=server_id,
         server_slug=server_slug,
         search=search,
+        only_enabled=only_enabled,
         page=page,
         limit=limit,
     ).parsed
@@ -151,6 +162,7 @@ async def asyncio_detailed(
     server_id: str | Unset = UNSET,
     server_slug: str | Unset = UNSET,
     search: str | Unset = UNSET,
+    only_enabled: str | Unset = UNSET,
     page: str | Unset = UNSET,
     limit: str | Unset = UNSET,
 ) -> Response[GetToolsSearchResponse200]:
@@ -161,6 +173,8 @@ async def asyncio_detailed(
         server_id (str | Unset):
         server_slug (str | Unset):
         search (str | Unset):
+        only_enabled (str | Unset): Set to true to return only the enabled tools of enabled
+            servers
         page (str | Unset):
         limit (str | Unset):
 
@@ -176,6 +190,7 @@ async def asyncio_detailed(
         server_id=server_id,
         server_slug=server_slug,
         search=search,
+        only_enabled=only_enabled,
         page=page,
         limit=limit,
     )
@@ -191,6 +206,7 @@ async def asyncio(
     server_id: str | Unset = UNSET,
     server_slug: str | Unset = UNSET,
     search: str | Unset = UNSET,
+    only_enabled: str | Unset = UNSET,
     page: str | Unset = UNSET,
     limit: str | Unset = UNSET,
 ) -> GetToolsSearchResponse200 | None:
@@ -201,6 +217,8 @@ async def asyncio(
         server_id (str | Unset):
         server_slug (str | Unset):
         search (str | Unset):
+        only_enabled (str | Unset): Set to true to return only the enabled tools of enabled
+            servers
         page (str | Unset):
         limit (str | Unset):
 
@@ -218,6 +236,7 @@ async def asyncio(
             server_id=server_id,
             server_slug=server_slug,
             search=search,
+            only_enabled=only_enabled,
             page=page,
             limit=limit,
         )

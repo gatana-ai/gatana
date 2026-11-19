@@ -8,8 +8,8 @@ from attrs import define as _attrs_define
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_926 import Schema926
-    from ..models.schema_932 import Schema932
+    from ..models.schema_985 import Schema985
+    from ..models.schema_991 import Schema991
 
 
 T = TypeVar("T", bound="DeploymentStatus")
@@ -24,11 +24,11 @@ class DeploymentStatus:
         crash (bool): Whether a container is crash-looping or terminated with an error
         restart_count (float): Number of container restarts
         has_previous_failure (bool): Whether a previous container instance failed
-        last_fail_condition (None | Schema926): Pod condition of the last failure, or null
+        last_fail_condition (None | Schema985): Pod condition of the last failure, or null
         phase (str | Unset):
         reason (str | Unset):
         created_at (str | Unset):
-        last_failure (Schema932 | Unset):
+        last_failure (Schema991 | Unset):
         waiting_reason (str | Unset):
     """
 
@@ -37,15 +37,15 @@ class DeploymentStatus:
     crash: bool
     restart_count: float
     has_previous_failure: bool
-    last_fail_condition: None | Schema926
+    last_fail_condition: None | Schema985
     phase: str | Unset = UNSET
     reason: str | Unset = UNSET
     created_at: str | Unset = UNSET
-    last_failure: Schema932 | Unset = UNSET
+    last_failure: Schema991 | Unset = UNSET
     waiting_reason: str | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.schema_926 import Schema926
+        from ..models.schema_985 import Schema985
 
         name = self.name
 
@@ -58,7 +58,7 @@ class DeploymentStatus:
         has_previous_failure = self.has_previous_failure
 
         last_fail_condition: dict[str, Any] | None
-        if isinstance(self.last_fail_condition, Schema926):
+        if isinstance(self.last_fail_condition, Schema985):
             last_fail_condition = self.last_fail_condition.to_dict()
         else:
             last_fail_condition = self.last_fail_condition
@@ -102,8 +102,8 @@ class DeploymentStatus:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_926 import Schema926
-        from ..models.schema_932 import Schema932
+        from ..models.schema_985 import Schema985
+        from ..models.schema_991 import Schema991
 
         d = dict(src_dict)
         name = d.pop("name")
@@ -116,18 +116,18 @@ class DeploymentStatus:
 
         has_previous_failure = d.pop("hasPreviousFailure")
 
-        def _parse_last_fail_condition(data: object) -> None | Schema926:
+        def _parse_last_fail_condition(data: object) -> None | Schema985:
             if data is None:
                 return data
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema925_type_0 = Schema926.from_dict(data)
+                componentsschemas_schema984_type_0 = Schema985.from_dict(data)
 
-                return componentsschemas_schema925_type_0
+                return componentsschemas_schema984_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema926, data)
+            return cast(None | Schema985, data)
 
         last_fail_condition = _parse_last_fail_condition(d.pop("lastFailCondition"))
 
@@ -138,11 +138,11 @@ class DeploymentStatus:
         created_at = d.pop("createdAt", UNSET)
 
         _last_failure = d.pop("lastFailure", UNSET)
-        last_failure: Schema932 | Unset
+        last_failure: Schema991 | Unset
         if isinstance(_last_failure, Unset):
             last_failure = UNSET
         else:
-            last_failure = Schema932.from_dict(_last_failure)
+            last_failure = Schema991.from_dict(_last_failure)
 
         waiting_reason = d.pop("waitingReason", UNSET)
 

@@ -25,14 +25,14 @@ class ServerCredentialsApiKeys:
         type_ = self.type_
 
         apikeys = []
-        for componentsschemas_schema212_item_data in self.apikeys:
-            componentsschemas_schema212_item = []
-            for componentsschemas_schema213_item_data in componentsschemas_schema212_item_data:
-                componentsschemas_schema213_item: str
-                componentsschemas_schema213_item = componentsschemas_schema213_item_data
-                componentsschemas_schema212_item.append(componentsschemas_schema213_item)
+        for componentsschemas_schema228_item_data in self.apikeys:
+            componentsschemas_schema228_item = []
+            for componentsschemas_schema229_item_data in componentsschemas_schema228_item_data:
+                componentsschemas_schema229_item: str
+                componentsschemas_schema229_item = componentsschemas_schema229_item_data
+                componentsschemas_schema228_item.append(componentsschemas_schema229_item)
 
-            apikeys.append(componentsschemas_schema212_item)
+            apikeys.append(componentsschemas_schema228_item)
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -54,21 +54,21 @@ class ServerCredentialsApiKeys:
 
         apikeys = []
         _apikeys = d.pop("apikeys")
-        for componentsschemas_schema212_item_data in _apikeys:
-            componentsschemas_schema212_item = []
-            _componentsschemas_schema212_item = componentsschemas_schema212_item_data
-            for componentsschemas_schema213_item_data in _componentsschemas_schema212_item:
+        for componentsschemas_schema228_item_data in _apikeys:
+            componentsschemas_schema228_item = []
+            _componentsschemas_schema228_item = componentsschemas_schema228_item_data
+            for componentsschemas_schema229_item_data in _componentsschemas_schema228_item:
 
-                def _parse_componentsschemas_schema213_item(data: object) -> str:
+                def _parse_componentsschemas_schema229_item(data: object) -> str:
                     return cast(str, data)
 
-                componentsschemas_schema213_item = _parse_componentsschemas_schema213_item(
-                    componentsschemas_schema213_item_data
+                componentsschemas_schema229_item = _parse_componentsschemas_schema229_item(
+                    componentsschemas_schema229_item_data
                 )
 
-                componentsschemas_schema212_item.append(componentsschemas_schema213_item)
+                componentsschemas_schema228_item.append(componentsschemas_schema229_item)
 
-            apikeys.append(componentsschemas_schema212_item)
+            apikeys.append(componentsschemas_schema228_item)
 
         server_credentials_api_keys = cls(
             type_=type_,

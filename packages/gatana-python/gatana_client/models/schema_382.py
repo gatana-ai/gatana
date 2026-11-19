@@ -2,8 +2,9 @@ from enum import Enum
 
 
 class Schema382(str, Enum):
-    JETBRAINS_MONO = "jetbrains-mono"
-    SYSTEM_MONO = "system-mono"
+    PRIVATE = "private"
+    PUBLIC = "public"
+    TENANT = "tenant"
 
     def __str__(self) -> str:
         return str(self.value)

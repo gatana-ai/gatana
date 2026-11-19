@@ -6,13 +6,13 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_448 import Schema448
-    from ..models.schema_451 import Schema451
-    from ..models.schema_452 import Schema452
-    from ..models.schema_453 import Schema453
-    from ..models.schema_454 import Schema454
-    from ..models.schema_455 import Schema455
-    from ..models.schema_456 import Schema456
+    from ..models.schema_469 import Schema469
+    from ..models.schema_472 import Schema472
+    from ..models.schema_473 import Schema473
+    from ..models.schema_474 import Schema474
+    from ..models.schema_475 import Schema475
+    from ..models.schema_476 import Schema476
+    from ..models.schema_477 import Schema477
 
 
 T = TypeVar("T", bound="Features")
@@ -22,22 +22,22 @@ T = TypeVar("T", bound="Features")
 class Features:
     """
     Attributes:
-        stdio (Schema448):
-        hosted (Schema451):
-        code_mode (Schema452):
-        sandbox (Schema453):
-        storage (Schema454):
-        tailscale (Schema455):
-        server_files (Schema456):
+        stdio (Schema469):
+        hosted (Schema472):
+        code_mode (Schema473):
+        sandbox (Schema474):
+        storage (Schema475):
+        tailscale (Schema476):
+        server_files (Schema477):
     """
 
-    stdio: Schema448
-    hosted: Schema451
-    code_mode: Schema452
-    sandbox: Schema453
-    storage: Schema454
-    tailscale: Schema455
-    server_files: Schema456
+    stdio: Schema469
+    hosted: Schema472
+    code_mode: Schema473
+    sandbox: Schema474
+    storage: Schema475
+    tailscale: Schema476
+    server_files: Schema477
 
     def to_dict(self) -> dict[str, Any]:
         stdio = self.stdio.to_dict()
@@ -72,28 +72,28 @@ class Features:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_448 import Schema448
-        from ..models.schema_451 import Schema451
-        from ..models.schema_452 import Schema452
-        from ..models.schema_453 import Schema453
-        from ..models.schema_454 import Schema454
-        from ..models.schema_455 import Schema455
-        from ..models.schema_456 import Schema456
+        from ..models.schema_469 import Schema469
+        from ..models.schema_472 import Schema472
+        from ..models.schema_473 import Schema473
+        from ..models.schema_474 import Schema474
+        from ..models.schema_475 import Schema475
+        from ..models.schema_476 import Schema476
+        from ..models.schema_477 import Schema477
 
         d = dict(src_dict)
-        stdio = Schema448.from_dict(d.pop("stdio"))
+        stdio = Schema469.from_dict(d.pop("stdio"))
 
-        hosted = Schema451.from_dict(d.pop("hosted"))
+        hosted = Schema472.from_dict(d.pop("hosted"))
 
-        code_mode = Schema452.from_dict(d.pop("codeMode"))
+        code_mode = Schema473.from_dict(d.pop("codeMode"))
 
-        sandbox = Schema453.from_dict(d.pop("sandbox"))
+        sandbox = Schema474.from_dict(d.pop("sandbox"))
 
-        storage = Schema454.from_dict(d.pop("storage"))
+        storage = Schema475.from_dict(d.pop("storage"))
 
-        tailscale = Schema455.from_dict(d.pop("tailscale"))
+        tailscale = Schema476.from_dict(d.pop("tailscale"))
 
-        server_files = Schema456.from_dict(d.pop("serverFiles"))
+        server_files = Schema477.from_dict(d.pop("serverFiles"))
 
         features = cls(
             stdio=stdio,

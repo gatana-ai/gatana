@@ -5,17 +5,18 @@ from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_460 import Schema460
-from ..models.schema_860 import Schema860
-from ..models.schema_864 import Schema864
-from ..models.schema_884 import Schema884
-from ..models.schema_885 import Schema885
+from ..models.schema_481 import Schema481
+from ..models.schema_912 import Schema912
+from ..models.schema_916 import Schema916
+from ..models.schema_936 import Schema936
+from ..models.schema_937 import Schema937
 
 if TYPE_CHECKING:
     from ..models.assistant_llm_configuration_status import AssistantLlmConfigurationStatus
-    from ..models.schema_866 import Schema866
-    from ..models.schema_867 import Schema867
-    from ..models.schema_868 import Schema868
+    from ..models.protection_defaults import ProtectionDefaults
+    from ..models.schema_918 import Schema918
+    from ..models.schema_919 import Schema919
+    from ..models.schema_920 import Schema920
     from ..models.tenant_oidc_configuration import TenantOidcConfiguration
     from ..models.tenant_saml_configuration import TenantSamlConfiguration
 
@@ -52,16 +53,16 @@ class TenantDto:
             the threshold
         code_mode_auto_trigger_threshold (int | None): Number of tools above which code mode is enabled automatically,
             or null for the default
-        output_compression_ai_model (Schema860): Model variant used for AI-based output compression
-        member_default_role (Literal['none'] | Schema460): Default server role for members, or "none" for no default
+        output_compression_ai_model (Schema912): Model variant used for AI-based output compression
+        member_default_role (Literal['none'] | Schema481): Default server role for members, or "none" for no default
             access
         is_owner_all_tools_over_mcp_enabled (bool): Send all organization tools to owner MCP clients. When disabled,
             include only servers the owner has permission to use
-        mcp_audit_log_level (Schema864):
+        mcp_audit_log_level (Schema916):
         mcp_audit_logging_include_protocol_messages (bool): Whether MCP audit log entries include the protocol messages
-        default_resource_limits (Schema866):
-        default_resource_requests (Schema867):
-        deployment_resource_limits (Schema868):
+        default_resource_limits (Schema918):
+        default_resource_requests (Schema919):
+        deployment_resource_limits (Schema920):
         deployment_storage_quota (str): Total size of persistent volumes the organization may claim across its
             deployments, in Kubernetes quantity format (e.g. "20Gi"). This caps what may be claimed/allocated and not what
             is written/used.
@@ -81,8 +82,10 @@ class TenantDto:
         assistant_daily_token_limit (int | None): Maximum number of AI assistant tokens the tenant may spend per day, or
             null for the default
         is_scim_enabled (bool): Whether SCIM provisioning is enabled
-        scim_group_delete_behavior (Schema884): What happens to a team when its SCIM group is deleted
-        scim_user_delete_behavior (Schema885): What happens to a user when it is deleted through SCIM
+        scim_group_delete_behavior (Schema936): What happens to a team when its SCIM group is deleted
+        scim_user_delete_behavior (Schema937): What happens to a user when it is deleted through SCIM
+        protection_defaults (ProtectionDefaults): Organization protection defaults. Actions and settings apply to
+            servers without their own values. An update replaces all defaults
         assistant_llm_configuration_status (AssistantLlmConfigurationStatus | None): The organization's own model
             endpoint for the assistant without its credentials, or null when none is stored
         logo (str): The logo shown in the sidebar as a base64 data: URL, or empty when there is none
@@ -106,14 +109,14 @@ class TenantDto:
     is_output_compression_ai_enabled: bool
     is_code_mode_auto_trigger_enabled: bool
     code_mode_auto_trigger_threshold: int | None
-    output_compression_ai_model: Schema860
-    member_default_role: Literal["none"] | Schema460
+    output_compression_ai_model: Schema912
+    member_default_role: Literal["none"] | Schema481
     is_owner_all_tools_over_mcp_enabled: bool
-    mcp_audit_log_level: Schema864
+    mcp_audit_log_level: Schema916
     mcp_audit_logging_include_protocol_messages: bool
-    default_resource_limits: Schema866
-    default_resource_requests: Schema867
-    deployment_resource_limits: Schema868
+    default_resource_limits: Schema918
+    default_resource_requests: Schema919
+    deployment_resource_limits: Schema920
     deployment_storage_quota: str
     is_assistant_enabled: bool
     is_assistant_byok_enabled: bool
@@ -124,8 +127,9 @@ class TenantDto:
     assistant_conversation_sharing_accepted_by: None | str
     assistant_daily_token_limit: int | None
     is_scim_enabled: bool
-    scim_group_delete_behavior: Schema884
-    scim_user_delete_behavior: Schema885
+    scim_group_delete_behavior: Schema936
+    scim_user_delete_behavior: Schema937
+    protection_defaults: ProtectionDefaults
     assistant_llm_configuration_status: AssistantLlmConfigurationStatus | None
     logo: str
 
@@ -182,7 +186,7 @@ class TenantDto:
         output_compression_ai_model = self.output_compression_ai_model.value
 
         member_default_role: Literal["none"] | str
-        if isinstance(self.member_default_role, Schema460):
+        if isinstance(self.member_default_role, Schema481):
             member_default_role = self.member_default_role.value
         else:
             member_default_role = self.member_default_role
@@ -227,6 +231,8 @@ class TenantDto:
         scim_group_delete_behavior = self.scim_group_delete_behavior.value
 
         scim_user_delete_behavior = self.scim_user_delete_behavior.value
+
+        protection_defaults = self.protection_defaults.to_dict()
 
         assistant_llm_configuration_status: dict[str, Any] | None
         if isinstance(self.assistant_llm_configuration_status, AssistantLlmConfigurationStatus):
@@ -278,6 +284,7 @@ class TenantDto:
                 "isScimEnabled": is_scim_enabled,
                 "scimGroupDeleteBehavior": scim_group_delete_behavior,
                 "scimUserDeleteBehavior": scim_user_delete_behavior,
+                "protectionDefaults": protection_defaults,
                 "assistantLlmConfigurationStatus": assistant_llm_configuration_status,
                 "logo": logo,
             }
@@ -288,9 +295,10 @@ class TenantDto:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.assistant_llm_configuration_status import AssistantLlmConfigurationStatus
-        from ..models.schema_866 import Schema866
-        from ..models.schema_867 import Schema867
-        from ..models.schema_868 import Schema868
+        from ..models.protection_defaults import ProtectionDefaults
+        from ..models.schema_918 import Schema918
+        from ..models.schema_919 import Schema919
+        from ..models.schema_920 import Schema920
         from ..models.tenant_oidc_configuration import TenantOidcConfiguration
         from ..models.tenant_saml_configuration import TenantSamlConfiguration
 
@@ -307,9 +315,9 @@ class TenantDto:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema821_type_0 = TenantOidcConfiguration.from_dict(data)
+                componentsschemas_schema873_type_0 = TenantOidcConfiguration.from_dict(data)
 
-                return componentsschemas_schema821_type_0
+                return componentsschemas_schema873_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | TenantOidcConfiguration, data)
@@ -322,9 +330,9 @@ class TenantDto:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema835_type_0 = TenantSamlConfiguration.from_dict(data)
+                componentsschemas_schema887_type_0 = TenantSamlConfiguration.from_dict(data)
 
-                return componentsschemas_schema835_type_0
+                return componentsschemas_schema887_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | TenantSamlConfiguration, data)
@@ -364,37 +372,37 @@ class TenantDto:
             d.pop("codeModeAutoTriggerThreshold")
         )
 
-        output_compression_ai_model = Schema860(d.pop("outputCompressionAiModel"))
+        output_compression_ai_model = Schema912(d.pop("outputCompressionAiModel"))
 
-        def _parse_member_default_role(data: object) -> Literal["none"] | Schema460:
+        def _parse_member_default_role(data: object) -> Literal["none"] | Schema481:
             try:
                 if not isinstance(data, str):
                     raise TypeError()
-                componentsschemas_schema861_type_0 = Schema460(data)
+                componentsschemas_schema913_type_0 = Schema481(data)
 
-                return componentsschemas_schema861_type_0
+                return componentsschemas_schema913_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            componentsschemas_schema861_type_1 = cast(Literal["none"], data)
-            if componentsschemas_schema861_type_1 != "none":
+            componentsschemas_schema913_type_1 = cast(Literal["none"], data)
+            if componentsschemas_schema913_type_1 != "none":
                 raise ValueError(
-                    f"/components/schemas/__schema861_type_1 must match const 'none', got '{componentsschemas_schema861_type_1}'"
+                    f"/components/schemas/__schema913_type_1 must match const 'none', got '{componentsschemas_schema913_type_1}'"
                 )
-            return componentsschemas_schema861_type_1
+            return componentsschemas_schema913_type_1
 
         member_default_role = _parse_member_default_role(d.pop("memberDefaultRole"))
 
         is_owner_all_tools_over_mcp_enabled = d.pop("isOwnerAllToolsOverMcpEnabled")
 
-        mcp_audit_log_level = Schema864(d.pop("mcpAuditLogLevel"))
+        mcp_audit_log_level = Schema916(d.pop("mcpAuditLogLevel"))
 
         mcp_audit_logging_include_protocol_messages = d.pop("mcpAuditLoggingIncludeProtocolMessages")
 
-        default_resource_limits = Schema866.from_dict(d.pop("defaultResourceLimits"))
+        default_resource_limits = Schema918.from_dict(d.pop("defaultResourceLimits"))
 
-        default_resource_requests = Schema867.from_dict(d.pop("defaultResourceRequests"))
+        default_resource_requests = Schema919.from_dict(d.pop("defaultResourceRequests"))
 
-        deployment_resource_limits = Schema868.from_dict(d.pop("deploymentResourceLimits"))
+        deployment_resource_limits = Schema920.from_dict(d.pop("deploymentResourceLimits"))
 
         deployment_storage_quota = d.pop("deploymentStorageQuota")
 
@@ -449,9 +457,11 @@ class TenantDto:
 
         is_scim_enabled = d.pop("isScimEnabled")
 
-        scim_group_delete_behavior = Schema884(d.pop("scimGroupDeleteBehavior"))
+        scim_group_delete_behavior = Schema936(d.pop("scimGroupDeleteBehavior"))
 
-        scim_user_delete_behavior = Schema885(d.pop("scimUserDeleteBehavior"))
+        scim_user_delete_behavior = Schema937(d.pop("scimUserDeleteBehavior"))
+
+        protection_defaults = ProtectionDefaults.from_dict(d.pop("protectionDefaults"))
 
         def _parse_assistant_llm_configuration_status(data: object) -> AssistantLlmConfigurationStatus | None:
             if data is None:
@@ -459,9 +469,9 @@ class TenantDto:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema886_type_0 = AssistantLlmConfigurationStatus.from_dict(data)
+                componentsschemas_schema945_type_0 = AssistantLlmConfigurationStatus.from_dict(data)
 
-                return componentsschemas_schema886_type_0
+                return componentsschemas_schema945_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(AssistantLlmConfigurationStatus | None, data)
@@ -511,6 +521,7 @@ class TenantDto:
             is_scim_enabled=is_scim_enabled,
             scim_group_delete_behavior=scim_group_delete_behavior,
             scim_user_delete_behavior=scim_user_delete_behavior,
+            protection_defaults=protection_defaults,
             assistant_llm_configuration_status=assistant_llm_configuration_status,
             logo=logo,
         )

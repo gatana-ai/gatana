@@ -5,7 +5,7 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1313 import Schema1313
+from ..models.schema_1372 import Schema1372
 
 T = TypeVar("T", bound="SkillCollectionDto")
 
@@ -17,7 +17,7 @@ class SkillCollectionDto:
         id (str):
         name (str): Unique name in the organization; what the CLI subscribes to
         description (str): One line saying what the collection gathers
-        visibility (Schema1313):
+        visibility (Schema1372):
         created_by_user_id (str):
         created_by_user_name (str): Display name of the creator, empty when no name is set or the account is removed
         created_by_user_email (str): Email of the creator, empty when the account is removed
@@ -33,7 +33,7 @@ class SkillCollectionDto:
     id: str
     name: str
     description: str
-    visibility: Schema1313
+    visibility: Schema1372
     created_by_user_id: str
     created_by_user_name: str
     created_by_user_email: str
@@ -106,7 +106,7 @@ class SkillCollectionDto:
 
         description = d.pop("description")
 
-        visibility = Schema1313(d.pop("visibility"))
+        visibility = Schema1372(d.pop("visibility"))
 
         created_by_user_id = d.pop("createdByUserId")
 

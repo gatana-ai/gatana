@@ -5,7 +5,7 @@ from typing import Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1133 import Schema1133
+from ..models.schema_1186 import Schema1186
 
 T = TypeVar("T", bound="SiemGcsTargetSettings")
 
@@ -19,7 +19,7 @@ class SiemGcsTargetSettings:
         prefix (str): Object name prefix; empty or ending in a slash
         service_account_email (str): Service account email; its key is never returned
         project_id (str): Project the service account belongs to
-        compression (Schema1133):
+        compression (Schema1186):
     """
 
     kind: Literal["gcs"]
@@ -27,7 +27,7 @@ class SiemGcsTargetSettings:
     prefix: str
     service_account_email: str
     project_id: str
-    compression: Schema1133
+    compression: Schema1186
 
     def to_dict(self) -> dict[str, Any]:
         kind = self.kind
@@ -72,7 +72,7 @@ class SiemGcsTargetSettings:
 
         project_id = d.pop("projectId")
 
-        compression = Schema1133(d.pop("compression"))
+        compression = Schema1186(d.pop("compression"))
 
         siem_gcs_target_settings = cls(
             kind=kind,

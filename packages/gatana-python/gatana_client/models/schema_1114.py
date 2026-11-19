@@ -2,9 +2,9 @@ from enum import Enum
 
 
 class Schema1114(str, Enum):
-    GCS = "gcs"
-    HTTPS = "https"
-    S3 = "s3"
+    ADMIN = "admin"
+    MAINTAINER = "maintainer"
+    MEMBER = "member"
 
     def __str__(self) -> str:
         return str(self.value)

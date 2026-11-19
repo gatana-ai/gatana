@@ -354,10 +354,13 @@ fn key_value_sections(map: &Map<String, Value>) -> Vec<String> {
 mod tests {
     use super::*;
 
+    // The tests turn colors off: `cargo test` in a terminal leaves stdout a terminal, and `console`
+    // then styles the headers and cells.
     const COLUMNS: [Column; 2] = [Column::path("Slug", "slug"), Column::path("Type", "transportConfig.type")];
 
     #[test]
     fn tables_are_padded_with_uppercase_headers() {
+        console::set_colors_enabled(false);
         let rows = json!([
             { "slug": "github", "transportConfig": { "type": "hosted" } },
             { "slug": "x", "transportConfig": null },
@@ -374,6 +377,7 @@ mod tests {
 
     #[test]
     fn objects_without_columns_become_property_tables_and_sections() {
+        console::set_colors_enabled(false);
         let lines = table_lines(
             &json!({ "id": "a", "enabled": true, "gone": null, "tags": [], "logs": [{ "event": "x" }], "meta": { "k": 1, "o": { "a": 1 } } }),
             &Options::default(),

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_1184 import Schema1184
+    from ..models.schema_1239 import Schema1239
 
 
 T = TypeVar("T", bound="ProfileDetailsDto")
@@ -27,7 +27,9 @@ class ProfileDetailsDto:
         is_code_mode_forced (bool): Whether MCP sessions that use the profile are forced into code mode
         created_at (str): Time when the profile was created
         updated_at (str): Time when the profile was last updated
-        servers (list[Schema1184]): Servers included in the profile
+        last_used_at (None | str): Time of the last MCP request that used the profile, accurate to 5 minutes; null when
+            never used
+        servers (list[Schema1239]): Servers included in the profile
     """
 
     tenant_id: str
@@ -40,7 +42,8 @@ class ProfileDetailsDto:
     is_code_mode_forced: bool
     created_at: str
     updated_at: str
-    servers: list[Schema1184]
+    last_used_at: None | str
+    servers: list[Schema1239]
 
     def to_dict(self) -> dict[str, Any]:
         tenant_id = self.tenant_id
@@ -63,10 +66,13 @@ class ProfileDetailsDto:
 
         updated_at = self.updated_at
 
+        last_used_at: None | str
+        last_used_at = self.last_used_at
+
         servers = []
-        for componentsschemas_schema1183_item_data in self.servers:
-            componentsschemas_schema1183_item = componentsschemas_schema1183_item_data.to_dict()
-            servers.append(componentsschemas_schema1183_item)
+        for componentsschemas_schema1238_item_data in self.servers:
+            componentsschemas_schema1238_item = componentsschemas_schema1238_item_data.to_dict()
+            servers.append(componentsschemas_schema1238_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -82,6 +88,7 @@ class ProfileDetailsDto:
                 "isCodeModeForced": is_code_mode_forced,
                 "createdAt": created_at,
                 "updatedAt": updated_at,
+                "lastUsedAt": last_used_at,
                 "servers": servers,
             }
         )
@@ -90,7 +97,7 @@ class ProfileDetailsDto:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_1184 import Schema1184
+        from ..models.schema_1239 import Schema1239
 
         d = dict(src_dict)
         tenant_id = d.pop("tenantId")
@@ -113,12 +120,19 @@ class ProfileDetailsDto:
 
         updated_at = d.pop("updatedAt")
 
+        def _parse_last_used_at(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        last_used_at = _parse_last_used_at(d.pop("lastUsedAt"))
+
         servers = []
         _servers = d.pop("servers")
-        for componentsschemas_schema1183_item_data in _servers:
-            componentsschemas_schema1183_item = Schema1184.from_dict(componentsschemas_schema1183_item_data)
+        for componentsschemas_schema1238_item_data in _servers:
+            componentsschemas_schema1238_item = Schema1239.from_dict(componentsschemas_schema1238_item_data)
 
-            servers.append(componentsschemas_schema1183_item)
+            servers.append(componentsschemas_schema1238_item)
 
         profile_details_dto = cls(
             tenant_id=tenant_id,
@@ -131,6 +145,7 @@ class ProfileDetailsDto:
             is_code_mode_forced=is_code_mode_forced,
             created_at=created_at,
             updated_at=updated_at,
+            last_used_at=last_used_at,
             servers=servers,
         )
 

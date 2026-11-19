@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_613 import Schema613
+from ..models.schema_643 import Schema643
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_617 import Schema617
-    from ..models.schema_619 import Schema619
-    from ..models.schema_620 import Schema620
-    from ..models.schema_621 import Schema621
+    from ..models.schema_647 import Schema647
+    from ..models.schema_649 import Schema649
+    from ..models.schema_650 import Schema650
+    from ..models.schema_651 import Schema651
 
 
 T = TypeVar("T", bound="HostedTransportConfigOutput")
@@ -23,32 +23,32 @@ class HostedTransportConfigOutput:
     """
     Attributes:
         type_ (Literal['hosted']): Transport type discriminator, always "hosted"
-        runtime (Schema613): Runtime that executes the hosted tool functions
+        runtime (Schema643): Runtime that executes the hosted tool functions
         env (list[list[str]] | Unset):
-        limits (None | Schema617 | Unset): Deprecated: former resource ceiling, no longer applied to deployments. Use
+        limits (None | Schema647 | Unset): Deprecated: former resource ceiling, no longer applied to deployments. Use
             requests to reserve capacity instead
-        requests (None | Schema619 | Unset): Resources reserved for the hosted runtime: the minimum it is guaranteed
+        requests (None | Schema649 | Unset): Resources reserved for the hosted runtime: the minimum it is guaranteed
             when the hardware is busy. Overrides the organization default
-        storage (None | Schema620 | Unset): Persistent storage for the server. When enabled the server keeps one volume,
+        storage (None | Schema650 | Unset): Persistent storage for the server. When enabled the server keeps one volume,
             mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the
             deployment and counts against the organization storage quota
-        tailscale (None | Schema621 | Unset): Egress-only Tailscale access. When enabled the server can open connections
+        tailscale (None | Schema651 | Unset): Egress-only Tailscale access. When enabled the server can open connections
             to hosts on your tailnet, and to the subnets its routers advertise. Nothing on the tailnet can reach the server
     """
 
     type_: Literal["hosted"]
-    runtime: Schema613
+    runtime: Schema643
     env: list[list[str]] | Unset = UNSET
-    limits: None | Schema617 | Unset = UNSET
-    requests: None | Schema619 | Unset = UNSET
-    storage: None | Schema620 | Unset = UNSET
-    tailscale: None | Schema621 | Unset = UNSET
+    limits: None | Schema647 | Unset = UNSET
+    requests: None | Schema649 | Unset = UNSET
+    storage: None | Schema650 | Unset = UNSET
+    tailscale: None | Schema651 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.schema_617 import Schema617
-        from ..models.schema_619 import Schema619
-        from ..models.schema_620 import Schema620
-        from ..models.schema_621 import Schema621
+        from ..models.schema_647 import Schema647
+        from ..models.schema_649 import Schema649
+        from ..models.schema_650 import Schema650
+        from ..models.schema_651 import Schema651
 
         type_ = self.type_
 
@@ -57,19 +57,19 @@ class HostedTransportConfigOutput:
         env: list[list[str]] | Unset = UNSET
         if not isinstance(self.env, Unset):
             env = []
-            for componentsschemas_schema614_item_data in self.env:
-                componentsschemas_schema614_item = []
-                for componentsschemas_schema614_item_item_data in componentsschemas_schema614_item_data:
-                    componentsschemas_schema614_item_item: str
-                    componentsschemas_schema614_item_item = componentsschemas_schema614_item_item_data
-                    componentsschemas_schema614_item.append(componentsschemas_schema614_item_item)
+            for componentsschemas_schema644_item_data in self.env:
+                componentsschemas_schema644_item = []
+                for componentsschemas_schema644_item_item_data in componentsschemas_schema644_item_data:
+                    componentsschemas_schema644_item_item: str
+                    componentsschemas_schema644_item_item = componentsschemas_schema644_item_item_data
+                    componentsschemas_schema644_item.append(componentsschemas_schema644_item_item)
 
-                env.append(componentsschemas_schema614_item)
+                env.append(componentsschemas_schema644_item)
 
         limits: dict[str, Any] | None | Unset
         if isinstance(self.limits, Unset):
             limits = UNSET
-        elif isinstance(self.limits, Schema617):
+        elif isinstance(self.limits, Schema647):
             limits = self.limits.to_dict()
         else:
             limits = self.limits
@@ -77,7 +77,7 @@ class HostedTransportConfigOutput:
         requests: dict[str, Any] | None | Unset
         if isinstance(self.requests, Unset):
             requests = UNSET
-        elif isinstance(self.requests, Schema619):
+        elif isinstance(self.requests, Schema649):
             requests = self.requests.to_dict()
         else:
             requests = self.requests
@@ -85,7 +85,7 @@ class HostedTransportConfigOutput:
         storage: dict[str, Any] | None | Unset
         if isinstance(self.storage, Unset):
             storage = UNSET
-        elif isinstance(self.storage, Schema620):
+        elif isinstance(self.storage, Schema650):
             storage = self.storage.to_dict()
         else:
             storage = self.storage
@@ -93,7 +93,7 @@ class HostedTransportConfigOutput:
         tailscale: dict[str, Any] | None | Unset
         if isinstance(self.tailscale, Unset):
             tailscale = UNSET
-        elif isinstance(self.tailscale, Schema621):
+        elif isinstance(self.tailscale, Schema651):
             tailscale = self.tailscale.to_dict()
         else:
             tailscale = self.tailscale
@@ -121,39 +121,39 @@ class HostedTransportConfigOutput:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_617 import Schema617
-        from ..models.schema_619 import Schema619
-        from ..models.schema_620 import Schema620
-        from ..models.schema_621 import Schema621
+        from ..models.schema_647 import Schema647
+        from ..models.schema_649 import Schema649
+        from ..models.schema_650 import Schema650
+        from ..models.schema_651 import Schema651
 
         d = dict(src_dict)
         type_ = cast(Literal["hosted"], d.pop("type"))
         if type_ != "hosted":
             raise ValueError(f"type must match const 'hosted', got '{type_}'")
 
-        runtime = Schema613(d.pop("runtime"))
+        runtime = Schema643(d.pop("runtime"))
 
         _env = d.pop("env", UNSET)
         env: list[list[str]] | Unset = UNSET
         if _env is not UNSET:
             env = []
-            for componentsschemas_schema614_item_data in _env:
-                componentsschemas_schema614_item = []
-                _componentsschemas_schema614_item = componentsschemas_schema614_item_data
-                for componentsschemas_schema614_item_item_data in _componentsschemas_schema614_item:
+            for componentsschemas_schema644_item_data in _env:
+                componentsschemas_schema644_item = []
+                _componentsschemas_schema644_item = componentsschemas_schema644_item_data
+                for componentsschemas_schema644_item_item_data in _componentsschemas_schema644_item:
 
-                    def _parse_componentsschemas_schema614_item_item(data: object) -> str:
+                    def _parse_componentsschemas_schema644_item_item(data: object) -> str:
                         return cast(str, data)
 
-                    componentsschemas_schema614_item_item = _parse_componentsschemas_schema614_item_item(
-                        componentsschemas_schema614_item_item_data
+                    componentsschemas_schema644_item_item = _parse_componentsschemas_schema644_item_item(
+                        componentsschemas_schema644_item_item_data
                     )
 
-                    componentsschemas_schema614_item.append(componentsschemas_schema614_item_item)
+                    componentsschemas_schema644_item.append(componentsschemas_schema644_item_item)
 
-                env.append(componentsschemas_schema614_item)
+                env.append(componentsschemas_schema644_item)
 
-        def _parse_limits(data: object) -> None | Schema617 | Unset:
+        def _parse_limits(data: object) -> None | Schema647 | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -161,16 +161,16 @@ class HostedTransportConfigOutput:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema616_type_0 = Schema617.from_dict(data)
+                componentsschemas_schema646_type_0 = Schema647.from_dict(data)
 
-                return componentsschemas_schema616_type_0
+                return componentsschemas_schema646_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema617 | Unset, data)
+            return cast(None | Schema647 | Unset, data)
 
         limits = _parse_limits(d.pop("limits", UNSET))
 
-        def _parse_requests(data: object) -> None | Schema619 | Unset:
+        def _parse_requests(data: object) -> None | Schema649 | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -178,16 +178,16 @@ class HostedTransportConfigOutput:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema618_type_0 = Schema619.from_dict(data)
+                componentsschemas_schema648_type_0 = Schema649.from_dict(data)
 
-                return componentsschemas_schema618_type_0
+                return componentsschemas_schema648_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema619 | Unset, data)
+            return cast(None | Schema649 | Unset, data)
 
         requests = _parse_requests(d.pop("requests", UNSET))
 
-        def _parse_storage(data: object) -> None | Schema620 | Unset:
+        def _parse_storage(data: object) -> None | Schema650 | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -195,16 +195,16 @@ class HostedTransportConfigOutput:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_hosted_transport_storage_output_type_0 = Schema620.from_dict(data)
+                componentsschemas_hosted_transport_storage_output_type_0 = Schema650.from_dict(data)
 
                 return componentsschemas_hosted_transport_storage_output_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema620 | Unset, data)
+            return cast(None | Schema650 | Unset, data)
 
         storage = _parse_storage(d.pop("storage", UNSET))
 
-        def _parse_tailscale(data: object) -> None | Schema621 | Unset:
+        def _parse_tailscale(data: object) -> None | Schema651 | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -212,12 +212,12 @@ class HostedTransportConfigOutput:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_hosted_transport_tailscale_output_type_0 = Schema621.from_dict(data)
+                componentsschemas_hosted_transport_tailscale_output_type_0 = Schema651.from_dict(data)
 
                 return componentsschemas_hosted_transport_tailscale_output_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema621 | Unset, data)
+            return cast(None | Schema651 | Unset, data)
 
         tailscale = _parse_tailscale(d.pop("tailscale", UNSET))
 
