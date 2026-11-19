@@ -342,16 +342,16 @@ ID when several have the name.
 Install the skills of your organization into the folders that AI agents read, and push local
 changes back. See the [skills documentation](https://docs.gatana.ai/skills) for the full story.
 
-| Command                 | Syntax                                                                                                         | Description                                                                                                                                                                                                                                                     |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **skills install**      | `gatana skills install [name] [target...] [--dry-run] [--no-prune] [--force] [--reset] [--no-hooks] [--quiet]` | Write the skills you can read as `<dir>/<name>/SKILL.md`. Without a name: every skill, or what the targets follow. With a name: one collection or skill, which the targets follow from then on. Also installs the session-start hooks (`--no-hooks` skips them) |
-| **skills sync**         | `gatana skills sync [target...] [--dry-run] [--no-prune] [--force] [--quiet]`                                  | Refresh what each folder follows, as the session-start hooks do. A folder without an install gets every skill you can read                                                                                                                                      |
-| **skills remove-hooks** | `gatana skills remove-hooks [agent]`                                                                           | Remove the session-start hooks: from every agent on this machine, or from one                                                                                                                                                                                   |
-| **skills push**         | `gatana skills push [path...] [-c collection] [--force] [--dry-run]`                                           | Send local changes back. Default: every skill in `claude` and `agents` that changed on this machine. Conflicts are printed and left alone                                                                                                                       |
-| **skills ls**           | `gatana skills ls [-q text] [-c collection] [--collections]`                                                   | List the skills you can read, or the collections you can see                                                                                                                                                                                                    |
-| **skills hook**         | `gatana skills hook <claude\|codex\|hermes\|openclaw> [--install]`                                             | Print, or install, the configuration that runs `gatana skills sync --quiet` when an agent session starts                                                                                                                                                        |
-| **get skill**           | `gatana get skill [name] [-q text]`                                                                            | List skills, or show one with its instructions                                                                                                                                                                                                                  |
-| **describe skill**      | `gatana describe skill <name>`                                                                                 | Show a skill with its instructions                                                                                                                                                                                                                              |
+| Command                 | Syntax                                                                                                         | Description                                                                                                                                                                                                                                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **skills install**      | `gatana skills install [name] [target...] [--dry-run] [--no-prune] [--force] [--reset] [--no-hooks] [--quiet]` | Write each skill you can read into `<dir>/<name>/`: its `SKILL.md` and its supporting files. Without a name: every skill, or what the targets follow. With a name: one collection or skill, or with `--server` every skill of one MCP server, which the targets follow from then on. Also installs the session-start hooks (`--no-hooks` skips them) |
+| **skills sync**         | `gatana skills sync [target...] [--dry-run] [--no-prune] [--force] [--quiet]`                                  | Refresh what each folder follows, as the session-start hooks do: download the files that changed, remove the files that are gone. A folder without an install gets every skill you can read                                                                                                        |
+| **skills remove-hooks** | `gatana skills remove-hooks [agent]`                                                                           | Remove the session-start hooks: from every agent on this machine, or from one                                                                                                                                                                                                                      |
+| **skills push**         | `gatana skills push [path...] [-c collection] [--force] [--dry-run]`                                           | Send local changes back, each skill as its whole folder. Default: every skill in `claude` and `agents` that changed on this machine. Conflicts are printed and left alone                                                                                                                          |
+| **skills ls**           | `gatana skills ls [-q text] [-c collection] [--collections]`                                                   | List the skills you can read, or the collections you can see                                                                                                                                                                                                                                       |
+| **skills hook**         | `gatana skills hook <claude\|codex\|hermes\|openclaw> [--install]`                                             | Print, or install, the configuration that runs `gatana skills sync --quiet` when an agent session starts                                                                                                                                                                                           |
+| **get skill**           | `gatana get skill [name] [-q text]`                                                                            | List skills, or show one with its instructions                                                                                                                                                                                                                                                     |
+| **describe skill**      | `gatana describe skill <name>`                                                                                 | Show a skill with its instructions                                                                                                                                                                                                                                                                 |
 
 > **Targets** for `skills install` and `skills sync`:
 >
@@ -361,9 +361,68 @@ changes back. See the [skills documentation](https://docs.gatana.ai/skills) for 
 > - Any other value is a path.
 >
 > The default targets are `claude` and `agents`. Without `--force`, the CLI does not change a folder
-> that it did not create. It does not overwrite a locally edited `SKILL.md` until you push it. Each
-> directory stores what it follows in its `.gatana-skills.json`, so the session-start hook keeps
-> following it. `--reset` clears that state.
+> that it did not create. It does not overwrite a locally edited file of a skill until you push the
+> skill. The exception is a folder whose `SKILL.md` was deleted: the sync writes the skill again and
+> names each local edit that it replaced. Each directory stores what it follows in its
+> `.gatana-skills.json`, so the session-start hook keeps following it. `--reset` clears that state.
+>
+> **Skill folders.** A skill is a folder: a `SKILL.md` and supporting files in any subfolders.
+>
+> - `install` and `sync` write every file byte for byte as the server stores it, and add nothing to
+>   a file. `.gatana-skills.json` (version 3) holds a hash per file. A file that you add to the folder
+>   of a skill stays yours: a sync does not touch it.
+> - `push` sends the whole folder and the server replaces the files of the skill in one step. A push
+>   does not change the local files. It refuses a folder with more than 512 files or more than
+>   4 MiB.
+> - In a synced directory, a push deletes a file on the server only when the folder had the file
+>   and you removed it. When the server holds a file that the folder never got, the push stops
+>   until you sync, or until you push with `--force`.
+> - A push refuses a folder that a sync of another organization wrote. `--force` creates a copy in
+>   the organization of the push.
+> - A file or folder whose name starts with a dot, such as `.env`, is pushed only when the skill on
+>   the server already has that file. The push names what it left out. `.git` folders and
+>   `.DS_Store` files are left out without a message.
+> - Symlinks are never followed, written through or pushed.
+> - A file path that some machine cannot hold is skipped by a sync, with a warning, and refused by
+>   a push: a path that differs from another only in letter case or Unicode form, a name that
+>   Windows does not allow, a `SKILL.md` in a subfolder and a path longer than 255 bytes.
+> - A server without the file routes (backend v1.53.5 and older) still works: the CLI then syncs
+>   and pushes only the `SKILL.md`.
+> - CLI 5.2 and older wrote metadata (`gatana-id` and others) into each `SKILL.md`. A sync leaves
+>   such a file until the skill changes on the server. A push still sends it as name, description
+>   and body.
+>
+> **Skills of MCP servers.** A sync also writes the skills that connected MCP servers publish, for
+> every server that you can use and that serves its skills.
+>
+> - A directory that follows nothing by name takes every server skill. A directory that follows
+>   names takes a server only after `gatana skills install <slug> --server`.
+> - A server skill keeps its name. When two skills want one folder, an organization skill gets it,
+>   and between two servers the lower slug. The other skill gets the folder `<slug>-<name>`, and
+>   the written `SKILL.md` has that name in its frontmatter and no other change.
+> - The sync asks for the list of server skills once (`GET /server-skills`) and reads only the
+>   files whose digest changed. The backend reads each file from the server with your credentials
+>   and verifies it. Without credentials for a server, the sync skips its skills and prints the
+>   authorize link once.
+> - `.gatana-skills.json` holds server skills in `serverSkills`, by server ID and URI, with the
+>   digest of the listing and the hash of each file as written. The version stays 3.
+> - Every path and name from a server passes the same checks as above. A skill is written whole or
+>   not at all. `push` skips the folder of a server skill.
+> - For an agent, a synced server skill is a local skill: no origin, no approval per skill. The
+>   per-server setting **Serve Skills** is the control.
+> - A backend without the route (v1.53.5 and older) has no server skills. A failed listing removes
+>   no folder.
+>
+> **Errors.** A skill that fails does not stop a sync. The sync writes and records the other
+> skills, prints the failed skill on stderr and exits with an error code. The sync writes
+> `.gatana-skills.json` after each skill, so a sync that a hook stops at its time limit keeps what
+> it finished. Skills are read four at a time, server skills included.
+>
+> **Pushes outside a synced directory.** A folder with no `.gatana-skills.json` next to it has no
+> manifest entry. `push` records such a folder in `~/.gatana.skill-pushes.json`: organization ID,
+> canonical path, skill ID and the `updatedAt` after the push. The next push compares the server
+> copy with that record, so a changed folder needs no `--force`. A new machine or a CI runner has
+> no record and needs `--force` for the first push of a changed skill.
 >
 > When a skill and a collection have the same name, `--skill` or `--collection` selects one.
 > `install`, `sync`, `push` and `ls` accept `--org <id>` to use an organization other than the
@@ -630,6 +689,9 @@ gatana skills install ./team-skills
 gatana skills install release-engineering
 gatana skills install deploy-checklist
 
+# Every skill that the MCP server "github" publishes
+gatana skills install github --server
+
 # Each install adds the session-start hooks of the agents on this machine
 # (Claude Code, Codex, Hermes, OpenClaw). The hooks run "gatana skills sync --quiet"
 gatana skills install --no-hooks   # do not add the hooks
@@ -639,15 +701,15 @@ gatana skills remove-hooks         # remove them again, or: remove-hooks claude
 gatana skills sync
 gatana skills hook claude   # paste the output into .claude/settings.json
 
-# Edit an installed SKILL.md, then send all changes on this machine back.
+# Edit the files of an installed skill, then send all changes on this machine back.
 # A skill that also changed on the server is printed as a conflict and left alone.
 gatana skills push
 
-# Push one skill
+# Push one skill: its SKILL.md and every file in its folder
 gatana skills push ~/.claude/skills/release-checklist
 
-# Create a skill from a SKILL.md that you wrote
-gatana skills push ./my-skill/SKILL.md
+# Create a skill from a folder that you wrote
+gatana skills push ./my-skill
 ```
 
 ### Output formats

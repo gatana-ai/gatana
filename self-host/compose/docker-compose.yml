@@ -12,7 +12,7 @@ name: gatana
 
 services:
   app:
-    image: ghcr.io/gatana-ai/gatana:${GATANA_VERSION:-v1.51.3}
+    image: ghcr.io/gatana-ai/gatana:${GATANA_VERSION:-v1.53.5}
     restart: unless-stopped
     # Every Gatana setting in .env reaches the app. This file fixes the settings below.
     env_file: .env

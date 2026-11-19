@@ -41,7 +41,7 @@ pub async fn run(context: Context, args: InstallAgentsArgs) -> Result<()> {
     let dirs = prepare_targets(&resolve_targets(&targets, &home))?;
     let options = SyncOptions { prune: true, force, ..SyncOptions::default() };
     let summaries = sync_targets(&api, &identity, &dirs, &options).await?;
-    skills::report_summaries(&summaries, false, false);
+    let synced = skills::report_summaries(&summaries, false, false);
 
     output::println(&format!("\n{}", output::bold("Hooks:")));
     let results = agents.iter().map(|agent| hooks::install_hook(*agent, &home)).collect::<Result<Vec<HookResult>>>()?;
@@ -51,7 +51,7 @@ pub async fn run(context: Context, args: InstallAgentsArgs) -> Result<()> {
     for agent in &agents {
         output::println(&format!("  {}: {}", output::bold(agent.label()), connect::next_step(*agent)));
     }
-    Ok(())
+    synced
 }
 
 /// Who the credentials belong to, or None when there are none or they do not work.

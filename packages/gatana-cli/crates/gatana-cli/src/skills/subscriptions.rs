@@ -11,13 +11,36 @@ pub fn describe_subscription(subscription: &Subscription) -> String {
 
 /// A collection, or a skill. Collections and skills are named in separate namespaces, so one name
 /// may exist in both; then the caller has to say which, rather than the CLI guessing. `kind`
-/// narrows the search to one namespace.
+/// narrows the search to one namespace. A server is found only when the caller asks for one: a
+/// directory then takes every skill that the server publishes.
 pub async fn resolve_subscription(
     api: &impl SkillsApi,
     name: &str,
     kind: Option<SubscriptionKind>,
 ) -> Result<Subscription> {
     let wanted = name.trim();
+    if kind == Some(SubscriptionKind::Server) {
+        let Some(listing) = api.list_server_skills().await? else {
+            bail!("This Gatana server does not give the skills of MCP servers to the CLI: update the server");
+        };
+        let Some(found) = listing.iter().find(|skill| skill.server_slug == wanted) else {
+            let mut slugs: Vec<&str> = listing.iter().map(|skill| skill.server_slug.as_str()).collect();
+            slugs.sort();
+            slugs.dedup();
+            if slugs.is_empty() {
+                bail!("No MCP server publishes skills that you can use");
+            }
+            bail!(
+                "No MCP server \"{wanted}\" publishes skills that you can use. Servers with skills: {}",
+                slugs.join(", ")
+            );
+        };
+        return Ok(Subscription {
+            kind: SubscriptionKind::Server,
+            id: found.server_id.clone(),
+            name: found.server_slug.clone(),
+        });
+    }
     let collection = match kind {
         Some(SubscriptionKind::Skill) => None,
         _ => api.list_collections().await?.into_iter().find(|candidate| candidate.name == wanted),

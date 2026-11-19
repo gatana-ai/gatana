@@ -17,7 +17,11 @@ const ACCESS_COLUMNS: [Column; 3] =
 /// One row for each account, team and profile with a role on the server.
 pub(crate) async fn access_rows(api: &gatana_api::Client, slug: &str) -> Result<Vec<Value>> {
     let members = api.v1().list_mcp_server_members(slug).value().await?;
-    let profiles = api.v1().list_profiles(&query::ListProfiles { server_slug: Some(slug.to_string()) }).value().await?;
+    let profiles = api
+        .v1()
+        .list_profiles(&query::ListProfiles { server_slug: Some(slug.to_string()), maintainer_user_id: None })
+        .value()
+        .await?;
     let row = |kind: &str, row: &Value, label: &str, role: Option<&Value>| json!({ "kind": kind, "name": row.get(label), "role": role, "id": row.get("id") });
     let mut rows: Vec<Value> =
         array_at(&members, "users").iter().map(|user| row("account", user, "email", user.get("role"))).collect();

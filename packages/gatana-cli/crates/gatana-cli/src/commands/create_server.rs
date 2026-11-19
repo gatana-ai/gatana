@@ -518,6 +518,7 @@ pub(crate) fn new_server_request(slug: &str, transport: TransportConfig) -> V2Cr
         firewall_rules: Vec::new(),
         id: None,
         is_enabled: None,
+        is_skill_serving_enabled: None,
         is_output_compression_enabled: None,
         is_output_compression_transform_enabled: None,
         last_tool_refresh_at: None,

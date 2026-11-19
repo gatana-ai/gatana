@@ -29,7 +29,11 @@ fn name_of(profile: &Value) -> &str {
 pub async fn get(context: &Context, name: Option<&str>, server: Option<String>) -> Result<()> {
     let api = context.api().await?;
     let Some(name) = name else {
-        let list = api.v1().list_profiles(&query::ListProfiles { server_slug: server }).value().await?;
+        let list = api
+            .v1()
+            .list_profiles(&query::ListProfiles { server_slug: server, maintainer_user_id: None })
+            .value()
+            .await?;
         output::output(&json!({ "profiles": array_at(&list, "profiles") }), Options::columns(&PROFILE_COLUMNS));
         return Ok(());
     };

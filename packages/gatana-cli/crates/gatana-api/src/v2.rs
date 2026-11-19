@@ -2208,6 +2208,12 @@ pub mod types {
             skip_serializing_if = "::std::option::Option::is_none"
         )]
         pub is_output_compression_transform_enabled: ::std::option::Option<bool>,
+        ///Whether to serve this server's MCP skills to agents with access to the server
+        #[serde(
+            rename = "isSkillServingEnabled",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_skill_serving_enabled: ::std::option::Option<bool>,
         ///Read-only; input is ignored
         #[serde(
             rename = "lastToolRefreshAt",
@@ -2875,6 +2881,9 @@ pub mod types {
         ///Whether the compression transform step is applied to tool outputs
         #[serde(rename = "isOutputCompressionTransformEnabled")]
         pub is_output_compression_transform_enabled: bool,
+        ///Whether to serve this server's MCP skills to agents with access to the server
+        #[serde(rename = "isSkillServingEnabled")]
+        pub is_skill_serving_enabled: bool,
         ///Time of the last tool refresh, or null if tools were never refreshed
         #[serde(
             rename = "lastToolRefreshAt",
@@ -3406,11 +3415,16 @@ pub mod query {
     pub struct ListCredentialsV2 {
         /// `serverId`. Filter to credentials of a single server, by server ID
         pub server_id: Option<String>,
+        /// `userId`. Filter credentials with user scope by user ID
+        pub user_id: Option<String>,
     }
     impl ListCredentialsV2 {
         pub fn apply<'c, T>(&self, mut call: crate::Call<'c, T>) -> crate::Call<'c, T> {
             if let Some(value) = &self.server_id {
                 call = call.query("serverId", value);
+            }
+            if let Some(value) = &self.user_id {
+                call = call.query("userId", value);
             }
             call
         }
@@ -3489,7 +3503,7 @@ impl<'a> Api<'a> {
     }
     /** `GET /credentials`
 
- List the credentials the caller can read, optionally filtered by server. Secret values are not included*/
+ List credentials the caller can read without secret values, with optional server or user filters*/
     pub fn list_credentials_v2(
         &self,
         query: &query::ListCredentialsV2,

@@ -1686,7 +1686,7 @@ pub enum SkillsCommand {
 
 #[derive(Args, Debug)]
 pub struct InstallArgs {
-    /// The collection or skill name. Omit to install all
+    /// The collection or skill name, or with --server the slug of an MCP server. Omit to install all
     pub name: Option<String>,
     /// Directories or preset names (claude, agents, hermes). Omit to install into the default agent folders
     #[arg(value_name = "TARGET")]
@@ -1710,6 +1710,9 @@ pub struct InstallArgs {
     /// Treat the name as a skill if a collection has the same name
     #[arg(long)]
     pub skill: bool,
+    /// Treat the name as the slug of an MCP server, and follow every skill that the server publishes
+    #[arg(long, conflicts_with_all = ["collection", "skill"])]
+    pub server: bool,
     /// Do not add the session-start hooks
     #[arg(long = "no-hooks")]
     pub no_hooks: bool,

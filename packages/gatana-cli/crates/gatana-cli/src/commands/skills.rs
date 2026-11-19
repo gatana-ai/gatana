@@ -8,7 +8,7 @@ use crate::skills::api::HttpSkillsApi;
 use crate::skills::hooks::{self, HookAgent, HookResult, HookStatus};
 use crate::skills::manifest::SubscriptionKind;
 use crate::skills::plan::{OpKind, Reason};
-use crate::skills::push::{PushAction, PushOptions, PushResult, push_skills};
+use crate::skills::push::{PUSH_MEMORY_FILE, PushAction, PushOptions, PushResult, push_skills};
 use crate::skills::subscriptions::{describe_subscription, resolve_subscription};
 use crate::skills::sync::{SkillsIdentity, SyncOptions, SyncSummary, sync_targets};
 use crate::skills::targets::{home, prepare_targets, preset, resolve_targets};
@@ -27,7 +27,8 @@ pub async fn run(context: &Context, command: SkillsCommand) -> Result<()> {
             // Typed paths must hold a skill; the default agent folders may not exist yet.
             let explicit = !paths.is_empty();
             let paths = if explicit { paths } else { resolve_targets(&[], &home()) };
-            let options = PushOptions { force, dry_run, collection, skip_empty: !explicit };
+            let memory_file = Some(home().join(PUSH_MEMORY_FILE));
+            let options = PushOptions { force, dry_run, collection, skip_empty: !explicit, memory_file };
             let results = push_skills(&api, &identity, &paths, &options).await?;
             report_push(&results);
             if results.iter().any(|result| matches!(result.action, PushAction::Conflict | PushAction::Error)) {
@@ -63,9 +64,9 @@ fn org_context(org: Option<&str>) -> Result<Option<Context>> {
     org.map(Context::for_org).transpose()
 }
 
-/// The skills API and the organization the files are stamped with. The organization id is
-/// recorded in every manifest and SKILL.md; with only GATANA_BASE_URL set, the configuration takes
-/// it from the first host label.
+/// The skills API and the organization of the synced directories. The organization id is recorded
+/// in every manifest; with only GATANA_BASE_URL set, the configuration takes it from the first host
+/// label.
 pub(super) async fn connect<'a>(
     context: &'a Context,
     org: Option<&str>,
@@ -91,18 +92,30 @@ fn is_target_word(word: &str) -> bool {
 }
 
 async fn install(context: &Context, args: InstallArgs) -> Result<()> {
-    let InstallArgs { mut name, mut targets, dry_run, no_prune, force, reset, collection, skill, no_hooks, quiet, org } =
-        args;
-    let named = collection || skill;
+    let InstallArgs {
+        mut name,
+        mut targets,
+        dry_run,
+        no_prune,
+        force,
+        reset,
+        collection,
+        skill,
+        server,
+        no_hooks,
+        quiet,
+        org,
+    } = args;
+    let named = collection || skill || server;
     if let Some(word) = name.clone().filter(|word| !named && is_target_word(word)) {
         targets.insert(0, word);
         name = None;
     }
     if named && name.is_none() {
-        bail!("--collection and --skill require a skill or collection name");
+        bail!("--collection, --skill and --server require a name");
     }
     if name.is_some() && reset {
-        bail!("Cannot use --reset with a skill or collection name");
+        bail!("Cannot use --reset with a skill, collection or server name");
     }
     let org_context = org_context(org.as_deref())?;
     let context = org_context.as_ref().unwrap_or(context);
@@ -111,6 +124,8 @@ async fn install(context: &Context, args: InstallArgs) -> Result<()> {
         Some(SubscriptionKind::Collection)
     } else if skill {
         Some(SubscriptionKind::Skill)
+    } else if server {
+        Some(SubscriptionKind::Server)
     } else {
         None
     };
@@ -121,7 +136,7 @@ async fn install(context: &Context, args: InstallArgs) -> Result<()> {
     let dirs = prepare_targets(&resolve_targets(&targets, &home()))?;
     let options = SyncOptions { dry_run, prune: !no_prune, force, subscribe, reset };
     let summaries = sync_targets(&api, &identity, &dirs, &options).await?;
-    report_summaries(&summaries, dry_run, quiet);
+    let synced = report_summaries(&summaries, dry_run, quiet);
     // --no-hooks is the only thing that keeps the hooks away. A quiet install reports only what
     // needs a hand.
     if !dry_run && !no_hooks {
@@ -130,7 +145,7 @@ async fn install(context: &Context, args: InstallArgs) -> Result<()> {
             results.into_iter().filter(|result| !quiet || result.status == HookStatus::Manual).collect();
         report_hooks(&shown);
     }
-    Ok(())
+    synced
 }
 
 async fn sync(context: &Context, args: SyncArgs) -> Result<()> {
@@ -141,8 +156,7 @@ async fn sync(context: &Context, args: SyncArgs) -> Result<()> {
     let dirs = prepare_targets(&resolve_targets(&targets, &home()))?;
     let options = SyncOptions { dry_run, prune: !no_prune, force, ..SyncOptions::default() };
     let summaries = sync_targets(&api, &identity, &dirs, &options).await?;
-    report_summaries(&summaries, dry_run, quiet);
-    Ok(())
+    report_summaries(&summaries, dry_run, quiet)
 }
 
 const OP_COLUMNS: [Column; 3] = [
@@ -169,7 +183,7 @@ fn describe_subscriptions(summary: &SyncSummary) -> String {
     match &summary.subscriptions {
         None => String::new(),
         Some(list) if list.is_empty() => {
-            " (no skills selected. Install a collection or skill by name, or run \"gatana skills install --reset\")"
+            " (no skills selected. Install a collection, skill or server by name, or run \"gatana skills install --reset\")"
                 .to_string()
         }
         Some(list) => {
@@ -178,12 +192,18 @@ fn describe_subscriptions(summary: &SyncSummary) -> String {
     }
 }
 
-pub(super) fn report_summaries(summaries: &[SyncSummary], dry_run: bool, quiet: bool) {
+/// Fails when a skill failed, after the report: the other skills of the run are synced. A quiet run
+/// prints warnings and errors on stderr only, so the stdout of a session-start hook stays empty.
+pub(super) fn report_summaries(summaries: &[SyncSummary], dry_run: bool, quiet: bool) -> Result<()> {
     for warning in summaries.iter().flat_map(|summary| &summary.warnings) {
         output::eprintln(&format!("{} {warning}", output::yellow("warning:")));
     }
+    for error in summaries.iter().flat_map(|summary| &summary.errors) {
+        output::error(error);
+    }
+    let result = if summaries.iter().all(|summary| summary.errors.is_empty()) { Ok(()) } else { Err(Silent.into()) };
     if quiet {
-        return;
+        return result;
     }
     if output::machine_readable() {
         let shown: Vec<SyncSummary> = summaries
@@ -191,7 +211,7 @@ pub(super) fn report_summaries(summaries: &[SyncSummary], dry_run: bool, quiet: 
             .map(|summary| SyncSummary { ops: if dry_run { summary.ops.clone() } else { None }, ..summary.clone() })
             .collect();
         output::print(&serde_json::to_value(shown).unwrap_or_default());
-        return;
+        return result;
     }
     for summary in summaries {
         let dir = output::bold(&output::tilde(&summary.dir));
@@ -218,6 +238,7 @@ pub(super) fn report_summaries(summaries: &[SyncSummary], dry_run: bool, quiet: 
             describe_subscriptions(summary)
         ));
     }
+    result
 }
 
 /// Unchanged skills are counted, not listed: a push of a whole agent folder is mostly skills

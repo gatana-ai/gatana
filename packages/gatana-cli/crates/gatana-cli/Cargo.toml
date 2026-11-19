@@ -30,6 +30,8 @@ chrono = { version = "0.4", default-features = false, features = ["std", "clock"
 yaml-rust2 = { version = "0.13", default-features = false }
 regex-lite = "0.1"
 sha2 = "0.10"
+# For the file paths of a skill that are one path where the Unicode form does not count.
+unicode-normalization = "0.1"
 base64 = "0.23"
 getrandom = "0.4"
 zip = { version = "8", default-features = false, features = ["deflate-flate2-zlib-rs"] }

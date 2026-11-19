@@ -97,8 +97,11 @@ pub async fn get(context: &Context, resource: GetCommand) -> Result<()> {
                 Some(slug) => Some(server_id(context, slug).await?),
                 None => None,
             };
-            let list =
-                api.v2().list_credentials_v2(&gatana_api::v2::query::ListCredentialsV2 { server_id }).value().await?;
+            let list = api
+                .v2()
+                .list_credentials_v2(&gatana_api::v2::query::ListCredentialsV2 { server_id, user_id: None })
+                .value()
+                .await?;
             let credentials = array_at(&list, "credentials");
             let Some(id) = id else {
                 output::output(&json!({ "credentials": credentials }), Options::columns(&CREDENTIAL_COLUMNS));
@@ -178,7 +181,7 @@ pub async fn describe(context: &Context, resource: DescribeCommand) -> Result<()
                     Value::Object(row)
                 })
                 .collect();
-            let query = gatana_api::v2::query::ListCredentialsV2 { server_id: Some(id) };
+            let query = gatana_api::v2::query::ListCredentialsV2 { server_id: Some(id), user_id: None };
             let credentials: Vec<Value> = array_at(&api.v2().list_credentials_v2(&query).value().await?, "credentials")
                 .iter()
                 .map(|credential| {

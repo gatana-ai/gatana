@@ -1197,6 +1197,9 @@ pub mod types {
         pub kind: ::std::string::String,
         ///Display name of the channel
         pub name: ::std::string::String,
+        ///Key of a preset of the kind. Send values only for the fields of the preset. Absent or empty for no preset
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub preset: ::std::option::Option<::std::string::String>,
         ///Field values by key. Gatana creates generated secrets
         pub values: ::std::collections::HashMap<
             ::std::string::String,
@@ -1590,6 +1593,9 @@ pub mod types {
         ///Profile assignments of the user
         #[serde(rename = "profileAssignments")]
         pub profile_assignments: ::std::vec::Vec<ProfileAssignment>,
+        ///Profile assignments from the user's teams
+        #[serde(rename = "teamProfileAssignments")]
+        pub team_profile_assignments: ::std::vec::Vec<ProfileTeamAssignment>,
     }
     ///`CreateUserRequest`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -3153,6 +3159,106 @@ pub mod types {
         pub files: ::std::vec::Vec<ServerFile>,
         pub server: ServerDto,
     }
+    ///`GetMcpServerSkillFileResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetMcpServerSkillFileResponse {
+        ///Set when the server needs credentials before the caller can read the file
+        #[serde(
+            rename = "credentialPrompt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub credential_prompt: ::std::option::Option<
+            GetMcpServerSkillFileResponseCredentialPrompt,
+        >,
+        ///The file, verified against the skill entry of the server. null when credentials are missing
+        #[serde(deserialize_with = "::std::option::Option::deserialize")]
+        pub file: ::std::option::Option<GetMcpServerSkillFileResponseFile>,
+    }
+    ///`GetMcpServerSkillFileResponseCredentialPrompt`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetMcpServerSkillFileResponseCredentialPrompt {
+        ///Link that stores the credential. null when the caller cannot set it
+        #[serde(
+            rename = "authorizeUrl",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub authorize_url: ::std::option::Option<::std::string::String>,
+        pub message: ::std::string::String,
+    }
+    ///`GetMcpServerSkillFileResponseFile`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetMcpServerSkillFileResponseFile {
+        pub content: ::std::string::String,
+        ///SHA-256 digest of the file, as "sha256:<hex>"
+        pub digest: ::std::string::String,
+        ///base64 when the bytes are not valid UTF-8
+        pub encoding: GetMcpServerSkillFileResponseFileEncoding,
+        ///MIME type from the server, or from the file extension if absent
+        #[serde(rename = "mimeType")]
+        pub mime_type: ::std::string::String,
+        ///File path in the skill folder, as written in the URI
+        pub path: ::std::string::String,
+        #[serde(rename = "sizeBytes")]
+        pub size_bytes: f64,
+        ///URI of the file as the server publishes it
+        pub uri: ::std::string::String,
+    }
+    ///base64 when the bytes are not valid UTF-8
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum GetMcpServerSkillFileResponseFileEncoding {
+        #[serde(rename = "utf8")]
+        Utf8,
+        #[serde(rename = "base64")]
+        Base64,
+    }
+    impl ::std::fmt::Display for GetMcpServerSkillFileResponseFileEncoding {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Utf8 => f.write_str("utf8"),
+                Self::Base64 => f.write_str("base64"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for GetMcpServerSkillFileResponseFileEncoding {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "utf8" => Ok(Self::Utf8),
+                "base64" => Ok(Self::Base64),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for GetMcpServerSkillFileResponseFileEncoding {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for GetMcpServerSkillFileResponseFileEncoding {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
     ///`GetMembersResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct GetMembersResponse {
@@ -3331,6 +3437,83 @@ pub mod types {
         ///Number remaining before the quota is reached
         pub remaining: f64,
     }
+    ///`GetSkillFileResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetSkillFileResponse {
+        pub file: GetSkillFileResponseFile,
+    }
+    ///`GetSkillFileResponseFile`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetSkillFileResponseFile {
+        pub content: ::std::string::String,
+        ///SHA-256 digest of the file, as "sha256:<hex>"
+        pub digest: ::std::string::String,
+        ///base64 when the bytes are not valid UTF-8
+        pub encoding: GetSkillFileResponseFileEncoding,
+        ///Set by Gatana from the file extension
+        #[serde(rename = "mimeType")]
+        pub mime_type: ::std::string::String,
+        ///Path in the skill folder, with / as the separator, e.g. "SKILL.md"
+        pub path: ::std::string::String,
+        #[serde(rename = "sizeBytes")]
+        pub size_bytes: f64,
+    }
+    ///base64 when the bytes are not valid UTF-8
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum GetSkillFileResponseFileEncoding {
+        #[serde(rename = "utf8")]
+        Utf8,
+        #[serde(rename = "base64")]
+        Base64,
+    }
+    impl ::std::fmt::Display for GetSkillFileResponseFileEncoding {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Utf8 => f.write_str("utf8"),
+                Self::Base64 => f.write_str("base64"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for GetSkillFileResponseFileEncoding {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "utf8" => Ok(Self::Utf8),
+                "base64" => Ok(Self::Base64),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for GetSkillFileResponseFileEncoding {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for GetSkillFileResponseFileEncoding {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
     ///`GetSkillResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct GetSkillResponse {
@@ -3386,6 +3569,9 @@ pub mod types {
         pub created_by_user_name: ::std::string::String,
         ///One line saying when to use the skill
         pub description: ::std::string::String,
+        ///URI that agents use to read SKILL.md through Gatana
+        #[serde(rename = "gatewayUri")]
+        pub gateway_uri: ::std::string::String,
         pub id: ::std::string::String,
         ///IDs of the teams whose members maintain the skill
         #[serde(rename = "maintainerTeamIds")]
@@ -3598,6 +3784,12 @@ pub mod types {
     ///`GetUserResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct GetUserResponse {
+        ///Last request time through a connected client or personal access token, or null if none exists or the caller cannot update the user
+        #[serde(
+            rename = "lastActiveAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub last_active_at: ::std::option::Option<::std::string::String>,
         pub user: User,
     }
     ///Persistent storage for the server. When enabled the server keeps one volume, mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the deployment and counts against the organization storage quota
@@ -3658,6 +3850,25 @@ pub mod types {
     pub struct ListSandboxesResponse {
         pub sandboxes: ::std::vec::Vec<SandboxDto>,
     }
+    ///`ListServerSkillsResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListServerSkillsResponse {
+        ///The servers of the listed skills
+        pub servers: ::std::vec::Vec<ListServerSkillsResponseServersItem>,
+        pub skills: ::std::vec::Vec<ServerSkillDto>,
+    }
+    ///`ListServerSkillsResponseServersItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListServerSkillsResponseServersItem {
+        pub id: ::std::string::String,
+        ///Time of the last tool refresh, which also reads the skills
+        #[serde(
+            rename = "lastToolRefreshAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub last_tool_refresh_at: ::std::option::Option<::std::string::String>,
+        pub slug: ::std::string::String,
+    }
     ///`ListServiceAccountPersonalAccessTokensResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ListServiceAccountPersonalAccessTokensResponse {
@@ -3668,6 +3879,12 @@ pub mod types {
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ListSkillCollectionsResponse {
         pub collections: ::std::vec::Vec<SkillCollectionDto>,
+    }
+    ///`ListSkillFilesResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ListSkillFilesResponse {
+        ///Every file of the skill, SKILL.md included
+        pub files: ::std::vec::Vec<SkillFileDto>,
     }
     ///`ListSkillsResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -3739,6 +3956,9 @@ pub mod types {
         ///Profile assignments of the user
         #[serde(rename = "profileAssignments")]
         pub profile_assignments: ::std::vec::Vec<ProfileAssignment>,
+        ///Profile assignments from the user's teams
+        #[serde(rename = "teamProfileAssignments")]
+        pub team_profile_assignments: ::std::vec::Vec<ProfileTeamAssignment>,
     }
     ///`ListUsersResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -3875,14 +4095,33 @@ pub mod types {
         pub key: ::std::string::String,
         ///Label of the form input
         pub label: ::std::string::String,
+        ///Placeholders that a json-template field accepts inside string values
+        #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+        pub placeholders: ::std::vec::Vec<
+            NotificationChannelFieldResponsePlaceholdersItem,
+        >,
         ///Prefix for generated secrets
         #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         pub prefix: ::std::option::Option<::std::string::String>,
-        ///Input type. Secrets are encrypted. Only generated secrets are returned
+        ///Tool field key for a json-template field. The rendered template must be an object that matches the tool input schema
+        #[serde(
+            rename = "schemaFrom",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub schema_from: ::std::option::Option<::std::string::String>,
+        ///Input type. Secrets are encrypted; only generated secret values are returned. Tool values use <server slug>_<tool name>. Service-account values use user IDs. Slack-channel values use <Slack workspace ID>:<channel ID>
         #[serde(rename = "type")]
         pub type_: NotificationChannelFieldResponseType,
     }
-    ///Input type. Secrets are encrypted. Only generated secrets are returned
+    ///`NotificationChannelFieldResponsePlaceholdersItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationChannelFieldResponsePlaceholdersItem {
+        ///The value that replaces the placeholder
+        pub description: ::std::string::String,
+        ///The placeholder as it is written in a template
+        pub placeholder: ::std::string::String,
+    }
+    ///Input type. Secrets are encrypted; only generated secret values are returned. Tool values use <server slug>_<tool name>. Service-account values use user IDs. Slack-channel values use <Slack workspace ID>:<channel ID>
     #[derive(
         ::serde::Deserialize,
         ::serde::Serialize,
@@ -3906,6 +4145,14 @@ pub mod types {
         Secret,
         #[serde(rename = "generated-secret")]
         GeneratedSecret,
+        #[serde(rename = "tool")]
+        Tool,
+        #[serde(rename = "service-account")]
+        ServiceAccount,
+        #[serde(rename = "slack-channel")]
+        SlackChannel,
+        #[serde(rename = "json-template")]
+        JsonTemplate,
     }
     impl ::std::fmt::Display for NotificationChannelFieldResponseType {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -3915,6 +4162,10 @@ pub mod types {
                 Self::EmailList => f.write_str("email-list"),
                 Self::Secret => f.write_str("secret"),
                 Self::GeneratedSecret => f.write_str("generated-secret"),
+                Self::Tool => f.write_str("tool"),
+                Self::ServiceAccount => f.write_str("service-account"),
+                Self::SlackChannel => f.write_str("slack-channel"),
+                Self::JsonTemplate => f.write_str("json-template"),
             }
         }
     }
@@ -3929,6 +4180,10 @@ pub mod types {
                 "email-list" => Ok(Self::EmailList),
                 "secret" => Ok(Self::Secret),
                 "generated-secret" => Ok(Self::GeneratedSecret),
+                "tool" => Ok(Self::Tool),
+                "service-account" => Ok(Self::ServiceAccount),
+                "slack-channel" => Ok(Self::SlackChannel),
+                "json-template" => Ok(Self::JsonTemplate),
                 _ => Err("invalid value".into()),
             }
         }
@@ -3956,15 +4211,71 @@ pub mod types {
         ///The kinds available in this installation
         pub kinds: ::std::vec::Vec<NotificationChannelKindResponse>,
     }
+    ///`NotificationChannelKindPresetResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationChannelKindPresetResponse {
+        ///Help text of the preset
+        pub description: ::std::string::String,
+        ///Domain of the receiver, for its favicon
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub domain: ::std::option::Option<::std::string::String>,
+        ///Visible fields for this preset, in display order
+        pub fields: ::std::vec::Vec<NotificationChannelKindPresetResponseFieldsItem>,
+        ///Preset key stored with the channel
+        pub key: ::std::string::String,
+        ///Display name of the preset
+        pub label: ::std::string::String,
+        ///Fixed values for hidden plain fields and initial values for visible fields
+        pub values: ::std::collections::HashMap<
+            ::std::string::String,
+            NotificationChannelKindPresetResponseValuesValue,
+        >,
+    }
+    ///`NotificationChannelKindPresetResponseFieldsItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct NotificationChannelKindPresetResponseFieldsItem {
+        ///Field help text for this preset
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub description: ::std::option::Option<::std::string::String>,
+        ///Whether this preset requires a value
+        #[serde(
+            rename = "isRequired",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub is_required: ::std::option::Option<bool>,
+        ///Field key in the channel kind
+        pub key: ::std::string::String,
+        ///Field label for this preset
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub label: ::std::option::Option<::std::string::String>,
+    }
+    ///`NotificationChannelKindPresetResponseValuesValue`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(untagged)]
+    pub enum NotificationChannelKindPresetResponseValuesValue {
+        String(::std::string::String),
+        Array(::std::vec::Vec<::std::string::String>),
+    }
+    impl ::std::convert::From<::std::vec::Vec<::std::string::String>>
+    for NotificationChannelKindPresetResponseValuesValue {
+        fn from(value: ::std::vec::Vec<::std::string::String>) -> Self {
+            Self::Array(value)
+        }
+    }
     ///`NotificationChannelKindResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct NotificationChannelKindResponse {
         ///The form fields of a channel of this kind
         pub fields: ::std::vec::Vec<NotificationChannelFieldResponse>,
+        ///Whether this kind can report field problems before saving
+        #[serde(rename = "hasFieldNotices")]
+        pub has_field_notices: bool,
         ///Name of the kind, for example email or webhook
         pub kind: ::std::string::String,
         ///Display name of the kind
         pub label: ::std::string::String,
+        ///Presets for common receivers. Empty if none are available
+        pub presets: ::std::vec::Vec<NotificationChannelKindPresetResponse>,
     }
     ///`NotificationChannelListResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -4014,6 +4325,8 @@ pub mod types {
         pub last_success_at: ::std::option::Option<::std::string::String>,
         ///Channel display name, also shown in the email footer
         pub name: ::std::string::String,
+        ///Selected preset key. Empty without a preset
+        pub preset: ::std::string::String,
         ///Whether each secret has a stored value. Only generated secrets include the value
         pub secrets: ::std::collections::HashMap<
             ::std::string::String,
@@ -4170,8 +4483,8 @@ pub mod types {
         ///Notification ID. Reused across channels and retries so receivers can detect duplicates
         pub id: ::std::string::String,
         ///ID of the organization
-        #[serde(rename = "tenantId")]
-        pub tenant_id: ::std::string::String,
+        #[serde(rename = "orgId")]
+        pub org_id: ::std::string::String,
         ///One or two sentences without markup
         pub text: ::std::string::String,
         ///When the message was created, ISO 8601 in UTC
@@ -5137,6 +5450,86 @@ pub mod types {
         #[serde(rename = "clientConfiguration")]
         pub client_configuration: ServerOAuthClientConfiguration,
     }
+    ///`ReplaceSkillFilesBody`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ReplaceSkillFilesBody {
+        ///Replace all files: maximum 512 files and 4 MiB, including SKILL.md. Delete stored files omitted from the set. Keep the stored SKILL.md if omitted
+        pub files: ::std::vec::Vec<ReplaceSkillFilesBodyFilesItem>,
+    }
+    ///`ReplaceSkillFilesBodyFilesItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ReplaceSkillFilesBodyFilesItem {
+        pub content: ::std::string::String,
+        ///How content holds the bytes of the file
+        pub encoding: ReplaceSkillFilesBodyFilesItemEncoding,
+        ///Path relative to the skill folder. Use / as the separator, without "." or ".." segments. Maximum 255 bytes. "SKILL.md" is the skill document
+        pub path: ::std::string::String,
+    }
+    ///How content holds the bytes of the file
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ReplaceSkillFilesBodyFilesItemEncoding {
+        #[serde(rename = "utf8")]
+        Utf8,
+        #[serde(rename = "base64")]
+        Base64,
+    }
+    impl ::std::fmt::Display for ReplaceSkillFilesBodyFilesItemEncoding {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Utf8 => f.write_str("utf8"),
+                Self::Base64 => f.write_str("base64"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ReplaceSkillFilesBodyFilesItemEncoding {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "utf8" => Ok(Self::Utf8),
+                "base64" => Ok(Self::Base64),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ReplaceSkillFilesBodyFilesItemEncoding {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for ReplaceSkillFilesBodyFilesItemEncoding {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`ReplaceSkillFilesResponse`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ReplaceSkillFilesResponse {
+        ///Every file of the skill after the write, SKILL.md included
+        pub files: ::std::vec::Vec<SkillFileDto>,
+        ///updatedAt of the skill as this write left it. Equal to the earlier value when the set changed nothing
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+    }
     ///`ResolvedProtection`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ResolvedProtection {
@@ -5634,6 +6027,9 @@ pub mod types {
         ///Whether the compression transform step is applied to tool outputs
         #[serde(rename = "isOutputCompressionTransformEnabled")]
         pub is_output_compression_transform_enabled: bool,
+        ///Whether to serve this server's MCP skills to agents with access to the server
+        #[serde(rename = "isSkillServingEnabled")]
+        pub is_skill_serving_enabled: bool,
         ///Time of the last tool refresh, or null if tools were never refreshed
         #[serde(
             rename = "lastToolRefreshAt",
@@ -6658,6 +7054,39 @@ pub mod types {
         ///Memory reserved for the deployment, in Kubernetes quantity format (e.g. "384Mi" or "1Gi"). Unlike CPU this is also the hard ceiling: a process that exceeds it is terminated
         pub memory: ::std::string::String,
     }
+    ///`ServerSkillDto`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ServerSkillDto {
+        ///One line saying when to use the skill
+        pub description: ::std::string::String,
+        ///Every file of the skill, SKILL.md included
+        pub files: ::std::vec::Vec<ServerSkillDtoFilesItem>,
+        ///URI of the SKILL.md as agents read it through Gatana
+        #[serde(rename = "gatewayUri")]
+        pub gateway_uri: ::std::string::String,
+        pub name: ::std::string::String,
+        #[serde(rename = "serverId")]
+        pub server_id: ::std::string::String,
+        #[serde(rename = "serverSlug")]
+        pub server_slug: ::std::string::String,
+        ///URI of the SKILL.md as the server publishes it
+        pub uri: ::std::string::String,
+    }
+    ///`ServerSkillDtoFilesItem`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ServerSkillDtoFilesItem {
+        ///SHA-256 digest of the file, as "sha256:<hex>"
+        pub digest: ::std::string::String,
+        ///Set by Gatana from the file extension
+        #[serde(rename = "mimeType")]
+        pub mime_type: ::std::string::String,
+        ///File path in the skill folder, as written in the URI
+        pub path: ::std::string::String,
+        #[serde(rename = "sizeBytes")]
+        pub size_bytes: f64,
+        ///URI of the file as the server publishes it
+        pub uri: ::std::string::String,
+    }
     ///`ServerStorageStatus`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct ServerStorageStatus {
@@ -6936,6 +7365,9 @@ pub mod types {
         pub created_by_user_name: ::std::string::String,
         ///One line saying when to use the skill
         pub description: ::std::string::String,
+        ///URI that agents use to read SKILL.md through Gatana
+        #[serde(rename = "gatewayUri")]
+        pub gateway_uri: ::std::string::String,
         pub id: ::std::string::String,
         ///IDs of the teams whose members maintain the skill
         #[serde(rename = "maintainerTeamIds")]
@@ -7065,6 +7497,19 @@ pub mod types {
         ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
+    }
+    ///`SkillFileDto`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct SkillFileDto {
+        ///SHA-256 digest of the file, as "sha256:<hex>"
+        pub digest: ::std::string::String,
+        ///Set by Gatana from the file extension
+        #[serde(rename = "mimeType")]
+        pub mime_type: ::std::string::String,
+        ///Path in the skill folder, with / as the separator, e.g. "SKILL.md"
+        pub path: ::std::string::String,
+        #[serde(rename = "sizeBytes")]
+        pub size_bytes: f64,
     }
     ///Short-lived JWT credential for SSH access to a sandbox
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -7995,6 +8440,38 @@ pub mod types {
         #[serde(rename = "signatureAlgorithm")]
         pub signature_algorithm: ::std::string::String,
     }
+    ///`TestNotificationChannelInput`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct TestNotificationChannelInput {
+        ///Display name for the test message
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub name: ::std::option::Option<::std::string::String>,
+        ///Unsaved preset, as in an update
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub preset: ::std::option::Option<::std::string::String>,
+        ///Unsaved field values, as in an update. If absent, the test uses the saved settings. Nothing is saved
+        #[serde(
+            default,
+            skip_serializing_if = ":: std :: collections :: HashMap::is_empty"
+        )]
+        pub values: ::std::collections::HashMap<
+            ::std::string::String,
+            ::std::option::Option<TestNotificationChannelInputValuesValue>,
+        >,
+    }
+    ///`TestNotificationChannelInputValuesValue`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    #[serde(untagged)]
+    pub enum TestNotificationChannelInputValuesValue {
+        String(::std::string::String),
+        Array(::std::vec::Vec<::std::string::String>),
+    }
+    impl ::std::convert::From<::std::vec::Vec<::std::string::String>>
+    for TestNotificationChannelInputValuesValue {
+        fn from(value: ::std::vec::Vec<::std::string::String>) -> Self {
+            Self::Array(value)
+        }
+    }
     ///Controls how tool refresh is authorized. "server-scoped" means only server-scoped credentials are required, "skip" means refresh is done without authorization, and "any" means any available credentials (server, user, profile) can be used. Defaults to "server-scoped".
     #[derive(
         ::serde::Deserialize,
@@ -8191,6 +8668,9 @@ pub mod types {
         ///Display name of the channel
         #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         pub name: ::std::option::Option<::std::string::String>,
+        ///Change the preset. Requires values. Empty removes the preset. If absent, the channel keeps its preset. A change removes each stored secret that values does not set again
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub preset: ::std::option::Option<::std::string::String>,
         ///Replace plain settings. An absent or empty secret keeps its value; null clears it. Rotate generated secrets separately
         #[serde(
             default,
@@ -9453,11 +9933,16 @@ pub mod query {
     pub struct ListProfiles {
         /// `serverSlug`.
         pub server_slug: Option<String>,
+        /// `maintainerUserId`. Filter by maintainer user ID
+        pub maintainer_user_id: Option<String>,
     }
     impl ListProfiles {
         pub fn apply<'c, T>(&self, mut call: crate::Call<'c, T>) -> crate::Call<'c, T> {
             if let Some(value) = &self.server_slug {
                 call = call.query("serverSlug", value);
+            }
+            if let Some(value) = &self.maintainer_user_id {
+                call = call.query("maintainerUserId", value);
             }
             call
         }
@@ -10040,6 +10525,78 @@ impl<'a> Api<'a> {
         let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
         call.json_value(body)
     }
+    /** `GET /skills/{skillId}/files`
+
+ List every skill file, including SKILL.md, with its path, size, digest and MIME type*/
+    pub fn list_skill_files(
+        &self,
+        skill_id: &str,
+    ) -> crate::Call<'a, ListSkillFilesResponse> {
+        let skill_id = crate::encode_path_segment(skill_id);
+        let path = format!("{}/skills/{}/files", BASE_PATH, skill_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `GET /skills/{skillId}/files/{path}`
+
+ Read a skill file as text, or as base64 for bytes that are not valid UTF-8*/
+    pub fn get_skill_file(
+        &self,
+        skill_id: &str,
+        path: &str,
+    ) -> crate::Call<'a, GetSkillFileResponse> {
+        let skill_id = crate::encode_path_segment(skill_id);
+        let path = crate::encode_path_segment(path);
+        let path = format!("{}/skills/{}/files/{}", BASE_PATH, skill_id, path);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `PUT /skills/{skillId}/files`
+
+ Replace the files of a skill in one transaction and return the file list and updatedAt, keeping SKILL.md if omitted*/
+    pub fn replace_skill_files(
+        &self,
+        skill_id: &str,
+        body: &ReplaceSkillFilesBody,
+    ) -> crate::Call<'a, ReplaceSkillFilesResponse> {
+        let skill_id = crate::encode_path_segment(skill_id);
+        let path = format!("{}/skills/{}/files", BASE_PATH, skill_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json(body)
+    }
+    /// `PUT /skills/{skillId}/files` with a body that is sent as given, unchecked.
+    pub fn replace_skill_files_raw(
+        &self,
+        skill_id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, ReplaceSkillFilesResponse> {
+        let skill_id = crate::encode_path_segment(skill_id);
+        let path = format!("{}/skills/{}/files", BASE_PATH, skill_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::PUT, path);
+        call.json_value(body)
+    }
+    /** `GET /server-skills`
+
+ List the cached skills of every MCP server that the caller can use and that serves its skills*/
+    pub fn list_server_skills(&self) -> crate::Call<'a, ListServerSkillsResponse> {
+        let path = format!("{}/server-skills", BASE_PATH);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `GET /mcp-servers/{serverSlug}/skill-files`
+
+ Read one file of a skill from an MCP server with the caller's credentials and verify it against the skill entry*/
+    pub fn get_mcp_server_skill_file(
+        &self,
+        server_slug: &str,
+        uri: &str,
+    ) -> crate::Call<'a, GetMcpServerSkillFileResponse> {
+        let server_slug = crate::encode_path_segment(server_slug);
+        let path = format!("{}/mcp-servers/{}/skill-files", BASE_PATH, server_slug);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        let call = call.query("uri", uri);
+        call
+    }
     /** `GET /skill-collections`
 
  List the skill collections the caller can see, each with how many of its skills the caller can read*/
@@ -10238,7 +10795,7 @@ impl<'a> Api<'a> {
     }
     /** `GET /profiles`
 
- List the profiles the caller can read, optionally filtered to one MCP server*/
+ List profiles the caller can read, with optional server or maintainer filters*/
     pub fn list_profiles(
         &self,
         query: &query::ListProfiles,
@@ -10881,7 +11438,7 @@ impl<'a> Api<'a> {
     }
     /** `POST /alert-rules/preview`
 
- Count the audit log events of the last 7 days that a list of conditions matches*/
+ Count audit log events that match the conditions over the last 7, 30 and 90 days*/
     pub fn preview_alert_rule(
         &self,
         body: &AlertRulePreviewInput,
@@ -11034,15 +11591,27 @@ impl<'a> Api<'a> {
     }
     /** `POST /notification-channels/{id}/test`
 
- Send a test message through a notification channel and report the result*/
+ Send a test message through a notification channel, with unsaved values if given, and report the result*/
     pub fn test_notification_channel(
         &self,
         id: &str,
+        body: &TestNotificationChannelInput,
     ) -> crate::Call<'a, NotificationChannelTestResponse> {
         let id = crate::encode_path_segment(id);
         let path = format!("{}/notification-channels/{}/test", BASE_PATH, id);
         let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
-        call
+        call.json(body)
+    }
+    /// `POST /notification-channels/{id}/test` with a body that is sent as given, unchecked.
+    pub fn test_notification_channel_raw(
+        &self,
+        id: &str,
+        body: ::serde_json::Value,
+    ) -> crate::Call<'a, NotificationChannelTestResponse> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/notification-channels/{}/test", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::POST, path);
+        call.json_value(body)
     }
     /** `GET /notifications`
 

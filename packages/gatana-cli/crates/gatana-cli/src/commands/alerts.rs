@@ -514,7 +514,7 @@ pub async fn run_channel(context: &Context, command: ChannelCommand) -> Result<(
         }
         ChannelCommand::Test { channel } => {
             let channel = resolve::channel(api, &channel).await?;
-            let result = api.v1().test_notification_channel(resolve::id(&channel)).value().await?;
+            let result = api.v1().test_notification_channel(resolve::id(&channel), &Default::default()).value().await?;
             let sent = result.get("success") == Some(&Value::Bool(true));
             if output::machine_readable() {
                 output::print(&result);

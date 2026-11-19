@@ -5,6 +5,7 @@ pub mod api;
 pub mod frontmatter;
 pub mod hooks;
 pub mod manifest;
+pub mod paths;
 pub mod plan;
 pub mod push;
 pub mod subscriptions;
