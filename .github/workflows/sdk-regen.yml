@@ -1,0 +1,107 @@
+# Regenerates gatana-sdk and gatana-client from the OpenAPI documents of Gatana Cloud production
+# and releases each client whose generated code changed. scripts/sdk-regen.sh does the work and
+# holds the rules. This file holds the schedule, the permissions and the failure report.
+#
+# Publishing uses trusted publishing, so no npm or PyPI token is stored. npmjs.com (gatana-sdk)
+# and pypi.org (gatana-client) each trust this workflow by its file name. A rename stops
+# publishing until both trust the new name.
+#
+# Failure report: the first failed run opens an issue and fails, which sends one email. While that
+# issue is open, a failed run ends as successful, so a failure that persists does not send an
+# email every 30 minutes. The next run that succeeds closes the issue. Every step before the Report
+# step continues on error, so the Report step alone decides whether the run fails. When a setup
+# step fails, the regen step fails too, and the Report step sees that. The Report step looks only
+# at issues of github-actions, because anyone can open an issue in this public repository.
+#
+# GitHub turns off the schedule of a public repository after 60 days without activity. The release
+# commits of this workflow count as activity, so only an API that stays the same for 60 days stops
+# the schedule.
+#
+# Actions are pinned to a commit. The comment names the tag.
+name: sdk-regen
+
+on:
+  schedule:
+    - cron: '17,47 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-regen
+  cancel-in-progress: false
+
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # the release commit, its tags and the GitHub releases
+      id-token: write # trusted publishing to npm and PyPI
+      issues: write # the failure report
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        continue-on-error: true
+        with:
+          fetch-depth: 0 # the script finds the commit that set each version
+
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        continue-on-error: true
+        with:
+          version: 11.28.5
+
+      # Node 24 ships npm 11, which trusted publishing needs
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        continue-on-error: true
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        continue-on-error: true
+
+      - run: pnpm install --frozen-lockfile
+        continue-on-error: true
+
+      - name: Regenerate and release
+        id: regen
+        continue-on-error: true
+        run: scripts/sdk-regen.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ steps.regen.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title='SDK regeneration failed'
+          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --author app/github-actions \
+            --search "\"$title\" in:title" --json number,title --jq "map(select(.title == \"$title\")) | .[0].number // empty")
+          if [ "$OUTCOME" = success ]; then
+            if [ -n "$open" ]; then
+              gh issue close "$open" --repo "$GITHUB_REPOSITORY" --comment "The run $RUN_URL succeeded."
+            fi
+            exit 0
+          fi
+          if [ -n "$open" ]; then
+            echo "The run failed. Issue #$open is open, so this run ends as successful."
+            exit 0
+          fi
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file - <<EOF
+          The scheduled workflow \`sdk-regen.yml\` failed. See $RUN_URL.
+
+          While this issue is open, the workflow marks failed runs as successful and sends no email for those runs. The next run that succeeds closes this issue.
+
+          If the log reports removed names, the API change breaks code that uses the SDK. Make a manual major release.
+
+          1. Regenerate the clients with \`just generate\` and \`just generate-py\`.
+          2. Commit the regenerated code.
+          3. Run \`just release\` and choose a major version.
+
+          After the manual release, the next run has nothing to release and closes this issue.
+          EOF
+          exit 1

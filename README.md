@@ -155,6 +155,7 @@ skills/
   gatana/            # Agent skill (npx skills add gatana-ai/gatana)
 scripts/
   release.sh         # Releases every package that changed
+  sdk-regen.sh       # Regenerates and releases the two generated clients (run by a workflow)
 ```
 
 ---
@@ -183,6 +184,21 @@ Only CLI releases are marked as latest on GitHub. The CLI's `install.sh` downloa
 `releases/latest`, so the other packages must not take that place.
 
 After a failure, run `just release` again. A package that was released has no changes any more.
+
+### Automatic releases of the generated clients
+
+The workflow `.github/workflows/sdk-regen.yml` releases `gatana-sdk` and `gatana-client` on its
+own. Every 30 minutes it regenerates both clients from the production API at
+`https://hello.gatana.ai`. When the generated code of a client changed, the workflow bumps the
+version, commits to `main`, publishes the package and creates the GitHub release. A new operation
+gives a minor version. Any other change gives a patch version.
+
+A change that removes a name that SDK users import, such as a renamed operation, needs a major
+version. The workflow then stops and opens an issue, and a person makes that release with
+`just release`.
+
+The workflow can push to `main` at any time, so pull before you commit. To see what a run would do,
+run `scripts/sdk-regen.sh --dry-run`. It leaves the regenerated code in the working tree.
 
 ---
 
