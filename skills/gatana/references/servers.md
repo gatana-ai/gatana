@@ -161,6 +161,41 @@ The second argument, `credentials`, holds the credential that Gatana resolved fo
 - Node.js: put `node_modules` in the package. Python: add `requirements.txt` (installed with uv at each start, about one minute at most) or a `vendor` folder.
 - The file system resets at each deploy. Turn on `storage` and write to `GATANA_DATA_DIR` to keep files.
 
+A `schema` entry can include MCP tool `annotations`. Gatana sends them in the tool list and uses `readOnlyHint` in its access rules.
+
+```javascript
+export const schema = {
+  query: {
+    description: 'Run a query',
+    input: z.object({ q: z.string() }),
+    annotations: { readOnlyHint: true },
+  },
+};
+```
+
+With OAuth, your tool sends the access token to the service. If the service rejects the token, throw
+`CredentialsRejectedError` to tell Gatana. Gatana retries the tool call once if it gets a fresh token.
+
+```javascript
+class CredentialsRejectedError extends Error {}
+
+export async function query({ q }, credentials) {
+  const response = await fetch('https://api.example.com/query?q=' + encodeURIComponent(q), {
+    headers: { authorization: credentials.headers.authorization },
+  });
+  if (response.status === 401) {
+    throw new CredentialsRejectedError('The service rejected the token');
+  }
+  return await response.text();
+}
+```
+
+- Define the error class with the exact name `CredentialsRejectedError`. In Python, inherit from `Exception`.
+- Report the rejection before your tool changes data. A retry runs the whole tool again.
+- Gatana can also retry when an HTTP library such as Axios, Got, HTTPX, or requests throws an error with status 401. The tool must have `readOnlyHint: true` or `idempotentHint: true`.
+- With `fetch`, check `response.status` and throw the error yourself. `fetch` returns a response for HTTP 401.
+- If the OAuth provider rejects the refresh token, Gatana asks the caller to authorize the server again. For API keys, Gatana returns your tool's error message.
+
 ## OpenAPI specification: openapi
 
 Gatana makes one tool for each operation in the specification. No code runs.
