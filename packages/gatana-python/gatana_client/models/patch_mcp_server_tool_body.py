@@ -9,7 +9,7 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.patch_mcp_server_tool_body_input_schema_override import PatchMcpServerToolBodyInputSchemaOverride
+    from ..models.schema_221 import Schema221
 
 
 T = TypeVar("T", bound="PatchMcpServerToolBody")
@@ -20,8 +20,8 @@ class PatchMcpServerToolBody:
     """
     Attributes:
         description_override (str | Unset): Replacement description, applied when overrideDescription is true
-        input_schema_override (PatchMcpServerToolBodyInputSchemaOverride | Unset): Replacement input schema, applied
-            when overrideInputSchema is true
+        input_schema_override (None | Schema221 | Unset): Use this schema when overrideInputSchema is true. Null means
+            there is no replacement.
         override_description (bool | Unset): Whether descriptionOverride replaces the original description
         override_input_schema (bool | None | Unset): Whether inputSchemaOverride replaces the original input schema
         override_tool_name (bool | Unset): Whether toolNameOverride replaces the original tool name
@@ -30,7 +30,7 @@ class PatchMcpServerToolBody:
     """
 
     description_override: str | Unset = UNSET
-    input_schema_override: PatchMcpServerToolBodyInputSchemaOverride | Unset = UNSET
+    input_schema_override: None | Schema221 | Unset = UNSET
     override_description: bool | Unset = UNSET
     override_input_schema: bool | None | Unset = UNSET
     override_tool_name: bool | Unset = UNSET
@@ -39,11 +39,17 @@ class PatchMcpServerToolBody:
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.schema_221 import Schema221
+
         description_override = self.description_override
 
-        input_schema_override: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.input_schema_override, Unset):
+        input_schema_override: dict[str, Any] | None | Unset
+        if isinstance(self.input_schema_override, Unset):
+            input_schema_override = UNSET
+        elif isinstance(self.input_schema_override, Schema221):
             input_schema_override = self.input_schema_override.to_dict()
+        else:
+            input_schema_override = self.input_schema_override
 
         override_description = self.override_description
 
@@ -81,17 +87,27 @@ class PatchMcpServerToolBody:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.patch_mcp_server_tool_body_input_schema_override import PatchMcpServerToolBodyInputSchemaOverride
+        from ..models.schema_221 import Schema221
 
         d = dict(src_dict)
         description_override = d.pop("descriptionOverride", UNSET)
 
-        _input_schema_override = d.pop("inputSchemaOverride", UNSET)
-        input_schema_override: PatchMcpServerToolBodyInputSchemaOverride | Unset
-        if isinstance(_input_schema_override, Unset):
-            input_schema_override = UNSET
-        else:
-            input_schema_override = PatchMcpServerToolBodyInputSchemaOverride.from_dict(_input_schema_override)
+        def _parse_input_schema_override(data: object) -> None | Schema221 | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                input_schema_override_type_0 = Schema221.from_dict(data)
+
+                return input_schema_override_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | Schema221 | Unset, data)
+
+        input_schema_override = _parse_input_schema_override(d.pop("inputSchemaOverride", UNSET))
 
         override_description = d.pop("overrideDescription", UNSET)
 

@@ -1,6 +1,6 @@
 //! Deployments, effective credentials, FaaS servers and sandboxes.
 
-use super::{Silent, text_at};
+use super::{Silent, array_at, text_at};
 use crate::cli::{CredsArgs, DeploymentCommand, FaasCommand, SandboxCommand};
 use crate::context::Context;
 use crate::faas::{self, deployment};
@@ -213,8 +213,10 @@ async fn upload(context: &Context, slug: &str, path: &Path, options: UploadOptio
     tokio::time::sleep(Duration::from_millis(250)).await;
     let refresh = v1::query::RefreshTools { server_slug: Some(slug.to_string()) };
     api.v1().refresh_tools(&refresh).header("accept", "text/event-stream").send().await?;
-    let tools = api.v1().list_mcp_server_tools(slug, &v1::query::ListMcpServerTools::default()).typed().await?.tools;
-    let rows: Vec<Value> = tools.iter().map(|tool| json!({ "tool": tool.tool_name })).collect();
+    // Raw read: older backends send null in fields that their schema marks as required.
+    let list = api.v1().list_mcp_server_tools(slug, &v1::query::ListMcpServerTools::default()).value().await?;
+    let tools = array_at(&list, "tools");
+    let rows: Vec<Value> = tools.iter().map(|tool| json!({ "tool": text_at(tool, "/toolName") })).collect();
     output::print(&Value::Array(rows));
     output::success(&format!("\nDeployment successful. {} tool(s) available on server '{slug}'.", tools.len()));
     Ok(())

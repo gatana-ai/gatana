@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1114 import Schema1114
+if TYPE_CHECKING:
+    from ..models.team_member import TeamMember
+    from ..models.user import User
+
 
 T = TypeVar("T", bound="Schema1111")
 
@@ -14,49 +17,24 @@ T = TypeVar("T", bound="Schema1111")
 class Schema1111:
     """
     Attributes:
-        tenant_id (str): ID of the tenant that owns the membership
-        server_id (str): ID of the server that the membership grants access to
-        role (Schema1114):
-        created_at (str): Time when the membership was created
-        updated_at (str): Time when the membership was last updated
-        user_id (str): ID of the member user
-        team_id (None): Always null for a user membership
+        member (TeamMember):
+        user (User):
     """
 
-    tenant_id: str
-    server_id: str
-    role: Schema1114
-    created_at: str
-    updated_at: str
-    user_id: str
-    team_id: None
+    member: TeamMember
+    user: User
 
     def to_dict(self) -> dict[str, Any]:
-        tenant_id = self.tenant_id
+        member = self.member.to_dict()
 
-        server_id = self.server_id
-
-        role = self.role.value
-
-        created_at = self.created_at
-
-        updated_at = self.updated_at
-
-        user_id = self.user_id
-
-        team_id = self.team_id
+        user = self.user.to_dict()
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "tenantId": tenant_id,
-                "serverId": server_id,
-                "role": role,
-                "createdAt": created_at,
-                "updatedAt": updated_at,
-                "userId": user_id,
-                "teamId": team_id,
+                "member": member,
+                "user": user,
             }
         )
 
@@ -64,29 +42,17 @@ class Schema1111:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.team_member import TeamMember
+        from ..models.user import User
+
         d = dict(src_dict)
-        tenant_id = d.pop("tenantId")
+        member = TeamMember.from_dict(d.pop("member"))
 
-        server_id = d.pop("serverId")
-
-        role = Schema1114(d.pop("role"))
-
-        created_at = d.pop("createdAt")
-
-        updated_at = d.pop("updatedAt")
-
-        user_id = d.pop("userId")
-
-        team_id = d.pop("teamId")
+        user = User.from_dict(d.pop("user"))
 
         schema_1111 = cls(
-            tenant_id=tenant_id,
-            server_id=server_id,
-            role=role,
-            created_at=created_at,
-            updated_at=updated_at,
-            user_id=user_id,
-            team_id=team_id,
+            member=member,
+            user=user,
         )
 
         return schema_1111

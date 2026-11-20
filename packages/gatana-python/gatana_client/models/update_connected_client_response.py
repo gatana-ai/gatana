@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_1317 import Schema1317
+    from ..models.schema_1338 import Schema1338
 
 
 T = TypeVar("T", bound="UpdateConnectedClientResponse")
@@ -16,10 +16,10 @@ T = TypeVar("T", bound="UpdateConnectedClientResponse")
 class UpdateConnectedClientResponse:
     """
     Attributes:
-        client (Schema1317):
+        client (Schema1338):
     """
 
-    client: Schema1317
+    client: Schema1338
 
     def to_dict(self) -> dict[str, Any]:
         client = self.client.to_dict()
@@ -36,10 +36,10 @@ class UpdateConnectedClientResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_1317 import Schema1317
+        from ..models.schema_1338 import Schema1338
 
         d = dict(src_dict)
-        client = Schema1317.from_dict(d.pop("client"))
+        client = Schema1338.from_dict(d.pop("client"))
 
         update_connected_client_response = cls(
             client=client,

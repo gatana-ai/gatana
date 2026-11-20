@@ -5,7 +5,7 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1430 import Schema1430
+from ..models.schema_1457 import Schema1457
 
 T = TypeVar("T", bound="Schema1456")
 
@@ -14,49 +14,35 @@ T = TypeVar("T", bound="Schema1456")
 class Schema1456:
     """
     Attributes:
-        path (str): File path in the skill folder, as written in the URI
-        size_bytes (float):
-        digest (str): SHA-256 digest of the file, as "sha256:<hex>"
-        mime_type (str): MIME type from the server, or from the file extension if absent
-        encoding (Schema1430): base64 when the bytes are not valid UTF-8
-        content (str):
-        uri (str): URI of the file as the server publishes it
+        id (str):
+        name (str):
+        email (str):
+        role (Schema1457): 'read' (the default) opens it to the principal; 'maintain' gives them the same rights as the
+            creator and the organization owners
     """
 
-    path: str
-    size_bytes: float
-    digest: str
-    mime_type: str
-    encoding: Schema1430
-    content: str
-    uri: str
+    id: str
+    name: str
+    email: str
+    role: Schema1457
 
     def to_dict(self) -> dict[str, Any]:
-        path = self.path
+        id = self.id
 
-        size_bytes = self.size_bytes
+        name = self.name
 
-        digest = self.digest
+        email = self.email
 
-        mime_type = self.mime_type
-
-        encoding = self.encoding.value
-
-        content = self.content
-
-        uri = self.uri
+        role = self.role.value
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "path": path,
-                "sizeBytes": size_bytes,
-                "digest": digest,
-                "mimeType": mime_type,
-                "encoding": encoding,
-                "content": content,
-                "uri": uri,
+                "id": id,
+                "name": name,
+                "email": email,
+                "role": role,
             }
         )
 
@@ -65,28 +51,19 @@ class Schema1456:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        path = d.pop("path")
+        id = d.pop("id")
 
-        size_bytes = d.pop("sizeBytes")
+        name = d.pop("name")
 
-        digest = d.pop("digest")
+        email = d.pop("email")
 
-        mime_type = d.pop("mimeType")
-
-        encoding = Schema1430(d.pop("encoding"))
-
-        content = d.pop("content")
-
-        uri = d.pop("uri")
+        role = Schema1457(d.pop("role"))
 
         schema_1456 = cls(
-            path=path,
-            size_bytes=size_bytes,
-            digest=digest,
-            mime_type=mime_type,
-            encoding=encoding,
-            content=content,
-            uri=uri,
+            id=id,
+            name=name,
+            email=email,
+            role=role,
         )
 
         return schema_1456

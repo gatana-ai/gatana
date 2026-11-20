@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_575 import Schema575
+    from ..models.schema_578 import Schema578
 
 
 T = TypeVar("T", bound="GetUserResponse200")
@@ -16,12 +16,12 @@ T = TypeVar("T", bound="GetUserResponse200")
 class GetUserResponse200:
     """
     Attributes:
-        user (Schema575):
+        user (Schema578):
         last_active_at (None | str): Last request time through a connected client or personal access token, or null if
             none exists or the caller cannot update the user
     """
 
-    user: Schema575
+    user: Schema578
     last_active_at: None | str
 
     def to_dict(self) -> dict[str, Any]:
@@ -43,10 +43,10 @@ class GetUserResponse200:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_575 import Schema575
+        from ..models.schema_578 import Schema578
 
         d = dict(src_dict)
-        user = Schema575.from_dict(d.pop("user"))
+        user = Schema578.from_dict(d.pop("user"))
 
         def _parse_last_active_at(data: object) -> None | str:
             if data is None:

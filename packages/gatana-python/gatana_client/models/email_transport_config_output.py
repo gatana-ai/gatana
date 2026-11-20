@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
 from attrs import define as _attrs_define
 
 from ..models.email_preset import EmailPreset
-from ..models.schema_665 import Schema665
+from ..models.schema_668 import Schema668
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
@@ -22,7 +22,7 @@ class EmailTransportConfigOutput:
     """
     Attributes:
         type_ (Literal['email']): Transport type discriminator, always "email"
-        access (Schema665): What the tools may do. "read" reads mail and attachments. "organize" also flags, moves and
+        access (Schema668): What the tools may do. "read" reads mail and attachments. "organize" also flags, moves and
             trashes messages and writes drafts. "send" also sends mail
         connection (EmailImapConnectionOutput | EmailJmapConnectionOutput): Mailbox connection settings. The protocol
             cannot change after server creation
@@ -30,7 +30,7 @@ class EmailTransportConfigOutput:
     """
 
     type_: Literal["email"]
-    access: Schema665
+    access: Schema668
     connection: EmailImapConnectionOutput | EmailJmapConnectionOutput
     preset: EmailPreset | None | Unset = UNSET
 
@@ -79,22 +79,22 @@ class EmailTransportConfigOutput:
         if type_ != "email":
             raise ValueError(f"type must match const 'email', got '{type_}'")
 
-        access = Schema665(d.pop("access"))
+        access = Schema668(d.pop("access"))
 
         def _parse_connection(data: object) -> EmailImapConnectionOutput | EmailJmapConnectionOutput:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema666_type_0 = EmailImapConnectionOutput.from_dict(data)
+                componentsschemas_schema669_type_0 = EmailImapConnectionOutput.from_dict(data)
 
-                return componentsschemas_schema666_type_0
+                return componentsschemas_schema669_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             if not isinstance(data, dict):
                 raise TypeError()
-            componentsschemas_schema666_type_1 = EmailJmapConnectionOutput.from_dict(data)
+            componentsschemas_schema669_type_1 = EmailJmapConnectionOutput.from_dict(data)
 
-            return componentsschemas_schema666_type_1
+            return componentsschemas_schema669_type_1
 
         connection = _parse_connection(d.pop("connection"))
 
@@ -106,9 +106,9 @@ class EmailTransportConfigOutput:
             try:
                 if not isinstance(data, str):
                     raise TypeError()
-                componentsschemas_schema664_type_0 = EmailPreset(data)
+                componentsschemas_schema667_type_0 = EmailPreset(data)
 
-                return componentsschemas_schema664_type_0
+                return componentsschemas_schema667_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(EmailPreset | None | Unset, data)

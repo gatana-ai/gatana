@@ -5,7 +5,9 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
+from ..models.protection_on_action import ProtectionOnAction
 from ..models.protection_value_source import ProtectionValueSource
+from ..models.schema_771 import Schema771
 
 T = TypeVar("T", bound="Schema772")
 
@@ -14,27 +16,27 @@ T = TypeVar("T", bound="Schema772")
 class Schema772:
     """
     Attributes:
-        value (Any):
+        action (ProtectionOnAction):
         source (ProtectionValueSource):
-        inherited (Any): The value used when the server has no override
+        inherited (Schema771):
     """
 
-    value: Any
+    action: ProtectionOnAction
     source: ProtectionValueSource
-    inherited: Any
+    inherited: Schema771
 
     def to_dict(self) -> dict[str, Any]:
-        value = self.value
+        action = self.action.value
 
         source = self.source.value
 
-        inherited = self.inherited
+        inherited = self.inherited.value
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "value": value,
+                "action": action,
                 "source": source,
                 "inherited": inherited,
             }
@@ -45,14 +47,14 @@ class Schema772:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        value = d.pop("value")
+        action = ProtectionOnAction(d.pop("action"))
 
         source = ProtectionValueSource(d.pop("source"))
 
-        inherited = d.pop("inherited")
+        inherited = Schema771(d.pop("inherited"))
 
         schema_772 = cls(
-            value=value,
+            action=action,
             source=source,
             inherited=inherited,
         )

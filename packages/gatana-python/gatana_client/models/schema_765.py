@@ -5,8 +5,12 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 
+from ..models.schema_758 import Schema758
+from ..types import UNSET, Unset
+
 if TYPE_CHECKING:
-    from ..models.resolved_protection import ResolvedProtection
+    from ..models.schema_759 import Schema759
+    from ..models.schema_762 import Schema762
 
 
 T = TypeVar("T", bound="Schema765")
@@ -16,49 +20,58 @@ T = TypeVar("T", bound="Schema765")
 class Schema765:
     """
     Attributes:
-        secrets (ResolvedProtection):
-        pii (ResolvedProtection):
-        injection (ResolvedProtection):
+        mode (Schema758):
+        settings (Schema762):
+        actions (Schema759 | Unset): Actions for On mode. Missing targets use organization defaults or built-in values
     """
 
-    secrets: ResolvedProtection
-    pii: ResolvedProtection
-    injection: ResolvedProtection
+    mode: Schema758
+    settings: Schema762
+    actions: Schema759 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        secrets = self.secrets.to_dict()
+        mode = self.mode.value
 
-        pii = self.pii.to_dict()
+        settings = self.settings.to_dict()
 
-        injection = self.injection.to_dict()
+        actions: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.actions, Unset):
+            actions = self.actions.to_dict()
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "secrets": secrets,
-                "pii": pii,
-                "injection": injection,
+                "mode": mode,
+                "settings": settings,
             }
         )
+        if actions is not UNSET:
+            field_dict["actions"] = actions
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.resolved_protection import ResolvedProtection
+        from ..models.schema_759 import Schema759
+        from ..models.schema_762 import Schema762
 
         d = dict(src_dict)
-        secrets = ResolvedProtection.from_dict(d.pop("secrets"))
+        mode = Schema758(d.pop("mode"))
 
-        pii = ResolvedProtection.from_dict(d.pop("pii"))
+        settings = Schema762.from_dict(d.pop("settings"))
 
-        injection = ResolvedProtection.from_dict(d.pop("injection"))
+        _actions = d.pop("actions", UNSET)
+        actions: Schema759 | Unset
+        if isinstance(_actions, Unset):
+            actions = UNSET
+        else:
+            actions = Schema759.from_dict(_actions)
 
         schema_765 = cls(
-            secrets=secrets,
-            pii=pii,
-            injection=injection,
+            mode=mode,
+            settings=settings,
+            actions=actions,
         )
 
         return schema_765

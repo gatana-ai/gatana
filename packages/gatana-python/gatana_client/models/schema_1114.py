@@ -2,7 +2,6 @@ from enum import Enum
 
 
 class Schema1114(str, Enum):
-    ADMIN = "admin"
     MAINTAINER = "maintainer"
     MEMBER = "member"
 

@@ -3,9 +3,8 @@ from enum import Enum
 
 class Schema758(str, Enum):
     AUDIT = "audit"
-    BLOCK = "block"
     OFF = "off"
-    REDACT = "redact"
+    ON = "on"
 
     def __str__(self) -> str:
         return str(self.value)

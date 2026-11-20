@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_808 import Schema808
-    from ..models.schema_810 import Schema810
-    from ..models.schema_812 import Schema812
-    from ..models.schema_816 import Schema816
+    from ..models.schema_823 import Schema823
+    from ..models.schema_825 import Schema825
+    from ..models.schema_827 import Schema827
+    from ..models.schema_832 import Schema832
 
 
 T = TypeVar("T", bound="ServerToolDto")
@@ -22,13 +22,14 @@ class ServerToolDto:
         tenant_id (str): ID of the tenant that owns the tool
         tool_name (str): Tool name as reported by the MCP server
         description (str): Tool description as reported by the MCP server
-        schema (Schema808): JSON schema for the tool input
-        output_schema (None | Schema810): JSON schema for the tool output, or null if the server does not provide one
-        annotations (None | Schema812): Tool annotations as reported by the MCP server, or null if none
+        schema (Schema823): JSON schema for the tool input
+        output_schema (None | Schema825): JSON schema for the tool output, or null if the server does not provide one
+        annotations (None | Schema827): Tool annotations as reported by the MCP server, or null if none
         is_enabled (bool): Whether the tool is enabled and exposed to clients
         tool_name_override (str): Replacement tool name, applied when overrideToolName is true
         description_override (str): Replacement description, applied when overrideDescription is true
-        input_schema_override (Schema816): Replacement input schema, applied when overrideInputSchema is true
+        input_schema_override (None | Schema832): Use this schema when overrideInputSchema is true. Null means there is
+            no replacement.
         override_tool_name (bool): Whether toolNameOverride replaces the original tool name
         override_description (bool): Whether descriptionOverride replaces the original description
         override_input_schema (bool | None): Whether inputSchemaOverride replaces the original input schema
@@ -39,13 +40,13 @@ class ServerToolDto:
     tenant_id: str
     tool_name: str
     description: str
-    schema: Schema808
-    output_schema: None | Schema810
-    annotations: None | Schema812
+    schema: Schema823
+    output_schema: None | Schema825
+    annotations: None | Schema827
     is_enabled: bool
     tool_name_override: str
     description_override: str
-    input_schema_override: Schema816
+    input_schema_override: None | Schema832
     override_tool_name: bool
     override_description: bool
     override_input_schema: bool | None
@@ -53,8 +54,9 @@ class ServerToolDto:
     universal_name: str
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.schema_810 import Schema810
-        from ..models.schema_812 import Schema812
+        from ..models.schema_825 import Schema825
+        from ..models.schema_827 import Schema827
+        from ..models.schema_832 import Schema832
 
         tenant_id = self.tenant_id
 
@@ -65,13 +67,13 @@ class ServerToolDto:
         schema = self.schema.to_dict()
 
         output_schema: dict[str, Any] | None
-        if isinstance(self.output_schema, Schema810):
+        if isinstance(self.output_schema, Schema825):
             output_schema = self.output_schema.to_dict()
         else:
             output_schema = self.output_schema
 
         annotations: dict[str, Any] | None
-        if isinstance(self.annotations, Schema812):
+        if isinstance(self.annotations, Schema827):
             annotations = self.annotations.to_dict()
         else:
             annotations = self.annotations
@@ -82,7 +84,11 @@ class ServerToolDto:
 
         description_override = self.description_override
 
-        input_schema_override = self.input_schema_override.to_dict()
+        input_schema_override: dict[str, Any] | None
+        if isinstance(self.input_schema_override, Schema832):
+            input_schema_override = self.input_schema_override.to_dict()
+        else:
+            input_schema_override = self.input_schema_override
 
         override_tool_name = self.override_tool_name
 
@@ -121,10 +127,10 @@ class ServerToolDto:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_808 import Schema808
-        from ..models.schema_810 import Schema810
-        from ..models.schema_812 import Schema812
-        from ..models.schema_816 import Schema816
+        from ..models.schema_823 import Schema823
+        from ..models.schema_825 import Schema825
+        from ..models.schema_827 import Schema827
+        from ..models.schema_832 import Schema832
 
         d = dict(src_dict)
         tenant_id = d.pop("tenantId")
@@ -133,35 +139,35 @@ class ServerToolDto:
 
         description = d.pop("description")
 
-        schema = Schema808.from_dict(d.pop("schema"))
+        schema = Schema823.from_dict(d.pop("schema"))
 
-        def _parse_output_schema(data: object) -> None | Schema810:
+        def _parse_output_schema(data: object) -> None | Schema825:
             if data is None:
                 return data
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema809_type_0 = Schema810.from_dict(data)
+                componentsschemas_schema824_type_0 = Schema825.from_dict(data)
 
-                return componentsschemas_schema809_type_0
+                return componentsschemas_schema824_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema810, data)
+            return cast(None | Schema825, data)
 
         output_schema = _parse_output_schema(d.pop("outputSchema"))
 
-        def _parse_annotations(data: object) -> None | Schema812:
+        def _parse_annotations(data: object) -> None | Schema827:
             if data is None:
                 return data
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema811_type_0 = Schema812.from_dict(data)
+                componentsschemas_schema826_type_0 = Schema827.from_dict(data)
 
-                return componentsschemas_schema811_type_0
+                return componentsschemas_schema826_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema812, data)
+            return cast(None | Schema827, data)
 
         annotations = _parse_annotations(d.pop("annotations"))
 
@@ -171,7 +177,20 @@ class ServerToolDto:
 
         description_override = d.pop("descriptionOverride")
 
-        input_schema_override = Schema816.from_dict(d.pop("inputSchemaOverride"))
+        def _parse_input_schema_override(data: object) -> None | Schema832:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_schema831_type_0 = Schema832.from_dict(data)
+
+                return componentsschemas_schema831_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | Schema832, data)
+
+        input_schema_override = _parse_input_schema_override(d.pop("inputSchemaOverride"))
 
         override_tool_name = d.pop("overrideToolName")
 

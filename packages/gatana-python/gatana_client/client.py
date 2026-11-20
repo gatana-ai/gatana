@@ -9,6 +9,7 @@ modules (which import ``from ...client import …``) continue to work.
 from __future__ import annotations
 
 from typing import Any
+from urllib.parse import urlsplit
 
 from ._base_client import AuthenticatedClient, Client  # noqa: F401 — re-export
 from .config import (
@@ -18,6 +19,18 @@ from .config import (
     GatanaConfig,
     OptionsConfigStrategy,
 )
+
+
+def _api_url(base_url: str) -> str:
+    """Return the API URL on the host of *base_url*. The path of *base_url* does not matter.
+
+    ``https://my-org.gatana.ai`` and ``https://my-org.gatana.ai/api/v1`` both give
+    ``https://my-org.gatana.ai/api/v1``, as in the JavaScript SDK and the CLI.
+    """
+    parts = urlsplit(base_url)
+    if not parts.scheme or not parts.netloc:
+        raise ValueError(f"base_url must be an absolute URL such as https://my-org.gatana.ai, got {base_url!r}")
+    return f"{parts.scheme}://{parts.netloc}/api/v1"
 
 
 def GatanaClient(
@@ -54,8 +67,8 @@ def GatanaClient(
     """
     # Fast path: fully explicit arguments (backward-compatible)
     if token is not None and (org_id is not None or base_url is not None):
-        resolved_url = base_url if base_url is not None else f"https://{org_id}.gatana.ai/api/v1"
-        return AuthenticatedClient(base_url=resolved_url, token=token, **kwargs)
+        resolved_url = base_url if base_url is not None else f"https://{org_id}.gatana.ai"
+        return AuthenticatedClient(base_url=_api_url(resolved_url), token=token, **kwargs)
 
     # Use the provided config loader, or build the default chain
     if config_loader is None:
@@ -68,4 +81,4 @@ def GatanaClient(
         )
 
     config: GatanaConfig = config_loader.get_config()
-    return AuthenticatedClient(base_url=config.base_url, token=config.token, **kwargs)
+    return AuthenticatedClient(base_url=_api_url(config.base_url), token=config.token, **kwargs)

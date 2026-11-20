@@ -5,7 +5,8 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_479 import Schema479
+from ..models.schema_472 import Schema472
+from ..models.schema_473 import Schema473
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="Schema478")
@@ -15,104 +16,48 @@ T = TypeVar("T", bound="Schema478")
 class Schema478:
     """
     Attributes:
-        id (str):
-        tenant_id (str):
-        name (str):
-        api_key (str):
-        email (str):
-        role (Schema479):
-        is_service_account (bool):
-        created_at (str):
-        updated_at (str):
-        is_super_administrator (bool | Unset):
+        status (Schema472): available: the organization can use it. upgrade: the plan does not include it. unavailable:
+            the installation cannot run it
+        reason (Schema473 | Unset): The service or resource missing from the installation
     """
 
-    id: str
-    tenant_id: str
-    name: str
-    api_key: str
-    email: str
-    role: Schema479
-    is_service_account: bool
-    created_at: str
-    updated_at: str
-    is_super_administrator: bool | Unset = UNSET
+    status: Schema472
+    reason: Schema473 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        id = self.id
+        status = self.status.value
 
-        tenant_id = self.tenant_id
-
-        name = self.name
-
-        api_key = self.api_key
-
-        email = self.email
-
-        role = self.role.value
-
-        is_service_account = self.is_service_account
-
-        created_at = self.created_at
-
-        updated_at = self.updated_at
-
-        is_super_administrator = self.is_super_administrator
+        reason: str | Unset = UNSET
+        if not isinstance(self.reason, Unset):
+            reason = self.reason.value
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "id": id,
-                "tenantId": tenant_id,
-                "name": name,
-                "apiKey": api_key,
-                "email": email,
-                "role": role,
-                "isServiceAccount": is_service_account,
-                "createdAt": created_at,
-                "updatedAt": updated_at,
+                "status": status,
             }
         )
-        if is_super_administrator is not UNSET:
-            field_dict["isSuperAdministrator"] = is_super_administrator
+        if reason is not UNSET:
+            field_dict["reason"] = reason
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        id = d.pop("id")
+        status = Schema472(d.pop("status"))
 
-        tenant_id = d.pop("tenantId")
-
-        name = d.pop("name")
-
-        api_key = d.pop("apiKey")
-
-        email = d.pop("email")
-
-        role = Schema479(d.pop("role"))
-
-        is_service_account = d.pop("isServiceAccount")
-
-        created_at = d.pop("createdAt")
-
-        updated_at = d.pop("updatedAt")
-
-        is_super_administrator = d.pop("isSuperAdministrator", UNSET)
+        _reason = d.pop("reason", UNSET)
+        reason: Schema473 | Unset
+        if isinstance(_reason, Unset):
+            reason = UNSET
+        else:
+            reason = Schema473(_reason)
 
         schema_478 = cls(
-            id=id,
-            tenant_id=tenant_id,
-            name=name,
-            api_key=api_key,
-            email=email,
-            role=role,
-            is_service_account=is_service_account,
-            created_at=created_at,
-            updated_at=updated_at,
-            is_super_administrator=is_super_administrator,
+            status=status,
+            reason=reason,
         )
 
         return schema_478

@@ -7,7 +7,7 @@ from attrs import define as _attrs_define
 
 from ..models.protection_on_action import ProtectionOnAction
 from ..models.protection_value_source import ProtectionValueSource
-from ..models.schema_768 import Schema768
+from ..models.schema_771 import Schema771
 
 T = TypeVar("T", bound="ResolvedProtectionAction")
 
@@ -18,12 +18,12 @@ class ResolvedProtectionAction:
     Attributes:
         action (ProtectionOnAction):
         source (ProtectionValueSource):
-        inherited (Schema768):
+        inherited (Schema771):
     """
 
     action: ProtectionOnAction
     source: ProtectionValueSource
-    inherited: Schema768
+    inherited: Schema771
 
     def to_dict(self) -> dict[str, Any]:
         action = self.action.value
@@ -51,7 +51,7 @@ class ResolvedProtectionAction:
 
         source = ProtectionValueSource(d.pop("source"))
 
-        inherited = Schema768(d.pop("inherited"))
+        inherited = Schema771(d.pop("inherited"))
 
         resolved_protection_action = cls(
             action=action,

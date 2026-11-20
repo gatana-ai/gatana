@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_440 import Schema440
+from ...models.schema_441 import Schema441
 from ...models.share_role_body import ShareRoleBody
 from ...models.skill_shares_response import SkillSharesResponse
 from ...types import UNSET, Response, Unset
@@ -14,7 +14,7 @@ from ...types import UNSET, Response, Unset
 
 def _get_kwargs(
     skill_id: str,
-    member_type: Schema440,
+    member_type: Schema441,
     member_id: str,
     *,
     body: ShareRoleBody | Unset = UNSET,
@@ -62,20 +62,20 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def sync_detailed(
     skill_id: str,
-    member_type: Schema440,
+    member_type: Schema441,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
     body: ShareRoleBody | Unset = UNSET,
 ) -> Response[SkillSharesResponse]:
-    """Share a skill with a user or a team as reader or maintainer, whatever its visibility, and return who
-    it is shared with
+    """Grant read or maintain access to a user or team, or grant read access through a server, and return
+    the updated shares
 
     Args:
         skill_id (str):
-        member_type (Schema440): 'users' to share with one user account, 'teams' to share with
-            every member of a team
-        member_id (str): ID of the user or of the team
+        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+            users with server access
+        member_id (str): User, team or server ID
         body (ShareRoleBody | Unset):
 
     Raises:
@@ -102,20 +102,20 @@ def sync_detailed(
 
 def sync(
     skill_id: str,
-    member_type: Schema440,
+    member_type: Schema441,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
     body: ShareRoleBody | Unset = UNSET,
 ) -> SkillSharesResponse | None:
-    """Share a skill with a user or a team as reader or maintainer, whatever its visibility, and return who
-    it is shared with
+    """Grant read or maintain access to a user or team, or grant read access through a server, and return
+    the updated shares
 
     Args:
         skill_id (str):
-        member_type (Schema440): 'users' to share with one user account, 'teams' to share with
-            every member of a team
-        member_id (str): ID of the user or of the team
+        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+            users with server access
+        member_id (str): User, team or server ID
         body (ShareRoleBody | Unset):
 
     Raises:
@@ -137,20 +137,20 @@ def sync(
 
 async def asyncio_detailed(
     skill_id: str,
-    member_type: Schema440,
+    member_type: Schema441,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
     body: ShareRoleBody | Unset = UNSET,
 ) -> Response[SkillSharesResponse]:
-    """Share a skill with a user or a team as reader or maintainer, whatever its visibility, and return who
-    it is shared with
+    """Grant read or maintain access to a user or team, or grant read access through a server, and return
+    the updated shares
 
     Args:
         skill_id (str):
-        member_type (Schema440): 'users' to share with one user account, 'teams' to share with
-            every member of a team
-        member_id (str): ID of the user or of the team
+        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+            users with server access
+        member_id (str): User, team or server ID
         body (ShareRoleBody | Unset):
 
     Raises:
@@ -175,20 +175,20 @@ async def asyncio_detailed(
 
 async def asyncio(
     skill_id: str,
-    member_type: Schema440,
+    member_type: Schema441,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
     body: ShareRoleBody | Unset = UNSET,
 ) -> SkillSharesResponse | None:
-    """Share a skill with a user or a team as reader or maintainer, whatever its visibility, and return who
-    it is shared with
+    """Grant read or maintain access to a user or team, or grant read access through a server, and return
+    the updated shares
 
     Args:
         skill_id (str):
-        member_type (Schema440): 'users' to share with one user account, 'teams' to share with
-            every member of a team
-        member_id (str): ID of the user or of the team
+        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+            users with server access
+        member_id (str): User, team or server ID
         body (ShareRoleBody | Unset):
 
     Raises:

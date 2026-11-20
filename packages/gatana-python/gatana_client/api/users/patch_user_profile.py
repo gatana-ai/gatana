@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_577 import Schema577
+from ...models.schema_580 import Schema580
 from ...models.update_user_profile_assignment_request import UpdateUserProfileAssignmentRequest
 from ...types import UNSET, Response, Unset
 
@@ -36,9 +36,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema577 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema580 | None:
     if response.status_code == 200:
-        response_200 = Schema577.from_dict(response.json())
+        response_200 = Schema580.from_dict(response.json())
 
         return response_200
 
@@ -48,7 +48,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema577]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema580]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -63,7 +63,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: UpdateUserProfileAssignmentRequest | Unset = UNSET,
-) -> Response[Schema577]:
+) -> Response[Schema580]:
     """Change the lock status of a profile assignment; organization owners only
 
     Args:
@@ -76,7 +76,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema577]
+        Response[Schema580]
     """
 
     kwargs = _get_kwargs(
@@ -98,7 +98,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: UpdateUserProfileAssignmentRequest | Unset = UNSET,
-) -> Schema577 | None:
+) -> Schema580 | None:
     """Change the lock status of a profile assignment; organization owners only
 
     Args:
@@ -111,7 +111,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema577
+        Schema580
     """
 
     return sync_detailed(
@@ -128,7 +128,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: UpdateUserProfileAssignmentRequest | Unset = UNSET,
-) -> Response[Schema577]:
+) -> Response[Schema580]:
     """Change the lock status of a profile assignment; organization owners only
 
     Args:
@@ -141,7 +141,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema577]
+        Response[Schema580]
     """
 
     kwargs = _get_kwargs(
@@ -161,7 +161,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: UpdateUserProfileAssignmentRequest | Unset = UNSET,
-) -> Schema577 | None:
+) -> Schema580 | None:
     """Change the lock status of a profile assignment; organization owners only
 
     Args:
@@ -174,7 +174,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema577
+        Schema580
     """
 
     return (

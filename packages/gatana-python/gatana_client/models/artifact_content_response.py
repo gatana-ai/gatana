@@ -5,8 +5,8 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1323 import Schema1323
 from ..models.schema_1344 import Schema1344
+from ..models.schema_1365 import Schema1365
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="ArtifactContentResponse")
@@ -18,19 +18,19 @@ class ArtifactContentResponse:
     Attributes:
         html (str): The served document: rendered to HTML when the version is Markdown, with the theme stylesheet linked
             in, as the content frame serves it
-        content_type (Schema1344):
+        content_type (Schema1365):
         version (float):
         title (str):
-        visibility (Schema1323):
+        visibility (Schema1344):
         theme (str): The theme the artifact is served with: 'gatana', 'none', or the id of an organization theme
         source (str | Unset):
     """
 
     html: str
-    content_type: Schema1344
+    content_type: Schema1365
     version: float
     title: str
-    visibility: Schema1323
+    visibility: Schema1344
     theme: str
     source: str | Unset = UNSET
 
@@ -71,13 +71,13 @@ class ArtifactContentResponse:
         d = dict(src_dict)
         html = d.pop("html")
 
-        content_type = Schema1344(d.pop("contentType"))
+        content_type = Schema1365(d.pop("contentType"))
 
         version = d.pop("version")
 
         title = d.pop("title")
 
-        visibility = Schema1323(d.pop("visibility"))
+        visibility = Schema1344(d.pop("visibility"))
 
         theme = d.pop("theme")
 

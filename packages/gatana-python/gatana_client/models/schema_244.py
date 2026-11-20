@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -15,59 +15,85 @@ T = TypeVar("T", bound="Schema244")
 class Schema244:
     """
     Attributes:
-        access_token (str): OAuth access token
-        access_token_expires_at (float | Unset):
-        id_token (str | Unset):
-        refresh_token (str | Unset):
+        client_auth_method (Literal['client_secret_basic'] | Literal['client_secret_post'] | Literal['none'] | str):
+            Client authentication method used at the token endpoint
+        client_id (str | Unset):
+        client_secret (str | Unset):
+        scopes (str | Unset):
     """
 
-    access_token: str
-    access_token_expires_at: float | Unset = UNSET
-    id_token: str | Unset = UNSET
-    refresh_token: str | Unset = UNSET
+    client_auth_method: Literal["client_secret_basic"] | Literal["client_secret_post"] | Literal["none"] | str
+    client_id: str | Unset = UNSET
+    client_secret: str | Unset = UNSET
+    scopes: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        access_token = self.access_token
+        client_auth_method: Literal["client_secret_basic"] | Literal["client_secret_post"] | Literal["none"] | str
+        client_auth_method = self.client_auth_method
 
-        access_token_expires_at = self.access_token_expires_at
+        client_id = self.client_id
 
-        id_token = self.id_token
+        client_secret = self.client_secret
 
-        refresh_token = self.refresh_token
+        scopes = self.scopes
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
-                "accessToken": access_token,
+                "clientAuthMethod": client_auth_method,
             }
         )
-        if access_token_expires_at is not UNSET:
-            field_dict["accessTokenExpiresAt"] = access_token_expires_at
-        if id_token is not UNSET:
-            field_dict["idToken"] = id_token
-        if refresh_token is not UNSET:
-            field_dict["refreshToken"] = refresh_token
+        if client_id is not UNSET:
+            field_dict["clientId"] = client_id
+        if client_secret is not UNSET:
+            field_dict["clientSecret"] = client_secret
+        if scopes is not UNSET:
+            field_dict["scopes"] = scopes
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        access_token = d.pop("accessToken")
 
-        access_token_expires_at = d.pop("accessTokenExpiresAt", UNSET)
+        def _parse_client_auth_method(
+            data: object,
+        ) -> Literal["client_secret_basic"] | Literal["client_secret_post"] | Literal["none"] | str:
+            componentsschemas_schema178_type_0 = cast(Literal["client_secret_basic"], data)
+            if componentsschemas_schema178_type_0 != "client_secret_basic":
+                raise ValueError(
+                    f"/components/schemas/__schema178_type_0 must match const 'client_secret_basic', got '{componentsschemas_schema178_type_0}'"
+                )
+            return componentsschemas_schema178_type_0
+            componentsschemas_schema178_type_1 = cast(Literal["client_secret_post"], data)
+            if componentsschemas_schema178_type_1 != "client_secret_post":
+                raise ValueError(
+                    f"/components/schemas/__schema178_type_1 must match const 'client_secret_post', got '{componentsschemas_schema178_type_1}'"
+                )
+            return componentsschemas_schema178_type_1
+            componentsschemas_schema178_type_2 = cast(Literal["none"], data)
+            if componentsschemas_schema178_type_2 != "none":
+                raise ValueError(
+                    f"/components/schemas/__schema178_type_2 must match const 'none', got '{componentsschemas_schema178_type_2}'"
+                )
+            return componentsschemas_schema178_type_2
+            return cast(Literal["client_secret_basic"] | Literal["client_secret_post"] | Literal["none"] | str, data)
 
-        id_token = d.pop("idToken", UNSET)
+        client_auth_method = _parse_client_auth_method(d.pop("clientAuthMethod"))
 
-        refresh_token = d.pop("refreshToken", UNSET)
+        client_id = d.pop("clientId", UNSET)
+
+        client_secret = d.pop("clientSecret", UNSET)
+
+        scopes = d.pop("scopes", UNSET)
 
         schema_244 = cls(
-            access_token=access_token,
-            access_token_expires_at=access_token_expires_at,
-            id_token=id_token,
-            refresh_token=refresh_token,
+            client_auth_method=client_auth_method,
+            client_id=client_id,
+            client_secret=client_secret,
+            scopes=scopes,
         )
 
         schema_244.additional_properties = d

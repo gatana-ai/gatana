@@ -1,19 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
 from ..models.schema_481 import Schema481
 from ..types import UNSET, Unset
-
-if TYPE_CHECKING:
-    from ..models.new_server_protection_modes import NewServerProtectionModes
-    from ..models.schema_482 import Schema482
-    from ..models.server_resource_requests import ServerResourceRequests
-    from ..models.tenant_abilities import TenantAbilities
-
 
 T = TypeVar("T", bound="Schema480")
 
@@ -23,222 +16,103 @@ class Schema480:
     """
     Attributes:
         id (str):
-        is_mcp_authorization_api_key_enabled (bool):
-        is_output_compression_allowed (bool):
-        grant_users_install_servers_policy (bool):
-        display_name (str):
-        is_trial (bool):
-        is_per_seat_subscription (bool):
-        subscription_plan (str):
-        subscription_seats (float):
-        member_default_role (Literal['none'] | Schema481):
-        free_credits (float):
-        paid_credits (float):
-        default_resource_limits (Schema482):
-        default_resource_requests (ServerResourceRequests):
-        new_server_protection_modes (NewServerProtectionModes): Protection modes for new servers. Use organization
-            defaults, then built-in values
-        abilities (TenantAbilities):
-        trial_end_date (None | str):
-        trial_extended_for_feedback (bool):
-        logo_updated_at (None | str): When the organization logo last changed, or null when it has none. The logo is at
-            /api/v1/tenant-logo
-        number_of_enabled_users (float | Unset):
+        tenant_id (str):
+        name (str):
+        api_key (str):
+        email (str):
+        role (Schema481):
+        is_service_account (bool):
+        created_at (str):
+        updated_at (str):
+        is_super_administrator (bool | Unset):
     """
 
     id: str
-    is_mcp_authorization_api_key_enabled: bool
-    is_output_compression_allowed: bool
-    grant_users_install_servers_policy: bool
-    display_name: str
-    is_trial: bool
-    is_per_seat_subscription: bool
-    subscription_plan: str
-    subscription_seats: float
-    member_default_role: Literal["none"] | Schema481
-    free_credits: float
-    paid_credits: float
-    default_resource_limits: Schema482
-    default_resource_requests: ServerResourceRequests
-    new_server_protection_modes: NewServerProtectionModes
-    abilities: TenantAbilities
-    trial_end_date: None | str
-    trial_extended_for_feedback: bool
-    logo_updated_at: None | str
-    number_of_enabled_users: float | Unset = UNSET
+    tenant_id: str
+    name: str
+    api_key: str
+    email: str
+    role: Schema481
+    is_service_account: bool
+    created_at: str
+    updated_at: str
+    is_super_administrator: bool | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         id = self.id
 
-        is_mcp_authorization_api_key_enabled = self.is_mcp_authorization_api_key_enabled
+        tenant_id = self.tenant_id
 
-        is_output_compression_allowed = self.is_output_compression_allowed
+        name = self.name
 
-        grant_users_install_servers_policy = self.grant_users_install_servers_policy
+        api_key = self.api_key
 
-        display_name = self.display_name
+        email = self.email
 
-        is_trial = self.is_trial
+        role = self.role.value
 
-        is_per_seat_subscription = self.is_per_seat_subscription
+        is_service_account = self.is_service_account
 
-        subscription_plan = self.subscription_plan
+        created_at = self.created_at
 
-        subscription_seats = self.subscription_seats
+        updated_at = self.updated_at
 
-        member_default_role: Literal["none"] | str
-        if isinstance(self.member_default_role, Schema481):
-            member_default_role = self.member_default_role.value
-        else:
-            member_default_role = self.member_default_role
-
-        free_credits = self.free_credits
-
-        paid_credits = self.paid_credits
-
-        default_resource_limits = self.default_resource_limits.to_dict()
-
-        default_resource_requests = self.default_resource_requests.to_dict()
-
-        new_server_protection_modes = self.new_server_protection_modes.to_dict()
-
-        abilities = self.abilities.to_dict()
-
-        trial_end_date: None | str
-        trial_end_date = self.trial_end_date
-
-        trial_extended_for_feedback = self.trial_extended_for_feedback
-
-        logo_updated_at: None | str
-        logo_updated_at = self.logo_updated_at
-
-        number_of_enabled_users = self.number_of_enabled_users
+        is_super_administrator = self.is_super_administrator
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
                 "id": id,
-                "isMcpAuthorizationApiKeyEnabled": is_mcp_authorization_api_key_enabled,
-                "isOutputCompressionAllowed": is_output_compression_allowed,
-                "grantUsersInstallServersPolicy": grant_users_install_servers_policy,
-                "displayName": display_name,
-                "isTrial": is_trial,
-                "isPerSeatSubscription": is_per_seat_subscription,
-                "subscriptionPlan": subscription_plan,
-                "subscriptionSeats": subscription_seats,
-                "memberDefaultRole": member_default_role,
-                "freeCredits": free_credits,
-                "paidCredits": paid_credits,
-                "defaultResourceLimits": default_resource_limits,
-                "defaultResourceRequests": default_resource_requests,
-                "newServerProtectionModes": new_server_protection_modes,
-                "abilities": abilities,
-                "trialEndDate": trial_end_date,
-                "trialExtendedForFeedback": trial_extended_for_feedback,
-                "logoUpdatedAt": logo_updated_at,
+                "tenantId": tenant_id,
+                "name": name,
+                "apiKey": api_key,
+                "email": email,
+                "role": role,
+                "isServiceAccount": is_service_account,
+                "createdAt": created_at,
+                "updatedAt": updated_at,
             }
         )
-        if number_of_enabled_users is not UNSET:
-            field_dict["numberOfEnabledUsers"] = number_of_enabled_users
+        if is_super_administrator is not UNSET:
+            field_dict["isSuperAdministrator"] = is_super_administrator
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.new_server_protection_modes import NewServerProtectionModes
-        from ..models.schema_482 import Schema482
-        from ..models.server_resource_requests import ServerResourceRequests
-        from ..models.tenant_abilities import TenantAbilities
-
         d = dict(src_dict)
         id = d.pop("id")
 
-        is_mcp_authorization_api_key_enabled = d.pop("isMcpAuthorizationApiKeyEnabled")
+        tenant_id = d.pop("tenantId")
 
-        is_output_compression_allowed = d.pop("isOutputCompressionAllowed")
+        name = d.pop("name")
 
-        grant_users_install_servers_policy = d.pop("grantUsersInstallServersPolicy")
+        api_key = d.pop("apiKey")
 
-        display_name = d.pop("displayName")
+        email = d.pop("email")
 
-        is_trial = d.pop("isTrial")
+        role = Schema481(d.pop("role"))
 
-        is_per_seat_subscription = d.pop("isPerSeatSubscription")
+        is_service_account = d.pop("isServiceAccount")
 
-        subscription_plan = d.pop("subscriptionPlan")
+        created_at = d.pop("createdAt")
 
-        subscription_seats = d.pop("subscriptionSeats")
+        updated_at = d.pop("updatedAt")
 
-        def _parse_member_default_role(data: object) -> Literal["none"] | Schema481:
-            try:
-                if not isinstance(data, str):
-                    raise TypeError()
-                member_default_role_type_0 = Schema481(data)
-
-                return member_default_role_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            member_default_role_type_1 = cast(Literal["none"], data)
-            if member_default_role_type_1 != "none":
-                raise ValueError(
-                    f"memberDefaultRole_type_1 must match const 'none', got '{member_default_role_type_1}'"
-                )
-            return member_default_role_type_1
-
-        member_default_role = _parse_member_default_role(d.pop("memberDefaultRole"))
-
-        free_credits = d.pop("freeCredits")
-
-        paid_credits = d.pop("paidCredits")
-
-        default_resource_limits = Schema482.from_dict(d.pop("defaultResourceLimits"))
-
-        default_resource_requests = ServerResourceRequests.from_dict(d.pop("defaultResourceRequests"))
-
-        new_server_protection_modes = NewServerProtectionModes.from_dict(d.pop("newServerProtectionModes"))
-
-        abilities = TenantAbilities.from_dict(d.pop("abilities"))
-
-        def _parse_trial_end_date(data: object) -> None | str:
-            if data is None:
-                return data
-            return cast(None | str, data)
-
-        trial_end_date = _parse_trial_end_date(d.pop("trialEndDate"))
-
-        trial_extended_for_feedback = d.pop("trialExtendedForFeedback")
-
-        def _parse_logo_updated_at(data: object) -> None | str:
-            if data is None:
-                return data
-            return cast(None | str, data)
-
-        logo_updated_at = _parse_logo_updated_at(d.pop("logoUpdatedAt"))
-
-        number_of_enabled_users = d.pop("numberOfEnabledUsers", UNSET)
+        is_super_administrator = d.pop("isSuperAdministrator", UNSET)
 
         schema_480 = cls(
             id=id,
-            is_mcp_authorization_api_key_enabled=is_mcp_authorization_api_key_enabled,
-            is_output_compression_allowed=is_output_compression_allowed,
-            grant_users_install_servers_policy=grant_users_install_servers_policy,
-            display_name=display_name,
-            is_trial=is_trial,
-            is_per_seat_subscription=is_per_seat_subscription,
-            subscription_plan=subscription_plan,
-            subscription_seats=subscription_seats,
-            member_default_role=member_default_role,
-            free_credits=free_credits,
-            paid_credits=paid_credits,
-            default_resource_limits=default_resource_limits,
-            default_resource_requests=default_resource_requests,
-            new_server_protection_modes=new_server_protection_modes,
-            abilities=abilities,
-            trial_end_date=trial_end_date,
-            trial_extended_for_feedback=trial_extended_for_feedback,
-            logo_updated_at=logo_updated_at,
-            number_of_enabled_users=number_of_enabled_users,
+            tenant_id=tenant_id,
+            name=name,
+            api_key=api_key,
+            email=email,
+            role=role,
+            is_service_account=is_service_account,
+            created_at=created_at,
+            updated_at=updated_at,
+            is_super_administrator=is_super_administrator,
         )
 
         return schema_480

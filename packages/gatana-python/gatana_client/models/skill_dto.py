@@ -5,7 +5,7 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1372 import Schema1372
+from ..models.schema_1393 import Schema1393
 
 T = TypeVar("T", bound="SkillDto")
 
@@ -18,7 +18,7 @@ class SkillDto:
         name (str): Unique name in the organization; how agents address the skill
         description (str): One line saying when to use the skill
         gateway_uri (str): URI that agents use to read SKILL.md through Gatana
-        visibility (Schema1372):
+        visibility (Schema1393):
         collection_id (None | str): The collection the skill is in, or null at root
         collection_name (None | str): Name of that collection, or null at root
         content_bytes (float): Size of the Markdown body in bytes
@@ -29,7 +29,9 @@ class SkillDto:
         shared_with_team_ids (list[str]): IDs of the teams the skill is shared with, any role
         maintainer_user_ids (list[str]): IDs of the users that maintain the skill: the same rights as the creator
         maintainer_team_ids (list[str]): IDs of the teams whose members maintain the skill
-        collection_visibility (None | Schema1372): The collection's general access, null at root
+        shared_with_server_ids (list[str]): IDs of attached servers. Access to any of these servers grants read access
+            to the skill
+        collection_visibility (None | Schema1393): The collection's general access, null at root
         collection_shared_with_user_ids (list[str]): Users with access through the collection, any role
         collection_shared_with_team_ids (list[str]): Teams with access through the collection, any role
         collection_maintainer_user_ids (list[str]): Users that maintain the collection, and so this skill
@@ -42,7 +44,7 @@ class SkillDto:
     name: str
     description: str
     gateway_uri: str
-    visibility: Schema1372
+    visibility: Schema1393
     collection_id: None | str
     collection_name: None | str
     content_bytes: float
@@ -53,7 +55,8 @@ class SkillDto:
     shared_with_team_ids: list[str]
     maintainer_user_ids: list[str]
     maintainer_team_ids: list[str]
-    collection_visibility: None | Schema1372
+    shared_with_server_ids: list[str]
+    collection_visibility: None | Schema1393
     collection_shared_with_user_ids: list[str]
     collection_shared_with_team_ids: list[str]
     collection_maintainer_user_ids: list[str]
@@ -94,8 +97,10 @@ class SkillDto:
 
         maintainer_team_ids = self.maintainer_team_ids
 
+        shared_with_server_ids = self.shared_with_server_ids
+
         collection_visibility: None | str
-        if isinstance(self.collection_visibility, Schema1372):
+        if isinstance(self.collection_visibility, Schema1393):
             collection_visibility = self.collection_visibility.value
         else:
             collection_visibility = self.collection_visibility
@@ -131,6 +136,7 @@ class SkillDto:
                 "sharedWithTeamIds": shared_with_team_ids,
                 "maintainerUserIds": maintainer_user_ids,
                 "maintainerTeamIds": maintainer_team_ids,
+                "sharedWithServerIds": shared_with_server_ids,
                 "collectionVisibility": collection_visibility,
                 "collectionSharedWithUserIds": collection_shared_with_user_ids,
                 "collectionSharedWithTeamIds": collection_shared_with_team_ids,
@@ -154,7 +160,7 @@ class SkillDto:
 
         gateway_uri = d.pop("gatewayUri")
 
-        visibility = Schema1372(d.pop("visibility"))
+        visibility = Schema1393(d.pop("visibility"))
 
         def _parse_collection_id(data: object) -> None | str:
             if data is None:
@@ -186,18 +192,20 @@ class SkillDto:
 
         maintainer_team_ids = cast(list[str], d.pop("maintainerTeamIds"))
 
-        def _parse_collection_visibility(data: object) -> None | Schema1372:
+        shared_with_server_ids = cast(list[str], d.pop("sharedWithServerIds"))
+
+        def _parse_collection_visibility(data: object) -> None | Schema1393:
             if data is None:
                 return data
             try:
                 if not isinstance(data, str):
                     raise TypeError()
-                componentsschemas_schema1389_type_0 = Schema1372(data)
+                componentsschemas_schema1412_type_0 = Schema1393(data)
 
-                return componentsschemas_schema1389_type_0
+                return componentsschemas_schema1412_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema1372, data)
+            return cast(None | Schema1393, data)
 
         collection_visibility = _parse_collection_visibility(d.pop("collectionVisibility"))
 
@@ -229,6 +237,7 @@ class SkillDto:
             shared_with_team_ids=shared_with_team_ids,
             maintainer_user_ids=maintainer_user_ids,
             maintainer_team_ids=maintainer_team_ids,
+            shared_with_server_ids=shared_with_server_ids,
             collection_visibility=collection_visibility,
             collection_shared_with_user_ids=collection_shared_with_user_ids,
             collection_shared_with_team_ids=collection_shared_with_team_ids,

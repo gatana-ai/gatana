@@ -6,8 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_1111 import Schema1111
-    from ..models.schema_1117 import Schema1117
+    from ..models.team_with_member_count import TeamWithMemberCount
 
 
 T = TypeVar("T", bound="Schema1110")
@@ -17,30 +16,19 @@ T = TypeVar("T", bound="Schema1110")
 class Schema1110:
     """
     Attributes:
-        permission (Schema1111 | Schema1117):
-        server_slug (str): Slug of the server
+        team (TeamWithMemberCount):
     """
 
-    permission: Schema1111 | Schema1117
-    server_slug: str
+    team: TeamWithMemberCount
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.schema_1111 import Schema1111
-
-        permission: dict[str, Any]
-        if isinstance(self.permission, Schema1111):
-            permission = self.permission.to_dict()
-        else:
-            permission = self.permission.to_dict()
-
-        server_slug = self.server_slug
+        team = self.team.to_dict()
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "permission": permission,
-                "serverSlug": server_slug,
+                "team": team,
             }
         )
 
@@ -48,33 +36,13 @@ class Schema1110:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_1111 import Schema1111
-        from ..models.schema_1117 import Schema1117
+        from ..models.team_with_member_count import TeamWithMemberCount
 
         d = dict(src_dict)
-
-        def _parse_permission(data: object) -> Schema1111 | Schema1117:
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                componentsschemas_server_member_type_0 = Schema1111.from_dict(data)
-
-                return componentsschemas_server_member_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            if not isinstance(data, dict):
-                raise TypeError()
-            componentsschemas_server_member_type_1 = Schema1117.from_dict(data)
-
-            return componentsschemas_server_member_type_1
-
-        permission = _parse_permission(d.pop("permission"))
-
-        server_slug = d.pop("serverSlug")
+        team = TeamWithMemberCount.from_dict(d.pop("team"))
 
         schema_1110 = cls(
-            permission=permission,
-            server_slug=server_slug,
+            team=team,
         )
 
         return schema_1110

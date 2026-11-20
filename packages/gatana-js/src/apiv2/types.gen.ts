@@ -1276,6 +1276,7 @@ export type V2ServerDto = {
     createdAt: Schema414;
     updatedAt: Schema415;
     resolvedProtections: Schema416;
+    serverInfo: Schema424;
 };
 
 export type ResolvedProtection = {
@@ -1297,36 +1298,53 @@ export type ResolvedProtections = {
     injection: ResolvedProtection;
 };
 
+/**
+ * Unverified metadata from the server. Each tool refresh saves the latest server/discover result
+ */
+export type ServerInfo = {
+    title: Schema425;
+    version: Schema426;
+    websiteUrl: Schema427;
+    description: Schema428;
+    icons: Schema429;
+};
+
+export type ServerInfoIcon = {
+    mimeType?: Schema430;
+    sizes?: Schema432;
+    theme?: Schema434;
+};
+
 export type FirewallTestResult = {
-    outcome: Schema424;
-    ruleIndex?: Schema425;
-    allowRuleIndex?: Schema427;
-    stoppedBy?: Schema429;
-    rules: Schema430;
-    argumentChecks: Schema433;
-    context: Schema438;
+    outcome: Schema436;
+    ruleIndex?: Schema437;
+    allowRuleIndex?: Schema439;
+    stoppedBy?: Schema441;
+    rules: Schema442;
+    argumentChecks: Schema445;
+    context: Schema450;
 };
 
 export type ProtectionCheckAction = 'redact' | 'block' | 'audit';
 
 export type CredentialDtoV2 = {
-    id: Schema458;
-    tenantId: Schema459;
-    scope: Schema460;
-    userId: Schema461;
-    profileId: Schema463;
-    lastUsedAt: Schema465;
-    authorizedAt: Schema467;
-    authorizedByUserId: Schema468;
-    type: Schema470;
-    createdAt: Schema471;
-    updatedAt: Schema472;
-    serverSlug: Schema473;
-    userEmail: Schema474;
-    userName: Schema476;
-    profileName: Schema478;
-    authorizedByName: Schema480;
-    authorizedByEmail: Schema482;
+    id: Schema470;
+    tenantId: Schema471;
+    scope: Schema472;
+    userId: Schema473;
+    profileId: Schema475;
+    lastUsedAt: Schema477;
+    authorizedAt: Schema479;
+    authorizedByUserId: Schema480;
+    type: Schema482;
+    createdAt: Schema483;
+    updatedAt: Schema484;
+    serverSlug: Schema485;
+    userEmail: Schema486;
+    userName: Schema488;
+    profileName: Schema490;
+    authorizedByName: Schema492;
+    authorizedByEmail: Schema494;
 };
 
 export type ServerCredentialsCredential = ({
@@ -1338,46 +1356,46 @@ export type ServerCredentialsCredential = ({
 } & ServerCredentialsOauthClientCredentials);
 
 export type ServerCredentialsApiKeys = {
-    type: Schema484;
-    apikeys: Schema485;
+    type: Schema496;
+    apikeys: Schema497;
 };
 
 export type ServerCredentialsOauthTokens = {
-    type: Schema487;
-    tokenSet: Schema488;
-    resource?: Schema497;
+    type: Schema499;
+    tokenSet: Schema500;
+    resource?: Schema509;
 };
 
 export type ServerCredentialsOauthClientCredentials = {
-    type: Schema499;
+    type: Schema511;
     clientConfig?: ServerOAuthClientConfigurationClientCredentials;
-    tokenSet?: Schema501;
+    tokenSet?: Schema513;
 };
 
 /**
  * Client configuration for OAuth client credentials
  */
-export type ServerOAuthClientConfigurationClientCredentials = Schema500;
+export type ServerOAuthClientConfigurationClientCredentials = Schema512;
 
 export type CredentialRefreshResponse = {
-    id: Schema502;
-    accessTokenExpiresAt: Schema503;
+    id: Schema514;
+    accessTokenExpiresAt: Schema515;
 };
 
 export type PaginatedCredentialAuditLog = {
-    pagination: Schema505;
-    data: Schema512;
+    pagination: Schema517;
+    data: Schema524;
 };
 
 export type CredentialAuditLog = {
-    tenantId: Schema513;
-    id: Schema514;
-    credentialId: Schema515;
-    userId: Schema516;
-    eventName: Schema518;
-    details: Schema519;
-    createdAt: Schema522;
-    updatedAt: Schema523;
+    tenantId: Schema525;
+    id: Schema526;
+    credentialId: Schema527;
+    userId: Schema528;
+    eventName: Schema530;
+    details: Schema531;
+    createdAt: Schema534;
+    updatedAt: Schema535;
 };
 
 export type Schema242 = Array<V2ServerDto>;
@@ -2226,35 +2244,86 @@ export type Schema423 = {
 };
 
 /**
+ * Read-only. Null when the server omits metadata or uses MCP before 2026-07-28
+ */
+export type Schema424 = ServerInfo | null;
+
+/**
+ * Display name of the server, or an empty string
+ */
+export type Schema425 = string;
+
+/**
+ * Version of the server software
+ */
+export type Schema426 = string;
+
+/**
+ * http: or https: URL of the website, or an empty string
+ */
+export type Schema427 = string;
+
+/**
+ * Description of the server, or an empty string
+ */
+export type Schema428 = string;
+
+/**
+ * Server icons, up to one per theme. A signed-in browser can load an image from GET /api/v1/mcp-servers/{slug}/icon?theme=light|dark
+ */
+export type Schema429 = Array<ServerInfoIcon>;
+
+/**
+ * Image media type, if supplied by the server
+ */
+export type Schema430 = Schema431;
+
+export type Schema431 = string;
+
+/**
+ * Image sizes, such as 48x48 or any
+ */
+export type Schema432 = Schema433;
+
+export type Schema433 = Array<string>;
+
+/**
+ * Theme for the image
+ */
+export type Schema434 = Schema435;
+
+export type Schema435 = 'light' | 'dark';
+
+/**
  * Call outcome; refused means a rule could not be evaluated
  */
-export type Schema424 = 'allowed' | 'denied' | 'refused';
+export type Schema436 = 'allowed' | 'denied' | 'refused';
 
 /**
  * Zero-based index of the rule that denied or refused the call
  */
-export type Schema425 = Schema426;
+export type Schema437 = Schema438;
 
-export type Schema426 = number;
+export type Schema438 = number;
 
 /**
  * Zero-based index of the first Allow rule that matched. Protections then only record matches
  */
-export type Schema427 = Schema428;
+export type Schema439 = Schema440;
 
-export type Schema428 = number;
+export type Schema440 = number;
 
 /**
  * Protection that blocked the arguments or failed to scan them. Absent if a condition rule stopped the call or the call is allowed
  */
-export type Schema429 = ProtectionCheckType;
+export type Schema441 = ProtectionCheckType;
 
 /**
  * Results in request order
  */
-export type Schema430 = Array<Schema431>;
+export type Schema442 = Array<Schema443>;
 
-export type Schema431 = {
+export type Schema443 = {
     /**
      * Condition or protection result. A missing key means no match. not-tested means no tool result is available. shadowed means an earlier rule for the same protection and target applies to the tool
      */
@@ -2262,21 +2331,21 @@ export type Schema431 = {
     /**
      * Evaluation error message
      */
-    error?: Schema432;
+    error?: Schema444;
     /**
      * Whether a real call reaches this rule before another rule or protection stops it
      */
     reached: boolean;
 };
 
-export type Schema432 = string;
+export type Schema444 = string;
 
 /**
  * Argument protection results for the test call
  */
-export type Schema433 = Schema434;
+export type Schema445 = Schema446;
 
-export type Schema434 = Array<{
+export type Schema446 = Array<{
     check: ProtectionCheckType;
     action: ProtectionCheckAction;
     /**
@@ -2290,7 +2359,7 @@ export type Schema434 = Array<{
     /**
      * Zero-based index of the rule that selected the action. Absent if the protection mode selected it
      */
-    ruleIndex?: Schema435;
+    ruleIndex?: Schema447;
     /**
      * Matches in the test arguments
      */
@@ -2298,105 +2367,105 @@ export type Schema434 = Array<{
     /**
      * IDs of the detection rules that matched, never the matched text
      */
-    rules: Array<Schema436>;
+    rules: Array<Schema448>;
     /**
      * Why the protection could not scan the arguments
      */
-    error?: Schema437;
+    error?: Schema449;
     /**
      * Whether a real call reaches this scan before a condition rule or earlier protection stops it
      */
     reached: boolean;
 }>;
 
-export type Schema435 = number;
+export type Schema447 = number;
 
-export type Schema436 = string;
+export type Schema448 = string;
 
-export type Schema437 = string;
+export type Schema449 = string;
 
 /**
  * Values used to evaluate the conditions
  */
-export type Schema438 = {
-    tool: Schema439;
-    args: Schema440;
-    user: Schema443;
-    teams: Schema450;
-    profiles: Schema452;
-    claims?: Schema454;
-    authMethod: Schema456;
+export type Schema450 = {
+    tool: Schema451;
+    args: Schema452;
+    user: Schema455;
+    teams: Schema462;
+    profiles: Schema464;
+    claims?: Schema466;
+    authMethod: Schema468;
 };
 
-export type Schema439 = string;
+export type Schema451 = string;
 
 /**
  * The arguments of the tool call, which might have been modified by earlier firewall rules
  */
-export type Schema440 = {
-    [key in Schema441]?: Schema442;
+export type Schema452 = {
+    [key in Schema453]?: Schema454;
 };
 
-export type Schema441 = string;
+export type Schema453 = string;
 
-export type Schema442 = unknown;
+export type Schema454 = unknown;
 
-export type Schema443 = {
-    id: Schema444;
-    name: Schema445;
-    email: Schema446;
-    role: Schema447;
-    isDisabled: Schema448;
-    isServiceAccount: Schema449;
+export type Schema455 = {
+    id: Schema456;
+    name: Schema457;
+    email: Schema458;
+    role: Schema459;
+    isDisabled: Schema460;
+    isServiceAccount: Schema461;
 };
 
 /**
  * Unique ID of the user
  */
-export type Schema444 = string;
+export type Schema456 = string;
 
 /**
  * Display name of the user
  */
-export type Schema445 = string;
+export type Schema457 = string;
 
 /**
  * Email address of the user
  */
-export type Schema446 = string;
+export type Schema458 = string;
 
 /**
  * Role of the user in the tenant: member or owner
  */
-export type Schema447 = 'member' | 'owner';
+export type Schema459 = 'member' | 'owner';
 
 /**
  * Whether the user is disabled
  */
-export type Schema448 = boolean;
+export type Schema460 = boolean;
 
 /**
  * Whether the user is a service account
  */
-export type Schema449 = boolean;
+export type Schema461 = boolean;
 
-export type Schema450 = Array<Schema451>;
+export type Schema462 = Array<Schema463>;
 
-export type Schema451 = string;
+export type Schema463 = string;
 
-export type Schema452 = Array<Schema453>;
+export type Schema464 = Array<Schema465>;
 
-export type Schema453 = string;
+export type Schema465 = string;
 
-export type Schema454 = Schema455;
+export type Schema466 = Schema467;
 
-export type Schema455 = {
+export type Schema467 = {
     [key: string]: unknown;
 };
 
-export type Schema456 = string;
+export type Schema468 = string;
 
-export type Schema457 = {
+export type Schema469 = {
     /**
      * Credentials the caller can read, without secret values
      */
@@ -2406,117 +2475,117 @@ export type Schema457 = {
 /**
  * Unique ID of the credential record
  */
-export type Schema458 = string;
+export type Schema470 = string;
 
 /**
  * ID of the tenant that owns the credential
  */
-export type Schema459 = string;
+export type Schema471 = string;
 
 /**
  * Scope that the credential applies to: server, user, or profile
  */
-export type Schema460 = 'server' | 'user' | 'profile';
+export type Schema472 = 'server' | 'user' | 'profile';
 
 /**
  * ID of the owning user, or null
  */
-export type Schema461 = Schema462 | null;
+export type Schema473 = Schema474 | null;
 
-export type Schema462 = string;
+export type Schema474 = string;
 
 /**
  * ID of the owning profile when scope is "profile", otherwise null
  */
-export type Schema463 = Schema464 | null;
+export type Schema475 = Schema476 | null;
 
-export type Schema464 = string;
+export type Schema476 = string;
 
 /**
  * Time when the credential was last used, or null if never used
  */
-export type Schema465 = Schema466 | null;
+export type Schema477 = Schema478 | null;
 
-export type Schema466 = string;
+export type Schema478 = string;
 
 /**
  * Time when the credential was authorized
  */
-export type Schema467 = string;
-
-/**
- * Last authorizing user ID, or null if unknown
- */
-export type Schema468 = Schema469 | null;
-
-export type Schema469 = string;
-
-/**
- * Authorization method that the credential was created with
- */
-export type Schema470 = 'oauth' | 'apikey' | 'oauth-client-credentials';
-
-/**
- * Time when the credential record was created
- */
-export type Schema471 = string;
-
-/**
- * Time when the credential record was last updated
- */
-export type Schema472 = string;
-
-/**
- * Slug of the server that the credential authorizes access to
- */
-export type Schema473 = string;
-
-/**
- * Email address of the owning user, or null
- */
-export type Schema474 = Schema475 | null;
-
-export type Schema475 = string;
-
-/**
- * Display name of the owning user, or null
- */
-export type Schema476 = Schema477 | null;
-
-export type Schema477 = string;
-
-/**
- * Name of the owning profile, or null
- */
-export type Schema478 = Schema479 | null;
-
 export type Schema479 = string;
 
 /**
- * Last authorizing user name, or null
+ * Last authorizing user ID, or null if unknown
  */
 export type Schema480 = Schema481 | null;
 
 export type Schema481 = string;
 
 /**
+ * Authorization method that the credential was created with
+ */
+export type Schema482 = 'oauth' | 'apikey' | 'oauth-client-credentials';
+
+/**
+ * Time when the credential record was created
+ */
+export type Schema483 = string;
+
+/**
+ * Time when the credential record was last updated
+ */
+export type Schema484 = string;
+
+/**
+ * Slug of the server that the credential authorizes access to
+ */
+export type Schema485 = string;
+
+/**
+ * Email address of the owning user, or null
+ */
+export type Schema486 = Schema487 | null;
+
+export type Schema487 = string;
+
+/**
+ * Display name of the owning user, or null
+ */
+export type Schema488 = Schema489 | null;
+
+export type Schema489 = string;
+
+/**
+ * Name of the owning profile, or null
+ */
+export type Schema490 = Schema491 | null;
+
+export type Schema491 = string;
+
+/**
+ * Last authorizing user name, or null
+ */
+export type Schema492 = Schema493 | null;
+
+export type Schema493 = string;
+
+/**
  * Last authorizing user email, or null
  */
-export type Schema482 = Schema483 | null;
+export type Schema494 = Schema495 | null;
 
-export type Schema483 = string;
+export type Schema495 = string;
 
 /**
  * Credential type discriminator, always "apikey"
  */
-export type Schema484 = 'apikey';
+export type Schema496 = 'apikey';
 
 /**
  * API keys as [name, value] pairs
  */
-export type Schema485 = Array<Schema486>;
+export type Schema497 = Array<Schema498>;
 
-export type Schema486 = [
+export type Schema498 = [
     string,
     string
 ];
@@ -2524,59 +2593,59 @@ export type Schema486 = [
 /**
  * Credential type discriminator, always "oauth"
  */
-export type Schema487 = 'oauth';
+export type Schema499 = 'oauth';
 
 /**
  * OAuth tokens obtained from the authorization flow
  */
-export type Schema488 = Schema496;
+export type Schema500 = Schema508;
 
 /**
  * OAuth access token
  */
-export type Schema489 = string;
+export type Schema501 = string;
 
 /**
  * Expiry time of the access token, as a Unix epoch timestamp in milliseconds
  */
-export type Schema490 = Schema491;
+export type Schema502 = Schema503;
 
-export type Schema491 = number;
+export type Schema503 = number;
 
 /**
  * OpenID Connect ID token, if the authorization server issued one
  */
-export type Schema492 = Schema493;
+export type Schema504 = Schema505;
 
-export type Schema493 = string;
+export type Schema505 = string;
 
 /**
  * OAuth refresh token, if the authorization server issued one
  */
-export type Schema494 = Schema495;
+export type Schema506 = Schema507;
 
-export type Schema495 = string;
+export type Schema507 = string;
 
-export type Schema496 = {
-    accessToken: Schema489;
-    accessTokenExpiresAt?: Schema490;
-    idToken?: Schema492;
-    refreshToken?: Schema494;
+export type Schema508 = {
+    accessToken: Schema501;
+    accessTokenExpiresAt?: Schema502;
+    idToken?: Schema504;
+    refreshToken?: Schema506;
 };
 
 /**
  * Resource parameter (RFC 8707) used to obtain these tokens and reused for token refresh unless disabled
  */
-export type Schema497 = Schema498;
+export type Schema509 = Schema510;
 
-export type Schema498 = string;
+export type Schema510 = string;
 
 /**
  * Credential type discriminator, always "oauth-client-credentials"
  */
-export type Schema499 = 'oauth-client-credentials';
+export type Schema511 = 'oauth-client-credentials';
 
-export type Schema500 = {
+export type Schema512 = {
     clientId: Schema347;
     clientSecret: Schema349;
     clientAuthMethod: Schema352;
@@ -2586,114 +2655,114 @@ export type Schema500 = {
 /**
  * Cached tokenset for client credentials
  */
-export type Schema501 = Schema496;
+export type Schema513 = Schema508;
 
 /**
  * ID of the refreshed credential
  */
-export type Schema502 = string;
+export type Schema514 = string;
 
 /**
  * Expiry time of the refreshed access token, as a Unix epoch timestamp, or null if unknown
  */
-export type Schema503 = Schema504 | null;
+export type Schema515 = Schema516 | null;
 
-export type Schema504 = number;
+export type Schema516 = number;
 
 /**
  * Pagination metadata
  */
-export type Schema505 = {
-    page: Schema506;
-    limit: Schema507;
-    total: Schema508;
-    totalPages: Schema509;
-    hasNext: Schema510;
-    hasPrev: Schema511;
+export type Schema517 = {
+    page: Schema518;
+    limit: Schema519;
+    total: Schema520;
+    totalPages: Schema521;
+    hasNext: Schema522;
+    hasPrev: Schema523;
 };
 
 /**
  * Current page number
  */
-export type Schema506 = number;
+export type Schema518 = number;
 
 /**
  * Maximum number of items per page
  */
-export type Schema507 = number;
+export type Schema519 = number;
 
 /**
  * Total number of items across all pages
  */
-export type Schema508 = number;
+export type Schema520 = number;
 
 /**
  * Total number of pages
  */
-export type Schema509 = number;
+export type Schema521 = number;
 
 /**
  * Whether a next page exists
  */
-export type Schema510 = boolean;
+export type Schema522 = boolean;
 
 /**
  * Whether a previous page exists
  */
-export type Schema511 = boolean;
+export type Schema523 = boolean;
 
 /**
  * Items on the current page
  */
-export type Schema512 = Array<CredentialAuditLog>;
+export type Schema524 = Array<CredentialAuditLog>;
 
 /**
  * ID of the tenant that owns the entry
  */
-export type Schema513 = string;
+export type Schema525 = string;
 
 /**
  * Unique ID of the audit log entry
  */
-export type Schema514 = string;
+export type Schema526 = string;
 
 /**
  * ID of the credential that the entry belongs to
  */
-export type Schema515 = string;
+export type Schema527 = string;
 
 /**
  * ID of the user who performed the action, or null
  */
-export type Schema516 = Schema517 | null;
+export type Schema528 = Schema529 | null;
 
-export type Schema517 = string;
+export type Schema529 = string;
 
 /**
  * Name of the audited event (e.g. "create", "update", "delete")
  */
-export type Schema518 = string;
+export type Schema530 = string;
 
 /**
  * Event-specific details; update events include a diff of the change
  */
-export type Schema519 = {
-    [key in Schema520]?: Schema521;
+export type Schema531 = {
+    [key in Schema532]?: Schema533;
 };
 
-export type Schema520 = string;
+export type Schema532 = string;
 
-export type Schema521 = unknown;
+export type Schema533 = unknown;
 
 /**
  * Time when the entry was created
  */
-export type Schema522 = string;
+export type Schema534 = string;
 
 /**
  * Time when the entry was last updated
  */
-export type Schema523 = string;
+export type Schema535 = string;
 
 /**
  * Controls how tool refresh is authorized. "server-scoped" means only server-scoped credentials are required, "skip" means refresh is done without authorization, and "any" means any available credentials (server, user, profile) can be used. Defaults to "server-scoped".
@@ -2984,7 +3053,7 @@ export type ListCredentialsV2Responses = {
     /**
      * Successful response
      */
-    200: Schema457;
+    200: Schema469;
 };
 
 export type ListCredentialsV2Response = ListCredentialsV2Responses[keyof ListCredentialsV2Responses];
@@ -3005,7 +3074,7 @@ export type DeleteCredentialV2Responses = {
     /**
      * Successful response
      */
-    200: Schema457;
+    200: Schema469;
 };
 
 export type DeleteCredentialV2Response = DeleteCredentialV2Responses[keyof DeleteCredentialV2Responses];

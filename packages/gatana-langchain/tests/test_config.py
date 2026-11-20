@@ -419,14 +419,48 @@ class TestGatanaClientConfigLoading:
 
         client = GatanaClient(token="sk-explicit", org_id="my-org")
         assert client.token == "sk-explicit"
+        assert client._base_url == "https://my-org.gatana.ai/api/v1"
 
-    def test_explicit_token_and_base_url(self) -> None:
+    @pytest.mark.parametrize(
+        "base_url",
+        [
+            "https://custom.example.com",
+            "https://custom.example.com/",
+            "https://custom.example.com/api/v1",
+            "https://custom.example.com/api/v1/",
+            "https://custom.example.com/some/other/path",
+        ],
+    )
+    def test_explicit_token_and_base_url(self, base_url: str) -> None:
         from gatana_client import GatanaClient
 
-        client = GatanaClient(
-            token="sk-explicit", base_url="https://custom.example.com/api/v1"
-        )
+        client = GatanaClient(token="sk-explicit", base_url=base_url)
         assert client.token == "sk-explicit"
+        assert client._base_url == "https://custom.example.com/api/v1"
+
+    def test_keeps_port_of_base_url(self) -> None:
+        from gatana_client import GatanaClient
+
+        client = GatanaClient(token="sk-explicit", base_url="http://localhost:3500")
+        assert client._base_url == "http://localhost:3500/api/v1"
+
+    def test_rejects_base_url_without_scheme(self) -> None:
+        from gatana_client import GatanaClient
+
+        with pytest.raises(ValueError, match="absolute URL"):
+            GatanaClient(token="sk-explicit", base_url="my-org.gatana.ai")
+
+    def test_base_url_env_var_can_be_host_only(self) -> None:
+        from gatana_client import GatanaClient
+
+        env = {
+            "GATANA_API_KEY": "sk-from-env",
+            "GATANA_BASE_URL": "https://env-org.gatana.ai",
+        }
+        with patch.dict(os.environ, env, clear=False):
+            os.environ.pop("GATANA_ORG_ID", None)
+            client = GatanaClient()
+        assert client._base_url == "https://env-org.gatana.ai/api/v1"
 
     def test_resolves_from_env_vars(self) -> None:
         from gatana_client import GatanaClient
@@ -445,7 +479,7 @@ class TestGatanaClientConfigLoading:
                 {
                     "orgs": {
                         "file-org": {
-                            "baseUrl": "https://file-org.gatana.ai/api/v1",
+                            "baseUrl": "https://file-org.gatana.ai",
                             "apiKey": "sk-from-file",
                         }
                     },
@@ -461,6 +495,7 @@ class TestGatanaClientConfigLoading:
             loader = ConfigLoader([FileConfigStrategy(config_path=config_path)])
             client = GatanaClient(config_loader=loader)
         assert client.token == "sk-from-file"
+        assert client._base_url == "https://file-org.gatana.ai/api/v1"
 
     def test_raises_when_nothing_configured(self) -> None:
         from gatana_client import GatanaClient

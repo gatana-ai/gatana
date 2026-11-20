@@ -5,15 +5,15 @@ from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_619 import Schema619
+from ..models.schema_622 import Schema622
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_624 import Schema624
-    from ..models.schema_631 import Schema631
-    from ..models.schema_633 import Schema633
+    from ..models.schema_627 import Schema627
     from ..models.schema_634 import Schema634
-    from ..models.schema_635 import Schema635
+    from ..models.schema_636 import Schema636
+    from ..models.schema_637 import Schema637
+    from ..models.schema_638 import Schema638
 
 
 T = TypeVar("T", bound="StdioTransportConfigOutput")
@@ -25,41 +25,41 @@ class StdioTransportConfigOutput:
     Attributes:
         type_ (Literal['stdio']): Transport type discriminator, always "stdio"
         command (str): Command line that starts the MCP server process
-        transport (Schema619): Protocol that the launched process speaks
+        transport (Schema622): Protocol that the launched process speaks
         docker_image (str | Unset):
         env (list[list[str]] | Unset):
         http_port (float | None | Unset): Port that the process listens on when transport is HTTP-based
         url_path (None | str | Unset): URL path of the MCP endpoint when transport is HTTP-based
-        health_check (Schema624 | Unset):
-        limits (None | Schema631 | Unset): Deprecated: former resource ceiling, no longer applied to deployments. Use
+        health_check (Schema627 | Unset):
+        limits (None | Schema634 | Unset): Deprecated: former resource ceiling, no longer applied to deployments. Use
             requests to reserve capacity instead
-        requests (None | Schema633 | Unset): Resources reserved for the process: the minimum it is guaranteed when the
+        requests (None | Schema636 | Unset): Resources reserved for the process: the minimum it is guaranteed when the
             hardware is busy. Overrides the organization default
-        storage (None | Schema634 | Unset): Persistent storage for the server. When enabled the server keeps one volume,
+        storage (None | Schema637 | Unset): Persistent storage for the server. When enabled the server keeps one volume,
             mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the
             deployment and counts against the organization storage quota
-        tailscale (None | Schema635 | Unset): Egress-only Tailscale access. When enabled the server can open connections
+        tailscale (None | Schema638 | Unset): Egress-only Tailscale access. When enabled the server can open connections
             to hosts on your tailnet, and to the subnets its routers advertise. Nothing on the tailnet can reach the server
     """
 
     type_: Literal["stdio"]
     command: str
-    transport: Schema619
+    transport: Schema622
     docker_image: str | Unset = UNSET
     env: list[list[str]] | Unset = UNSET
     http_port: float | None | Unset = UNSET
     url_path: None | str | Unset = UNSET
-    health_check: Schema624 | Unset = UNSET
-    limits: None | Schema631 | Unset = UNSET
-    requests: None | Schema633 | Unset = UNSET
-    storage: None | Schema634 | Unset = UNSET
-    tailscale: None | Schema635 | Unset = UNSET
+    health_check: Schema627 | Unset = UNSET
+    limits: None | Schema634 | Unset = UNSET
+    requests: None | Schema636 | Unset = UNSET
+    storage: None | Schema637 | Unset = UNSET
+    tailscale: None | Schema638 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.schema_631 import Schema631
-        from ..models.schema_633 import Schema633
         from ..models.schema_634 import Schema634
-        from ..models.schema_635 import Schema635
+        from ..models.schema_636 import Schema636
+        from ..models.schema_637 import Schema637
+        from ..models.schema_638 import Schema638
 
         type_ = self.type_
 
@@ -72,14 +72,14 @@ class StdioTransportConfigOutput:
         env: list[list[str]] | Unset = UNSET
         if not isinstance(self.env, Unset):
             env = []
-            for componentsschemas_schema617_item_data in self.env:
-                componentsschemas_schema617_item = []
-                for componentsschemas_schema617_item_item_data in componentsschemas_schema617_item_data:
-                    componentsschemas_schema617_item_item: str
-                    componentsschemas_schema617_item_item = componentsschemas_schema617_item_item_data
-                    componentsschemas_schema617_item.append(componentsschemas_schema617_item_item)
+            for componentsschemas_schema620_item_data in self.env:
+                componentsschemas_schema620_item = []
+                for componentsschemas_schema620_item_item_data in componentsschemas_schema620_item_data:
+                    componentsschemas_schema620_item_item: str
+                    componentsschemas_schema620_item_item = componentsschemas_schema620_item_item_data
+                    componentsschemas_schema620_item.append(componentsschemas_schema620_item_item)
 
-                env.append(componentsschemas_schema617_item)
+                env.append(componentsschemas_schema620_item)
 
         http_port: float | None | Unset
         if isinstance(self.http_port, Unset):
@@ -100,7 +100,7 @@ class StdioTransportConfigOutput:
         limits: dict[str, Any] | None | Unset
         if isinstance(self.limits, Unset):
             limits = UNSET
-        elif isinstance(self.limits, Schema631):
+        elif isinstance(self.limits, Schema634):
             limits = self.limits.to_dict()
         else:
             limits = self.limits
@@ -108,7 +108,7 @@ class StdioTransportConfigOutput:
         requests: dict[str, Any] | None | Unset
         if isinstance(self.requests, Unset):
             requests = UNSET
-        elif isinstance(self.requests, Schema633):
+        elif isinstance(self.requests, Schema636):
             requests = self.requests.to_dict()
         else:
             requests = self.requests
@@ -116,7 +116,7 @@ class StdioTransportConfigOutput:
         storage: dict[str, Any] | None | Unset
         if isinstance(self.storage, Unset):
             storage = UNSET
-        elif isinstance(self.storage, Schema634):
+        elif isinstance(self.storage, Schema637):
             storage = self.storage.to_dict()
         else:
             storage = self.storage
@@ -124,7 +124,7 @@ class StdioTransportConfigOutput:
         tailscale: dict[str, Any] | None | Unset
         if isinstance(self.tailscale, Unset):
             tailscale = UNSET
-        elif isinstance(self.tailscale, Schema635):
+        elif isinstance(self.tailscale, Schema638):
             tailscale = self.tailscale.to_dict()
         else:
             tailscale = self.tailscale
@@ -161,11 +161,11 @@ class StdioTransportConfigOutput:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_624 import Schema624
-        from ..models.schema_631 import Schema631
-        from ..models.schema_633 import Schema633
+        from ..models.schema_627 import Schema627
         from ..models.schema_634 import Schema634
-        from ..models.schema_635 import Schema635
+        from ..models.schema_636 import Schema636
+        from ..models.schema_637 import Schema637
+        from ..models.schema_638 import Schema638
 
         d = dict(src_dict)
         type_ = cast(Literal["stdio"], d.pop("type"))
@@ -174,7 +174,7 @@ class StdioTransportConfigOutput:
 
         command = d.pop("command")
 
-        transport = Schema619(d.pop("transport"))
+        transport = Schema622(d.pop("transport"))
 
         docker_image = d.pop("dockerImage", UNSET)
 
@@ -182,21 +182,21 @@ class StdioTransportConfigOutput:
         env: list[list[str]] | Unset = UNSET
         if _env is not UNSET:
             env = []
-            for componentsschemas_schema617_item_data in _env:
-                componentsschemas_schema617_item = []
-                _componentsschemas_schema617_item = componentsschemas_schema617_item_data
-                for componentsschemas_schema617_item_item_data in _componentsschemas_schema617_item:
+            for componentsschemas_schema620_item_data in _env:
+                componentsschemas_schema620_item = []
+                _componentsschemas_schema620_item = componentsschemas_schema620_item_data
+                for componentsschemas_schema620_item_item_data in _componentsschemas_schema620_item:
 
-                    def _parse_componentsschemas_schema617_item_item(data: object) -> str:
+                    def _parse_componentsschemas_schema620_item_item(data: object) -> str:
                         return cast(str, data)
 
-                    componentsschemas_schema617_item_item = _parse_componentsschemas_schema617_item_item(
-                        componentsschemas_schema617_item_item_data
+                    componentsschemas_schema620_item_item = _parse_componentsschemas_schema620_item_item(
+                        componentsschemas_schema620_item_item_data
                     )
 
-                    componentsschemas_schema617_item.append(componentsschemas_schema617_item_item)
+                    componentsschemas_schema620_item.append(componentsschemas_schema620_item_item)
 
-                env.append(componentsschemas_schema617_item)
+                env.append(componentsschemas_schema620_item)
 
         def _parse_http_port(data: object) -> float | None | Unset:
             if data is None:
@@ -217,13 +217,13 @@ class StdioTransportConfigOutput:
         url_path = _parse_url_path(d.pop("urlPath", UNSET))
 
         _health_check = d.pop("healthCheck", UNSET)
-        health_check: Schema624 | Unset
+        health_check: Schema627 | Unset
         if isinstance(_health_check, Unset):
             health_check = UNSET
         else:
-            health_check = Schema624.from_dict(_health_check)
+            health_check = Schema627.from_dict(_health_check)
 
-        def _parse_limits(data: object) -> None | Schema631 | Unset:
+        def _parse_limits(data: object) -> None | Schema634 | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -231,50 +231,16 @@ class StdioTransportConfigOutput:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema630_type_0 = Schema631.from_dict(data)
+                componentsschemas_schema633_type_0 = Schema634.from_dict(data)
 
-                return componentsschemas_schema630_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            return cast(None | Schema631 | Unset, data)
-
-        limits = _parse_limits(d.pop("limits", UNSET))
-
-        def _parse_requests(data: object) -> None | Schema633 | Unset:
-            if data is None:
-                return data
-            if isinstance(data, Unset):
-                return data
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                componentsschemas_schema632_type_0 = Schema633.from_dict(data)
-
-                return componentsschemas_schema632_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            return cast(None | Schema633 | Unset, data)
-
-        requests = _parse_requests(d.pop("requests", UNSET))
-
-        def _parse_storage(data: object) -> None | Schema634 | Unset:
-            if data is None:
-                return data
-            if isinstance(data, Unset):
-                return data
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                componentsschemas_stdio_transport_storage_output_type_0 = Schema634.from_dict(data)
-
-                return componentsschemas_stdio_transport_storage_output_type_0
+                return componentsschemas_schema633_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | Schema634 | Unset, data)
 
-        storage = _parse_storage(d.pop("storage", UNSET))
+        limits = _parse_limits(d.pop("limits", UNSET))
 
-        def _parse_tailscale(data: object) -> None | Schema635 | Unset:
+        def _parse_requests(data: object) -> None | Schema636 | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -282,12 +248,46 @@ class StdioTransportConfigOutput:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_stdio_transport_tailscale_output_type_0 = Schema635.from_dict(data)
+                componentsschemas_schema635_type_0 = Schema636.from_dict(data)
+
+                return componentsschemas_schema635_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | Schema636 | Unset, data)
+
+        requests = _parse_requests(d.pop("requests", UNSET))
+
+        def _parse_storage(data: object) -> None | Schema637 | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_stdio_transport_storage_output_type_0 = Schema637.from_dict(data)
+
+                return componentsschemas_stdio_transport_storage_output_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | Schema637 | Unset, data)
+
+        storage = _parse_storage(d.pop("storage", UNSET))
+
+        def _parse_tailscale(data: object) -> None | Schema638 | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_stdio_transport_tailscale_output_type_0 = Schema638.from_dict(data)
 
                 return componentsschemas_stdio_transport_tailscale_output_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | Schema635 | Unset, data)
+            return cast(None | Schema638 | Unset, data)
 
         tailscale = _parse_tailscale(d.pop("tailscale", UNSET))
 

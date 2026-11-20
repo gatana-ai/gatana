@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_755 import Schema755
+from ..models.schema_758 import Schema758
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_756 import Schema756
     from ..models.schema_759 import Schema759
+    from ..models.schema_762 import Schema762
 
 
 T = TypeVar("T", bound="ServerProtectionOutput")
@@ -20,14 +20,14 @@ T = TypeVar("T", bound="ServerProtectionOutput")
 class ServerProtectionOutput:
     """
     Attributes:
-        mode (Schema755):
-        settings (Schema759):
-        actions (Schema756 | Unset): Actions for On mode. Missing targets use organization defaults or built-in values
+        mode (Schema758):
+        settings (Schema762):
+        actions (Schema759 | Unset): Actions for On mode. Missing targets use organization defaults or built-in values
     """
 
-    mode: Schema755
-    settings: Schema759
-    actions: Schema756 | Unset = UNSET
+    mode: Schema758
+    settings: Schema762
+    actions: Schema759 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         mode = self.mode.value
@@ -53,20 +53,20 @@ class ServerProtectionOutput:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_756 import Schema756
         from ..models.schema_759 import Schema759
+        from ..models.schema_762 import Schema762
 
         d = dict(src_dict)
-        mode = Schema755(d.pop("mode"))
+        mode = Schema758(d.pop("mode"))
 
-        settings = Schema759.from_dict(d.pop("settings"))
+        settings = Schema762.from_dict(d.pop("settings"))
 
         _actions = d.pop("actions", UNSET)
-        actions: Schema756 | Unset
+        actions: Schema759 | Unset
         if isinstance(_actions, Unset):
             actions = UNSET
         else:
-            actions = Schema756.from_dict(_actions)
+            actions = Schema759.from_dict(_actions)
 
         server_protection_output = cls(
             mode=mode,

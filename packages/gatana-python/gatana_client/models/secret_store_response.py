@@ -5,7 +5,7 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1128 import Schema1128
+from ..models.schema_1149 import Schema1149
 
 T = TypeVar("T", bound="SecretStoreResponse")
 
@@ -16,7 +16,7 @@ class SecretStoreResponse:
     Attributes:
         id (str):
         name (str):
-        type_ (Schema1128):
+        type_ (Schema1149):
         is_enabled (bool):
         created_at (str):
         updated_at (str):
@@ -24,7 +24,7 @@ class SecretStoreResponse:
 
     id: str
     name: str
-    type_: Schema1128
+    type_: Schema1149
     is_enabled: bool
     created_at: str
     updated_at: str
@@ -64,7 +64,7 @@ class SecretStoreResponse:
 
         name = d.pop("name")
 
-        type_ = Schema1128(d.pop("type"))
+        type_ = Schema1149(d.pop("type"))
 
         is_enabled = d.pop("isEnabled")
 

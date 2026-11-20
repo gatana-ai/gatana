@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
+
+from ..models.schema_1453 import Schema1453
 
 T = TypeVar("T", bound="Schema1452")
 
@@ -12,30 +14,44 @@ T = TypeVar("T", bound="Schema1452")
 class Schema1452:
     """
     Attributes:
-        id (str):
-        slug (str):
-        last_tool_refresh_at (None | str): Time of the last tool refresh, which also reads the skills
+        path (str): Path in the skill folder, with / as the separator, e.g. "SKILL.md"
+        size_bytes (float):
+        digest (str): SHA-256 digest of the file, as "sha256:<hex>"
+        mime_type (str): Set by Gatana from the file extension
+        encoding (Schema1453): base64 when the bytes are not valid UTF-8
+        content (str):
     """
 
-    id: str
-    slug: str
-    last_tool_refresh_at: None | str
+    path: str
+    size_bytes: float
+    digest: str
+    mime_type: str
+    encoding: Schema1453
+    content: str
 
     def to_dict(self) -> dict[str, Any]:
-        id = self.id
+        path = self.path
 
-        slug = self.slug
+        size_bytes = self.size_bytes
 
-        last_tool_refresh_at: None | str
-        last_tool_refresh_at = self.last_tool_refresh_at
+        digest = self.digest
+
+        mime_type = self.mime_type
+
+        encoding = self.encoding.value
+
+        content = self.content
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "id": id,
-                "slug": slug,
-                "lastToolRefreshAt": last_tool_refresh_at,
+                "path": path,
+                "sizeBytes": size_bytes,
+                "digest": digest,
+                "mimeType": mime_type,
+                "encoding": encoding,
+                "content": content,
             }
         )
 
@@ -44,21 +60,25 @@ class Schema1452:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        id = d.pop("id")
+        path = d.pop("path")
 
-        slug = d.pop("slug")
+        size_bytes = d.pop("sizeBytes")
 
-        def _parse_last_tool_refresh_at(data: object) -> None | str:
-            if data is None:
-                return data
-            return cast(None | str, data)
+        digest = d.pop("digest")
 
-        last_tool_refresh_at = _parse_last_tool_refresh_at(d.pop("lastToolRefreshAt"))
+        mime_type = d.pop("mimeType")
+
+        encoding = Schema1453(d.pop("encoding"))
+
+        content = d.pop("content")
 
         schema_1452 = cls(
-            id=id,
-            slug=slug,
-            last_tool_refresh_at=last_tool_refresh_at,
+            path=path,
+            size_bytes=size_bytes,
+            digest=digest,
+            mime_type=mime_type,
+            encoding=encoding,
+            content=content,
         )
 
         return schema_1452

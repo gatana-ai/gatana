@@ -22,6 +22,7 @@ class DeploymentStatusResponse:
         is_deployed (bool): Whether a deployment exists for the server or sandbox
         is_available (bool): Whether the deployment is available and serving
         is_stabilizing (bool): Whether the deployment is still rolling out or stabilizing
+        has_pod_failures (bool): A current pod cannot start, has crashed or had a container failure
         deployments (list[DeploymentStatus]): Status of the pods of the deployment
         current_replica_set (str | Unset):
         storage (None | ServerStorageStatus | Unset):
@@ -30,6 +31,7 @@ class DeploymentStatusResponse:
     is_deployed: bool
     is_available: bool
     is_stabilizing: bool
+    has_pod_failures: bool
     deployments: list[DeploymentStatus]
     current_replica_set: str | Unset = UNSET
     storage: None | ServerStorageStatus | Unset = UNSET
@@ -43,10 +45,12 @@ class DeploymentStatusResponse:
 
         is_stabilizing = self.is_stabilizing
 
+        has_pod_failures = self.has_pod_failures
+
         deployments = []
-        for componentsschemas_schema972_item_data in self.deployments:
-            componentsschemas_schema972_item = componentsschemas_schema972_item_data.to_dict()
-            deployments.append(componentsschemas_schema972_item)
+        for componentsschemas_schema993_item_data in self.deployments:
+            componentsschemas_schema993_item = componentsschemas_schema993_item_data.to_dict()
+            deployments.append(componentsschemas_schema993_item)
 
         current_replica_set = self.current_replica_set
 
@@ -65,6 +69,7 @@ class DeploymentStatusResponse:
                 "isDeployed": is_deployed,
                 "isAvailable": is_available,
                 "isStabilizing": is_stabilizing,
+                "hasPodFailures": has_pod_failures,
                 "deployments": deployments,
             }
         )
@@ -87,12 +92,14 @@ class DeploymentStatusResponse:
 
         is_stabilizing = d.pop("isStabilizing")
 
+        has_pod_failures = d.pop("hasPodFailures")
+
         deployments = []
         _deployments = d.pop("deployments")
-        for componentsschemas_schema972_item_data in _deployments:
-            componentsschemas_schema972_item = DeploymentStatus.from_dict(componentsschemas_schema972_item_data)
+        for componentsschemas_schema993_item_data in _deployments:
+            componentsschemas_schema993_item = DeploymentStatus.from_dict(componentsschemas_schema993_item_data)
 
-            deployments.append(componentsschemas_schema972_item)
+            deployments.append(componentsschemas_schema993_item)
 
         current_replica_set = d.pop("currentReplicaSet", UNSET)
 
@@ -104,9 +111,9 @@ class DeploymentStatusResponse:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema999_type_0 = ServerStorageStatus.from_dict(data)
+                componentsschemas_schema1020_type_0 = ServerStorageStatus.from_dict(data)
 
-                return componentsschemas_schema999_type_0
+                return componentsschemas_schema1020_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | ServerStorageStatus | Unset, data)
@@ -117,6 +124,7 @@ class DeploymentStatusResponse:
             is_deployed=is_deployed,
             is_available=is_available,
             is_stabilizing=is_stabilizing,
+            has_pod_failures=has_pod_failures,
             deployments=deployments,
             current_replica_set=current_replica_set,
             storage=storage,

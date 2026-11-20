@@ -6,14 +6,14 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_440 import Schema440
+from ...models.schema_441 import Schema441
 from ...models.skill_shares_response import SkillSharesResponse
 from ...types import Response
 
 
 def _get_kwargs(
     skill_id: str,
-    member_type: Schema440,
+    member_type: Schema441,
     member_id: str,
 ) -> dict[str, Any]:
 
@@ -52,18 +52,18 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def sync_detailed(
     skill_id: str,
-    member_type: Schema440,
+    member_type: Schema441,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[SkillSharesResponse]:
-    """Stop sharing a skill with a user or a team and return who it is still shared with
+    """Remove a skill share and return the remaining shares
 
     Args:
         skill_id (str):
-        member_type (Schema440): 'users' to share with one user account, 'teams' to share with
-            every member of a team
-        member_id (str): ID of the user or of the team
+        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+            users with server access
+        member_id (str): User, team or server ID
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -88,18 +88,18 @@ def sync_detailed(
 
 def sync(
     skill_id: str,
-    member_type: Schema440,
+    member_type: Schema441,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
 ) -> SkillSharesResponse | None:
-    """Stop sharing a skill with a user or a team and return who it is still shared with
+    """Remove a skill share and return the remaining shares
 
     Args:
         skill_id (str):
-        member_type (Schema440): 'users' to share with one user account, 'teams' to share with
-            every member of a team
-        member_id (str): ID of the user or of the team
+        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+            users with server access
+        member_id (str): User, team or server ID
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -119,18 +119,18 @@ def sync(
 
 async def asyncio_detailed(
     skill_id: str,
-    member_type: Schema440,
+    member_type: Schema441,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[SkillSharesResponse]:
-    """Stop sharing a skill with a user or a team and return who it is still shared with
+    """Remove a skill share and return the remaining shares
 
     Args:
         skill_id (str):
-        member_type (Schema440): 'users' to share with one user account, 'teams' to share with
-            every member of a team
-        member_id (str): ID of the user or of the team
+        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+            users with server access
+        member_id (str): User, team or server ID
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -153,18 +153,18 @@ async def asyncio_detailed(
 
 async def asyncio(
     skill_id: str,
-    member_type: Schema440,
+    member_type: Schema441,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
 ) -> SkillSharesResponse | None:
-    """Stop sharing a skill with a user or a team and return who it is still shared with
+    """Remove a skill share and return the remaining shares
 
     Args:
         skill_id (str):
-        member_type (Schema440): 'users' to share with one user account, 'teams' to share with
-            every member of a team
-        member_id (str): ID of the user or of the team
+        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+            users with server access
+        member_id (str): User, team or server ID
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

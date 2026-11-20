@@ -50,7 +50,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[SkillSharesResponse]:
-    """List the users and teams a skill is shared with, and who has access through its collection
+    """List direct shares and shares from the skill collection
 
     Args:
         skill_id (str):
@@ -79,7 +79,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 ) -> SkillSharesResponse | None:
-    """List the users and teams a skill is shared with, and who has access through its collection
+    """List direct shares and shares from the skill collection
 
     Args:
         skill_id (str):
@@ -103,7 +103,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[SkillSharesResponse]:
-    """List the users and teams a skill is shared with, and who has access through its collection
+    """List direct shares and shares from the skill collection
 
     Args:
         skill_id (str):
@@ -130,7 +130,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 ) -> SkillSharesResponse | None:
-    """List the users and teams a skill is shared with, and who has access through its collection
+    """List direct shares and shares from the skill collection
 
     Args:
         skill_id (str):

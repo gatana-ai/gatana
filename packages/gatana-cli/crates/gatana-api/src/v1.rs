@@ -3745,6 +3745,9 @@ pub mod types {
         ///Time when the current billing period ends
         #[serde(rename = "currentPeriodEnd")]
         pub current_period_end: ::std::string::String,
+        ///Discount on the subscription, or null when there is none
+        #[serde(deserialize_with = "::std::option::Option::deserialize")]
+        pub discount: ::std::option::Option<GetSubscriptionResponseSubscriptionDiscount>,
         ///Whether a default payment method is set
         #[serde(rename = "hasPaymentMethod")]
         pub has_payment_method: bool,
@@ -3781,6 +3784,28 @@ pub mod types {
         pub last4: ::std::string::String,
         ///Whether the card is valid
         pub valid: bool,
+    }
+    ///`GetSubscriptionResponseSubscriptionDiscount`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct GetSubscriptionResponseSubscriptionDiscount {
+        ///Fixed amount taken off the price, or null for a percentage
+        #[serde(
+            rename = "amountOff",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub amount_off: ::std::option::Option<f64>,
+        ///Time when the discount ends, or null if it does not end
+        #[serde(
+            rename = "endsAt",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub ends_at: ::std::option::Option<::std::string::String>,
+        ///Percentage taken off the price, or null for a fixed amount
+        #[serde(
+            rename = "percentOff",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub percent_off: ::std::option::Option<f64>,
     }
     ///`GetTeamResponse`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -7227,11 +7252,13 @@ pub mod types {
         ///Replacement description, applied when overrideDescription is true
         #[serde(rename = "descriptionOverride")]
         pub description_override: ::std::string::String,
-        ///Replacement input schema, applied when overrideInputSchema is true
-        #[serde(rename = "inputSchemaOverride")]
-        pub input_schema_override: ::serde_json::Map<
-            ::std::string::String,
-            ::serde_json::Value,
+        ///Replacement input schema, applied when overrideInputSchema is true, or null if never set
+        #[serde(
+            rename = "inputSchemaOverride",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub input_schema_override: ::std::option::Option<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
         >,
         ///Whether the tool is enabled and exposed to clients
         #[serde(rename = "isEnabled")]

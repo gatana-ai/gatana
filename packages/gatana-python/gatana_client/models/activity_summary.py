@@ -28,16 +28,16 @@ class ActivitySummary:
 
     def to_dict(self) -> dict[str, Any]:
         days = []
-        for componentsschemas_schema513_item_data in self.days:
-            componentsschemas_schema513_item = componentsschemas_schema513_item_data.to_dict()
-            days.append(componentsschemas_schema513_item)
+        for componentsschemas_schema515_item_data in self.days:
+            componentsschemas_schema515_item = componentsschemas_schema515_item_data.to_dict()
+            days.append(componentsschemas_schema515_item)
 
         total = self.total
 
         servers = []
-        for componentsschemas_schema517_item_data in self.servers:
-            componentsschemas_schema517_item = componentsschemas_schema517_item_data.to_dict()
-            servers.append(componentsschemas_schema517_item)
+        for componentsschemas_schema519_item_data in self.servers:
+            componentsschemas_schema519_item = componentsschemas_schema519_item_data.to_dict()
+            servers.append(componentsschemas_schema519_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -59,19 +59,19 @@ class ActivitySummary:
         d = dict(src_dict)
         days = []
         _days = d.pop("days")
-        for componentsschemas_schema513_item_data in _days:
-            componentsschemas_schema513_item = ActivityDay.from_dict(componentsschemas_schema513_item_data)
+        for componentsschemas_schema515_item_data in _days:
+            componentsschemas_schema515_item = ActivityDay.from_dict(componentsschemas_schema515_item_data)
 
-            days.append(componentsschemas_schema513_item)
+            days.append(componentsschemas_schema515_item)
 
         total = d.pop("total")
 
         servers = []
         _servers = d.pop("servers")
-        for componentsschemas_schema517_item_data in _servers:
-            componentsschemas_schema517_item = ActivityServer.from_dict(componentsschemas_schema517_item_data)
+        for componentsschemas_schema519_item_data in _servers:
+            componentsschemas_schema519_item = ActivityServer.from_dict(componentsschemas_schema519_item_data)
 
-            servers.append(componentsschemas_schema517_item)
+            servers.append(componentsschemas_schema519_item)
 
         activity_summary = cls(
             days=days,

@@ -229,10 +229,16 @@ fn description(tool: &Value) -> &str {
 }
 
 /// The input schema that Gatana checks a call against: the override, if one is on.
+/// An override that is on but null counts as no override, as in the backend's tool list.
 fn input_schema(tool: &Value) -> &Value {
-    let key =
-        if tool.get("overrideInputSchema") == Some(&Value::Bool(true)) { "inputSchemaOverride" } else { "schema" };
-    tool.get(key).unwrap_or(&Value::Null)
+    let schema = tool.get("schema").unwrap_or(&Value::Null);
+    if tool.get("overrideInputSchema") != Some(&Value::Bool(true)) {
+        return schema;
+    }
+    match tool.get("inputSchemaOverride") {
+        Some(Value::Null) | None => schema,
+        Some(over) => over,
+    }
 }
 
 /// The first line of a text, cut to `width` characters.
@@ -557,5 +563,10 @@ mod tests {
         });
         assert_eq!(description(&tool), "changed");
         assert_eq!(input_schema(&tool), &json!({ "a": 1 }));
+
+        let on = json!({ "schema": { "a": 1 }, "inputSchemaOverride": { "b": 2 }, "overrideInputSchema": true });
+        assert_eq!(input_schema(&on), &json!({ "b": 2 }));
+        let null_override = json!({ "schema": { "a": 1 }, "inputSchemaOverride": null, "overrideInputSchema": true });
+        assert_eq!(input_schema(&null_override), &json!({ "a": 1 }));
     }
 }

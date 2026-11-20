@@ -1,77 +1,47 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
-
-from ..models.schema_755 import Schema755
-from ..types import UNSET, Unset
-
-if TYPE_CHECKING:
-    from ..models.schema_756 import Schema756
-    from ..models.schema_759 import Schema759
-
+from attrs import field as _attrs_field
 
 T = TypeVar("T", bound="Schema762")
 
 
 @_attrs_define
 class Schema762:
-    """
-    Attributes:
-        mode (Schema755):
-        settings (Schema759):
-        actions (Schema756 | Unset): Actions for On mode. Missing targets use organization defaults or built-in values
-    """
+    """ """
 
-    mode: Schema755
-    settings: Schema759
-    actions: Schema756 | Unset = UNSET
+    additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        mode = self.mode.value
-
-        settings = self.settings.to_dict()
-
-        actions: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.actions, Unset):
-            actions = self.actions.to_dict()
 
         field_dict: dict[str, Any] = {}
-
-        field_dict.update(
-            {
-                "mode": mode,
-                "settings": settings,
-            }
-        )
-        if actions is not UNSET:
-            field_dict["actions"] = actions
+        field_dict.update(self.additional_properties)
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_756 import Schema756
-        from ..models.schema_759 import Schema759
-
         d = dict(src_dict)
-        mode = Schema755(d.pop("mode"))
+        schema_762 = cls()
 
-        settings = Schema759.from_dict(d.pop("settings"))
-
-        _actions = d.pop("actions", UNSET)
-        actions: Schema756 | Unset
-        if isinstance(_actions, Unset):
-            actions = UNSET
-        else:
-            actions = Schema756.from_dict(_actions)
-
-        schema_762 = cls(
-            mode=mode,
-            settings=settings,
-            actions=actions,
-        )
-
+        schema_762.additional_properties = d
         return schema_762
+
+    @property
+    def additional_keys(self) -> list[str]:
+        return list(self.additional_properties.keys())
+
+    def __getitem__(self, key: str) -> Any:
+        return self.additional_properties[key]
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self.additional_properties[key] = value
+
+    def __delitem__(self, key: str) -> None:
+        del self.additional_properties[key]
+
+    def __contains__(self, key: str) -> bool:
+        return key in self.additional_properties

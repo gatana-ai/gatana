@@ -6,7 +6,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_team_body import CreateTeamBody
-from ...models.schema_1089 import Schema1089
+from ...models.schema_1110 import Schema1110
 from ...types import UNSET, Response, Unset
 
 
@@ -30,9 +30,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema1089 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema1110 | None:
     if response.status_code == 200:
-        response_200 = Schema1089.from_dict(response.json())
+        response_200 = Schema1110.from_dict(response.json())
 
         return response_200
 
@@ -42,7 +42,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema1089]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema1110]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -55,7 +55,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: CreateTeamBody | Unset = UNSET,
-) -> Response[Schema1089]:
+) -> Response[Schema1110]:
     """Create a new team. The name must be unique in the organization
 
     Args:
@@ -66,7 +66,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema1089]
+        Response[Schema1110]
     """
 
     kwargs = _get_kwargs(
@@ -84,7 +84,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: CreateTeamBody | Unset = UNSET,
-) -> Schema1089 | None:
+) -> Schema1110 | None:
     """Create a new team. The name must be unique in the organization
 
     Args:
@@ -95,7 +95,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema1089
+        Schema1110
     """
 
     return sync_detailed(
@@ -108,7 +108,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: CreateTeamBody | Unset = UNSET,
-) -> Response[Schema1089]:
+) -> Response[Schema1110]:
     """Create a new team. The name must be unique in the organization
 
     Args:
@@ -119,7 +119,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema1089]
+        Response[Schema1110]
     """
 
     kwargs = _get_kwargs(
@@ -135,7 +135,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: CreateTeamBody | Unset = UNSET,
-) -> Schema1089 | None:
+) -> Schema1110 | None:
     """Create a new team. The name must be unique in the organization
 
     Args:
@@ -146,7 +146,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema1089
+        Schema1110
     """
 
     return (

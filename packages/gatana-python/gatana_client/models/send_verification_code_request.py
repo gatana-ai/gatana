@@ -6,7 +6,7 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_353 import Schema353
+from ..models.schema_354 import Schema354
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="SendVerificationCodeRequest")
@@ -17,13 +17,13 @@ class SendVerificationCodeRequest:
     """
     Attributes:
         email (str):
-        purpose (Schema353):
+        purpose (Schema354):
         turnstile_token (str | Unset):
         tenant_slug (str | Unset):
     """
 
     email: str
-    purpose: Schema353
+    purpose: Schema354
     turnstile_token: str | Unset = UNSET
     tenant_slug: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -57,7 +57,7 @@ class SendVerificationCodeRequest:
         d = dict(src_dict)
         email = d.pop("email")
 
-        purpose = Schema353(d.pop("purpose"))
+        purpose = Schema354(d.pop("purpose"))
 
         turnstile_token = d.pop("turnstileToken", UNSET)
 

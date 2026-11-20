@@ -5,8 +5,8 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_829 import Schema829
-from ..models.schema_840 import Schema840
+from ..models.schema_845 import Schema845
+from ..models.schema_856 import Schema856
 
 T = TypeVar("T", bound="ServerCredentialsDto")
 
@@ -17,13 +17,13 @@ class ServerCredentialsDto:
     Attributes:
         id (str): Unique ID of the credential record
         tenant_id (str): ID of the tenant that owns the credential
-        scope (Schema829):
+        scope (Schema845):
         user_id (None | str): ID of the owning user, or null
         profile_id (None | str): ID of the owning profile when scope is "profile", otherwise null
         last_used_at (None | str): Time when the credential was last used, or null if never used
         authorized_at (str): Time when the credential was authorized
         authorized_by_user_id (None | str): Last authorizing user ID, or null if unknown
-        type_ (Schema840): Authorization method that the credential was created with
+        type_ (Schema856): Authorization method that the credential was created with
         created_at (str): Time when the credential record was created
         updated_at (str): Time when the credential record was last updated
         server_slug (str): Slug of the server that the credential authorizes access to
@@ -40,13 +40,13 @@ class ServerCredentialsDto:
 
     id: str
     tenant_id: str
-    scope: Schema829
+    scope: Schema845
     user_id: None | str
     profile_id: None | str
     last_used_at: None | str
     authorized_at: str
     authorized_by_user_id: None | str
-    type_: Schema840
+    type_: Schema856
     created_at: str
     updated_at: str
     server_slug: str
@@ -152,7 +152,7 @@ class ServerCredentialsDto:
 
         tenant_id = d.pop("tenantId")
 
-        scope = Schema829(d.pop("scope"))
+        scope = Schema845(d.pop("scope"))
 
         def _parse_user_id(data: object) -> None | str:
             if data is None:
@@ -184,7 +184,7 @@ class ServerCredentialsDto:
 
         authorized_by_user_id = _parse_authorized_by_user_id(d.pop("authorizedByUserId"))
 
-        type_ = Schema840(d.pop("type"))
+        type_ = Schema856(d.pop("type"))
 
         created_at = d.pop("createdAt")
 
@@ -233,9 +233,9 @@ class ServerCredentialsDto:
             try:
                 if not isinstance(data, list):
                     raise TypeError()
-                componentsschemas_schema854_type_0 = cast(list[str], data)
+                componentsschemas_schema870_type_0 = cast(list[str], data)
 
-                return componentsschemas_schema854_type_0
+                return componentsschemas_schema870_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(list[str] | None, data)

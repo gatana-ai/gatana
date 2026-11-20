@@ -6,7 +6,7 @@ from typing import Any, Literal, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_312 import Schema312
+from ..models.schema_313 import Schema313
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="SiemGcsTargetInput")
@@ -20,14 +20,14 @@ class SiemGcsTargetInput:
         bucket (str): Bucket name
         prefix (str | Unset):
         service_account_key (str | Unset):
-        compression (Schema312 | Unset):
+        compression (Schema313 | Unset):
     """
 
     kind: Literal["gcs"]
     bucket: str
     prefix: str | Unset = UNSET
     service_account_key: str | Unset = UNSET
-    compression: Schema312 | Unset = UNSET
+    compression: Schema313 | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -74,11 +74,11 @@ class SiemGcsTargetInput:
         service_account_key = d.pop("serviceAccountKey", UNSET)
 
         _compression = d.pop("compression", UNSET)
-        compression: Schema312 | Unset
+        compression: Schema313 | Unset
         if isinstance(_compression, Unset):
             compression = UNSET
         else:
-            compression = Schema312(_compression)
+            compression = Schema313(_compression)
 
         siem_gcs_target_input = cls(
             kind=kind,

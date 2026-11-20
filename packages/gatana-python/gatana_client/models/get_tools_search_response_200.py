@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_536 import Schema536
-    from ..models.schema_824 import Schema824
+    from ..models.schema_539 import Schema539
+    from ..models.schema_840 import Schema840
 
 
 T = TypeVar("T", bound="GetToolsSearchResponse200")
@@ -17,12 +17,12 @@ T = TypeVar("T", bound="GetToolsSearchResponse200")
 class GetToolsSearchResponse200:
     """
     Attributes:
-        pagination (Schema536): Pagination metadata
-        data (list[Schema824]): Items on the current page
+        pagination (Schema539): Pagination metadata
+        data (list[Schema840]): Items on the current page
     """
 
-    pagination: Schema536
-    data: list[Schema824]
+    pagination: Schema539
+    data: list[Schema840]
 
     def to_dict(self) -> dict[str, Any]:
         pagination = self.pagination.to_dict()
@@ -45,16 +45,16 @@ class GetToolsSearchResponse200:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_536 import Schema536
-        from ..models.schema_824 import Schema824
+        from ..models.schema_539 import Schema539
+        from ..models.schema_840 import Schema840
 
         d = dict(src_dict)
-        pagination = Schema536.from_dict(d.pop("pagination"))
+        pagination = Schema539.from_dict(d.pop("pagination"))
 
         data = []
         _data = d.pop("data")
         for data_item_data in _data:
-            data_item = Schema824.from_dict(data_item_data)
+            data_item = Schema840.from_dict(data_item_data)
 
             data.append(data_item)
 

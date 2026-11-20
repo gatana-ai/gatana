@@ -7,7 +7,7 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-    from ..models.schema_438 import Schema438
+    from ..models.schema_439 import Schema439
 
 
 T = TypeVar("T", bound="ReplaceSkillFilesBody")
@@ -17,18 +17,18 @@ T = TypeVar("T", bound="ReplaceSkillFilesBody")
 class ReplaceSkillFilesBody:
     """
     Attributes:
-        files (list[Schema438]): Replace all files: maximum 512 files and 4 MiB, including SKILL.md. Delete stored files
+        files (list[Schema439]): Replace all files: maximum 512 files and 4 MiB, including SKILL.md. Delete stored files
             omitted from the set. Keep the stored SKILL.md if omitted
     """
 
-    files: list[Schema438]
+    files: list[Schema439]
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         files = []
-        for componentsschemas_schema437_item_data in self.files:
-            componentsschemas_schema437_item = componentsschemas_schema437_item_data.to_dict()
-            files.append(componentsschemas_schema437_item)
+        for componentsschemas_schema438_item_data in self.files:
+            componentsschemas_schema438_item = componentsschemas_schema438_item_data.to_dict()
+            files.append(componentsschemas_schema438_item)
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -42,15 +42,15 @@ class ReplaceSkillFilesBody:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_438 import Schema438
+        from ..models.schema_439 import Schema439
 
         d = dict(src_dict)
         files = []
         _files = d.pop("files")
-        for componentsschemas_schema437_item_data in _files:
-            componentsschemas_schema437_item = Schema438.from_dict(componentsschemas_schema437_item_data)
+        for componentsschemas_schema438_item_data in _files:
+            componentsschemas_schema438_item = Schema439.from_dict(componentsschemas_schema438_item_data)
 
-            files.append(componentsschemas_schema437_item)
+            files.append(componentsschemas_schema438_item)
 
         replace_skill_files_body = cls(
             files=files,

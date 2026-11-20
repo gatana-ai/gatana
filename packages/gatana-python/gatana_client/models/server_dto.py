@@ -5,18 +5,19 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_734 import Schema734
+from ..models.schema_737 import Schema737
 
 if TYPE_CHECKING:
     from ..models.email_transport_config_output import EmailTransportConfigOutput
     from ..models.hosted_transport_config_output import HostedTransportConfigOutput
     from ..models.http_streaming_transport_config_output import HttpStreamingTransportConfigOutput
     from ..models.open_api_transport_config_output import OpenApiTransportConfigOutput
-    from ..models.schema_600 import Schema600
-    from ..models.schema_641 import Schema641
-    from ..models.schema_749 import Schema749
-    from ..models.schema_753 import Schema753
-    from ..models.schema_765 import Schema765
+    from ..models.schema_603 import Schema603
+    from ..models.schema_644 import Schema644
+    from ..models.schema_752 import Schema752
+    from ..models.schema_756 import Schema756
+    from ..models.schema_768 import Schema768
+    from ..models.server_info import ServerInfo
     from ..models.server_o_auth_client_configuration import ServerOAuthClientConfiguration
     from ..models.server_o_auth_metadata import ServerOAuthMetadata
     from ..models.sse_transport_config_output import SseTransportConfigOutput
@@ -34,14 +35,14 @@ class ServerDto:
         slug (str): URL-friendly name of the server, unique within the tenant
         tenant_id (str): ID of the tenant that owns the server
         description (str): Human-readable description of the server
-        authorization (Schema600):
+        authorization (Schema603):
         transport_config (EmailTransportConfigOutput | HostedTransportConfigOutput | HttpStreamingTransportConfigOutput
-            | OpenApiTransportConfigOutput | Schema641 | SseTransportConfigOutput | StdioTransportConfigOutput): Transport
+            | OpenApiTransportConfigOutput | Schema644 | SseTransportConfigOutput | StdioTransportConfigOutput): Transport
             configuration used to connect to the server
         oauth_client_configuration (None | ServerOAuthClientConfiguration): OAuth client configuration, or null when not
             configured
         oauth_metadata (None | ServerOAuthMetadata): Discovered OAuth metadata, or null when not discovered
-        visibility (Schema734):
+        visibility (Schema737):
         is_enabled (bool): Whether the server is enabled
         last_tool_refresh_at (None | str): Time of the last tool refresh, or null if tools were never refreshed
         mcp_protocol_version (str): Last detected MCP protocol version, or an empty string if unknown
@@ -55,31 +56,32 @@ class ServerDto:
             outputs
         output_compression_threshold_bytes (int): Minimum output size in bytes before compression is applied
         is_skill_serving_enabled (bool): Whether to serve this server's MCP skills to agents with access to the server
-        firewall_rules (list[Schema749]): Rules in order. Rules with a condition run before the call and the first deny
+        firewall_rules (list[Schema752]): Rules in order. Rules with a condition run before the call and the first deny
             stops it. A rule with a protection replaces the default of that protection for its tools
-        protections (Schema753): Built-in protections of the server. A missing protection is off
+        protections (Schema756): Built-in protections of the server. A missing protection is off
         created_at (str): Time when the server was created
         updated_at (str): Time when the server was last updated
-        resolved_protections (Schema765):
+        resolved_protections (Schema768):
+        server_info (None | ServerInfo): Read-only. Null when the server omits metadata or uses MCP before 2026-07-28
     """
 
     id: str
     slug: str
     tenant_id: str
     description: str
-    authorization: Schema600
+    authorization: Schema603
     transport_config: (
         EmailTransportConfigOutput
         | HostedTransportConfigOutput
         | HttpStreamingTransportConfigOutput
         | OpenApiTransportConfigOutput
-        | Schema641
+        | Schema644
         | SseTransportConfigOutput
         | StdioTransportConfigOutput
     )
     oauth_client_configuration: None | ServerOAuthClientConfiguration
     oauth_metadata: None | ServerOAuthMetadata
-    visibility: Schema734
+    visibility: Schema737
     is_enabled: bool
     last_tool_refresh_at: None | str
     mcp_protocol_version: str
@@ -91,17 +93,19 @@ class ServerDto:
     is_output_compression_transform_enabled: bool
     output_compression_threshold_bytes: int
     is_skill_serving_enabled: bool
-    firewall_rules: list[Schema749]
-    protections: Schema753
+    firewall_rules: list[Schema752]
+    protections: Schema756
     created_at: str
     updated_at: str
-    resolved_protections: Schema765
+    resolved_protections: Schema768
+    server_info: None | ServerInfo
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.hosted_transport_config_output import HostedTransportConfigOutput
         from ..models.http_streaming_transport_config_output import HttpStreamingTransportConfigOutput
         from ..models.open_api_transport_config_output import OpenApiTransportConfigOutput
-        from ..models.schema_641 import Schema641
+        from ..models.schema_644 import Schema644
+        from ..models.server_info import ServerInfo
         from ..models.server_o_auth_client_configuration import ServerOAuthClientConfiguration
         from ..models.server_o_auth_metadata import ServerOAuthMetadata
         from ..models.sse_transport_config_output import SseTransportConfigOutput
@@ -124,7 +128,7 @@ class ServerDto:
             transport_config = self.transport_config.to_dict()
         elif isinstance(self.transport_config, SseTransportConfigOutput):
             transport_config = self.transport_config.to_dict()
-        elif isinstance(self.transport_config, Schema641):
+        elif isinstance(self.transport_config, Schema644):
             transport_config = self.transport_config.to_dict()
         elif isinstance(self.transport_config, HostedTransportConfigOutput):
             transport_config = self.transport_config.to_dict()
@@ -172,9 +176,9 @@ class ServerDto:
         is_skill_serving_enabled = self.is_skill_serving_enabled
 
         firewall_rules = []
-        for componentsschemas_schema748_item_data in self.firewall_rules:
-            componentsschemas_schema748_item = componentsschemas_schema748_item_data.to_dict()
-            firewall_rules.append(componentsschemas_schema748_item)
+        for componentsschemas_schema751_item_data in self.firewall_rules:
+            componentsschemas_schema751_item = componentsschemas_schema751_item_data.to_dict()
+            firewall_rules.append(componentsschemas_schema751_item)
 
         protections = self.protections.to_dict()
 
@@ -183,6 +187,12 @@ class ServerDto:
         updated_at = self.updated_at
 
         resolved_protections = self.resolved_protections.to_dict()
+
+        server_info: dict[str, Any] | None
+        if isinstance(self.server_info, ServerInfo):
+            server_info = self.server_info.to_dict()
+        else:
+            server_info = self.server_info
 
         field_dict: dict[str, Any] = {}
 
@@ -213,6 +223,7 @@ class ServerDto:
                 "createdAt": created_at,
                 "updatedAt": updated_at,
                 "resolvedProtections": resolved_protections,
+                "serverInfo": server_info,
             }
         )
 
@@ -224,11 +235,12 @@ class ServerDto:
         from ..models.hosted_transport_config_output import HostedTransportConfigOutput
         from ..models.http_streaming_transport_config_output import HttpStreamingTransportConfigOutput
         from ..models.open_api_transport_config_output import OpenApiTransportConfigOutput
-        from ..models.schema_600 import Schema600
-        from ..models.schema_641 import Schema641
-        from ..models.schema_749 import Schema749
-        from ..models.schema_753 import Schema753
-        from ..models.schema_765 import Schema765
+        from ..models.schema_603 import Schema603
+        from ..models.schema_644 import Schema644
+        from ..models.schema_752 import Schema752
+        from ..models.schema_756 import Schema756
+        from ..models.schema_768 import Schema768
+        from ..models.server_info import ServerInfo
         from ..models.server_o_auth_client_configuration import ServerOAuthClientConfiguration
         from ..models.server_o_auth_metadata import ServerOAuthMetadata
         from ..models.sse_transport_config_output import SseTransportConfigOutput
@@ -243,7 +255,7 @@ class ServerDto:
 
         description = d.pop("description")
 
-        authorization = Schema600.from_dict(d.pop("authorization"))
+        authorization = Schema603.from_dict(d.pop("authorization"))
 
         def _parse_transport_config(
             data: object,
@@ -252,63 +264,63 @@ class ServerDto:
             | HostedTransportConfigOutput
             | HttpStreamingTransportConfigOutput
             | OpenApiTransportConfigOutput
-            | Schema641
+            | Schema644
             | SseTransportConfigOutput
             | StdioTransportConfigOutput
         ):
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema608_type_0 = HttpStreamingTransportConfigOutput.from_dict(data)
+                componentsschemas_schema611_type_0 = HttpStreamingTransportConfigOutput.from_dict(data)
 
-                return componentsschemas_schema608_type_0
+                return componentsschemas_schema611_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema608_type_1 = StdioTransportConfigOutput.from_dict(data)
+                componentsschemas_schema611_type_1 = StdioTransportConfigOutput.from_dict(data)
 
-                return componentsschemas_schema608_type_1
+                return componentsschemas_schema611_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema608_type_2 = SseTransportConfigOutput.from_dict(data)
+                componentsschemas_schema611_type_2 = SseTransportConfigOutput.from_dict(data)
 
-                return componentsschemas_schema608_type_2
+                return componentsschemas_schema611_type_2
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema608_type_3 = Schema641.from_dict(data)
+                componentsschemas_schema611_type_3 = Schema644.from_dict(data)
 
-                return componentsschemas_schema608_type_3
+                return componentsschemas_schema611_type_3
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema608_type_4 = HostedTransportConfigOutput.from_dict(data)
+                componentsschemas_schema611_type_4 = HostedTransportConfigOutput.from_dict(data)
 
-                return componentsschemas_schema608_type_4
+                return componentsschemas_schema611_type_4
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema608_type_5 = OpenApiTransportConfigOutput.from_dict(data)
+                componentsschemas_schema611_type_5 = OpenApiTransportConfigOutput.from_dict(data)
 
-                return componentsschemas_schema608_type_5
+                return componentsschemas_schema611_type_5
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             if not isinstance(data, dict):
                 raise TypeError()
-            componentsschemas_schema608_type_6 = EmailTransportConfigOutput.from_dict(data)
+            componentsschemas_schema611_type_6 = EmailTransportConfigOutput.from_dict(data)
 
-            return componentsschemas_schema608_type_6
+            return componentsschemas_schema611_type_6
 
         transport_config = _parse_transport_config(d.pop("transportConfig"))
 
@@ -318,9 +330,9 @@ class ServerDto:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema694_type_1 = ServerOAuthClientConfiguration.from_dict(data)
+                componentsschemas_schema697_type_1 = ServerOAuthClientConfiguration.from_dict(data)
 
-                return componentsschemas_schema694_type_1
+                return componentsschemas_schema697_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | ServerOAuthClientConfiguration, data)
@@ -333,16 +345,16 @@ class ServerDto:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema710_type_1 = ServerOAuthMetadata.from_dict(data)
+                componentsschemas_schema713_type_1 = ServerOAuthMetadata.from_dict(data)
 
-                return componentsschemas_schema710_type_1
+                return componentsschemas_schema713_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | ServerOAuthMetadata, data)
 
         oauth_metadata = _parse_oauth_metadata(d.pop("oauthMetadata"))
 
-        visibility = Schema734(d.pop("visibility"))
+        visibility = Schema737(d.pop("visibility"))
 
         is_enabled = d.pop("isEnabled")
 
@@ -378,18 +390,33 @@ class ServerDto:
 
         firewall_rules = []
         _firewall_rules = d.pop("firewallRules")
-        for componentsschemas_schema748_item_data in _firewall_rules:
-            componentsschemas_schema748_item = Schema749.from_dict(componentsschemas_schema748_item_data)
+        for componentsschemas_schema751_item_data in _firewall_rules:
+            componentsschemas_schema751_item = Schema752.from_dict(componentsschemas_schema751_item_data)
 
-            firewall_rules.append(componentsschemas_schema748_item)
+            firewall_rules.append(componentsschemas_schema751_item)
 
-        protections = Schema753.from_dict(d.pop("protections"))
+        protections = Schema756.from_dict(d.pop("protections"))
 
         created_at = d.pop("createdAt")
 
         updated_at = d.pop("updatedAt")
 
-        resolved_protections = Schema765.from_dict(d.pop("resolvedProtections"))
+        resolved_protections = Schema768.from_dict(d.pop("resolvedProtections"))
+
+        def _parse_server_info(data: object) -> None | ServerInfo:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_schema776_type_0 = ServerInfo.from_dict(data)
+
+                return componentsschemas_schema776_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | ServerInfo, data)
+
+        server_info = _parse_server_info(d.pop("serverInfo"))
 
         server_dto = cls(
             id=id,
@@ -417,6 +444,7 @@ class ServerDto:
             created_at=created_at,
             updated_at=updated_at,
             resolved_protections=resolved_protections,
+            server_info=server_info,
         )
 
         return server_dto

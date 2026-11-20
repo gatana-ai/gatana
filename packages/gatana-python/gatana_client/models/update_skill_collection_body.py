@@ -6,7 +6,7 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_451 import Schema451
+from ..models.schema_452 import Schema452
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="UpdateSkillCollectionBody")
@@ -18,12 +18,12 @@ class UpdateSkillCollectionBody:
     Attributes:
         name (str | Unset):
         description (str | Unset): One line saying what the collection gathers
-        visibility (Schema451 | Unset):
+        visibility (Schema452 | Unset):
     """
 
     name: str | Unset = UNSET
     description: str | Unset = UNSET
-    visibility: Schema451 | Unset = UNSET
+    visibility: Schema452 | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -55,11 +55,11 @@ class UpdateSkillCollectionBody:
         description = d.pop("description", UNSET)
 
         _visibility = d.pop("visibility", UNSET)
-        visibility: Schema451 | Unset
+        visibility: Schema452 | Unset
         if isinstance(_visibility, Unset):
             visibility = UNSET
         else:
-            visibility = Schema451(_visibility)
+            visibility = Schema452(_visibility)
 
         update_skill_collection_body = cls(
             name=name,

@@ -8,7 +8,7 @@ from attrs import define as _attrs_define
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_572 import Schema572
+    from ..models.schema_575 import Schema575
 
 
 T = TypeVar("T", bound="CreateUserResponse")
@@ -18,11 +18,11 @@ T = TypeVar("T", bound="CreateUserResponse")
 class CreateUserResponse:
     """
     Attributes:
-        user (Schema572):
+        user (Schema575):
         set_password_url (str | Unset):
     """
 
-    user: Schema572
+    user: Schema575
     set_password_url: str | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
@@ -44,10 +44,10 @@ class CreateUserResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_572 import Schema572
+        from ..models.schema_575 import Schema575
 
         d = dict(src_dict)
-        user = Schema572.from_dict(d.pop("user"))
+        user = Schema575.from_dict(d.pop("user"))
 
         set_password_url = d.pop("setPasswordUrl", UNSET)
 

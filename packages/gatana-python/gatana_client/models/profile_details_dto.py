@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_1239 import Schema1239
+    from ..models.schema_1260 import Schema1260
 
 
 T = TypeVar("T", bound="ProfileDetailsDto")
@@ -29,7 +29,7 @@ class ProfileDetailsDto:
         updated_at (str): Time when the profile was last updated
         last_used_at (None | str): Time of the last MCP request that used the profile, accurate to 5 minutes; null when
             never used
-        servers (list[Schema1239]): Servers included in the profile
+        servers (list[Schema1260]): Servers included in the profile
     """
 
     tenant_id: str
@@ -43,7 +43,7 @@ class ProfileDetailsDto:
     created_at: str
     updated_at: str
     last_used_at: None | str
-    servers: list[Schema1239]
+    servers: list[Schema1260]
 
     def to_dict(self) -> dict[str, Any]:
         tenant_id = self.tenant_id
@@ -70,9 +70,9 @@ class ProfileDetailsDto:
         last_used_at = self.last_used_at
 
         servers = []
-        for componentsschemas_schema1238_item_data in self.servers:
-            componentsschemas_schema1238_item = componentsschemas_schema1238_item_data.to_dict()
-            servers.append(componentsschemas_schema1238_item)
+        for componentsschemas_schema1259_item_data in self.servers:
+            componentsschemas_schema1259_item = componentsschemas_schema1259_item_data.to_dict()
+            servers.append(componentsschemas_schema1259_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -97,7 +97,7 @@ class ProfileDetailsDto:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_1239 import Schema1239
+        from ..models.schema_1260 import Schema1260
 
         d = dict(src_dict)
         tenant_id = d.pop("tenantId")
@@ -129,10 +129,10 @@ class ProfileDetailsDto:
 
         servers = []
         _servers = d.pop("servers")
-        for componentsschemas_schema1238_item_data in _servers:
-            componentsschemas_schema1238_item = Schema1239.from_dict(componentsschemas_schema1238_item_data)
+        for componentsschemas_schema1259_item_data in _servers:
+            componentsschemas_schema1259_item = Schema1260.from_dict(componentsschemas_schema1259_item_data)
 
-            servers.append(componentsschemas_schema1238_item)
+            servers.append(componentsschemas_schema1259_item)
 
         profile_details_dto = cls(
             tenant_id=tenant_id,

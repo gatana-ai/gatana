@@ -5,7 +5,7 @@ from typing import Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_700 import Schema700
+from ..models.schema_703 import Schema703
 
 T = TypeVar("T", bound="ServerOAuthClientConfiguration")
 
@@ -16,7 +16,7 @@ class ServerOAuthClientConfiguration:
     Attributes:
         client_id (str):
         client_secret (str):
-        grant_type (Schema700):
+        grant_type (Schema703):
         client_auth_method (Literal['client_secret_basic'] | Literal['client_secret_post'] | Literal['none'] | str):
             Client authentication method used at the token endpoint
         scopes (str):
@@ -25,7 +25,7 @@ class ServerOAuthClientConfiguration:
 
     client_id: str
     client_secret: str
-    grant_type: Schema700
+    grant_type: Schema703
     client_auth_method: Literal["client_secret_basic"] | Literal["client_secret_post"] | Literal["none"] | str
     scopes: str
     is_client_id_metadata_document: bool
@@ -66,29 +66,29 @@ class ServerOAuthClientConfiguration:
 
         client_secret = d.pop("clientSecret")
 
-        grant_type = Schema700(d.pop("grantType"))
+        grant_type = Schema703(d.pop("grantType"))
 
         def _parse_client_auth_method(
             data: object,
         ) -> Literal["client_secret_basic"] | Literal["client_secret_post"] | Literal["none"] | str:
-            componentsschemas_schema701_type_0 = cast(Literal["client_secret_basic"], data)
-            if componentsschemas_schema701_type_0 != "client_secret_basic":
+            componentsschemas_schema704_type_0 = cast(Literal["client_secret_basic"], data)
+            if componentsschemas_schema704_type_0 != "client_secret_basic":
                 raise ValueError(
-                    f"/components/schemas/__schema701_type_0 must match const 'client_secret_basic', got '{componentsschemas_schema701_type_0}'"
+                    f"/components/schemas/__schema704_type_0 must match const 'client_secret_basic', got '{componentsschemas_schema704_type_0}'"
                 )
-            return componentsschemas_schema701_type_0
-            componentsschemas_schema701_type_1 = cast(Literal["client_secret_post"], data)
-            if componentsschemas_schema701_type_1 != "client_secret_post":
+            return componentsschemas_schema704_type_0
+            componentsschemas_schema704_type_1 = cast(Literal["client_secret_post"], data)
+            if componentsschemas_schema704_type_1 != "client_secret_post":
                 raise ValueError(
-                    f"/components/schemas/__schema701_type_1 must match const 'client_secret_post', got '{componentsschemas_schema701_type_1}'"
+                    f"/components/schemas/__schema704_type_1 must match const 'client_secret_post', got '{componentsschemas_schema704_type_1}'"
                 )
-            return componentsschemas_schema701_type_1
-            componentsschemas_schema701_type_2 = cast(Literal["none"], data)
-            if componentsschemas_schema701_type_2 != "none":
+            return componentsschemas_schema704_type_1
+            componentsschemas_schema704_type_2 = cast(Literal["none"], data)
+            if componentsschemas_schema704_type_2 != "none":
                 raise ValueError(
-                    f"/components/schemas/__schema701_type_2 must match const 'none', got '{componentsschemas_schema701_type_2}'"
+                    f"/components/schemas/__schema704_type_2 must match const 'none', got '{componentsschemas_schema704_type_2}'"
                 )
-            return componentsschemas_schema701_type_2
+            return componentsschemas_schema704_type_2
             return cast(Literal["client_secret_basic"] | Literal["client_secret_post"] | Literal["none"] | str, data)
 
         client_auth_method = _parse_client_auth_method(d.pop("clientAuthMethod"))

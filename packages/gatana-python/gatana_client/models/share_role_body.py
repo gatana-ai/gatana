@@ -6,7 +6,7 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_442 import Schema442
+from ..models.schema_443 import Schema443
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="ShareRoleBody")
@@ -16,11 +16,11 @@ T = TypeVar("T", bound="ShareRoleBody")
 class ShareRoleBody:
     """
     Attributes:
-        role (Schema442 | Unset): 'read' (the default) opens it to the principal; 'maintain' gives them the same rights
+        role (Schema443 | Unset): 'read' (the default) opens it to the principal; 'maintain' gives them the same rights
             as the creator and the organization owners
     """
 
-    role: Schema442 | Unset = UNSET
+    role: Schema443 | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -40,11 +40,11 @@ class ShareRoleBody:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
         _role = d.pop("role", UNSET)
-        role: Schema442 | Unset
+        role: Schema443 | Unset
         if isinstance(_role, Unset):
             role = UNSET
         else:
-            role = Schema442(_role)
+            role = Schema443(_role)
 
         share_role_body = cls(
             role=role,

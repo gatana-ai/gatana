@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_672 import Schema672
+from ..models.schema_675 import Schema675
 
 if TYPE_CHECKING:
     from ..models.email_smtp_server_output import EmailSmtpServerOutput
@@ -21,7 +21,7 @@ class EmailImapConnectionOutput:
         protocol (Literal['imap']): Protocol discriminator, always "imap"
         host (str):
         port (int):
-        security (Schema672):
+        security (Schema675):
         username (str):
         password (str):
         smtp (EmailSmtpServerOutput | None):
@@ -31,7 +31,7 @@ class EmailImapConnectionOutput:
     protocol: Literal["imap"]
     host: str
     port: int
-    security: Schema672
+    security: Schema675
     username: str
     password: str
     smtp: EmailSmtpServerOutput | None
@@ -90,7 +90,7 @@ class EmailImapConnectionOutput:
 
         port = d.pop("port")
 
-        security = Schema672(d.pop("security"))
+        security = Schema675(d.pop("security"))
 
         username = d.pop("username")
 
@@ -102,9 +102,9 @@ class EmailImapConnectionOutput:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema678_type_0 = EmailSmtpServerOutput.from_dict(data)
+                componentsschemas_schema681_type_0 = EmailSmtpServerOutput.from_dict(data)
 
-                return componentsschemas_schema678_type_0
+                return componentsschemas_schema681_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(EmailSmtpServerOutput | None, data)

@@ -2,8 +2,9 @@ from enum import Enum
 
 
 class Schema1344(str, Enum):
-    TEXTHTML = "text/html"
-    TEXTMARKDOWN = "text/markdown"
+    PRIVATE = "private"
+    PUBLIC = "public"
+    TENANT = "tenant"
 
     def __str__(self) -> str:
         return str(self.value)

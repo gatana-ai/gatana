@@ -27,6 +27,7 @@ class AuditLogResponse:
         team_name (None | str):
         server_slug (None | str):
         profile_name (None | str):
+        target_user_name (None | str):
     """
 
     id: float
@@ -44,6 +45,7 @@ class AuditLogResponse:
     team_name: None | str
     server_slug: None | str
     profile_name: None | str
+    target_user_name: None | str
 
     def to_dict(self) -> dict[str, Any]:
         id = self.id
@@ -83,6 +85,9 @@ class AuditLogResponse:
         profile_name: None | str
         profile_name = self.profile_name
 
+        target_user_name: None | str
+        target_user_name = self.target_user_name
+
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
@@ -102,6 +107,7 @@ class AuditLogResponse:
                 "teamName": team_name,
                 "serverSlug": server_slug,
                 "profileName": profile_name,
+                "targetUserName": target_user_name,
             }
         )
 
@@ -175,6 +181,13 @@ class AuditLogResponse:
 
         profile_name = _parse_profile_name(d.pop("profileName"))
 
+        def _parse_target_user_name(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        target_user_name = _parse_target_user_name(d.pop("targetUserName"))
+
         audit_log_response = cls(
             id=id,
             tenant_id=tenant_id,
@@ -191,6 +204,7 @@ class AuditLogResponse:
             team_name=team_name,
             server_slug=server_slug,
             profile_name=profile_name,
+            target_user_name=target_user_name,
         )
 
         return audit_log_response

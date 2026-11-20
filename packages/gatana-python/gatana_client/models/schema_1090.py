@@ -1,14 +1,9 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
-
-if TYPE_CHECKING:
-    from ..models.team_member import TeamMember
-    from ..models.user import User
-
 
 T = TypeVar("T", bound="Schema1090")
 
@@ -17,24 +12,24 @@ T = TypeVar("T", bound="Schema1090")
 class Schema1090:
     """
     Attributes:
-        member (TeamMember):
-        user (User):
+        type_ (Literal['mainContainerWaiting']): Event type discriminator, always "mainContainerWaiting"
+        reason (str): Reason the main container is waiting
     """
 
-    member: TeamMember
-    user: User
+    type_: Literal["mainContainerWaiting"]
+    reason: str
 
     def to_dict(self) -> dict[str, Any]:
-        member = self.member.to_dict()
+        type_ = self.type_
 
-        user = self.user.to_dict()
+        reason = self.reason
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "member": member,
-                "user": user,
+                "type": type_,
+                "reason": reason,
             }
         )
 
@@ -42,17 +37,16 @@ class Schema1090:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.team_member import TeamMember
-        from ..models.user import User
-
         d = dict(src_dict)
-        member = TeamMember.from_dict(d.pop("member"))
+        type_ = cast(Literal["mainContainerWaiting"], d.pop("type"))
+        if type_ != "mainContainerWaiting":
+            raise ValueError(f"type must match const 'mainContainerWaiting', got '{type_}'")
 
-        user = User.from_dict(d.pop("user"))
+        reason = d.pop("reason")
 
         schema_1090 = cls(
-            member=member,
-            user=user,
+            type_=type_,
+            reason=reason,
         )
 
         return schema_1090

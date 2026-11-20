@@ -44,13 +44,12 @@ client = GatanaClient()
 3. The config file `~/.gatana.config`
 
 See [Configuration](https://github.com/gatana-ai/gatana#configuration) for the environment
-variables and the config file, which the CLI and the JavaScript SDK also use. This package has two
-differences:
+variables and the config file, which the CLI and the JavaScript SDK also use. `GatanaClient` uses
+only the host of `base_url` and `GATANA_BASE_URL` and adds `/api/v1`, so `https://my-org.gatana.ai`
+and `https://my-org.gatana.ai/api/v1` give the same client.
 
-- `base_url` and `GATANA_BASE_URL` are the base of the API, for example
-  `https://my-org.gatana.ai/api/v1`. An organization ID gives that URL automatically.
-- It does not refresh OIDC tokens from the config file. Use an API key or a personal access token
-  for scripts and CI.
+This package does not refresh OIDC tokens from the config file. Use an API key or a personal access
+token for scripts and CI.
 
 To select the strategies yourself, give a `config_loader`:
 
