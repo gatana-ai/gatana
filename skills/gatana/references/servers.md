@@ -30,7 +30,7 @@ Optional fields:
 | `visibility`                                | `private`              | `organization` lets every member use the server.                 |
 | `isEnabled`                                 | `true`                 | A disabled server keeps its configuration and has no tools.      |
 | `authorization`                             | `none`, `server` scope | See [credentials.md](credentials.md).                            |
-| `oauthMetadata`, `oauthClientConfiguration` | none                   | OAuth setup. See [credentials.md](credentials.md#oauth-setup).   |
+| `oauthMetadata`, `oauthClientConfiguration` | none                   | Read **OAuth setup** in [credentials.md](credentials.md).        |
 | `timeoutProtocol`, `timeoutTotal`           | organization default   | Seconds for one protocol request, and for one tool call.         |
 | `resetTimeoutOnProgressNotification`        |                        | A progress notification resets the protocol timeout.             |
 | `isOutputCompressionEnabled`                | `true`                 | Large outputs are compressed and indexed.                        |
@@ -56,11 +56,11 @@ await codemode.gatanaApi.createServerV2({
 - `url`: the MCP endpoint. It can hold a credential expression, for example `https://example.com/mcp?key={{ credentials.keys.API_KEY }}`.
 - `headers`: `[name, value]` pairs. Values can hold credential expressions and secret references.
 - Use `sse` only for a server that still speaks the Server-Sent Events transport.
-- An OAuth server needs OAuth metadata and a client before anybody can sign in. See [credentials.md](credentials.md#oauth-setup).
+- An OAuth server needs OAuth metadata and a client before anybody can sign in. Read **OAuth setup** in [credentials.md](credentials.md).
 
 ## Executable app: stdio
 
-Gatana starts the command in a container, in an isolated virtual machine (Kata Containers, Debian Bookworm). Use it for `npx` and `uvx` servers. It needs a paid plan, and the organization must let members add local servers.
+Use this transport for `npx` and `uvx` servers. Gatana runs the command in a Debian Bookworm container inside an isolated virtual machine (Kata Containers). The organization needs a paid plan and must allow members to add local servers.
 
 ```typescript
 // "@acme/mcp-server" is a placeholder. Use the package that the vendor documents.
@@ -202,11 +202,11 @@ await codemode.gatanaApi.createServerV2({
 
 ## Tools of a server
 
-- `listMcpServerTools({ serverSlug })`: the cached tools, also the disabled ones.
+- `listMcpServerTools({ serverSlug })`: the cached tool list, including disabled tools.
 - `updateMcpServerToolIsEnabled({ serverSlug, toolName, body: { value: false } })`: turn off one tool for everybody. The field is `value`, not `isEnabled`.
 - `updateMcpServerAllToolsIsEnabled({ serverSlug, body: { value: true } })`: all tools.
 - `patchMcpServerTool({ serverSlug, toolName, body })`: change what clients see. Each override has a switch and a value: `overrideToolName` + `toolNameOverride`, `overrideDescription` + `descriptionOverride`, `overrideInputSchema` + `inputSchemaOverride`.
-- Refresh: the dashboard **Refresh** button on the server page, or `POST /api/v1/tools/refresh?serverSlug=<slug>` with `Accept: text/event-stream`. Gatana also refreshes enabled servers every few hours. There is no `gatana-api` tool for it.
+- Refresh with `gatana tools refresh --server <slug>`, the dashboard **Refresh** button on the server page, or `POST /api/v1/tools/refresh?serverSlug=<slug>` with `Accept: text/event-stream`. Gatana also refreshes enabled servers on a schedule.
 
 To limit tools for one group only, use a profile. See [profiles.md](profiles.md#tool-configuration).
 

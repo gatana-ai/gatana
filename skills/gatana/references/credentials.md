@@ -54,7 +54,7 @@ To give a different credential to each MCP client (for example one for Claude Co
 ## How Gatana finds the credential for a call
 
 1. If the method is `none`, Gatana uses no credential.
-2. **Profile override.** Gatana checks the active profiles in priority order. It uses the first profile credential for this server that is valid. Valid means: same type as `authorization.method`, and for API keys, the same number of keys as `authorization.apikeys`. An invalid profile credential is skipped, without an error.
+2. **Profile override.** Gatana checks the active profiles in priority order. It uses the first credential for this server that matches `authorization.method`. An API key credential must also have the same number of keys as `authorization.apikeys`. Gatana skips invalid credentials without an error.
 3. **Base scope.** If no profile credential applies:
    - `credentialsScope: 'server'`: the server credential. If there is none, the call fails.
    - `credentialsScope: 'user'`: the calling user's credential. If there is none, the call fails with `need-credentials`.
@@ -102,9 +102,9 @@ const { url } = await codemode.gatanaApi.getMcpServerCredentialsAuthorizeUrl({
 });
 ```
 
-- For `apikey`, the page asks for the key values. For `oauth`, it starts the provider's login.
-- The link does not need a Gatana sign-in. It works one time, for 24 hours.
-- A server or profile link needs permission to manage that credential: admin of the server, or maintainer of the profile.
+- For `apikey`, the page asks for the key values. For `oauth`, it starts the provider's sign-in. For `oauth-client-credentials`, it asks for the client ID and secret.
+- The link opens without a Gatana sign-in. API key and OAuth authorization-code links expire after 24 hours. Each lets the user save the credential once. OAuth device-code and client-credentials links from Gatana expire after one hour.
+- To get a shared link, you need permission to manage the credential. A server maintainer or admin can get a server link. A profile maintainer or organization owner can get a profile link.
 - CLI: `gatana create creds <slug> --scope user|server` prints the link for OAuth.
 
 If the user gives you the value, set it directly. The `type` must match `authorization.method`:
@@ -132,10 +132,9 @@ Do not write a key value again in your answers. Do not print the values that a r
 
 An `oauth` server needs two things before anybody can sign in:
 
-1. **OAuth metadata** (`oauthMetadata`): the provider's authorize, token and registration endpoints. Get them with `discoverMcpServerOauth({ serverSlug })` for a remote server, or `discoverMcpServerOauth({ serverSlug, url: '<issuer or MCP URL>' })`. Then save the result with `patchServerV2({ slug, body: { oauthMetadata } })`.
-2. **An OAuth client** (`oauthClientConfiguration`): `{ grantType: 'authorization_code', clientId, clientSecret?, clientAuthMethod, scopes? }`.
-   - If the provider supports dynamic client registration, the dashboard registers a client with one click: server page > **Settings** > authorization > **Auto** next to the client ID. `gatana create server remote <url>` also registers one when it creates the server. There is no public API for this step.
-   - Otherwise the user registers an app with the provider. Use the **Redirect URI** that the server's **Settings** tab shows. Then save the client ID and secret with `patchServerV2`.
+1. **OAuth metadata** (`oauthMetadata`). Call `discoverMcpServerOauth({ serverSlug })` for a remote server, or pass `url` for a known issuer or MCP URL. The response is `{ oauthMetadata }`. If the value is `null`, check the vendor's documentation or ask the user for the issuer URL. Save the metadata with `patchServerV2({ slug, body: { oauthMetadata } })`.
+2. **An OAuth client** (`oauthClientConfiguration`). Use `gatana create server remote <url> --slug <slug>` for a new server. The CLI can get a client if the provider supports dynamic registration or client ID metadata documents. For an existing server, look for **Auto** next to the client ID under **Settings** in the dashboard.
+   - If automatic setup is unavailable, the user registers an app with the provider. Use the **Redirect URI** on the server's **Settings** tab. Save the configuration with `patchServerV2({ slug, body: { oauthClientConfiguration } })`. Set `grantType` to `authorization_code`. Use the client ID, any required secret, and the `clientAuthMethod` and `scopes` from the provider.
    - A client ID or secret can be a secret reference, for example `{{ secrets.vault.google_client_secret }}`.
 
 Notes:
@@ -144,6 +143,8 @@ Notes:
 - Use the `authorization_code` grant. The `device_code` grant exists, but some providers (for example Google) give fewer permissions with it.
 - Some providers (for example Atlassian) return ID tokens with a different issuer than the metadata. Gatana refuses these tokens by default. An organization owner can turn on **Settings > Allow different OAuth issuer paths**.
 - `oauth-client-credentials` needs only the metadata on the server. Each credential holds its own client ID and secret.
+
+After setup, follow **Give a credential** to get an authorization link for the correct scope.
 
 ## The need-credentials result
 
@@ -162,7 +163,7 @@ What to do:
 1. Give the `authorizeUrl` to the user as a link. Say what it is for: "Sign in to Linear for Gatana."
 2. Wait until the user says that it is done. Then call the tool again.
 
-Gatana sends the same result when the provider rejects a stored login, for example a revoked or expired refresh token. The message then says that the login was rejected. For a shared login (server or profile scope), everybody who uses it acts as the account that signs in. Tell the user this before they sign in.
+Gatana sends the same result when the provider rejects a stored login, for example a revoked or expired refresh token. The message says the provider rejected the login. For a shared login (server or profile scope), everybody who uses it acts as the account that signs in. Tell the user this before they sign in.
 
 If the missing credential is a server credential and the user cannot manage it, Gatana gives no link. The message says to contact the Gatana administrator. When Gatana knows who authorized a rejected shared login, the message names that person.
 
@@ -180,6 +181,6 @@ An organization can connect external secret stores (for example AWS Secrets Mana
 
 ## Dashboard steps
 
-- **Server credential and own credential:** server page > **Credentials**. Admins of the server can set the shared credential there. Each user can set their own.
+- **Server credential and own credential.** Open **Credentials** on the server page. Server maintainers and admins can set the shared credential. Each user can set their own.
 - **Method and scope:** server page > **Settings**, authorization section.
 - **Profile credential:** **Profiles** > the profile > **Edit** on the server row.

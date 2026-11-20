@@ -92,7 +92,7 @@ pub struct Cli {
 #[derive(Subcommand, Debug)]
 pub enum Command {
     /// List or show resources: server, tool, creds, account, team, profile, pat, org, sandbox, skill,
-    /// alert, channel
+    /// alert, channel, audit-log
     Get {
         #[command(subcommand)]
         resource: GetCommand,
@@ -333,6 +333,71 @@ pub enum GetCommand {
         #[arg(long, value_name = "N", default_value_t = 1, value_parser = clap::value_parser!(u32).range(1..))]
         page: u32,
     },
+    /// List audit log events, newest first. An account without full access sees only its own events
+    #[command(visible_aliases = ["audit-logs", "audit"], after_help = GET_AUDIT_LOG_EXAMPLES)]
+    AuditLog(GetAuditLogArgs),
+    /// List the audit log of a credential, newest first: its changes, token refreshes and
+    /// rejections. Needs the permission to read the secret of the credential
+    #[command(visible_aliases = ["credential-audit-logs", "creds-audit-log"])]
+    CredentialAuditLog {
+        /// Credential ID, as "gatana get creds" shows it
+        credential: String,
+        /// Show the secret in the snapshots of the credential instead of hiding it
+        #[arg(long = "show-secrets")]
+        show_secrets: bool,
+        /// Events to show, at most 100
+        #[arg(long, value_name = "N", default_value_t = 20, value_parser = clap::value_parser!(u32).range(1..=100))]
+        limit: u32,
+        /// Page number, from 1
+        #[arg(long, value_name = "N", default_value_t = 1, value_parser = clap::value_parser!(u32).range(1..))]
+        page: u32,
+    },
+}
+
+const GET_AUDIT_LOG_EXAMPLES: &str = r#"A condition is field:operator:value, as in the address of the Audit Logs page. The operators are
+eq, neq and contains, and after and before for the field date. The fields are in
+"gatana schema alert", under conditions. Show one event with all its details:
+"gatana describe audit-log <id>".
+
+Examples:
+  # The tool calls that Gatana denied in the last hour
+  $ gatana get audit-logs --since 1h -w outcome:eq:denied
+
+  # What one account did on the GitHub server in the last 30 days
+  $ gatana get audit-logs --account ada@example.com --server github --since 30d
+
+  # One day of events, 100 per page, as JSON
+  $ gatana get audit-logs --since 2026-11-01 --until 2026-11-02 --limit 100 -o json"#;
+
+#[derive(Args, Debug)]
+pub struct GetAuditLogArgs {
+    /// A condition, as field:operator:value. Repeat for more conditions. An event must match all of
+    /// them
+    #[arg(short = 'w', long = "where", value_name = "CONDITION")]
+    pub conditions: Vec<String>,
+    /// Only the events of this server
+    #[arg(short = 's', long, value_name = "SLUG")]
+    pub server: Option<String>,
+    /// Only the events of this account: email address or ID
+    #[arg(short = 'a', long, value_name = "ACCOUNT")]
+    pub account: Option<String>,
+    /// Find text in the event name, the details, and the names of the account, team, profile and
+    /// server
+    #[arg(short = 'q', long = "search", value_name = "TEXT")]
+    pub search: Option<String>,
+    /// Only events from this time on: an age such as 30m, 12h or 7d, a day such as 2026-11-01 (UTC)
+    /// or a time such as 2026-11-01T08:00:00Z. Default: 7d, unless a condition is on the date
+    #[arg(long, value_name = "TIME")]
+    pub since: Option<String>,
+    /// Only events up to this time, in the forms that --since takes
+    #[arg(long, value_name = "TIME")]
+    pub until: Option<String>,
+    /// Events to show, at most 100
+    #[arg(long, value_name = "N", default_value_t = 20, value_parser = clap::value_parser!(u32).range(1..=100))]
+    pub limit: u32,
+    /// Page number, from 1
+    #[arg(long, value_name = "N", default_value_t = 1, value_parser = clap::value_parser!(u32).range(1..))]
+    pub page: u32,
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
@@ -388,6 +453,24 @@ pub enum DescribeCommand {
         /// Channel name or ID
         name: String,
         /// Show the secrets that Gatana generated, such as a signing secret, instead of hiding them
+        #[arg(long = "show-secrets")]
+        show_secrets: bool,
+    },
+    /// Show one audit log event with all its details
+    #[command(visible_aliases = ["audit-logs", "audit"])]
+    AuditLog {
+        /// Event ID, as "gatana get audit-logs" shows it
+        id: String,
+    },
+    /// Show one event of the audit log of a credential, with the credential before and after the
+    /// change
+    #[command(visible_aliases = ["credential-audit-logs", "creds-audit-log"])]
+    CredentialAuditLog {
+        /// Credential ID, as "gatana get creds" shows it
+        credential: String,
+        /// Event ID, as "gatana get credential-audit-log" shows it
+        id: String,
+        /// Show the secret in the snapshots of the credential instead of hiding it
         #[arg(long = "show-secrets")]
         show_secrets: bool,
     },
@@ -2100,5 +2183,49 @@ mod tests {
         let cli = Cli::try_parse_from(["gatana", "channel", "rotate-secret", "pager"]).unwrap();
         assert!(matches!(cli.command, Command::Channel { command: ChannelCommand::RotateSecret { field: None, .. } }));
         assert!(Cli::try_parse_from(["gatana", "alert", "add-channel", "Denied"]).is_err());
+    }
+
+    #[test]
+    fn audit_log_parses_with_its_aliases() {
+        let cli = Cli::try_parse_from([
+            "gatana",
+            "get",
+            "audit",
+            "-w",
+            "outcome:eq:denied",
+            "-s",
+            "github",
+            "--since",
+            "1h",
+            "--limit",
+            "50",
+        ])
+        .unwrap();
+        let Command::Get { resource: GetCommand::AuditLog(args) } = cli.command else { panic!("not get audit-log") };
+        assert_eq!(args.conditions, vec!["outcome:eq:denied"]);
+        assert_eq!(
+            (args.server.as_deref(), args.since.as_deref(), args.limit, args.page),
+            (Some("github"), Some("1h"), 50, 1)
+        );
+        assert!(Cli::try_parse_from(["gatana", "get", "audit-logs", "--limit", "101"]).is_err());
+        assert!(Cli::try_parse_from(["gatana", "get", "audit-logs", "182663"]).is_err());
+        let cli = Cli::try_parse_from(["gatana", "describe", "audit-logs", "182663"]).unwrap();
+        assert!(matches!(cli.command, Command::Describe { resource: DescribeCommand::AuditLog { .. } }));
+        assert!(Cli::try_parse_from(["gatana", "describe", "audit-log"]).is_err());
+
+        let cli = Cli::try_parse_from(["gatana", "get", "creds-audit-log", "srvcrd_1", "--page", "2"]).unwrap();
+        assert!(matches!(
+            cli.command,
+            Command::Get { resource: GetCommand::CredentialAuditLog { limit: 20, page: 2, show_secrets: false, .. } }
+        ));
+        assert!(Cli::try_parse_from(["gatana", "get", "credential-audit-log"]).is_err());
+        let cli =
+            Cli::try_parse_from(["gatana", "describe", "credential-audit-log", "srvcrd_1", "01a1", "--show-secrets"])
+                .unwrap();
+        assert!(matches!(
+            cli.command,
+            Command::Describe { resource: DescribeCommand::CredentialAuditLog { show_secrets: true, .. } }
+        ));
+        assert!(Cli::try_parse_from(["gatana", "describe", "credential-audit-log", "srvcrd_1"]).is_err());
     }
 }

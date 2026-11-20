@@ -10,7 +10,7 @@ Each operation has one name. Use it on the surface that you have:
 | Code Mode | `await codemode.gatanaApi.createServerV2({ body: { ... } })`                                            |
 | REST      | `POST https://<org>.gatana.ai/api/v2/servers` with the body as JSON and `Authorization: Bearer <token>` |
 
-The `gatana-api` tools take their arguments by parameter name: path and query parameters by their own names (`serverSlug`, `slug`, `profileId`), and the request body as `body`. In Code Mode, call `codemode_search_tools` first. It shows the exact arguments and the return shape of each tool.
+Use the parameter names for path and query arguments, such as `serverSlug`, `slug` or `profileId`. Send the request body as `body`. In Code Mode, call `codemode_search_tools` first to check the arguments and response fields.
 
 The REST API also accepts an OAuth access token from Gatana. On-premise installs use their own host instead of `<org>.gatana.ai`. The full specifications: `https://api.gatana.ai/api/v1/openapi.json` and `https://api.gatana.ai/api/v2/openapi.json`.
 
@@ -93,9 +93,9 @@ Your own personal access tokens, and the profiles on them, can only be changed i
 
 Install: `npm install -g gatana`, `brew install gatana-ai/tap/gatana`, or `curl -fsSL https://github.com/gatana-ai/gatana/releases/latest/download/install.sh | sh`.
 
-Sign in: `gatana config login <org>`. No organization yet: `gatana signup`, see [Create an organization](../SKILL.md#create-an-organization). Check: `gatana auth-info`. Add `-o json` to any command for machine-readable output.
+Sign in with `gatana config login <org>`. If you have no organization, use `gatana signup`. Run `gatana auth-info` to check which organization is active. Add `-o json` to any command for JSON output. See [Sign-up](signup.md).
 
-Always give every flag. A command without a needed flag asks a question, and an agent cannot answer it.
+Pass the values the command needs as arguments or flags so the CLI can run without a prompt.
 
 | Command                                                                     | Purpose                                                                                                                      |
 | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
@@ -110,6 +110,7 @@ Always give every flag. A command without a needed flag asks a question, and an 
 | `gatana patch server <slug> -f patch.json`                                  | Merge patch with the v2 server fields, for example `transportConfig` and `authorization`.                                    |
 | `gatana delete server <slug>`                                               | Delete.                                                                                                                      |
 | `gatana tools ls [--server <slug>] [--all]`                                 | The enabled tools. `--all` adds the disabled ones.                                                                           |
+| `gatana tools refresh --server <slug>`                                       | Refresh the cached tool list for the server.                                                                                 |
 | `gatana tools <slug>_<tool>`                                                | Description and arguments of a tool, and an example call.                                                                    |
 | `gatana tools call <slug>_<tool> -a key=value` or `-f args.json`            | Call a tool. `x` is short for `call`.                                                                                        |
 | `gatana create creds <slug> --scope server\|user -f keys.json`              | Set API keys: `[["NAME","value"]]`. Without `-f` on an OAuth server: prints the authorize link.                              |

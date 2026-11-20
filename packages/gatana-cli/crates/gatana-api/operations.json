@@ -29,6 +29,7 @@
         "updateMcpServerCredentialsServer",
         "deleteMcpServerCredential",
         "listAuditLogs",
+        "getAuditLog",
         "listSandboxes",
         "getSandbox",
         "createSandbox",
@@ -117,7 +118,9 @@
         "createServerV2",
         "patchServerV2",
         "listCredentialsV2",
-        "getCredentialSecretV2"
+        "getCredentialSecretV2",
+        "listCredentialAuditLogsV2",
+        "getCredentialAuditLogV2"
       ]
     }
   ]

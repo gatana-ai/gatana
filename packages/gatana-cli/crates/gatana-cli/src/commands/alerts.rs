@@ -589,7 +589,8 @@ async fn set_channel_enabled(api: &gatana_api::Client, name: &str, enabled: bool
 /// What Gatana sent, newest first, with the delivery to each channel.
 pub async fn history(context: &Context, limit: u32, page: u32) -> Result<()> {
     let api = context.api().await?;
-    let query = query::ListNotifications { page: Some(page.to_string()), limit: Some(limit.to_string()) };
+    let query =
+        query::ListNotifications { page: Some(page.to_string()), limit: Some(limit.to_string()), ..Default::default() };
     let list = api.v1().list_notifications(&query).value().await?;
     let shown = json!({ "notifications": array_at(&list, "data"), "pagination": list.get("pagination") });
     output::output(&shown, Options::columns(&HISTORY_COLUMNS));

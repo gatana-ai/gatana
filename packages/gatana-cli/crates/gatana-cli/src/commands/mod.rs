@@ -2,6 +2,7 @@
 
 mod accounts;
 mod alerts;
+mod audit_logs;
 mod config;
 mod create_server;
 mod install;

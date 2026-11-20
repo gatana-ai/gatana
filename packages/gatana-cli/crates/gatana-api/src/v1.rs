@@ -696,6 +696,11 @@ pub mod types {
         )]
         pub server_slug: ::std::option::Option<::std::string::String>,
         #[serde(
+            rename = "targetUserName",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub target_user_name: ::std::option::Option<::std::string::String>,
+        #[serde(
             rename = "teamName",
             deserialize_with = "::std::option::Option::deserialize"
         )]
@@ -2271,6 +2276,9 @@ pub mod types {
         pub current_replica_set: ::std::option::Option<::std::string::String>,
         ///Status of the pods of the deployment
         pub deployments: ::std::vec::Vec<DeploymentStatus>,
+        ///A current pod cannot start, has crashed or had a container failure
+        #[serde(rename = "hasPodFailures")]
+        pub has_pod_failures: bool,
         ///Whether the deployment is available and serving
         #[serde(rename = "isAvailable")]
         pub is_available: bool,
@@ -3583,6 +3591,9 @@ pub mod types {
         pub markdown: ::std::string::String,
         ///Unique name in the organization; how agents address the skill
         pub name: ::std::string::String,
+        ///IDs of attached servers. Access to any of these servers grants read access to the skill
+        #[serde(rename = "sharedWithServerIds")]
+        pub shared_with_server_ids: ::std::vec::Vec<::std::string::String>,
         ///IDs of the teams the skill is shared with, any role
         #[serde(rename = "sharedWithTeamIds")]
         pub shared_with_team_ids: ::std::vec::Vec<::std::string::String>,
@@ -6068,6 +6079,12 @@ pub mod types {
         pub reset_timeout_on_progress_notification: bool,
         #[serde(rename = "resolvedProtections")]
         pub resolved_protections: ResolvedProtections,
+        ///Read-only. Null when the server omits metadata or uses MCP before 2026-07-28
+        #[serde(
+            rename = "serverInfo",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub server_info: ::std::option::Option<ServerInfo>,
         ///URL-friendly name of the server, unique within the tenant
         pub slug: ::std::string::String,
         ///ID of the tenant that owns the server
@@ -6612,6 +6629,92 @@ pub mod types {
         }
     }
     impl ::std::convert::TryFrom<::std::string::String> for ServerFileSourceType {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///Unverified metadata from the server. Each tool refresh saves the latest server/discover result
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ServerInfo {
+        ///Description of the server, or an empty string
+        pub description: ::std::string::String,
+        ///Server icons, up to one per theme. A signed-in browser can load an image from GET /api/v1/mcp-servers/{slug}/icon?theme=light|dark
+        pub icons: ::std::vec::Vec<ServerInfoIcon>,
+        ///Display name of the server, or an empty string
+        pub title: ::std::string::String,
+        ///Version of the server software
+        pub version: ::std::string::String,
+        ///http: or https: URL of the website, or an empty string
+        #[serde(rename = "websiteUrl")]
+        pub website_url: ::std::string::String,
+    }
+    ///`ServerInfoIcon`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ServerInfoIcon {
+        ///Image media type, if supplied by the server
+        #[serde(
+            rename = "mimeType",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub mime_type: ::std::option::Option<::std::string::String>,
+        ///Image sizes, such as 48x48 or any
+        #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+        pub sizes: ::std::vec::Vec<::std::string::String>,
+        ///Theme for the image
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub theme: ::std::option::Option<ServerInfoIconTheme>,
+    }
+    ///Theme for the image
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ServerInfoIconTheme {
+        #[serde(rename = "light")]
+        Light,
+        #[serde(rename = "dark")]
+        Dark,
+    }
+    impl ::std::fmt::Display for ServerInfoIconTheme {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Light => f.write_str("light"),
+                Self::Dark => f.write_str("dark"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ServerInfoIconTheme {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "light" => Ok(Self::Light),
+                "dark" => Ok(Self::Dark),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ServerInfoIconTheme {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ServerInfoIconTheme {
         type Error = self::error::ConversionError;
         fn try_from(
             value: ::std::string::String,
@@ -7377,6 +7480,9 @@ pub mod types {
         pub maintainer_user_ids: ::std::vec::Vec<::std::string::String>,
         ///Unique name in the organization; how agents address the skill
         pub name: ::std::string::String,
+        ///IDs of attached servers. Access to any of these servers grants read access to the skill
+        #[serde(rename = "sharedWithServerIds")]
+        pub shared_with_server_ids: ::std::vec::Vec<::std::string::String>,
         ///IDs of the teams the skill is shared with, any role
         #[serde(rename = "sharedWithTeamIds")]
         pub shared_with_team_ids: ::std::vec::Vec<::std::string::String>,
@@ -9982,6 +10088,12 @@ pub mod query {
         pub page: Option<String>,
         /// `limit`. Items per page, at most 100. Default 20
         pub limit: Option<String>,
+        /// `channelId`. Filter by delivery channel ID
+        pub channel_id: Option<String>,
+        /// `type`. Message type, such as alert
+        pub type_: Option<String>,
+        /// `createdAfter`. Created after this ISO 8601 timestamp
+        pub created_after: Option<String>,
     }
     impl ListNotifications {
         pub fn apply<'c, T>(&self, mut call: crate::Call<'c, T>) -> crate::Call<'c, T> {
@@ -9990,6 +10102,15 @@ pub mod query {
             }
             if let Some(value) = &self.limit {
                 call = call.query("limit", value);
+            }
+            if let Some(value) = &self.channel_id {
+                call = call.query("channelId", value);
+            }
+            if let Some(value) = &self.type_ {
+                call = call.query("type", value);
+            }
+            if let Some(value) = &self.created_after {
+                call = call.query("createdAfter", value);
             }
             call
         }
@@ -10408,6 +10529,15 @@ impl<'a> Api<'a> {
         let path = format!("{}/audit-logs", BASE_PATH);
         let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
         let call = query.apply(call);
+        call
+    }
+    /** `GET /audit-logs/{id}`
+
+ Get a single audit log entry. Callers without full access can only read their own entries*/
+    pub fn get_audit_log(&self, id: &str) -> crate::Call<'a, AuditLogResponse> {
+        let id = crate::encode_path_segment(id);
+        let path = format!("{}/audit-logs/{}", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
         call
     }
     /** `GET /sandboxes`

@@ -27,7 +27,7 @@ A profile is a named set of:
 
 Use a profile when access or credentials must depend on **who calls** or **which client calls**. Use server membership when a person or team needs the server everywhere.
 
-Several profiles can be active at the same time. Their servers add up. Their tool selections add up (union). For credentials and for name conflicts, the profile with the highest priority wins. See [credentials.md](credentials.md#how-gatana-finds-the-credential-for-a-call).
+Several profiles can be active at the same time. Gatana combines their servers and tool selections. For credentials and for name conflicts, the profile with the highest priority wins. See [credentials.md](credentials.md#how-gatana-finds-the-credential-for-a-call).
 
 ## Settings
 
@@ -163,7 +163,7 @@ A profile credential is used only when it has the same type as the server's meth
 
 ## Maintainers
 
-Each profile has maintainers. They can change the profile, its servers, tools, credentials, claim mappings and assignments, add and remove maintainers, and delete the profile. The creator is the first maintainer. Organization owners can always manage all profiles. A profile always keeps at least one maintainer.
+The profile creator is its first maintainer. Maintainers can edit or delete the profile and manage its servers, tools, credentials, claim mappings, assignments and other maintainers. A profile must keep at least one maintainer. Organization owners can manage all profiles.
 
 A maintainer can manage the profile's credentials on all of its servers, also on servers where the maintainer is not a member.
 

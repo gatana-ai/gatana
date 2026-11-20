@@ -7,6 +7,35 @@
 pub const BASE_PATH: &str = "/api/v2";
 /// Request and response types.
 pub mod types {
+    ///`CredentialAuditLog`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct CredentialAuditLog {
+        ///Time when the entry was created
+        #[serde(rename = "createdAt")]
+        pub created_at: ::std::string::String,
+        ///ID of the credential that the entry belongs to
+        #[serde(rename = "credentialId")]
+        pub credential_id: ::std::string::String,
+        ///Event-specific details; update events include a diff of the change
+        pub details: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+        ///Name of the audited event (e.g. "create", "update", "delete")
+        #[serde(rename = "eventName")]
+        pub event_name: ::std::string::String,
+        ///Unique ID of the audit log entry
+        pub id: ::std::string::String,
+        ///ID of the tenant that owns the entry
+        #[serde(rename = "tenantId")]
+        pub tenant_id: ::std::string::String,
+        ///Time when the entry was last updated
+        #[serde(rename = "updatedAt")]
+        pub updated_at: ::std::string::String,
+        ///ID of the user who performed the action, or null
+        #[serde(
+            rename = "userId",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub user_id: ::std::option::Option<::std::string::String>,
+    }
     ///`CredentialDtoV2`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct CredentialDtoV2 {
@@ -972,6 +1001,32 @@ pub mod types {
             value.parse()
         }
     }
+    ///`PaginatedCredentialAuditLog`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct PaginatedCredentialAuditLog {
+        ///Items on the current page
+        pub data: ::std::vec::Vec<CredentialAuditLog>,
+        pub pagination: PaginatedCredentialAuditLogPagination,
+    }
+    ///Pagination metadata
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct PaginatedCredentialAuditLogPagination {
+        ///Whether a next page exists
+        #[serde(rename = "hasNext")]
+        pub has_next: bool,
+        ///Whether a previous page exists
+        #[serde(rename = "hasPrev")]
+        pub has_prev: bool,
+        ///Maximum number of items per page
+        pub limit: f64,
+        ///Current page number
+        pub page: f64,
+        ///Total number of items across all pages
+        pub total: f64,
+        ///Total number of pages
+        #[serde(rename = "totalPages")]
+        pub total_pages: f64,
+    }
     ///Actions for On mode. Missing targets use organization defaults or built-in values
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
     pub struct ProtectionActions {
@@ -1652,6 +1707,92 @@ pub mod types {
             skip_serializing_if = "::std::option::Option::is_none"
         )]
         pub refresh_token: ::std::option::Option<::std::string::String>,
+    }
+    ///Unverified metadata from the server. Each tool refresh saves the latest server/discover result
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct ServerInfo {
+        ///Description of the server, or an empty string
+        pub description: ::std::string::String,
+        ///Server icons, up to one per theme. A signed-in browser can load an image from GET /api/v1/mcp-servers/{slug}/icon?theme=light|dark
+        pub icons: ::std::vec::Vec<ServerInfoIcon>,
+        ///Display name of the server, or an empty string
+        pub title: ::std::string::String,
+        ///Version of the server software
+        pub version: ::std::string::String,
+        ///http: or https: URL of the website, or an empty string
+        #[serde(rename = "websiteUrl")]
+        pub website_url: ::std::string::String,
+    }
+    ///`ServerInfoIcon`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug, Default)]
+    pub struct ServerInfoIcon {
+        ///Image media type, if supplied by the server
+        #[serde(
+            rename = "mimeType",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub mime_type: ::std::option::Option<::std::string::String>,
+        ///Image sizes, such as 48x48 or any
+        #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+        pub sizes: ::std::vec::Vec<::std::string::String>,
+        ///Theme for the image
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub theme: ::std::option::Option<ServerInfoIconTheme>,
+    }
+    ///Theme for the image
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum ServerInfoIconTheme {
+        #[serde(rename = "light")]
+        Light,
+        #[serde(rename = "dark")]
+        Dark,
+    }
+    impl ::std::fmt::Display for ServerInfoIconTheme {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Light => f.write_str("light"),
+                Self::Dark => f.write_str("dark"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for ServerInfoIconTheme {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "light" => Ok(Self::Light),
+                "dark" => Ok(Self::Dark),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for ServerInfoIconTheme {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for ServerInfoIconTheme {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
     }
     ///`ServerOAuthClientConfiguration`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -2922,6 +3063,12 @@ pub mod types {
         pub reset_timeout_on_progress_notification: bool,
         #[serde(rename = "resolvedProtections")]
         pub resolved_protections: ResolvedProtections,
+        ///Read-only. Null when the server omits metadata or uses MCP before 2026-07-28
+        #[serde(
+            rename = "serverInfo",
+            deserialize_with = "::std::option::Option::deserialize"
+        )]
+        pub server_info: ::std::option::Option<ServerInfo>,
         ///URL-friendly name of the server, unique within the tenant
         pub slug: ::std::string::String,
         ///ID of the tenant that owns the server
@@ -3522,6 +3669,34 @@ impl<'a> Api<'a> {
     ) -> crate::Call<'a, ServerCredentialsCredential> {
         let id = crate::encode_path_segment(id);
         let path = format!("{}/credentials/{}/secret", BASE_PATH, id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `GET /credentials/{credentialId}/audit-logs`
+
+ List the audit log entries of a credential, paginated. Requires the read-secret permission on the credential*/
+    pub fn list_credential_audit_logs_v2(
+        &self,
+        credential_id: &str,
+    ) -> crate::Call<'a, PaginatedCredentialAuditLog> {
+        let credential_id = crate::encode_path_segment(credential_id);
+        let path = format!("{}/credentials/{}/audit-logs", BASE_PATH, credential_id);
+        let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
+        call
+    }
+    /** `GET /credentials/{credentialId}/audit-logs/{auditLogId}`
+
+ Get a single audit log entry of a credential. Requires the read-secret permission on the credential*/
+    pub fn get_credential_audit_log_v2(
+        &self,
+        credential_id: &str,
+        audit_log_id: &str,
+    ) -> crate::Call<'a, CredentialAuditLog> {
+        let credential_id = crate::encode_path_segment(credential_id);
+        let audit_log_id = crate::encode_path_segment(audit_log_id);
+        let path = format!(
+            "{}/credentials/{}/audit-logs/{}", BASE_PATH, credential_id, audit_log_id
+        );
         let call = crate::Call::new(self.client, ::reqwest::Method::GET, path);
         call
     }

@@ -295,6 +295,31 @@ The settings, plan and quotas of the organization. Only organization owners can 
 > A patch that holds the mask `********` is refused, so output pasted back in cannot overwrite a
 > secret. `--logo` takes a PNG, JPEG, WebP or SVG file of at most 256 KB.
 
+### Audit log
+
+The audit log holds what accounts, agents and Gatana did in the organization, newest first. An
+account without full access sees only its own events.
+
+| Command                           | Syntax                                                                                                                         | Description                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| **get audit-log**                 | `gatana get audit-log [-w condition...] [-s slug] [-a account] [-q text] [--since time] [--until time] [--limit n] [--page n]` | List events with their ID, type, entity, tool and account. Default: the last 7 days |
+| **describe audit-log**            | `gatana describe audit-log <id>`                                                                                               | Show one event with all its details                                                 |
+| **get credential-audit-log**      | `gatana get credential-audit-log <credential> [--show-secrets] [--limit n] [--page n]`                                         | List the changes, token refreshes and rejections of one credential                  |
+| **describe credential-audit-log** | `gatana describe credential-audit-log <credential> <id> [--show-secrets]`                                                      | Show one event of a credential, with the credential before and after the change     |
+
+> **Credential audit log**: a credential has an audit log of its own. Only an account that may read
+> the secret of the credential can read it. The backend sends the secret decrypted in the snapshots
+> of each change, so the CLI replaces every text in it with `********`, unless you pass
+> `--show-secrets`. The keys stay, so you still see which parts of the secret changed.
+>
+> **Conditions**: the same `field:operator:value` form as for alert rules. The list also takes
+> `after` and `before` on the field `date`. The CLI refuses a field or an operator that it does not
+> know, because the backend ignores such a condition and would show every event.
+>
+> **Times**: `--since` and `--until` take an age (`30m`, `1h30m`, `7d`), a day (`2026-11-01`,
+> midnight UTC) or a time (`2026-11-01T08:00:00Z`). Without `--since`, the list shows the last 7
+> days, as the Audit Logs page does, unless a condition is on the date.
+
 ### Alerts
 
 An alert rule is an audit log filter with a threshold. When enough events match, Gatana notifies
@@ -454,19 +479,21 @@ Configuration, authentication and schemas.
 
 ## Resource types
 
-| Resource  | Aliases                            | Description                                 |
-| --------- | ---------------------------------- | ------------------------------------------- |
-| `server`  | `servers`                          | MCP server registrations                    |
-| `tool`    | `tools`                            | Tools that the servers expose               |
-| `creds`   | `credential`, `credentials`        | Credentials for servers                     |
-| `sandbox` | `sandboxes`                        | Sandboxes (early access)                    |
-| `skill`   | `skills`                           | Markdown instructions that agents follow    |
-| `account` | `accounts`, `user`, `users`        | Users and service accounts                  |
-| `profile` | `profiles`                         | Sets of servers, tools and credentials      |
-| `pat`     | `pats`, `token`, `tokens`          | Personal access tokens of a service account |
-| `org`     | `organization`, `settings`         | The settings of the organization            |
-| `alert`   | `alerts`, `alert-rule`             | Alert rules on the audit log                |
-| `channel` | `channels`, `notification-channel` | Destinations for notifications              |
+| Resource               | Aliases                                    | Description                                 |
+| ---------------------- | ------------------------------------------ | ------------------------------------------- |
+| `server`               | `servers`                                  | MCP server registrations                    |
+| `tool`                 | `tools`                                    | Tools that the servers expose               |
+| `creds`                | `credential`, `credentials`                | Credentials for servers                     |
+| `sandbox`              | `sandboxes`                                | Sandboxes (early access)                    |
+| `skill`                | `skills`                                   | Markdown instructions that agents follow    |
+| `account`              | `accounts`, `user`, `users`                | Users and service accounts                  |
+| `profile`              | `profiles`                                 | Sets of servers, tools and credentials      |
+| `pat`                  | `pats`, `token`, `tokens`                  | Personal access tokens of a service account |
+| `org`                  | `organization`, `settings`                 | The settings of the organization            |
+| `alert`                | `alerts`, `alert-rule`                     | Alert rules on the audit log                |
+| `channel`              | `channels`, `notification-channel`         | Destinations for notifications              |
+| `audit-log`            | `audit-logs`, `audit`                      | Events of the organization                  |
+| `credential-audit-log` | `credential-audit-logs`, `creds-audit-log` | Events of one credential                    |
 
 ---
 
@@ -536,6 +563,22 @@ gatana create pat --account ci-runner@service-account.acme.gatana --name deploy 
 # Turn off local servers for members, and point the sign-in at a new client ID
 gatana patch org -p allowMemberAddLocalServers=false
 gatana patch org -p upstreamOidcConfiguration.clientId=new-client-id
+```
+
+### Audit log
+
+```bash
+# The tool calls that Gatana denied in the last hour
+gatana get audit-logs --since 1h -w outcome:eq:denied
+
+# What one account did on the GitHub server in the last 30 days
+gatana get audit-logs --account ada@example.com --server github --since 30d
+
+# All the details of one event, with the ID from the list
+gatana describe audit-log 182663
+
+# The token refreshes and changes of one credential, with the ID from "gatana get creds"
+gatana get credential-audit-log srvcrd_hjqtuewdb9ohrlmym5hwvrejx4skwbbw
 ```
 
 ### Alerts

@@ -152,6 +152,10 @@ pub async fn get(context: &Context, resource: GetCommand) -> Result<()> {
             super::alerts::get_channel(context, name.as_deref(), show_secrets).await?
         }
         GetCommand::ChannelNotificationHistory { limit, page } => super::alerts::history(context, limit, page).await?,
+        GetCommand::AuditLog(args) => super::audit_logs::list(context, args).await?,
+        GetCommand::CredentialAuditLog { credential, show_secrets, limit, page } => {
+            super::audit_logs::list_credential(context, &credential, limit, page, show_secrets).await?
+        }
     }
     Ok(())
 }
@@ -219,6 +223,10 @@ pub async fn describe(context: &Context, resource: DescribeCommand) -> Result<()
         DescribeCommand::Alert { name } => super::alerts::describe(context, &name).await?,
         DescribeCommand::Channel { name, show_secrets } => {
             super::alerts::describe_channel(context, &name, show_secrets).await?
+        }
+        DescribeCommand::AuditLog { id } => super::audit_logs::describe(context, &id).await?,
+        DescribeCommand::CredentialAuditLog { credential, id, show_secrets } => {
+            super::audit_logs::describe_credential(context, &credential, &id, show_secrets).await?
         }
     }
     Ok(())
