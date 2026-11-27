@@ -532,7 +532,7 @@ dependencies = [
 
 [[package]]
 name = "gatana-cli"
-version = "5.4.1"
+version = "5.4.2"
 dependencies = [
  "anyhow",
  "base64",
