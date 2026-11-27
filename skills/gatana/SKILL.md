@@ -1,6 +1,6 @@
 ---
 name: gatana
-description: 'Set up and explain the Gatana MCP gateway. Use when the user wants to add, connect or create an MCP server in Gatana (a remote MCP URL, an npx or uvx command, an OpenAPI specification, or hosted Node.js or Python code). Also use to create, assign or explain Gatana profiles, and to set up, explain or debug Gatana credentials: server, user and profile scope, OAuth, API keys, "need-credentials" errors and authorize links. Also use for "who can use this server" questions about Gatana, and when the user has no Gatana organization yet and wants to create one.'
+description: 'Set up and explain the Gatana MCP gateway. Use when the user wants to add, connect or create an MCP server in Gatana (a remote MCP URL, an npx or uvx command, an OpenAPI specification, or hosted Node.js or Python code). Also use to create, assign or explain Gatana profiles, and to set up, explain or debug Gatana credentials: server, user and profile scope, OAuth, API keys, "need-credentials" errors and authorize links. Also use for "who can use this server" questions about Gatana, when an MCP App (the interactive view of a tool) does not show through Gatana, and when the user has no Gatana organization yet and wants to create one.'
 ---
 
 # Gatana
@@ -23,7 +23,7 @@ This skill has four jobs:
 | Organization         | One Gatana customer. Its dashboard is at `https://<org>.gatana.ai`. The API calls it a tenant.                           |
 | Server               | One MCP server in Gatana: a remote URL, a command that Gatana runs, code that Gatana hosts, or an OpenAPI specification. |
 | Slug                 | The short ID of a server: lowercase letters, digits and hyphens, 20 characters or fewer, unique in the organization.     |
-| Tool name            | Clients see each tool as `<slug>_<tool>`, for example `github_create_issue`.                                             |
+| Tool name            | The default tool name uses `<slug>_<tool>` (for example `github_create_issue`).                                             |
 | Authorization method | What kind of secret a server needs: `none`, `apikey`, `oauth` or `oauth-client-credentials`.                             |
 | Credential           | The stored secret: API key values or an OAuth token set. Gatana keeps it. The client never gets it.                      |
 | Scope                | Who a credential belongs to: `server` (shared by all), `user` (one person), or `profile` (a named group or context).     |
@@ -246,6 +246,7 @@ Full details, OAuth setup and the per-transport table: [references/credentials.m
 | `need-credentials`                                      | A credential is missing or the provider rejected it. Give the user the `authorizeUrl` if the result includes one.                                         |
 | A profile lost all its servers                          | An older Gatana version got IDs in `serverIds`. Send slugs.                                                                                             |
 | A user cannot see a server                              | Check all four access reasons in step 8. An empty member list does not mean that nobody has access.                                                     |
+| The interactive view of a tool (an MCP App) does not show | The client must support MCP Apps, and a session in Code Mode shows an app only for a promoted tool. See **MCP Apps** in [references/servers.md](references/servers.md#mcp-apps). |
 
 ## References
 

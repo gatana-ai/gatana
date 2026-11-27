@@ -34,6 +34,7 @@ Optional fields:
 | `timeoutProtocol`, `timeoutTotal`           | organization default   | Seconds for one protocol request, and for one tool call.         |
 | `resetTimeoutOnProgressNotification`        |                        | A progress notification resets the protocol timeout.             |
 | `isOutputCompressionEnabled`                | `true`                 | Large outputs are compressed and indexed.                        |
+| `isAppServingEnabled`                       | `true`                 | Clients get the server's MCP Apps. See [MCP Apps](#mcp-apps).    |
 | `firewallRules`                             | none                   | `[{ condition: '<CEL>', action: 'deny' \| 'log' \| 'modify' }]`. |
 
 The slug: lowercase letters, digits and hyphens, starts with a letter or digit, 20 characters or fewer, unique in the organization.
@@ -244,6 +245,25 @@ await codemode.gatanaApi.createServerV2({
 - Refresh with `gatana tools refresh --server <slug>`, the dashboard **Refresh** button on the server page, or `POST /api/v1/tools/refresh?serverSlug=<slug>` with `Accept: text/event-stream`. Gatana also refreshes enabled servers on a schedule.
 
 To limit tools for one group only, use a profile. See [profiles.md](profiles.md#tool-configuration).
+
+## MCP Apps
+
+This feature is in beta. It needs Gatana v1.55.0 or later. Docs: [MCP Apps](https://docs.gatana.ai/mcp-apps/).
+
+An MCP server can attach a web page to a tool (an MCP App). A client that supports the MCP Apps extension shows the page in the chat. Gatana passes these pages to the client when `isAppServingEnabled` is `true`, which is the default. The dashboard also opens them, on the **Apps** tab of the server page.
+
+If the app does not show in the client, check these causes in order:
+
+1. **The client does not support MCP Apps.** The tool still returns its text result.
+2. **The session runs in Code Mode.** The client then lists only `search_tools`, `execute_code` and the promoted tools. Promote the tool that opens the app, and the tools that its buttons call, with `isPromoted: true` in a profile. See [profiles.md](profiles.md#tool-configuration). Organizations with many tools can be in automatic Code Mode.
+3. **`isAppServingEnabled` is `false`** on the server. Set it with `patchServerV2({ slug, body: { isAppServingEnabled: true } })`.
+4. **The tool list is old.** Refresh the tools. Gatana reads the app metadata of a tool at refresh.
+
+If the app shows but has no data, output compression replaced a large result with a summary. Set `isOutputCompressionEnabled` to `false` on that server.
+
+A server can mark a tool as app-only. Models do not see such a tool, and Code Mode, the REST API and the CLI do not list it. To let models use it, call `patchMcpServerTool({ serverSlug, toolName, body: { overrideAppOnly: true } })`.
+
+A button in an app calls its tool by the name that the server reports, without the slug prefix. Gatana accepts that name from a client that declared the MCP Apps extension. If two servers have an app tool with the same name, that button does not work. Do not add the same MCP App server two times.
 
 ## Dashboard steps
 

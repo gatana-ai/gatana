@@ -23,7 +23,7 @@ A profile is a named set of:
 - **Servers.** Each server in the profile gives member access to everyone who has the profile active.
 - **Tool settings** for each of these servers: which tools are available, their exposed names, and which tools stay visible in Code Mode.
 - **Credentials** for each of these servers. They override the server and user credentials.
-- **Session flags**: restrictive mode and forced Code Mode.
+- **Session settings** include Restrictive Mode and Force Code Mode.
 
 Use a profile when access or credentials must depend on **who calls** or **which client calls**. Use server membership when a person or team needs the server everywhere.
 

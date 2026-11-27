@@ -73,7 +73,7 @@ async fn list(context: &Context, server: Option<&str>, all: bool) -> Result<()> 
         tool.get("isEnabled") == Some(&Value::Bool(true))
             && !text_at(tool, "/serverSlug").is_some_and(|slug| disabled_servers.contains(slug))
     };
-    let mut tools: Vec<Value> = tools.into_iter().filter(|tool| all || enabled(tool)).collect();
+    let mut tools: Vec<Value> = tools.into_iter().filter(|tool| all || (enabled(tool) && !is_app_only(tool))).collect();
     tools.sort_by(|a, b| text_at(a, "/universalName").cmp(&text_at(b, "/universalName")));
 
     if output::machine_readable() {
@@ -105,6 +105,16 @@ async fn list(context: &Context, server: Option<&str>, all: bool) -> Result<()> 
     let columns: &[Column] = if all { &ALL_TOOL_COLUMNS } else { &TOOL_COLUMNS };
     output::output(&Value::Array(rows), Options::columns(columns));
     Ok(())
+}
+
+/// The server keeps the tool for its interface (MCP Apps) and hides it from models, and no
+/// administrator overrides that.
+fn is_app_only(tool: &Value) -> bool {
+    tool.get("overrideAppOnly") != Some(&Value::Bool(true))
+        && tool
+            .pointer("/meta/ui/visibility")
+            .and_then(Value::as_array)
+            .is_some_and(|visibility| !visibility.iter().any(|caller| caller == "model"))
 }
 
 /// `gatana tools refresh [--server <slug>]`. The exit code is 1 if a server did not answer.
@@ -553,6 +563,23 @@ mod tests {
         assert_eq!(double_quote(r#"a "b" $c"#), r#""a \"b\" \$c""#);
         assert_eq!(first_line("one\ntwo", 80), "one");
         assert_eq!(first_line("abcdef", 4), "abc…");
+    }
+
+    #[test]
+    fn app_only_tools_have_a_visibility_without_the_model() {
+        for visibility in [json!(["app"]), json!([])] {
+            assert!(is_app_only(&json!({ "meta": { "ui": { "visibility": visibility } } })));
+        }
+        for tool in [
+            json!({}),
+            json!({ "meta": null }),
+            json!({ "meta": { "ui": {} } }),
+            json!({ "meta": { "ui": { "visibility": "app" } } }),
+            json!({ "meta": { "ui": { "visibility": ["model", "app"] } } }),
+            json!({ "meta": { "ui": { "visibility": ["app"] } }, "overrideAppOnly": true }),
+        ] {
+            assert!(!is_app_only(&tool), "{tool}");
+        }
     }
 
     #[test]
