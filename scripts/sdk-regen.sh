@@ -164,7 +164,12 @@ finish_release() {
       if [[ $published == false ]]; then
         if [[ $src != . ]]; then (cd "$src" && pnpm install --frozen-lockfile); fi
         (cd "$src" && pnpm --filter gatana-sdk build)
-        (cd "$src/$JS_DIR" && npm publish --access public)
+        # When npm refuses the trusted publisher, it reports only "need auth". Its debug log holds
+        # the reason.
+        (cd "$src/$JS_DIR" && npm publish --access public) || {
+          grep -h ' oidc ' "$HOME"/.npm/_logs/*-debug-*.log >&2 || true
+          die "npm did not publish gatana-sdk $version"
+        }
       fi
       ;;
     gatana-client)

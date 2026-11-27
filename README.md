@@ -197,6 +197,10 @@ A change that removes a name that SDK users import, such as a renamed operation,
 version. The workflow then stops and opens an issue, and a person makes that release with
 `just release`.
 
+A run can fail after its release commit, for example when npm refuses the publish. The next run
+that succeeds publishes and tags that commit. Until then, `just release` shows the commit as
+"sdk-regen release, not published yet" and does not count it as a change.
+
 The workflow can push to `main` at any time, so pull before you commit. To see what a run would do,
 run `scripts/sdk-regen.sh --dry-run`. It leaves the regenerated code in the working tree.
 

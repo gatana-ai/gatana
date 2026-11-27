@@ -8,7 +8,9 @@
 #   gatana-langchain  packages/gatana-langchain  GitHub, PyPI               gatana-langchain/v<version>
 #
 # A package has changes when a commit touched its folder after its last release tag in the
-# history of HEAD. The script asks for a version bump per package with changes, checks the git
+# history of HEAD. A release commit of scripts/sdk-regen.sh that has no tag yet counts as the last
+# release: the workflow failed after the commit, and its next run publishes and tags that commit.
+# The script asks for a version bump per package with changes, checks the git
 # state, logins and tools that the chosen releases need, shows one summary, and then releases
 # the packages in the order above with their own release: packages/gatana-js/scripts/release.sh,
 # packages/gatana-cli/scripts/release.sh (after this script commits the new CLI version) and
@@ -135,10 +137,14 @@ for entry in "${PACKAGES[@]}"; do
   if [[ -z $tag ]]; then
     changed=true note="no release tag in the history of HEAD"
   else
-    count=$(git rev-list --count "$tag..HEAD" -- "$dir")
-    if ((count == 1)); then changed=true note="1 commit since $tag"
-    elif ((count > 1)); then changed=true note="$count commits since $tag"
-    else changed=false note="no changes since $tag"; fi
+    # sdk-regen commits a release before it publishes and tags it
+    since=$tag
+    unfinished=$(git log -1 --format=%h --grep='^Released-by: sdk-regen$' "$tag..HEAD" -- "$dir")
+    [[ -z $unfinished ]] || since="$unfinished (sdk-regen release, not published yet)"
+    count=$(git rev-list --count "${unfinished:-$tag}..HEAD" -- "$dir")
+    if ((count == 1)); then changed=true note="1 commit since $since"
+    elif ((count > 1)); then changed=true note="$count commits since $since"
+    else changed=false note="no changes since $since"; fi
   fi
   if [[ $changed == true ]]; then
     printf "  ${GREEN}●${RESET} %-17s ${DIM}%-26s${RESET} %s\n" "$name" "$dir" "$note"
@@ -208,7 +214,15 @@ done
 gh auth status >/dev/null 2>&1 || die "not logged in to GitHub; run 'gh auth login'"
 echo "  GitHub: logged in"
 if [[ $needs_npm == true ]]; then
-  npm_user=$(npm whoami 2>/dev/null) || die "not logged in to npm; run 'npm login'"
+  if ! npm_user=$(npm whoami 2>/dev/null); then
+    # A login here keeps the version bumps that were chosen above
+    read -rp "  npm: not logged in. Run 'npm login' now? [Y/n]: " answer || answer=n
+    case $answer in
+      [nN]*) die "not logged in to npm; run 'npm login'" ;;
+    esac
+    npm login || die "'npm login' failed"
+    npm_user=$(npm whoami 2>/dev/null) || die "still not logged in to npm after 'npm login'"
+  fi
   echo "  npm: logged in as $npm_user"
 fi
 if [[ $needs_pypi == true ]]; then
