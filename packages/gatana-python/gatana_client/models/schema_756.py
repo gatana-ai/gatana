@@ -1,16 +1,15 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
+from ..models.schema_756_action import Schema756Action
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_757 import Schema757
-    from ..models.schema_764 import Schema764
-    from ..models.schema_765 import Schema765
+    from ..models.schema_759 import Schema759
 
 
 T = TypeVar("T", bound="Schema756")
@@ -18,75 +17,70 @@ T = TypeVar("T", bound="Schema756")
 
 @_attrs_define
 class Schema756:
-    """Built-in protections of the server. A missing protection is off
-
+    """
     Attributes:
-        secrets (Schema757 | Unset):
-        pii (Schema764 | Unset):
-        injection (Schema765 | Unset):
+        tools (list[str]):
+        condition (str):
+        action (Schema756Action): Condition actions: deny, audit or allow. Allow makes protections record matches
+            without blocking or redacting. Deny rules still apply. Protection actions: block, redact or audit. Block refuses
+            calls with argument matches or withholds results with matches. Redact replaces matched text. Audit records
+            matches and changes nothing
+        check (Schema759 | Unset):
     """
 
-    secrets: Schema757 | Unset = UNSET
-    pii: Schema764 | Unset = UNSET
-    injection: Schema765 | Unset = UNSET
+    tools: list[str]
+    condition: str
+    action: Schema756Action
+    check: Schema759 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        secrets: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.secrets, Unset):
-            secrets = self.secrets.to_dict()
+        tools = self.tools
 
-        pii: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.pii, Unset):
-            pii = self.pii.to_dict()
+        condition = self.condition
 
-        injection: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.injection, Unset):
-            injection = self.injection.to_dict()
+        action = self.action.value
+
+        check: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.check, Unset):
+            check = self.check.to_dict()
 
         field_dict: dict[str, Any] = {}
 
-        field_dict.update({})
-        if secrets is not UNSET:
-            field_dict["secrets"] = secrets
-        if pii is not UNSET:
-            field_dict["pii"] = pii
-        if injection is not UNSET:
-            field_dict["injection"] = injection
+        field_dict.update(
+            {
+                "tools": tools,
+                "condition": condition,
+                "action": action,
+            }
+        )
+        if check is not UNSET:
+            field_dict["check"] = check
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_757 import Schema757
-        from ..models.schema_764 import Schema764
-        from ..models.schema_765 import Schema765
+        from ..models.schema_759 import Schema759
 
         d = dict(src_dict)
-        _secrets = d.pop("secrets", UNSET)
-        secrets: Schema757 | Unset
-        if isinstance(_secrets, Unset):
-            secrets = UNSET
-        else:
-            secrets = Schema757.from_dict(_secrets)
+        tools = cast(list[str], d.pop("tools"))
 
-        _pii = d.pop("pii", UNSET)
-        pii: Schema764 | Unset
-        if isinstance(_pii, Unset):
-            pii = UNSET
-        else:
-            pii = Schema764.from_dict(_pii)
+        condition = d.pop("condition")
 
-        _injection = d.pop("injection", UNSET)
-        injection: Schema765 | Unset
-        if isinstance(_injection, Unset):
-            injection = UNSET
+        action = Schema756Action(d.pop("action"))
+
+        _check = d.pop("check", UNSET)
+        check: Schema759 | Unset
+        if isinstance(_check, Unset):
+            check = UNSET
         else:
-            injection = Schema765.from_dict(_injection)
+            check = Schema759.from_dict(_check)
 
         schema_756 = cls(
-            secrets=secrets,
-            pii=pii,
-            injection=injection,
+            tools=tools,
+            condition=condition,
+            action=action,
+            check=check,
         )
 
         return schema_756

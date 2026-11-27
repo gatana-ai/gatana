@@ -7,10 +7,10 @@ from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
     from ..models.features import Features
-    from ..models.schema_462 import Schema462
-    from ..models.schema_480 import Schema480
-    from ..models.schema_482 import Schema482
-    from ..models.schema_504 import Schema504
+    from ..models.schema_463 import Schema463
+    from ..models.schema_481 import Schema481
+    from ..models.schema_483 import Schema483
+    from ..models.schema_505 import Schema505
 
 
 T = TypeVar("T", bound="AuthMetadata")
@@ -25,12 +25,12 @@ class AuthMetadata:
         has_assistant (bool):
         has_glama_registry (bool):
         has_sign_in_method (bool): Whether the user has a password or an SSO identity
-        capabilities (Schema462):
+        capabilities (Schema463):
         features (Features):
-        user (Schema480):
-        tenant (Schema482):
+        user (Schema481):
+        tenant (Schema483):
         rules (list[Any]):
-        quota (Schema504):
+        quota (Schema505):
     """
 
     is_playground: bool
@@ -38,12 +38,12 @@ class AuthMetadata:
     has_assistant: bool
     has_glama_registry: bool
     has_sign_in_method: bool
-    capabilities: Schema462
+    capabilities: Schema463
     features: Features
-    user: Schema480
-    tenant: Schema482
+    user: Schema481
+    tenant: Schema483
     rules: list[Any]
-    quota: Schema504
+    quota: Schema505
 
     def to_dict(self) -> dict[str, Any]:
         is_playground = self.is_playground
@@ -91,10 +91,10 @@ class AuthMetadata:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.features import Features
-        from ..models.schema_462 import Schema462
-        from ..models.schema_480 import Schema480
-        from ..models.schema_482 import Schema482
-        from ..models.schema_504 import Schema504
+        from ..models.schema_463 import Schema463
+        from ..models.schema_481 import Schema481
+        from ..models.schema_483 import Schema483
+        from ..models.schema_505 import Schema505
 
         d = dict(src_dict)
         is_playground = d.pop("isPlayground")
@@ -107,17 +107,17 @@ class AuthMetadata:
 
         has_sign_in_method = d.pop("hasSignInMethod")
 
-        capabilities = Schema462.from_dict(d.pop("capabilities"))
+        capabilities = Schema463.from_dict(d.pop("capabilities"))
 
         features = Features.from_dict(d.pop("features"))
 
-        user = Schema480.from_dict(d.pop("user"))
+        user = Schema481.from_dict(d.pop("user"))
 
-        tenant = Schema482.from_dict(d.pop("tenant"))
+        tenant = Schema483.from_dict(d.pop("tenant"))
 
         rules = cast(list[Any], d.pop("rules"))
 
-        quota = Schema504.from_dict(d.pop("quota"))
+        quota = Schema505.from_dict(d.pop("quota"))
 
         auth_metadata = cls(
             is_playground=is_playground,

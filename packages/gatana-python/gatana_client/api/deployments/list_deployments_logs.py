@@ -6,7 +6,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.list_deployments_logs_response_200 import ListDeploymentsLogsResponse200
-from ...models.schema_254 import Schema254
+from ...models.schema_255 import Schema255
 from ...types import UNSET, Response, Unset
 
 
@@ -14,7 +14,7 @@ def _get_kwargs(
     *,
     pod_name: str,
     container_name: str | Unset = UNSET,
-    previous: Schema254 | Unset = UNSET,
+    previous: Schema255 | Unset = UNSET,
 ) -> dict[str, Any]:
 
     params: dict[str, Any] = {}
@@ -70,7 +70,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     pod_name: str,
     container_name: str | Unset = UNSET,
-    previous: Schema254 | Unset = UNSET,
+    previous: Schema255 | Unset = UNSET,
 ) -> Response[ListDeploymentsLogsResponse200]:
     """Get the logs of a container of a pod, or stream them when the Accept header is text/event-stream.
     Defaults to the server container; set previous=true for the logs of the previous container instance
@@ -78,7 +78,7 @@ def sync_detailed(
     Args:
         pod_name (str): Name of the pod
         container_name (str | Unset):
-        previous (Schema254 | Unset):
+        previous (Schema255 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -106,7 +106,7 @@ def sync(
     client: AuthenticatedClient | Client,
     pod_name: str,
     container_name: str | Unset = UNSET,
-    previous: Schema254 | Unset = UNSET,
+    previous: Schema255 | Unset = UNSET,
 ) -> ListDeploymentsLogsResponse200 | None:
     """Get the logs of a container of a pod, or stream them when the Accept header is text/event-stream.
     Defaults to the server container; set previous=true for the logs of the previous container instance
@@ -114,7 +114,7 @@ def sync(
     Args:
         pod_name (str): Name of the pod
         container_name (str | Unset):
-        previous (Schema254 | Unset):
+        previous (Schema255 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -137,7 +137,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     pod_name: str,
     container_name: str | Unset = UNSET,
-    previous: Schema254 | Unset = UNSET,
+    previous: Schema255 | Unset = UNSET,
 ) -> Response[ListDeploymentsLogsResponse200]:
     """Get the logs of a container of a pod, or stream them when the Accept header is text/event-stream.
     Defaults to the server container; set previous=true for the logs of the previous container instance
@@ -145,7 +145,7 @@ async def asyncio_detailed(
     Args:
         pod_name (str): Name of the pod
         container_name (str | Unset):
-        previous (Schema254 | Unset):
+        previous (Schema255 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -171,7 +171,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     pod_name: str,
     container_name: str | Unset = UNSET,
-    previous: Schema254 | Unset = UNSET,
+    previous: Schema255 | Unset = UNSET,
 ) -> ListDeploymentsLogsResponse200 | None:
     """Get the logs of a container of a pod, or stream them when the Accept header is text/event-stream.
     Defaults to the server container; set previous=true for the logs of the previous container instance
@@ -179,7 +179,7 @@ async def asyncio(
     Args:
         pod_name (str): Name of the pod
         container_name (str | Unset):
-        previous (Schema254 | Unset):
+        previous (Schema255 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

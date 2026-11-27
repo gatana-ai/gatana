@@ -5,7 +5,7 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_786 import Schema786
+from ..models.schema_790 import Schema790
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="ServerInfoIcon")
@@ -17,12 +17,12 @@ class ServerInfoIcon:
     Attributes:
         mime_type (str | Unset):
         sizes (list[str] | Unset):
-        theme (Schema786 | Unset):
+        theme (Schema790 | Unset):
     """
 
     mime_type: str | Unset = UNSET
     sizes: list[str] | Unset = UNSET
-    theme: Schema786 | Unset = UNSET
+    theme: Schema790 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         mime_type = self.mime_type
@@ -55,11 +55,11 @@ class ServerInfoIcon:
         sizes = cast(list[str], d.pop("sizes", UNSET))
 
         _theme = d.pop("theme", UNSET)
-        theme: Schema786 | Unset
+        theme: Schema790 | Unset
         if isinstance(_theme, Unset):
             theme = UNSET
         else:
-            theme = Schema786(_theme)
+            theme = Schema790(_theme)
 
         server_info_icon = cls(
             mime_type=mime_type,

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_1452 import Schema1452
+    from ..models.schema_1462 import Schema1462
 
 
 T = TypeVar("T", bound="GetSkillFileResponse")
@@ -16,10 +16,10 @@ T = TypeVar("T", bound="GetSkillFileResponse")
 class GetSkillFileResponse:
     """
     Attributes:
-        file (Schema1452):
+        file (Schema1462):
     """
 
-    file: Schema1452
+    file: Schema1462
 
     def to_dict(self) -> dict[str, Any]:
         file = self.file.to_dict()
@@ -36,10 +36,10 @@ class GetSkillFileResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_1452 import Schema1452
+        from ..models.schema_1462 import Schema1462
 
         d = dict(src_dict)
-        file = Schema1452.from_dict(d.pop("file"))
+        file = Schema1462.from_dict(d.pop("file"))
 
         get_skill_file_response = cls(
             file=file,

@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_769 import Schema769
     from ..models.schema_773 import Schema773
+    from ..models.schema_777 import Schema777
 
 
 T = TypeVar("T", bound="ResolvedProtection")
@@ -17,12 +17,12 @@ T = TypeVar("T", bound="ResolvedProtection")
 class ResolvedProtection:
     """
     Attributes:
-        actions (Schema769): Actions for each supported target in On mode, regardless of the current mode
-        settings (Schema773): The value and source of each option
+        actions (Schema773): Actions for each supported target in On mode, regardless of the current mode
+        settings (Schema777): The value and source of each option
     """
 
-    actions: Schema769
-    settings: Schema773
+    actions: Schema773
+    settings: Schema777
 
     def to_dict(self) -> dict[str, Any]:
         actions = self.actions.to_dict()
@@ -42,13 +42,13 @@ class ResolvedProtection:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_769 import Schema769
         from ..models.schema_773 import Schema773
+        from ..models.schema_777 import Schema777
 
         d = dict(src_dict)
-        actions = Schema769.from_dict(d.pop("actions"))
+        actions = Schema773.from_dict(d.pop("actions"))
 
-        settings = Schema773.from_dict(d.pop("settings"))
+        settings = Schema777.from_dict(d.pop("settings"))
 
         resolved_protection = cls(
             actions=actions,

@@ -6,14 +6,14 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_454 import Schema454
+from ...models.schema_455 import Schema455
 from ...models.skill_collection_shares_response import SkillCollectionSharesResponse
 from ...types import Response
 
 
 def _get_kwargs(
     collection_id: str,
-    member_type: Schema454,
+    member_type: Schema455,
     member_id: str,
 ) -> dict[str, Any]:
 
@@ -56,7 +56,7 @@ def _build_response(
 
 def sync_detailed(
     collection_id: str,
-    member_type: Schema454,
+    member_type: Schema455,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -65,7 +65,7 @@ def sync_detailed(
 
     Args:
         collection_id (str):
-        member_type (Schema454): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema455): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
 
@@ -92,7 +92,7 @@ def sync_detailed(
 
 def sync(
     collection_id: str,
-    member_type: Schema454,
+    member_type: Schema455,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -101,7 +101,7 @@ def sync(
 
     Args:
         collection_id (str):
-        member_type (Schema454): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema455): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
 
@@ -123,7 +123,7 @@ def sync(
 
 async def asyncio_detailed(
     collection_id: str,
-    member_type: Schema454,
+    member_type: Schema455,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -132,7 +132,7 @@ async def asyncio_detailed(
 
     Args:
         collection_id (str):
-        member_type (Schema454): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema455): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
 
@@ -157,7 +157,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     collection_id: str,
-    member_type: Schema454,
+    member_type: Schema455,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -166,7 +166,7 @@ async def asyncio(
 
     Args:
         collection_id (str):
-        member_type (Schema454): 'users' to share with one user account, 'teams' to share with
+        member_type (Schema455): 'users' to share with one user account, 'teams' to share with
             every member of a team
         member_id (str): ID of the user or of the team
 

@@ -5,8 +5,8 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_472 import Schema472
 from ..models.schema_473 import Schema473
+from ..models.schema_474 import Schema474
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="Schema475")
@@ -16,13 +16,13 @@ T = TypeVar("T", bound="Schema475")
 class Schema475:
     """
     Attributes:
-        status (Schema472): available: the organization can use it. upgrade: the plan does not include it. unavailable:
+        status (Schema473): available: the organization can use it. upgrade: the plan does not include it. unavailable:
             the installation cannot run it
-        reason (Schema473 | Unset): The service or resource missing from the installation
+        reason (Schema474 | Unset): The service or resource missing from the installation
     """
 
-    status: Schema472
-    reason: Schema473 | Unset = UNSET
+    status: Schema473
+    reason: Schema474 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         status = self.status.value
@@ -46,14 +46,14 @@ class Schema475:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        status = Schema472(d.pop("status"))
+        status = Schema473(d.pop("status"))
 
         _reason = d.pop("reason", UNSET)
-        reason: Schema473 | Unset
+        reason: Schema474 | Unset
         if isinstance(_reason, Unset):
             reason = UNSET
         else:
-            reason = Schema473(_reason)
+            reason = Schema474(_reason)
 
         schema_475 = cls(
             status=status,

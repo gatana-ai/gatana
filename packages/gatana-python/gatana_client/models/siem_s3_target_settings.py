@@ -5,7 +5,7 @@ from typing import Any, Literal, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1200 import Schema1200
+from ..models.schema_1210 import Schema1210
 
 T = TypeVar("T", bound="SiemS3TargetSettings")
 
@@ -21,7 +21,7 @@ class SiemS3TargetSettings:
         endpoint (None | str): Custom endpoint of an S3-compatible store, or null for Amazon S3
         force_path_style (bool): Whether to address the bucket in the path instead of the host
         access_key_id (str): Access key ID used for uploads; the secret key is never returned
-        compression (Schema1200):
+        compression (Schema1210):
     """
 
     kind: Literal["s3"]
@@ -31,7 +31,7 @@ class SiemS3TargetSettings:
     endpoint: None | str
     force_path_style: bool
     access_key_id: str
-    compression: Schema1200
+    compression: Schema1210
 
     def to_dict(self) -> dict[str, Any]:
         kind = self.kind
@@ -92,7 +92,7 @@ class SiemS3TargetSettings:
 
         access_key_id = d.pop("accessKeyId")
 
-        compression = Schema1200(d.pop("compression"))
+        compression = Schema1210(d.pop("compression"))
 
         siem_s3_target_settings = cls(
             kind=kind,

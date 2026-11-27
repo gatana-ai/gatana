@@ -5,7 +5,7 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_901 import Schema901
+from ..models.schema_911 import Schema911
 
 T = TypeVar("T", bound="TenantOidcConfiguration")
 
@@ -25,7 +25,7 @@ class TenantOidcConfiguration:
         jwks_uri (str): URL of the JSON Web Key Set
         client_id (str): OAuth client ID
         client_secret (str): OAuth client secret
-        client_auth_method (Schema901): Client authentication method used at the token endpoint
+        client_auth_method (Schema911): Client authentication method used at the token endpoint
         scopes (str): Space-separated OAuth scopes to request
     """
 
@@ -40,7 +40,7 @@ class TenantOidcConfiguration:
     jwks_uri: str
     client_id: str
     client_secret: str
-    client_auth_method: Schema901
+    client_auth_method: Schema911
     scopes: str
 
     def to_dict(self) -> dict[str, Any]:
@@ -117,7 +117,7 @@ class TenantOidcConfiguration:
 
         client_secret = d.pop("clientSecret")
 
-        client_auth_method = Schema901(d.pop("clientAuthMethod"))
+        client_auth_method = Schema911(d.pop("clientAuthMethod"))
 
         scopes = d.pop("scopes")
 

@@ -5,18 +5,19 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_737 import Schema737
+from ..models.schema_738 import Schema738
 
 if TYPE_CHECKING:
     from ..models.email_transport_config_output import EmailTransportConfigOutput
     from ..models.hosted_transport_config_output import HostedTransportConfigOutput
     from ..models.http_streaming_transport_config_output import HttpStreamingTransportConfigOutput
     from ..models.open_api_transport_config_output import OpenApiTransportConfigOutput
-    from ..models.schema_603 import Schema603
-    from ..models.schema_644 import Schema644
-    from ..models.schema_752 import Schema752
+    from ..models.schema_604 import Schema604
+    from ..models.schema_645 import Schema645
+    from ..models.schema_746 import Schema746
     from ..models.schema_756 import Schema756
-    from ..models.schema_768 import Schema768
+    from ..models.schema_760 import Schema760
+    from ..models.schema_772 import Schema772
     from ..models.server_info import ServerInfo
     from ..models.server_o_auth_client_configuration import ServerOAuthClientConfiguration
     from ..models.server_o_auth_metadata import ServerOAuthMetadata
@@ -35,18 +36,20 @@ class ServerDto:
         slug (str): URL-friendly name of the server, unique within the tenant
         tenant_id (str): ID of the tenant that owns the server
         description (str): Human-readable description of the server
-        authorization (Schema603):
+        authorization (Schema604):
         transport_config (EmailTransportConfigOutput | HostedTransportConfigOutput | HttpStreamingTransportConfigOutput
-            | OpenApiTransportConfigOutput | Schema644 | SseTransportConfigOutput | StdioTransportConfigOutput): Transport
+            | OpenApiTransportConfigOutput | Schema645 | SseTransportConfigOutput | StdioTransportConfigOutput): Transport
             configuration used to connect to the server
         oauth_client_configuration (None | ServerOAuthClientConfiguration): OAuth client configuration, or null when not
             configured
         oauth_metadata (None | ServerOAuthMetadata): Discovered OAuth metadata, or null when not discovered
-        visibility (Schema737):
+        visibility (Schema738):
         is_enabled (bool): Whether the server is enabled
         last_tool_refresh_at (None | str): Time of the last tool refresh, or null if tools were never refreshed
         mcp_protocol_version (str): Last detected MCP protocol version, or an empty string if unknown
         mcp_protocol_detected_at (None | str): Time of the last MCP protocol detection, or null if unknown
+        mcp_capabilities (None | Schema746): MCP capabilities from the last tool refresh. Extensions appear under
+            "extensions". Null if no capabilities were recorded
         timeout_protocol (int): Timeout in seconds for a single protocol request to the server
         timeout_total (int): Total timeout in seconds for a tool call, including progress notifications
         reset_timeout_on_progress_notification (bool): Whether a progress notification resets the protocol timeout
@@ -56,36 +59,40 @@ class ServerDto:
             outputs
         output_compression_threshold_bytes (int): Minimum output size in bytes before compression is applied
         is_skill_serving_enabled (bool): Whether to serve this server's MCP skills to agents with access to the server
-        firewall_rules (list[Schema752]): Rules in order. Rules with a condition run before the call and the first deny
+        is_app_serving_enabled (bool): Whether clients can open MCP Apps from this server
+        firewall_rules (list[Schema756]): Rules in order. Rules with a condition run before the call and the first deny
             stops it. A rule with a protection replaces the default of that protection for its tools
-        protections (Schema756): Built-in protections of the server. A missing protection is off
+        protections (Schema760): Built-in protections of the server. A missing protection is off
         created_at (str): Time when the server was created
         updated_at (str): Time when the server was last updated
-        resolved_protections (Schema768):
+        resolved_protections (Schema772):
         server_info (None | ServerInfo): Read-only. Null when the server omits metadata or uses MCP before 2026-07-28
+        has_apps (bool): Read-only. True if an enabled tool visible to models opens an MCP App
+        has_skills (bool): Read-only. True if the server has an attached skill or published one at the last tool refresh
     """
 
     id: str
     slug: str
     tenant_id: str
     description: str
-    authorization: Schema603
+    authorization: Schema604
     transport_config: (
         EmailTransportConfigOutput
         | HostedTransportConfigOutput
         | HttpStreamingTransportConfigOutput
         | OpenApiTransportConfigOutput
-        | Schema644
+        | Schema645
         | SseTransportConfigOutput
         | StdioTransportConfigOutput
     )
     oauth_client_configuration: None | ServerOAuthClientConfiguration
     oauth_metadata: None | ServerOAuthMetadata
-    visibility: Schema737
+    visibility: Schema738
     is_enabled: bool
     last_tool_refresh_at: None | str
     mcp_protocol_version: str
     mcp_protocol_detected_at: None | str
+    mcp_capabilities: None | Schema746
     timeout_protocol: int
     timeout_total: int
     reset_timeout_on_progress_notification: bool
@@ -93,18 +100,22 @@ class ServerDto:
     is_output_compression_transform_enabled: bool
     output_compression_threshold_bytes: int
     is_skill_serving_enabled: bool
-    firewall_rules: list[Schema752]
-    protections: Schema756
+    is_app_serving_enabled: bool
+    firewall_rules: list[Schema756]
+    protections: Schema760
     created_at: str
     updated_at: str
-    resolved_protections: Schema768
+    resolved_protections: Schema772
     server_info: None | ServerInfo
+    has_apps: bool
+    has_skills: bool
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.hosted_transport_config_output import HostedTransportConfigOutput
         from ..models.http_streaming_transport_config_output import HttpStreamingTransportConfigOutput
         from ..models.open_api_transport_config_output import OpenApiTransportConfigOutput
-        from ..models.schema_644 import Schema644
+        from ..models.schema_645 import Schema645
+        from ..models.schema_746 import Schema746
         from ..models.server_info import ServerInfo
         from ..models.server_o_auth_client_configuration import ServerOAuthClientConfiguration
         from ..models.server_o_auth_metadata import ServerOAuthMetadata
@@ -128,7 +139,7 @@ class ServerDto:
             transport_config = self.transport_config.to_dict()
         elif isinstance(self.transport_config, SseTransportConfigOutput):
             transport_config = self.transport_config.to_dict()
-        elif isinstance(self.transport_config, Schema644):
+        elif isinstance(self.transport_config, Schema645):
             transport_config = self.transport_config.to_dict()
         elif isinstance(self.transport_config, HostedTransportConfigOutput):
             transport_config = self.transport_config.to_dict()
@@ -161,6 +172,12 @@ class ServerDto:
         mcp_protocol_detected_at: None | str
         mcp_protocol_detected_at = self.mcp_protocol_detected_at
 
+        mcp_capabilities: dict[str, Any] | None
+        if isinstance(self.mcp_capabilities, Schema746):
+            mcp_capabilities = self.mcp_capabilities.to_dict()
+        else:
+            mcp_capabilities = self.mcp_capabilities
+
         timeout_protocol = self.timeout_protocol
 
         timeout_total = self.timeout_total
@@ -175,10 +192,12 @@ class ServerDto:
 
         is_skill_serving_enabled = self.is_skill_serving_enabled
 
+        is_app_serving_enabled = self.is_app_serving_enabled
+
         firewall_rules = []
-        for componentsschemas_schema751_item_data in self.firewall_rules:
-            componentsschemas_schema751_item = componentsschemas_schema751_item_data.to_dict()
-            firewall_rules.append(componentsschemas_schema751_item)
+        for componentsschemas_schema755_item_data in self.firewall_rules:
+            componentsschemas_schema755_item = componentsschemas_schema755_item_data.to_dict()
+            firewall_rules.append(componentsschemas_schema755_item)
 
         protections = self.protections.to_dict()
 
@@ -193,6 +212,10 @@ class ServerDto:
             server_info = self.server_info.to_dict()
         else:
             server_info = self.server_info
+
+        has_apps = self.has_apps
+
+        has_skills = self.has_skills
 
         field_dict: dict[str, Any] = {}
 
@@ -211,6 +234,7 @@ class ServerDto:
                 "lastToolRefreshAt": last_tool_refresh_at,
                 "mcpProtocolVersion": mcp_protocol_version,
                 "mcpProtocolDetectedAt": mcp_protocol_detected_at,
+                "mcpCapabilities": mcp_capabilities,
                 "timeoutProtocol": timeout_protocol,
                 "timeoutTotal": timeout_total,
                 "resetTimeoutOnProgressNotification": reset_timeout_on_progress_notification,
@@ -218,12 +242,15 @@ class ServerDto:
                 "isOutputCompressionTransformEnabled": is_output_compression_transform_enabled,
                 "outputCompressionThresholdBytes": output_compression_threshold_bytes,
                 "isSkillServingEnabled": is_skill_serving_enabled,
+                "isAppServingEnabled": is_app_serving_enabled,
                 "firewallRules": firewall_rules,
                 "protections": protections,
                 "createdAt": created_at,
                 "updatedAt": updated_at,
                 "resolvedProtections": resolved_protections,
                 "serverInfo": server_info,
+                "hasApps": has_apps,
+                "hasSkills": has_skills,
             }
         )
 
@@ -235,11 +262,12 @@ class ServerDto:
         from ..models.hosted_transport_config_output import HostedTransportConfigOutput
         from ..models.http_streaming_transport_config_output import HttpStreamingTransportConfigOutput
         from ..models.open_api_transport_config_output import OpenApiTransportConfigOutput
-        from ..models.schema_603 import Schema603
-        from ..models.schema_644 import Schema644
-        from ..models.schema_752 import Schema752
+        from ..models.schema_604 import Schema604
+        from ..models.schema_645 import Schema645
+        from ..models.schema_746 import Schema746
         from ..models.schema_756 import Schema756
-        from ..models.schema_768 import Schema768
+        from ..models.schema_760 import Schema760
+        from ..models.schema_772 import Schema772
         from ..models.server_info import ServerInfo
         from ..models.server_o_auth_client_configuration import ServerOAuthClientConfiguration
         from ..models.server_o_auth_metadata import ServerOAuthMetadata
@@ -255,7 +283,7 @@ class ServerDto:
 
         description = d.pop("description")
 
-        authorization = Schema603.from_dict(d.pop("authorization"))
+        authorization = Schema604.from_dict(d.pop("authorization"))
 
         def _parse_transport_config(
             data: object,
@@ -264,63 +292,63 @@ class ServerDto:
             | HostedTransportConfigOutput
             | HttpStreamingTransportConfigOutput
             | OpenApiTransportConfigOutput
-            | Schema644
+            | Schema645
             | SseTransportConfigOutput
             | StdioTransportConfigOutput
         ):
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema611_type_0 = HttpStreamingTransportConfigOutput.from_dict(data)
+                componentsschemas_schema612_type_0 = HttpStreamingTransportConfigOutput.from_dict(data)
 
-                return componentsschemas_schema611_type_0
+                return componentsschemas_schema612_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema611_type_1 = StdioTransportConfigOutput.from_dict(data)
+                componentsschemas_schema612_type_1 = StdioTransportConfigOutput.from_dict(data)
 
-                return componentsschemas_schema611_type_1
+                return componentsschemas_schema612_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema611_type_2 = SseTransportConfigOutput.from_dict(data)
+                componentsschemas_schema612_type_2 = SseTransportConfigOutput.from_dict(data)
 
-                return componentsschemas_schema611_type_2
+                return componentsschemas_schema612_type_2
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema611_type_3 = Schema644.from_dict(data)
+                componentsschemas_schema612_type_3 = Schema645.from_dict(data)
 
-                return componentsschemas_schema611_type_3
+                return componentsschemas_schema612_type_3
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema611_type_4 = HostedTransportConfigOutput.from_dict(data)
+                componentsschemas_schema612_type_4 = HostedTransportConfigOutput.from_dict(data)
 
-                return componentsschemas_schema611_type_4
+                return componentsschemas_schema612_type_4
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema611_type_5 = OpenApiTransportConfigOutput.from_dict(data)
+                componentsschemas_schema612_type_5 = OpenApiTransportConfigOutput.from_dict(data)
 
-                return componentsschemas_schema611_type_5
+                return componentsschemas_schema612_type_5
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             if not isinstance(data, dict):
                 raise TypeError()
-            componentsschemas_schema611_type_6 = EmailTransportConfigOutput.from_dict(data)
+            componentsschemas_schema612_type_6 = EmailTransportConfigOutput.from_dict(data)
 
-            return componentsschemas_schema611_type_6
+            return componentsschemas_schema612_type_6
 
         transport_config = _parse_transport_config(d.pop("transportConfig"))
 
@@ -330,9 +358,9 @@ class ServerDto:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema697_type_1 = ServerOAuthClientConfiguration.from_dict(data)
+                componentsschemas_schema698_type_1 = ServerOAuthClientConfiguration.from_dict(data)
 
-                return componentsschemas_schema697_type_1
+                return componentsschemas_schema698_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | ServerOAuthClientConfiguration, data)
@@ -345,16 +373,16 @@ class ServerDto:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema713_type_1 = ServerOAuthMetadata.from_dict(data)
+                componentsschemas_schema714_type_1 = ServerOAuthMetadata.from_dict(data)
 
-                return componentsschemas_schema713_type_1
+                return componentsschemas_schema714_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | ServerOAuthMetadata, data)
 
         oauth_metadata = _parse_oauth_metadata(d.pop("oauthMetadata"))
 
-        visibility = Schema737(d.pop("visibility"))
+        visibility = Schema738(d.pop("visibility"))
 
         is_enabled = d.pop("isEnabled")
 
@@ -374,6 +402,21 @@ class ServerDto:
 
         mcp_protocol_detected_at = _parse_mcp_protocol_detected_at(d.pop("mcpProtocolDetectedAt"))
 
+        def _parse_mcp_capabilities(data: object) -> None | Schema746:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_schema745_type_0 = Schema746.from_dict(data)
+
+                return componentsschemas_schema745_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | Schema746, data)
+
+        mcp_capabilities = _parse_mcp_capabilities(d.pop("mcpCapabilities"))
+
         timeout_protocol = d.pop("timeoutProtocol")
 
         timeout_total = d.pop("timeoutTotal")
@@ -388,20 +431,22 @@ class ServerDto:
 
         is_skill_serving_enabled = d.pop("isSkillServingEnabled")
 
+        is_app_serving_enabled = d.pop("isAppServingEnabled")
+
         firewall_rules = []
         _firewall_rules = d.pop("firewallRules")
-        for componentsschemas_schema751_item_data in _firewall_rules:
-            componentsschemas_schema751_item = Schema752.from_dict(componentsschemas_schema751_item_data)
+        for componentsschemas_schema755_item_data in _firewall_rules:
+            componentsschemas_schema755_item = Schema756.from_dict(componentsschemas_schema755_item_data)
 
-            firewall_rules.append(componentsschemas_schema751_item)
+            firewall_rules.append(componentsschemas_schema755_item)
 
-        protections = Schema756.from_dict(d.pop("protections"))
+        protections = Schema760.from_dict(d.pop("protections"))
 
         created_at = d.pop("createdAt")
 
         updated_at = d.pop("updatedAt")
 
-        resolved_protections = Schema768.from_dict(d.pop("resolvedProtections"))
+        resolved_protections = Schema772.from_dict(d.pop("resolvedProtections"))
 
         def _parse_server_info(data: object) -> None | ServerInfo:
             if data is None:
@@ -409,14 +454,18 @@ class ServerDto:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema776_type_0 = ServerInfo.from_dict(data)
+                componentsschemas_schema780_type_0 = ServerInfo.from_dict(data)
 
-                return componentsschemas_schema776_type_0
+                return componentsschemas_schema780_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | ServerInfo, data)
 
         server_info = _parse_server_info(d.pop("serverInfo"))
+
+        has_apps = d.pop("hasApps")
+
+        has_skills = d.pop("hasSkills")
 
         server_dto = cls(
             id=id,
@@ -432,6 +481,7 @@ class ServerDto:
             last_tool_refresh_at=last_tool_refresh_at,
             mcp_protocol_version=mcp_protocol_version,
             mcp_protocol_detected_at=mcp_protocol_detected_at,
+            mcp_capabilities=mcp_capabilities,
             timeout_protocol=timeout_protocol,
             timeout_total=timeout_total,
             reset_timeout_on_progress_notification=reset_timeout_on_progress_notification,
@@ -439,12 +489,15 @@ class ServerDto:
             is_output_compression_transform_enabled=is_output_compression_transform_enabled,
             output_compression_threshold_bytes=output_compression_threshold_bytes,
             is_skill_serving_enabled=is_skill_serving_enabled,
+            is_app_serving_enabled=is_app_serving_enabled,
             firewall_rules=firewall_rules,
             protections=protections,
             created_at=created_at,
             updated_at=updated_at,
             resolved_protections=resolved_protections,
             server_info=server_info,
+            has_apps=has_apps,
+            has_skills=has_skills,
         )
 
         return server_dto

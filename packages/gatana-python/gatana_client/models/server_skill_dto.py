@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 
 if TYPE_CHECKING:
-    from ..models.schema_1473 import Schema1473
+    from ..models.schema_1483 import Schema1483
 
 
 T = TypeVar("T", bound="ServerSkillDto")
@@ -22,7 +22,7 @@ class ServerSkillDto:
         gateway_uri (str): URI of the SKILL.md as agents read it through Gatana
         name (str):
         description (str): One line saying when to use the skill
-        files (list[Schema1473]): Every file of the skill, SKILL.md included
+        files (list[Schema1483]): Every file of the skill, SKILL.md included
     """
 
     server_id: str
@@ -31,7 +31,7 @@ class ServerSkillDto:
     gateway_uri: str
     name: str
     description: str
-    files: list[Schema1473]
+    files: list[Schema1483]
 
     def to_dict(self) -> dict[str, Any]:
         server_id = self.server_id
@@ -47,9 +47,9 @@ class ServerSkillDto:
         description = self.description
 
         files = []
-        for componentsschemas_schema1472_item_data in self.files:
-            componentsschemas_schema1472_item = componentsschemas_schema1472_item_data.to_dict()
-            files.append(componentsschemas_schema1472_item)
+        for componentsschemas_schema1482_item_data in self.files:
+            componentsschemas_schema1482_item = componentsschemas_schema1482_item_data.to_dict()
+            files.append(componentsschemas_schema1482_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -69,7 +69,7 @@ class ServerSkillDto:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_1473 import Schema1473
+        from ..models.schema_1483 import Schema1483
 
         d = dict(src_dict)
         server_id = d.pop("serverId")
@@ -86,10 +86,10 @@ class ServerSkillDto:
 
         files = []
         _files = d.pop("files")
-        for componentsschemas_schema1472_item_data in _files:
-            componentsschemas_schema1472_item = Schema1473.from_dict(componentsschemas_schema1472_item_data)
+        for componentsschemas_schema1482_item_data in _files:
+            componentsschemas_schema1482_item = Schema1483.from_dict(componentsschemas_schema1482_item_data)
 
-            files.append(componentsschemas_schema1472_item)
+            files.append(componentsschemas_schema1482_item)
 
         server_skill_dto = cls(
             server_id=server_id,

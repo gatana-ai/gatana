@@ -23,9 +23,9 @@ class SecretStoreListResponse:
 
     def to_dict(self) -> dict[str, Any]:
         stores = []
-        for componentsschemas_schema1146_item_data in self.stores:
-            componentsschemas_schema1146_item = componentsschemas_schema1146_item_data.to_dict()
-            stores.append(componentsschemas_schema1146_item)
+        for componentsschemas_schema1156_item_data in self.stores:
+            componentsschemas_schema1156_item = componentsschemas_schema1156_item_data.to_dict()
+            stores.append(componentsschemas_schema1156_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -44,10 +44,10 @@ class SecretStoreListResponse:
         d = dict(src_dict)
         stores = []
         _stores = d.pop("stores")
-        for componentsschemas_schema1146_item_data in _stores:
-            componentsschemas_schema1146_item = SecretStoreResponse.from_dict(componentsschemas_schema1146_item_data)
+        for componentsschemas_schema1156_item_data in _stores:
+            componentsschemas_schema1156_item = SecretStoreResponse.from_dict(componentsschemas_schema1156_item_data)
 
-            stores.append(componentsschemas_schema1146_item)
+            stores.append(componentsschemas_schema1156_item)
 
         secret_store_list_response = cls(
             stores=stores,

@@ -6,14 +6,14 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_441 import Schema441
+from ...models.schema_442 import Schema442
 from ...models.skill_shares_response import SkillSharesResponse
 from ...types import Response
 
 
 def _get_kwargs(
     skill_id: str,
-    member_type: Schema441,
+    member_type: Schema442,
     member_id: str,
 ) -> dict[str, Any]:
 
@@ -52,7 +52,7 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def sync_detailed(
     skill_id: str,
-    member_type: Schema441,
+    member_type: Schema442,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -61,7 +61,7 @@ def sync_detailed(
 
     Args:
         skill_id (str):
-        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+        member_type (Schema442): 'users' for one user, 'teams' for team members, 'servers' for
             users with server access
         member_id (str): User, team or server ID
 
@@ -88,7 +88,7 @@ def sync_detailed(
 
 def sync(
     skill_id: str,
-    member_type: Schema441,
+    member_type: Schema442,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -97,7 +97,7 @@ def sync(
 
     Args:
         skill_id (str):
-        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+        member_type (Schema442): 'users' for one user, 'teams' for team members, 'servers' for
             users with server access
         member_id (str): User, team or server ID
 
@@ -119,7 +119,7 @@ def sync(
 
 async def asyncio_detailed(
     skill_id: str,
-    member_type: Schema441,
+    member_type: Schema442,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -128,7 +128,7 @@ async def asyncio_detailed(
 
     Args:
         skill_id (str):
-        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+        member_type (Schema442): 'users' for one user, 'teams' for team members, 'servers' for
             users with server access
         member_id (str): User, team or server ID
 
@@ -153,7 +153,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     skill_id: str,
-    member_type: Schema441,
+    member_type: Schema442,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -162,7 +162,7 @@ async def asyncio(
 
     Args:
         skill_id (str):
-        member_type (Schema441): 'users' for one user, 'teams' for team members, 'servers' for
+        member_type (Schema442): 'users' for one user, 'teams' for team members, 'servers' for
             users with server access
         member_id (str): User, team or server ID
 

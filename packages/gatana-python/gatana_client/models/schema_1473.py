@@ -1,9 +1,16 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
+
+from ..models.schema_1403 import Schema1403
+
+if TYPE_CHECKING:
+    from ..models.schema_1466 import Schema1466
+    from ..models.schema_1469 import Schema1469
+
 
 T = TypeVar("T", bound="Schema1473")
 
@@ -12,39 +19,45 @@ T = TypeVar("T", bound="Schema1473")
 class Schema1473:
     """
     Attributes:
-        path (str): File path in the skill folder, as written in the URI
-        size_bytes (float):
-        digest (str): SHA-256 digest of the file, as "sha256:<hex>"
-        mime_type (str): Set by Gatana from the file extension
-        uri (str): URI of the file as the server publishes it
+        collection_id (str):
+        collection_name (str):
+        visibility (Schema1403):
+        users (list[Schema1466]): User accounts with access, oldest share first
+        teams (list[Schema1469]): Teams with access, oldest share first; every member of a team has it
     """
 
-    path: str
-    size_bytes: float
-    digest: str
-    mime_type: str
-    uri: str
+    collection_id: str
+    collection_name: str
+    visibility: Schema1403
+    users: list[Schema1466]
+    teams: list[Schema1469]
 
     def to_dict(self) -> dict[str, Any]:
-        path = self.path
+        collection_id = self.collection_id
 
-        size_bytes = self.size_bytes
+        collection_name = self.collection_name
 
-        digest = self.digest
+        visibility = self.visibility.value
 
-        mime_type = self.mime_type
+        users = []
+        for componentsschemas_schema1465_item_data in self.users:
+            componentsschemas_schema1465_item = componentsschemas_schema1465_item_data.to_dict()
+            users.append(componentsschemas_schema1465_item)
 
-        uri = self.uri
+        teams = []
+        for componentsschemas_schema1468_item_data in self.teams:
+            componentsschemas_schema1468_item = componentsschemas_schema1468_item_data.to_dict()
+            teams.append(componentsschemas_schema1468_item)
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "path": path,
-                "sizeBytes": size_bytes,
-                "digest": digest,
-                "mimeType": mime_type,
-                "uri": uri,
+                "collectionId": collection_id,
+                "collectionName": collection_name,
+                "visibility": visibility,
+                "users": users,
+                "teams": teams,
             }
         )
 
@@ -52,23 +65,36 @@ class Schema1473:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.schema_1466 import Schema1466
+        from ..models.schema_1469 import Schema1469
+
         d = dict(src_dict)
-        path = d.pop("path")
+        collection_id = d.pop("collectionId")
 
-        size_bytes = d.pop("sizeBytes")
+        collection_name = d.pop("collectionName")
 
-        digest = d.pop("digest")
+        visibility = Schema1403(d.pop("visibility"))
 
-        mime_type = d.pop("mimeType")
+        users = []
+        _users = d.pop("users")
+        for componentsschemas_schema1465_item_data in _users:
+            componentsschemas_schema1465_item = Schema1466.from_dict(componentsschemas_schema1465_item_data)
 
-        uri = d.pop("uri")
+            users.append(componentsschemas_schema1465_item)
+
+        teams = []
+        _teams = d.pop("teams")
+        for componentsschemas_schema1468_item_data in _teams:
+            componentsschemas_schema1468_item = Schema1469.from_dict(componentsschemas_schema1468_item_data)
+
+            teams.append(componentsschemas_schema1468_item)
 
         schema_1473 = cls(
-            path=path,
-            size_bytes=size_bytes,
-            digest=digest,
-            mime_type=mime_type,
-            uri=uri,
+            collection_id=collection_id,
+            collection_name=collection_name,
+            visibility=visibility,
+            users=users,
+            teams=teams,
         )
 
         return schema_1473

@@ -6,7 +6,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.deployment_metrics_response import DeploymentMetricsResponse
-from ...models.schema_257 import Schema257
+from ...models.schema_258 import Schema258
 from ...types import UNSET, Response, Unset
 
 
@@ -14,7 +14,7 @@ def _get_kwargs(
     *,
     server_slug: str | Unset = UNSET,
     sandbox_id: str | Unset = UNSET,
-    range_: Schema257 | Unset = UNSET,
+    range_: Schema258 | Unset = UNSET,
 ) -> dict[str, Any]:
 
     params: dict[str, Any] = {}
@@ -70,7 +70,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     server_slug: str | Unset = UNSET,
     sandbox_id: str | Unset = UNSET,
-    range_: Schema257 | Unset = UNSET,
+    range_: Schema258 | Unset = UNSET,
 ) -> Response[DeploymentMetricsResponse]:
     """Get historical CPU, memory and storage usage metrics for a deployment. Provide either serverSlug or
     sandboxId; requires read permission on the server
@@ -78,7 +78,7 @@ def sync_detailed(
     Args:
         server_slug (str | Unset):
         sandbox_id (str | Unset):
-        range_ (Schema257 | Unset):
+        range_ (Schema258 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -106,7 +106,7 @@ def sync(
     client: AuthenticatedClient | Client,
     server_slug: str | Unset = UNSET,
     sandbox_id: str | Unset = UNSET,
-    range_: Schema257 | Unset = UNSET,
+    range_: Schema258 | Unset = UNSET,
 ) -> DeploymentMetricsResponse | None:
     """Get historical CPU, memory and storage usage metrics for a deployment. Provide either serverSlug or
     sandboxId; requires read permission on the server
@@ -114,7 +114,7 @@ def sync(
     Args:
         server_slug (str | Unset):
         sandbox_id (str | Unset):
-        range_ (Schema257 | Unset):
+        range_ (Schema258 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -137,7 +137,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     server_slug: str | Unset = UNSET,
     sandbox_id: str | Unset = UNSET,
-    range_: Schema257 | Unset = UNSET,
+    range_: Schema258 | Unset = UNSET,
 ) -> Response[DeploymentMetricsResponse]:
     """Get historical CPU, memory and storage usage metrics for a deployment. Provide either serverSlug or
     sandboxId; requires read permission on the server
@@ -145,7 +145,7 @@ async def asyncio_detailed(
     Args:
         server_slug (str | Unset):
         sandbox_id (str | Unset):
-        range_ (Schema257 | Unset):
+        range_ (Schema258 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -171,7 +171,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     server_slug: str | Unset = UNSET,
     sandbox_id: str | Unset = UNSET,
-    range_: Schema257 | Unset = UNSET,
+    range_: Schema258 | Unset = UNSET,
 ) -> DeploymentMetricsResponse | None:
     """Get historical CPU, memory and storage usage metrics for a deployment. Provide either serverSlug or
     sandboxId; requires read permission on the server
@@ -179,7 +179,7 @@ async def asyncio(
     Args:
         server_slug (str | Unset):
         sandbox_id (str | Unset):
-        range_ (Schema257 | Unset):
+        range_ (Schema258 | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

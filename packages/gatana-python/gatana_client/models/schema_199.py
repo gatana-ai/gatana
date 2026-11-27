@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_200 import Schema200
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_201 import Schema201
-    from ..models.schema_204 import Schema204
+    from ..models.schema_200 import Schema200
+    from ..models.schema_207 import Schema207
+    from ..models.schema_208 import Schema208
 
 
 T = TypeVar("T", bound="Schema199")
@@ -19,69 +19,76 @@ T = TypeVar("T", bound="Schema199")
 
 @_attrs_define
 class Schema199:
-    """
+    """Built-in protections of the server. A missing protection is off
+
     Attributes:
-        mode (Schema200):
-        actions (Schema201 | Unset): Actions for On mode. Missing targets use organization defaults or built-in values
-        settings (Schema204 | Unset):
+        secrets (Schema200 | Unset):
+        pii (Schema207 | Unset):
+        injection (Schema208 | Unset):
     """
 
-    mode: Schema200
-    actions: Schema201 | Unset = UNSET
-    settings: Schema204 | Unset = UNSET
+    secrets: Schema200 | Unset = UNSET
+    pii: Schema207 | Unset = UNSET
+    injection: Schema208 | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        mode = self.mode.value
+        secrets: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.secrets, Unset):
+            secrets = self.secrets.to_dict()
 
-        actions: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.actions, Unset):
-            actions = self.actions.to_dict()
+        pii: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.pii, Unset):
+            pii = self.pii.to_dict()
 
-        settings: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.settings, Unset):
-            settings = self.settings.to_dict()
+        injection: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.injection, Unset):
+            injection = self.injection.to_dict()
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "mode": mode,
-            }
-        )
-        if actions is not UNSET:
-            field_dict["actions"] = actions
-        if settings is not UNSET:
-            field_dict["settings"] = settings
+        field_dict.update({})
+        if secrets is not UNSET:
+            field_dict["secrets"] = secrets
+        if pii is not UNSET:
+            field_dict["pii"] = pii
+        if injection is not UNSET:
+            field_dict["injection"] = injection
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_201 import Schema201
-        from ..models.schema_204 import Schema204
+        from ..models.schema_200 import Schema200
+        from ..models.schema_207 import Schema207
+        from ..models.schema_208 import Schema208
 
         d = dict(src_dict)
-        mode = Schema200(d.pop("mode"))
-
-        _actions = d.pop("actions", UNSET)
-        actions: Schema201 | Unset
-        if isinstance(_actions, Unset):
-            actions = UNSET
+        _secrets = d.pop("secrets", UNSET)
+        secrets: Schema200 | Unset
+        if isinstance(_secrets, Unset):
+            secrets = UNSET
         else:
-            actions = Schema201.from_dict(_actions)
+            secrets = Schema200.from_dict(_secrets)
 
-        _settings = d.pop("settings", UNSET)
-        settings: Schema204 | Unset
-        if isinstance(_settings, Unset):
-            settings = UNSET
+        _pii = d.pop("pii", UNSET)
+        pii: Schema207 | Unset
+        if isinstance(_pii, Unset):
+            pii = UNSET
         else:
-            settings = Schema204.from_dict(_settings)
+            pii = Schema207.from_dict(_pii)
+
+        _injection = d.pop("injection", UNSET)
+        injection: Schema208 | Unset
+        if isinstance(_injection, Unset):
+            injection = UNSET
+        else:
+            injection = Schema208.from_dict(_injection)
 
         schema_199 = cls(
-            mode=mode,
-            actions=actions,
-            settings=settings,
+            secrets=secrets,
+            pii=pii,
+            injection=injection,
         )
 
         schema_199.additional_properties = d

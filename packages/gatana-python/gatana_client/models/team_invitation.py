@@ -5,7 +5,7 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1124 import Schema1124
+from ..models.schema_1134 import Schema1134
 
 T = TypeVar("T", bound="TeamInvitation")
 
@@ -19,7 +19,7 @@ class TeamInvitation:
         tenant_id (str): ID of the tenant that owns the invitation
         inviter_user_id (None | str): ID of the user who sent the invitation, or null
         email (str): Email address the invitation was sent to
-        role (Schema1124):
+        role (Schema1134):
         token (str): Token used to accept the invitation
         expires_at (str): Time when the invitation expires
         accepted_at (None | str): Time when the invitation was accepted, or null
@@ -32,7 +32,7 @@ class TeamInvitation:
     tenant_id: str
     inviter_user_id: None | str
     email: str
-    role: Schema1124
+    role: Schema1134
     token: str
     expires_at: str
     accepted_at: None | str
@@ -102,7 +102,7 @@ class TeamInvitation:
 
         email = d.pop("email")
 
-        role = Schema1124(d.pop("role"))
+        role = Schema1134(d.pop("role"))
 
         token = d.pop("token")
 

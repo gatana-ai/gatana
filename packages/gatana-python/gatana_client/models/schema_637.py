@@ -5,6 +5,8 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
+from ..types import UNSET, Unset
+
 T = TypeVar("T", bound="Schema637")
 
 
@@ -12,31 +14,42 @@ T = TypeVar("T", bound="Schema637")
 class Schema637:
     """
     Attributes:
-        enabled (bool): Whether the server gets a persistent volume
+        cpu (str | Unset): CPU reserved for the deployment, in Kubernetes quantity format (e.g. "250m" or "1"). This is
+            the minimum the deployment is guaranteed when the hardware is busy; when capacity is free it may use more.
+            Reserved capacity counts against the organization total even while the server idles, so keep it at what the
+            server needs, not what it may burst to
+        memory (str | Unset): Memory reserved for the deployment, in Kubernetes quantity format (e.g. "384Mi" or "1Gi").
+            Unlike CPU this is also the hard ceiling: a process that exceeds it is terminated
     """
 
-    enabled: bool
+    cpu: str | Unset = UNSET
+    memory: str | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        enabled = self.enabled
+        cpu = self.cpu
+
+        memory = self.memory
 
         field_dict: dict[str, Any] = {}
 
-        field_dict.update(
-            {
-                "enabled": enabled,
-            }
-        )
+        field_dict.update({})
+        if cpu is not UNSET:
+            field_dict["cpu"] = cpu
+        if memory is not UNSET:
+            field_dict["memory"] = memory
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        enabled = d.pop("enabled")
+        cpu = d.pop("cpu", UNSET)
+
+        memory = d.pop("memory", UNSET)
 
         schema_637 = cls(
-            enabled=enabled,
+            cpu=cpu,
+            memory=memory,
         )
 
         return schema_637

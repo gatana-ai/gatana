@@ -6,7 +6,7 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_264 import Schema264
+from ..models.schema_265 import Schema265
 
 T = TypeVar("T", bound="CreateTeamMemberBody")
 
@@ -16,11 +16,11 @@ class CreateTeamMemberBody:
     """
     Attributes:
         user_id (str): ID of the user to add
-        role (Schema264):
+        role (Schema265):
     """
 
     user_id: str
-    role: Schema264
+    role: Schema265
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -44,7 +44,7 @@ class CreateTeamMemberBody:
         d = dict(src_dict)
         user_id = d.pop("userId")
 
-        role = Schema264(d.pop("role"))
+        role = Schema265(d.pop("role"))
 
         create_team_member_body = cls(
             user_id=user_id,

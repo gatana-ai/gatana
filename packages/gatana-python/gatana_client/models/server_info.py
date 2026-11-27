@@ -41,9 +41,9 @@ class ServerInfo:
         description = self.description
 
         icons = []
-        for componentsschemas_schema781_item_data in self.icons:
-            componentsschemas_schema781_item = componentsschemas_schema781_item_data.to_dict()
-            icons.append(componentsschemas_schema781_item)
+        for componentsschemas_schema785_item_data in self.icons:
+            componentsschemas_schema785_item = componentsschemas_schema785_item_data.to_dict()
+            icons.append(componentsschemas_schema785_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -74,10 +74,10 @@ class ServerInfo:
 
         icons = []
         _icons = d.pop("icons")
-        for componentsschemas_schema781_item_data in _icons:
-            componentsschemas_schema781_item = ServerInfoIcon.from_dict(componentsschemas_schema781_item_data)
+        for componentsschemas_schema785_item_data in _icons:
+            componentsschemas_schema785_item = ServerInfoIcon.from_dict(componentsschemas_schema785_item_data)
 
-            icons.append(componentsschemas_schema781_item)
+            icons.append(componentsschemas_schema785_item)
 
         server_info = cls(
             title=title,

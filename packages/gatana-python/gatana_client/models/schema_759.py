@@ -5,64 +5,49 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_760 import Schema760
-from ..models.schema_761 import Schema761
-from ..types import UNSET, Unset
+from ..models.protection_check_target import ProtectionCheckTarget
+from ..models.protection_check_type import ProtectionCheckType
 
 T = TypeVar("T", bound="Schema759")
 
 
 @_attrs_define
 class Schema759:
-    """Actions for On mode. Missing targets use organization defaults or built-in values
-
+    """
     Attributes:
-        arguments (Schema760 | Unset):
-        result (Schema761 | Unset):
+        type_ (ProtectionCheckType):
+        target (ProtectionCheckTarget):
     """
 
-    arguments: Schema760 | Unset = UNSET
-    result: Schema761 | Unset = UNSET
+    type_: ProtectionCheckType
+    target: ProtectionCheckTarget
 
     def to_dict(self) -> dict[str, Any]:
-        arguments: str | Unset = UNSET
-        if not isinstance(self.arguments, Unset):
-            arguments = self.arguments.value
+        type_ = self.type_.value
 
-        result: str | Unset = UNSET
-        if not isinstance(self.result, Unset):
-            result = self.result.value
+        target = self.target.value
 
         field_dict: dict[str, Any] = {}
 
-        field_dict.update({})
-        if arguments is not UNSET:
-            field_dict["arguments"] = arguments
-        if result is not UNSET:
-            field_dict["result"] = result
+        field_dict.update(
+            {
+                "type": type_,
+                "target": target,
+            }
+        )
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        _arguments = d.pop("arguments", UNSET)
-        arguments: Schema760 | Unset
-        if isinstance(_arguments, Unset):
-            arguments = UNSET
-        else:
-            arguments = Schema760(_arguments)
+        type_ = ProtectionCheckType(d.pop("type"))
 
-        _result = d.pop("result", UNSET)
-        result: Schema761 | Unset
-        if isinstance(_result, Unset):
-            result = UNSET
-        else:
-            result = Schema761(_result)
+        target = ProtectionCheckTarget(d.pop("target"))
 
         schema_759 = cls(
-            arguments=arguments,
-            result=result,
+            type_=type_,
+            target=target,
         )
 
         return schema_759

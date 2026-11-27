@@ -23,9 +23,9 @@ class ListSkillFilesResponse:
 
     def to_dict(self) -> dict[str, Any]:
         files = []
-        for componentsschemas_schema1445_item_data in self.files:
-            componentsschemas_schema1445_item = componentsschemas_schema1445_item_data.to_dict()
-            files.append(componentsschemas_schema1445_item)
+        for componentsschemas_schema1455_item_data in self.files:
+            componentsschemas_schema1455_item = componentsschemas_schema1455_item_data.to_dict()
+            files.append(componentsschemas_schema1455_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -44,10 +44,10 @@ class ListSkillFilesResponse:
         d = dict(src_dict)
         files = []
         _files = d.pop("files")
-        for componentsschemas_schema1445_item_data in _files:
-            componentsschemas_schema1445_item = SkillFileDto.from_dict(componentsschemas_schema1445_item_data)
+        for componentsschemas_schema1455_item_data in _files:
+            componentsschemas_schema1455_item = SkillFileDto.from_dict(componentsschemas_schema1455_item_data)
 
-            files.append(componentsschemas_schema1445_item)
+            files.append(componentsschemas_schema1455_item)
 
         list_skill_files_response = cls(
             files=files,

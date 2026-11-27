@@ -4,10 +4,12 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
-from attrs import field as _attrs_field
+
+from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_775 import Schema775
+    from ..models.schema_774 import Schema774
+    from ..models.schema_776 import Schema776
 
 
 T = TypeVar("T", bound="Schema773")
@@ -15,46 +17,58 @@ T = TypeVar("T", bound="Schema773")
 
 @_attrs_define
 class Schema773:
-    """The value and source of each option"""
+    """Actions for each supported target in On mode, regardless of the current mode
 
-    additional_properties: dict[str, Schema775] = _attrs_field(init=False, factory=dict)
+    Attributes:
+        arguments (Schema774 | Unset):
+        result (Schema776 | Unset):
+    """
+
+    arguments: Schema774 | Unset = UNSET
+    result: Schema776 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
+        arguments: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.arguments, Unset):
+            arguments = self.arguments.to_dict()
+
+        result: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.result, Unset):
+            result = self.result.to_dict()
 
         field_dict: dict[str, Any] = {}
-        for prop_name, prop in self.additional_properties.items():
-            field_dict[prop_name] = prop.to_dict()
+
+        field_dict.update({})
+        if arguments is not UNSET:
+            field_dict["arguments"] = arguments
+        if result is not UNSET:
+            field_dict["result"] = result
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_775 import Schema775
+        from ..models.schema_774 import Schema774
+        from ..models.schema_776 import Schema776
 
         d = dict(src_dict)
-        schema_773 = cls()
+        _arguments = d.pop("arguments", UNSET)
+        arguments: Schema774 | Unset
+        if isinstance(_arguments, Unset):
+            arguments = UNSET
+        else:
+            arguments = Schema774.from_dict(_arguments)
 
-        additional_properties = {}
-        for prop_name, prop_dict in d.items():
-            additional_property = Schema775.from_dict(prop_dict)
+        _result = d.pop("result", UNSET)
+        result: Schema776 | Unset
+        if isinstance(_result, Unset):
+            result = UNSET
+        else:
+            result = Schema776.from_dict(_result)
 
-            additional_properties[prop_name] = additional_property
+        schema_773 = cls(
+            arguments=arguments,
+            result=result,
+        )
 
-        schema_773.additional_properties = additional_properties
         return schema_773
-
-    @property
-    def additional_keys(self) -> list[str]:
-        return list(self.additional_properties.keys())
-
-    def __getitem__(self, key: str) -> Schema775:
-        return self.additional_properties[key]
-
-    def __setitem__(self, key: str, value: Schema775) -> None:
-        self.additional_properties[key] = value
-
-    def __delitem__(self, key: str) -> None:
-        del self.additional_properties[key]
-
-    def __contains__(self, key: str) -> bool:
-        return key in self.additional_properties

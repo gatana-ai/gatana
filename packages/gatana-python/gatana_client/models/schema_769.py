@@ -5,11 +5,12 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 
+from ..models.schema_762 import Schema762
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_770 import Schema770
-    from ..models.schema_772 import Schema772
+    from ..models.schema_763 import Schema763
+    from ..models.schema_766 import Schema766
 
 
 T = TypeVar("T", bound="Schema769")
@@ -17,58 +18,60 @@ T = TypeVar("T", bound="Schema769")
 
 @_attrs_define
 class Schema769:
-    """Actions for each supported target in On mode, regardless of the current mode
-
+    """
     Attributes:
-        arguments (Schema770 | Unset):
-        result (Schema772 | Unset):
+        mode (Schema762):
+        settings (Schema766):
+        actions (Schema763 | Unset): Actions for On mode. Missing targets use organization defaults or built-in values
     """
 
-    arguments: Schema770 | Unset = UNSET
-    result: Schema772 | Unset = UNSET
+    mode: Schema762
+    settings: Schema766
+    actions: Schema763 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
-        arguments: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.arguments, Unset):
-            arguments = self.arguments.to_dict()
+        mode = self.mode.value
 
-        result: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.result, Unset):
-            result = self.result.to_dict()
+        settings = self.settings.to_dict()
+
+        actions: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.actions, Unset):
+            actions = self.actions.to_dict()
 
         field_dict: dict[str, Any] = {}
 
-        field_dict.update({})
-        if arguments is not UNSET:
-            field_dict["arguments"] = arguments
-        if result is not UNSET:
-            field_dict["result"] = result
+        field_dict.update(
+            {
+                "mode": mode,
+                "settings": settings,
+            }
+        )
+        if actions is not UNSET:
+            field_dict["actions"] = actions
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_770 import Schema770
-        from ..models.schema_772 import Schema772
+        from ..models.schema_763 import Schema763
+        from ..models.schema_766 import Schema766
 
         d = dict(src_dict)
-        _arguments = d.pop("arguments", UNSET)
-        arguments: Schema770 | Unset
-        if isinstance(_arguments, Unset):
-            arguments = UNSET
-        else:
-            arguments = Schema770.from_dict(_arguments)
+        mode = Schema762(d.pop("mode"))
 
-        _result = d.pop("result", UNSET)
-        result: Schema772 | Unset
-        if isinstance(_result, Unset):
-            result = UNSET
+        settings = Schema766.from_dict(d.pop("settings"))
+
+        _actions = d.pop("actions", UNSET)
+        actions: Schema763 | Unset
+        if isinstance(_actions, Unset):
+            actions = UNSET
         else:
-            result = Schema772.from_dict(_result)
+            actions = Schema763.from_dict(_actions)
 
         schema_769 = cls(
-            arguments=arguments,
-            result=result,
+            mode=mode,
+            settings=settings,
+            actions=actions,
         )
 
         return schema_769

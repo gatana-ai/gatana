@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
@@ -12,25 +12,39 @@ T = TypeVar("T", bound="Schema1483")
 class Schema1483:
     """
     Attributes:
-        message (str):
-        authorize_url (None | str): Link that stores the credential. null when the caller cannot set it
+        path (str): File path in the skill folder, as written in the URI
+        size_bytes (float):
+        digest (str): SHA-256 digest of the file, as "sha256:<hex>"
+        mime_type (str): Set by Gatana from the file extension
+        uri (str): URI of the file as the server publishes it
     """
 
-    message: str
-    authorize_url: None | str
+    path: str
+    size_bytes: float
+    digest: str
+    mime_type: str
+    uri: str
 
     def to_dict(self) -> dict[str, Any]:
-        message = self.message
+        path = self.path
 
-        authorize_url: None | str
-        authorize_url = self.authorize_url
+        size_bytes = self.size_bytes
+
+        digest = self.digest
+
+        mime_type = self.mime_type
+
+        uri = self.uri
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "message": message,
-                "authorizeUrl": authorize_url,
+                "path": path,
+                "sizeBytes": size_bytes,
+                "digest": digest,
+                "mimeType": mime_type,
+                "uri": uri,
             }
         )
 
@@ -39,18 +53,22 @@ class Schema1483:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        message = d.pop("message")
+        path = d.pop("path")
 
-        def _parse_authorize_url(data: object) -> None | str:
-            if data is None:
-                return data
-            return cast(None | str, data)
+        size_bytes = d.pop("sizeBytes")
 
-        authorize_url = _parse_authorize_url(d.pop("authorizeUrl"))
+        digest = d.pop("digest")
+
+        mime_type = d.pop("mimeType")
+
+        uri = d.pop("uri")
 
         schema_1483 = cls(
-            message=message,
-            authorize_url=authorize_url,
+            path=path,
+            size_bytes=size_bytes,
+            digest=digest,
+            mime_type=mime_type,
+            uri=uri,
         )
 
         return schema_1483

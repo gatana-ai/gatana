@@ -8,9 +8,9 @@ from attrs import define as _attrs_define
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_954 import Schema954
-    from ..models.schema_959 import Schema959
-    from ..models.schema_960 import Schema960
+    from ..models.schema_964 import Schema964
+    from ..models.schema_969 import Schema969
+    from ..models.schema_970 import Schema970
 
 
 T = TypeVar("T", bound="ProtectionDefaults")
@@ -22,14 +22,14 @@ class ProtectionDefaults:
     all defaults
 
         Attributes:
-            secrets (Schema954 | Unset):
-            pii (Schema959 | Unset):
-            injection (Schema960 | Unset):
+            secrets (Schema964 | Unset):
+            pii (Schema969 | Unset):
+            injection (Schema970 | Unset):
     """
 
-    secrets: Schema954 | Unset = UNSET
-    pii: Schema959 | Unset = UNSET
-    injection: Schema960 | Unset = UNSET
+    secrets: Schema964 | Unset = UNSET
+    pii: Schema969 | Unset = UNSET
+    injection: Schema970 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         secrets: dict[str, Any] | Unset = UNSET
@@ -58,31 +58,31 @@ class ProtectionDefaults:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_954 import Schema954
-        from ..models.schema_959 import Schema959
-        from ..models.schema_960 import Schema960
+        from ..models.schema_964 import Schema964
+        from ..models.schema_969 import Schema969
+        from ..models.schema_970 import Schema970
 
         d = dict(src_dict)
         _secrets = d.pop("secrets", UNSET)
-        secrets: Schema954 | Unset
+        secrets: Schema964 | Unset
         if isinstance(_secrets, Unset):
             secrets = UNSET
         else:
-            secrets = Schema954.from_dict(_secrets)
+            secrets = Schema964.from_dict(_secrets)
 
         _pii = d.pop("pii", UNSET)
-        pii: Schema959 | Unset
+        pii: Schema969 | Unset
         if isinstance(_pii, Unset):
             pii = UNSET
         else:
-            pii = Schema959.from_dict(_pii)
+            pii = Schema969.from_dict(_pii)
 
         _injection = d.pop("injection", UNSET)
-        injection: Schema960 | Unset
+        injection: Schema970 | Unset
         if isinstance(_injection, Unset):
             injection = UNSET
         else:
-            injection = Schema960.from_dict(_injection)
+            injection = Schema970.from_dict(_injection)
 
         protection_defaults = cls(
             secrets=secrets,

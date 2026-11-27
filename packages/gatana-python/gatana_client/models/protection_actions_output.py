@@ -5,8 +5,8 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_760 import Schema760
-from ..models.schema_761 import Schema761
+from ..models.schema_764 import Schema764
+from ..models.schema_765 import Schema765
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="ProtectionActionsOutput")
@@ -17,12 +17,12 @@ class ProtectionActionsOutput:
     """Actions for On mode. Missing targets use organization defaults or built-in values
 
     Attributes:
-        arguments (Schema760 | Unset):
-        result (Schema761 | Unset):
+        arguments (Schema764 | Unset):
+        result (Schema765 | Unset):
     """
 
-    arguments: Schema760 | Unset = UNSET
-    result: Schema761 | Unset = UNSET
+    arguments: Schema764 | Unset = UNSET
+    result: Schema765 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         arguments: str | Unset = UNSET
@@ -47,18 +47,18 @@ class ProtectionActionsOutput:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
         _arguments = d.pop("arguments", UNSET)
-        arguments: Schema760 | Unset
+        arguments: Schema764 | Unset
         if isinstance(_arguments, Unset):
             arguments = UNSET
         else:
-            arguments = Schema760(_arguments)
+            arguments = Schema764(_arguments)
 
         _result = d.pop("result", UNSET)
-        result: Schema761 | Unset
+        result: Schema765 | Unset
         if isinstance(_result, Unset):
             result = UNSET
         else:
-            result = Schema761(_result)
+            result = Schema765(_result)
 
         protection_actions_output = cls(
             arguments=arguments,

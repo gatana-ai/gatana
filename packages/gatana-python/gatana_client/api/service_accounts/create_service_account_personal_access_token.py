@@ -7,7 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_personal_access_token_request import CreatePersonalAccessTokenRequest
-from ...models.schema_598 import Schema598
+from ...models.schema_599 import Schema599
 from ...types import UNSET, Response, Unset
 
 
@@ -34,9 +34,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema598 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema599 | None:
     if response.status_code == 200:
-        response_200 = Schema598.from_dict(response.json())
+        response_200 = Schema599.from_dict(response.json())
 
         return response_200
 
@@ -46,7 +46,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema598]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema599]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -60,7 +60,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: CreatePersonalAccessTokenRequest | Unset = UNSET,
-) -> Response[Schema598]:
+) -> Response[Schema599]:
     """Create a personal access token for a service account you may update and return its API key, from a
     browser session or a token
 
@@ -73,7 +73,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema598]
+        Response[Schema599]
     """
 
     kwargs = _get_kwargs(
@@ -93,7 +93,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: CreatePersonalAccessTokenRequest | Unset = UNSET,
-) -> Schema598 | None:
+) -> Schema599 | None:
     """Create a personal access token for a service account you may update and return its API key, from a
     browser session or a token
 
@@ -106,7 +106,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema598
+        Schema599
     """
 
     return sync_detailed(
@@ -121,7 +121,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: CreatePersonalAccessTokenRequest | Unset = UNSET,
-) -> Response[Schema598]:
+) -> Response[Schema599]:
     """Create a personal access token for a service account you may update and return its API key, from a
     browser session or a token
 
@@ -134,7 +134,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema598]
+        Response[Schema599]
     """
 
     kwargs = _get_kwargs(
@@ -152,7 +152,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: CreatePersonalAccessTokenRequest | Unset = UNSET,
-) -> Schema598 | None:
+) -> Schema599 | None:
     """Create a personal access token for a service account you may update and return its API key, from a
     browser session or a token
 
@@ -165,7 +165,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema598
+        Schema599
     """
 
     return (

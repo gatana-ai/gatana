@@ -23,9 +23,9 @@ class ListMcpServerSkillsResponse:
 
     def to_dict(self) -> dict[str, Any]:
         skills = []
-        for componentsschemas_schema1479_item_data in self.skills:
-            componentsschemas_schema1479_item = componentsschemas_schema1479_item_data.to_dict()
-            skills.append(componentsschemas_schema1479_item)
+        for componentsschemas_schema1489_item_data in self.skills:
+            componentsschemas_schema1489_item = componentsschemas_schema1489_item_data.to_dict()
+            skills.append(componentsschemas_schema1489_item)
 
         field_dict: dict[str, Any] = {}
 
@@ -44,10 +44,10 @@ class ListMcpServerSkillsResponse:
         d = dict(src_dict)
         skills = []
         _skills = d.pop("skills")
-        for componentsschemas_schema1479_item_data in _skills:
-            componentsschemas_schema1479_item = ServerSkillDto.from_dict(componentsschemas_schema1479_item_data)
+        for componentsschemas_schema1489_item_data in _skills:
+            componentsschemas_schema1489_item = ServerSkillDto.from_dict(componentsschemas_schema1489_item_data)
 
-            skills.append(componentsschemas_schema1479_item)
+            skills.append(componentsschemas_schema1489_item)
 
         list_mcp_server_skills_response = cls(
             skills=skills,

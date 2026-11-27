@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.protection_on_action import ProtectionOnAction
-from ..models.protection_value_source import ProtectionValueSource
-from ..models.schema_771 import Schema771
+if TYPE_CHECKING:
+    from ..models.resolved_protection import ResolvedProtection
+
 
 T = TypeVar("T", bound="Schema772")
 
@@ -16,29 +16,29 @@ T = TypeVar("T", bound="Schema772")
 class Schema772:
     """
     Attributes:
-        action (ProtectionOnAction):
-        source (ProtectionValueSource):
-        inherited (Schema771):
+        secrets (ResolvedProtection):
+        pii (ResolvedProtection):
+        injection (ResolvedProtection):
     """
 
-    action: ProtectionOnAction
-    source: ProtectionValueSource
-    inherited: Schema771
+    secrets: ResolvedProtection
+    pii: ResolvedProtection
+    injection: ResolvedProtection
 
     def to_dict(self) -> dict[str, Any]:
-        action = self.action.value
+        secrets = self.secrets.to_dict()
 
-        source = self.source.value
+        pii = self.pii.to_dict()
 
-        inherited = self.inherited.value
+        injection = self.injection.to_dict()
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
             {
-                "action": action,
-                "source": source,
-                "inherited": inherited,
+                "secrets": secrets,
+                "pii": pii,
+                "injection": injection,
             }
         )
 
@@ -46,17 +46,19 @@ class Schema772:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.resolved_protection import ResolvedProtection
+
         d = dict(src_dict)
-        action = ProtectionOnAction(d.pop("action"))
+        secrets = ResolvedProtection.from_dict(d.pop("secrets"))
 
-        source = ProtectionValueSource(d.pop("source"))
+        pii = ResolvedProtection.from_dict(d.pop("pii"))
 
-        inherited = Schema771(d.pop("inherited"))
+        injection = ResolvedProtection.from_dict(d.pop("injection"))
 
         schema_772 = cls(
-            action=action,
-            source=source,
-            inherited=inherited,
+            secrets=secrets,
+            pii=pii,
+            injection=injection,
         )
 
         return schema_772

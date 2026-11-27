@@ -6,7 +6,7 @@ from typing import Any, Literal, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.schema_313 import Schema313
+from ..models.schema_314 import Schema314
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="SiemS3TargetInput")
@@ -24,7 +24,7 @@ class SiemS3TargetInput:
         endpoint (None | str | Unset):
         force_path_style (bool | Unset):
         secret_access_key (str | Unset):
-        compression (Schema313 | Unset):
+        compression (Schema314 | Unset):
     """
 
     kind: Literal["s3"]
@@ -35,7 +35,7 @@ class SiemS3TargetInput:
     endpoint: None | str | Unset = UNSET
     force_path_style: bool | Unset = UNSET
     secret_access_key: str | Unset = UNSET
-    compression: Schema313 | Unset = UNSET
+    compression: Schema314 | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -116,11 +116,11 @@ class SiemS3TargetInput:
         secret_access_key = d.pop("secretAccessKey", UNSET)
 
         _compression = d.pop("compression", UNSET)
-        compression: Schema313 | Unset
+        compression: Schema314 | Unset
         if isinstance(_compression, Unset):
             compression = UNSET
         else:
-            compression = Schema313(_compression)
+            compression = Schema314(_compression)
 
         siem_s3_target_input = cls(
             kind=kind,

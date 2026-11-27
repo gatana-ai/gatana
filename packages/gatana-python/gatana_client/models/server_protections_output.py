@@ -8,9 +8,9 @@ from attrs import define as _attrs_define
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_757 import Schema757
-    from ..models.schema_764 import Schema764
-    from ..models.schema_765 import Schema765
+    from ..models.schema_761 import Schema761
+    from ..models.schema_768 import Schema768
+    from ..models.schema_769 import Schema769
 
 
 T = TypeVar("T", bound="ServerProtectionsOutput")
@@ -21,14 +21,14 @@ class ServerProtectionsOutput:
     """Built-in protections of the server. A missing protection is off
 
     Attributes:
-        secrets (Schema757 | Unset):
-        pii (Schema764 | Unset):
-        injection (Schema765 | Unset):
+        secrets (Schema761 | Unset):
+        pii (Schema768 | Unset):
+        injection (Schema769 | Unset):
     """
 
-    secrets: Schema757 | Unset = UNSET
-    pii: Schema764 | Unset = UNSET
-    injection: Schema765 | Unset = UNSET
+    secrets: Schema761 | Unset = UNSET
+    pii: Schema768 | Unset = UNSET
+    injection: Schema769 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         secrets: dict[str, Any] | Unset = UNSET
@@ -57,31 +57,31 @@ class ServerProtectionsOutput:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_757 import Schema757
-        from ..models.schema_764 import Schema764
-        from ..models.schema_765 import Schema765
+        from ..models.schema_761 import Schema761
+        from ..models.schema_768 import Schema768
+        from ..models.schema_769 import Schema769
 
         d = dict(src_dict)
         _secrets = d.pop("secrets", UNSET)
-        secrets: Schema757 | Unset
+        secrets: Schema761 | Unset
         if isinstance(_secrets, Unset):
             secrets = UNSET
         else:
-            secrets = Schema757.from_dict(_secrets)
+            secrets = Schema761.from_dict(_secrets)
 
         _pii = d.pop("pii", UNSET)
-        pii: Schema764 | Unset
+        pii: Schema768 | Unset
         if isinstance(_pii, Unset):
             pii = UNSET
         else:
-            pii = Schema764.from_dict(_pii)
+            pii = Schema768.from_dict(_pii)
 
         _injection = d.pop("injection", UNSET)
-        injection: Schema765 | Unset
+        injection: Schema769 | Unset
         if isinstance(_injection, Unset):
             injection = UNSET
         else:
-            injection = Schema765.from_dict(_injection)
+            injection = Schema769.from_dict(_injection)
 
         server_protections_output = cls(
             secrets=secrets,

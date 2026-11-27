@@ -5,7 +5,7 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1344 import Schema1344
+from ..models.schema_1354 import Schema1354
 
 T = TypeVar("T", bound="ArtifactDto")
 
@@ -19,7 +19,7 @@ class ArtifactDto:
         created_by_user_id (str):
         created_by_user_name (str): Display name of the creator, empty when no name is set
         created_by_user_email (str): Email of the creator
-        visibility (Schema1344):
+        visibility (Schema1354):
         theme (str): The theme the artifact is served with: 'gatana', 'none', or the id of an organization theme
         current_version (float):
         shared_with_user_ids (list[str]): IDs of the users the artifact is shared with
@@ -34,7 +34,7 @@ class ArtifactDto:
     created_by_user_id: str
     created_by_user_name: str
     created_by_user_email: str
-    visibility: Schema1344
+    visibility: Schema1354
     theme: str
     current_version: float
     shared_with_user_ids: list[str]
@@ -105,7 +105,7 @@ class ArtifactDto:
 
         created_by_user_email = d.pop("createdByUserEmail")
 
-        visibility = Schema1344(d.pop("visibility"))
+        visibility = Schema1354(d.pop("visibility"))
 
         theme = d.pop("theme")
 

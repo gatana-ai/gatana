@@ -48,9 +48,9 @@ class DeploymentStatusResponse:
         has_pod_failures = self.has_pod_failures
 
         deployments = []
-        for componentsschemas_schema993_item_data in self.deployments:
-            componentsschemas_schema993_item = componentsschemas_schema993_item_data.to_dict()
-            deployments.append(componentsschemas_schema993_item)
+        for componentsschemas_schema1003_item_data in self.deployments:
+            componentsschemas_schema1003_item = componentsschemas_schema1003_item_data.to_dict()
+            deployments.append(componentsschemas_schema1003_item)
 
         current_replica_set = self.current_replica_set
 
@@ -96,10 +96,10 @@ class DeploymentStatusResponse:
 
         deployments = []
         _deployments = d.pop("deployments")
-        for componentsschemas_schema993_item_data in _deployments:
-            componentsschemas_schema993_item = DeploymentStatus.from_dict(componentsschemas_schema993_item_data)
+        for componentsschemas_schema1003_item_data in _deployments:
+            componentsschemas_schema1003_item = DeploymentStatus.from_dict(componentsschemas_schema1003_item_data)
 
-            deployments.append(componentsschemas_schema993_item)
+            deployments.append(componentsschemas_schema1003_item)
 
         current_replica_set = d.pop("currentReplicaSet", UNSET)
 
@@ -111,9 +111,9 @@ class DeploymentStatusResponse:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema1020_type_0 = ServerStorageStatus.from_dict(data)
+                componentsschemas_schema1030_type_0 = ServerStorageStatus.from_dict(data)
 
-                return componentsschemas_schema1020_type_0
+                return componentsschemas_schema1030_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | ServerStorageStatus | Unset, data)

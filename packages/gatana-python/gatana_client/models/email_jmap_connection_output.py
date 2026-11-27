@@ -33,14 +33,14 @@ class EmailJmapConnectionOutput:
         session_url = self.session_url
 
         headers = []
-        for componentsschemas_schema693_item_data in self.headers:
-            componentsschemas_schema693_item = []
-            for componentsschemas_schema693_item_item_data in componentsschemas_schema693_item_data:
-                componentsschemas_schema693_item_item: str
-                componentsschemas_schema693_item_item = componentsschemas_schema693_item_item_data
-                componentsschemas_schema693_item.append(componentsschemas_schema693_item_item)
+        for componentsschemas_schema694_item_data in self.headers:
+            componentsschemas_schema694_item = []
+            for componentsschemas_schema694_item_item_data in componentsschemas_schema694_item_data:
+                componentsschemas_schema694_item_item: str
+                componentsschemas_schema694_item_item = componentsschemas_schema694_item_item_data
+                componentsschemas_schema694_item.append(componentsschemas_schema694_item_item)
 
-            headers.append(componentsschemas_schema693_item)
+            headers.append(componentsschemas_schema694_item)
 
         account_id: None | str | Unset
         if isinstance(self.account_id, Unset):
@@ -70,33 +70,33 @@ class EmailJmapConnectionOutput:
             raise ValueError(f"protocol must match const 'jmap', got '{protocol}'")
 
         def _parse_session_url(data: object) -> Literal[""] | str:
-            componentsschemas_schema691_type_1 = cast(Literal[""], data)
-            if componentsschemas_schema691_type_1 != "":
+            componentsschemas_schema692_type_1 = cast(Literal[""], data)
+            if componentsschemas_schema692_type_1 != "":
                 raise ValueError(
-                    f"/components/schemas/__schema691_type_1 must match const '', got '{componentsschemas_schema691_type_1}'"
+                    f"/components/schemas/__schema692_type_1 must match const '', got '{componentsschemas_schema692_type_1}'"
                 )
-            return componentsschemas_schema691_type_1
+            return componentsschemas_schema692_type_1
             return cast(Literal[""] | str, data)
 
         session_url = _parse_session_url(d.pop("sessionUrl"))
 
         headers = []
         _headers = d.pop("headers")
-        for componentsschemas_schema693_item_data in _headers:
-            componentsschemas_schema693_item = []
-            _componentsschemas_schema693_item = componentsschemas_schema693_item_data
-            for componentsschemas_schema693_item_item_data in _componentsschemas_schema693_item:
+        for componentsschemas_schema694_item_data in _headers:
+            componentsschemas_schema694_item = []
+            _componentsschemas_schema694_item = componentsschemas_schema694_item_data
+            for componentsschemas_schema694_item_item_data in _componentsschemas_schema694_item:
 
-                def _parse_componentsschemas_schema693_item_item(data: object) -> str:
+                def _parse_componentsschemas_schema694_item_item(data: object) -> str:
                     return cast(str, data)
 
-                componentsschemas_schema693_item_item = _parse_componentsschemas_schema693_item_item(
-                    componentsschemas_schema693_item_item_data
+                componentsschemas_schema694_item_item = _parse_componentsschemas_schema694_item_item(
+                    componentsschemas_schema694_item_item_data
                 )
 
-                componentsschemas_schema693_item.append(componentsschemas_schema693_item_item)
+                componentsschemas_schema694_item.append(componentsschemas_schema694_item_item)
 
-            headers.append(componentsschemas_schema693_item)
+            headers.append(componentsschemas_schema694_item)
 
         def _parse_account_id(data: object) -> None | str | Unset:
             if data is None:

@@ -26,9 +26,9 @@ class ReplaceSkillFilesResponse:
 
     def to_dict(self) -> dict[str, Any]:
         files = []
-        for componentsschemas_schema1450_item_data in self.files:
-            componentsschemas_schema1450_item = componentsschemas_schema1450_item_data.to_dict()
-            files.append(componentsschemas_schema1450_item)
+        for componentsschemas_schema1460_item_data in self.files:
+            componentsschemas_schema1460_item = componentsschemas_schema1460_item_data.to_dict()
+            files.append(componentsschemas_schema1460_item)
 
         updated_at = self.updated_at
 
@@ -50,10 +50,10 @@ class ReplaceSkillFilesResponse:
         d = dict(src_dict)
         files = []
         _files = d.pop("files")
-        for componentsschemas_schema1450_item_data in _files:
-            componentsschemas_schema1450_item = SkillFileDto.from_dict(componentsschemas_schema1450_item_data)
+        for componentsschemas_schema1460_item_data in _files:
+            componentsschemas_schema1460_item = SkillFileDto.from_dict(componentsschemas_schema1460_item_data)
 
-            files.append(componentsschemas_schema1450_item)
+            files.append(componentsschemas_schema1460_item)
 
         updated_at = d.pop("updatedAt")
 

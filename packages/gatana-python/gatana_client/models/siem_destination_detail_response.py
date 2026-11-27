@@ -52,9 +52,9 @@ class SiemDestinationDetailResponse:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema1185_type_0 = SiemDestinationResponse.from_dict(data)
+                componentsschemas_schema1195_type_0 = SiemDestinationResponse.from_dict(data)
 
-                return componentsschemas_schema1185_type_0
+                return componentsschemas_schema1195_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             return cast(None | SiemDestinationResponse, data)

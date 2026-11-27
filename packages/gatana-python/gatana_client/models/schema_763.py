@@ -4,44 +4,65 @@ from collections.abc import Mapping
 from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
-from attrs import field as _attrs_field
+
+from ..models.schema_764 import Schema764
+from ..models.schema_765 import Schema765
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="Schema763")
 
 
 @_attrs_define
 class Schema763:
-    """ """
+    """Actions for On mode. Missing targets use organization defaults or built-in values
 
-    additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
+    Attributes:
+        arguments (Schema764 | Unset):
+        result (Schema765 | Unset):
+    """
+
+    arguments: Schema764 | Unset = UNSET
+    result: Schema765 | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
+        arguments: str | Unset = UNSET
+        if not isinstance(self.arguments, Unset):
+            arguments = self.arguments.value
+
+        result: str | Unset = UNSET
+        if not isinstance(self.result, Unset):
+            result = self.result.value
 
         field_dict: dict[str, Any] = {}
-        field_dict.update(self.additional_properties)
+
+        field_dict.update({})
+        if arguments is not UNSET:
+            field_dict["arguments"] = arguments
+        if result is not UNSET:
+            field_dict["result"] = result
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        schema_763 = cls()
+        _arguments = d.pop("arguments", UNSET)
+        arguments: Schema764 | Unset
+        if isinstance(_arguments, Unset):
+            arguments = UNSET
+        else:
+            arguments = Schema764(_arguments)
 
-        schema_763.additional_properties = d
+        _result = d.pop("result", UNSET)
+        result: Schema765 | Unset
+        if isinstance(_result, Unset):
+            result = UNSET
+        else:
+            result = Schema765(_result)
+
+        schema_763 = cls(
+            arguments=arguments,
+            result=result,
+        )
+
         return schema_763
-
-    @property
-    def additional_keys(self) -> list[str]:
-        return list(self.additional_properties.keys())
-
-    def __getitem__(self, key: str) -> Any:
-        return self.additional_properties[key]
-
-    def __setitem__(self, key: str, value: Any) -> None:
-        self.additional_properties[key] = value
-
-    def __delitem__(self, key: str) -> None:
-        del self.additional_properties[key]
-
-    def __contains__(self, key: str) -> bool:
-        return key in self.additional_properties

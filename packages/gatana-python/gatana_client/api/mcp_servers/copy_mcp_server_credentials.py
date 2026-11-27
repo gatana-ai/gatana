@@ -7,7 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.copy_mcp_server_credentials_response_200 import CopyMcpServerCredentialsResponse200
-from ...models.schema_246 import Schema246
+from ...models.schema_247 import Schema247
 from ...types import UNSET, Response, Unset
 
 
@@ -15,7 +15,7 @@ def _get_kwargs(
     server_slug: str,
     *,
     id: str,
-    to: Schema246,
+    to: Schema247,
     profile_id: str | Unset = UNSET,
     user_id: str | Unset = UNSET,
 ) -> dict[str, Any]:
@@ -74,7 +74,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     id: str,
-    to: Schema246,
+    to: Schema247,
     profile_id: str | Unset = UNSET,
     user_id: str | Unset = UNSET,
 ) -> Response[CopyMcpServerCredentialsResponse200]:
@@ -83,7 +83,7 @@ def sync_detailed(
     Args:
         server_slug (str):
         id (str): ID of the credentials to copy
-        to (Schema246):
+        to (Schema247):
         profile_id (str | Unset):
         user_id (str | Unset):
 
@@ -115,7 +115,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     id: str,
-    to: Schema246,
+    to: Schema247,
     profile_id: str | Unset = UNSET,
     user_id: str | Unset = UNSET,
 ) -> CopyMcpServerCredentialsResponse200 | None:
@@ -124,7 +124,7 @@ def sync(
     Args:
         server_slug (str):
         id (str): ID of the credentials to copy
-        to (Schema246):
+        to (Schema247):
         profile_id (str | Unset):
         user_id (str | Unset):
 
@@ -151,7 +151,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     id: str,
-    to: Schema246,
+    to: Schema247,
     profile_id: str | Unset = UNSET,
     user_id: str | Unset = UNSET,
 ) -> Response[CopyMcpServerCredentialsResponse200]:
@@ -160,7 +160,7 @@ async def asyncio_detailed(
     Args:
         server_slug (str):
         id (str): ID of the credentials to copy
-        to (Schema246):
+        to (Schema247):
         profile_id (str | Unset):
         user_id (str | Unset):
 
@@ -190,7 +190,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     id: str,
-    to: Schema246,
+    to: Schema247,
     profile_id: str | Unset = UNSET,
     user_id: str | Unset = UNSET,
 ) -> CopyMcpServerCredentialsResponse200 | None:
@@ -199,7 +199,7 @@ async def asyncio(
     Args:
         server_slug (str):
         id (str): ID of the credentials to copy
-        to (Schema246):
+        to (Schema247):
         profile_id (str | Unset):
         user_id (str | Unset):
 

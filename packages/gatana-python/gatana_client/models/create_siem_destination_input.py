@@ -102,24 +102,24 @@ class CreateSiemDestinationInput:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema298_type_0 = SiemHttpsTargetInput.from_dict(data)
+                componentsschemas_schema299_type_0 = SiemHttpsTargetInput.from_dict(data)
 
-                return componentsschemas_schema298_type_0
+                return componentsschemas_schema299_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                componentsschemas_schema298_type_1 = SiemS3TargetInput.from_dict(data)
+                componentsschemas_schema299_type_1 = SiemS3TargetInput.from_dict(data)
 
-                return componentsschemas_schema298_type_1
+                return componentsschemas_schema299_type_1
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
             if not isinstance(data, dict):
                 raise TypeError()
-            componentsschemas_schema298_type_2 = SiemGcsTargetInput.from_dict(data)
+            componentsschemas_schema299_type_2 = SiemGcsTargetInput.from_dict(data)
 
-            return componentsschemas_schema298_type_2
+            return componentsschemas_schema299_type_2
 
         target = _parse_target(d.pop("target", UNSET))
 

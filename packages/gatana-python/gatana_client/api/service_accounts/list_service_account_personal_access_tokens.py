@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_587 import Schema587
+from ...models.schema_588 import Schema588
 from ...types import Response
 
 
@@ -24,9 +24,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema587 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Schema588 | None:
     if response.status_code == 200:
-        response_200 = Schema587.from_dict(response.json())
+        response_200 = Schema588.from_dict(response.json())
 
         return response_200
 
@@ -36,7 +36,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema587]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Schema588]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -49,7 +49,7 @@ def sync_detailed(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[Schema587]:
+) -> Response[Schema588]:
     """List the personal access tokens of a service account you may update, from a browser session or a
     token
 
@@ -61,7 +61,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema587]
+        Response[Schema588]
     """
 
     kwargs = _get_kwargs(
@@ -79,7 +79,7 @@ def sync(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Schema587 | None:
+) -> Schema588 | None:
     """List the personal access tokens of a service account you may update, from a browser session or a
     token
 
@@ -91,7 +91,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema587
+        Schema588
     """
 
     return sync_detailed(
@@ -104,7 +104,7 @@ async def asyncio_detailed(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[Schema587]:
+) -> Response[Schema588]:
     """List the personal access tokens of a service account you may update, from a browser session or a
     token
 
@@ -116,7 +116,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Schema587]
+        Response[Schema588]
     """
 
     kwargs = _get_kwargs(
@@ -132,7 +132,7 @@ async def asyncio(
     user_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Schema587 | None:
+) -> Schema588 | None:
     """List the personal access tokens of a service account you may update, from a browser session or a
     token
 
@@ -144,7 +144,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Schema587
+        Schema588
     """
 
     return (

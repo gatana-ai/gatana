@@ -9,7 +9,7 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.schema_232 import Schema232
+    from ..models.schema_233 import Schema233
 
 
 T = TypeVar("T", bound="ServerCredentialsOauthTokens")
@@ -20,12 +20,12 @@ class ServerCredentialsOauthTokens:
     """
     Attributes:
         type_ (Literal['oauth']): Credential type discriminator, always "oauth"
-        token_set (Schema232):
+        token_set (Schema233):
         resource (str | Unset):
     """
 
     type_: Literal["oauth"]
-    token_set: Schema232
+    token_set: Schema233
     resource: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -51,14 +51,14 @@ class ServerCredentialsOauthTokens:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.schema_232 import Schema232
+        from ..models.schema_233 import Schema233
 
         d = dict(src_dict)
         type_ = cast(Literal["oauth"], d.pop("type"))
         if type_ != "oauth":
             raise ValueError(f"type must match const 'oauth', got '{type_}'")
 
-        token_set = Schema232.from_dict(d.pop("tokenSet"))
+        token_set = Schema233.from_dict(d.pop("tokenSet"))
 
         resource = d.pop("resource", UNSET)
 

@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.schema_226 import Schema226
+from ...models.schema_227 import Schema227
 from ...models.update_mcp_server_member_body import UpdateMcpServerMemberBody
 from ...models.update_mcp_server_member_response_200 import UpdateMcpServerMemberResponse200
 from ...types import UNSET, Response, Unset
@@ -14,7 +14,7 @@ from ...types import UNSET, Response, Unset
 
 def _get_kwargs(
     server_slug: str,
-    member_type: Schema226,
+    member_type: Schema227,
     member_id: str,
     *,
     body: UpdateMcpServerMemberBody | Unset = UNSET,
@@ -66,7 +66,7 @@ def _build_response(
 
 def sync_detailed(
     server_slug: str,
-    member_type: Schema226,
+    member_type: Schema227,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -76,7 +76,7 @@ def sync_detailed(
 
     Args:
         server_slug (str):
-        member_type (Schema226):
+        member_type (Schema227):
         member_id (str):
         body (UpdateMcpServerMemberBody | Unset):
 
@@ -104,7 +104,7 @@ def sync_detailed(
 
 def sync(
     server_slug: str,
-    member_type: Schema226,
+    member_type: Schema227,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -114,7 +114,7 @@ def sync(
 
     Args:
         server_slug (str):
-        member_type (Schema226):
+        member_type (Schema227):
         member_id (str):
         body (UpdateMcpServerMemberBody | Unset):
 
@@ -137,7 +137,7 @@ def sync(
 
 async def asyncio_detailed(
     server_slug: str,
-    member_type: Schema226,
+    member_type: Schema227,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -147,7 +147,7 @@ async def asyncio_detailed(
 
     Args:
         server_slug (str):
-        member_type (Schema226):
+        member_type (Schema227):
         member_id (str):
         body (UpdateMcpServerMemberBody | Unset):
 
@@ -173,7 +173,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     server_slug: str,
-    member_type: Schema226,
+    member_type: Schema227,
     member_id: str,
     *,
     client: AuthenticatedClient | Client,
@@ -183,7 +183,7 @@ async def asyncio(
 
     Args:
         server_slug (str):
-        member_type (Schema226):
+        member_type (Schema227):
         member_id (str):
         body (UpdateMcpServerMemberBody | Unset):
 

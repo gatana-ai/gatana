@@ -74,9 +74,10 @@ export type UpdateServerRequest = {
     isOutputCompressionTransformEnabled?: Schema190;
     outputCompressionThresholdBytes?: Schema191;
     isSkillServingEnabled?: Schema192;
-    firewallRules?: Schema193;
-    protections?: Schema198;
-    visibility?: Schema208;
+    isAppServingEnabled?: Schema193;
+    firewallRules?: Schema194;
+    protections?: Schema199;
+    visibility?: Schema209;
 };
 
 /**
@@ -208,9 +209,9 @@ export type ProtectionCheckType = 'secrets' | 'pii' | 'injection';
 export type ProtectionCheckTarget = 'arguments' | 'result';
 
 export type ServerProtection = {
-    mode: Schema200;
+    mode: Schema201;
     actions?: ProtectionActions;
-    settings?: Schema204;
+    settings?: Schema205;
 };
 
 export type ProtectionMode = 'off' | 'audit' | 'on';
@@ -219,8 +220,8 @@ export type ProtectionMode = 'off' | 'audit' | 'on';
  * Actions for On mode. Missing targets use organization defaults or built-in values
  */
 export type ProtectionActions = {
-    arguments?: Schema202;
-    result?: Schema203;
+    arguments?: Schema203;
+    result?: Schema204;
 };
 
 export type ProtectionOnAction = 'off' | 'audit' | 'redact' | 'block';
@@ -235,10 +236,10 @@ export type ServerProtections = {
 };
 
 export type TestOpenApiSpecRequest = {
-    method: Schema211;
-    headers?: Schema212;
-    spec?: Schema214;
-    specUrl?: Schema216;
+    method: Schema212;
+    headers?: Schema213;
+    spec?: Schema215;
+    specUrl?: Schema217;
 };
 
 export type ServerCredentialsCredential = ({
@@ -250,82 +251,82 @@ export type ServerCredentialsCredential = ({
 } & ServerCredentialsOauthClientCredentials);
 
 export type ServerCredentialsApiKeys = {
-    type: Schema228;
-    apikeys: Schema229;
+    type: Schema229;
+    apikeys: Schema230;
 };
 
 export type ServerCredentialsOauthTokens = {
-    type: Schema231;
-    tokenSet: Schema232;
-    resource?: Schema241;
+    type: Schema232;
+    tokenSet: Schema233;
+    resource?: Schema242;
 };
 
 export type ServerCredentialsOauthClientCredentials = {
-    type: Schema243;
+    type: Schema244;
     clientConfig?: ServerOAuthClientConfigurationClientCredentials;
-    tokenSet?: Schema245;
+    tokenSet?: Schema246;
 };
 
 /**
  * Client configuration for OAuth client credentials
  */
-export type ServerOAuthClientConfigurationClientCredentials = Schema244;
+export type ServerOAuthClientConfigurationClientCredentials = Schema245;
 
 export type CreateTeamProfileAssignmentRequest = {
-    profileId: Schema267;
-    isLockedByOrgOwner?: Schema268;
+    profileId: Schema268;
+    isLockedByOrgOwner?: Schema269;
 };
 
 export type AwsSecretsManagerConfiguration = {
-    type: Schema271;
-    region: Schema272;
-    accessKeyId: Schema273;
-    secretAccessKey: Schema274;
+    type: Schema272;
+    region: Schema273;
+    accessKeyId: Schema274;
+    secretAccessKey: Schema275;
 };
 
 export type GcpSecretManagerConfiguration = {
-    type: Schema275;
-    projectId: Schema276;
-    serviceAccountKey: Schema277;
+    type: Schema276;
+    projectId: Schema277;
+    serviceAccountKey: Schema278;
 };
 
 export type HashiCorpVaultConfiguration = {
-    type: Schema278;
-    address: Schema279;
-    token: Schema280;
-    namespace?: Schema281;
-    mountPath?: Schema282;
+    type: Schema279;
+    address: Schema280;
+    token: Schema281;
+    namespace?: Schema282;
+    mountPath?: Schema283;
 };
 
 export type InfisicalConfiguration = {
-    type: Schema283;
-    siteUrl: Schema284;
-    accessToken: Schema285;
-    projectId: Schema286;
-    environment: Schema287;
-    secretPath: Schema288;
+    type: Schema284;
+    siteUrl: Schema285;
+    accessToken: Schema286;
+    projectId: Schema287;
+    environment: Schema288;
+    secretPath: Schema289;
 };
 
 export type AzureKeyVaultConfiguration = {
-    type: Schema289;
-    vaultUrl: Schema290;
-    tenantId: Schema291;
-    clientId: Schema292;
-    clientSecret: Schema293;
+    type: Schema290;
+    vaultUrl: Schema291;
+    tenantId: Schema292;
+    clientId: Schema293;
+    clientSecret: Schema294;
 };
 
 export type TestSecretRequest = {
-    secretIdentifier: Schema294;
+    secretIdentifier: Schema295;
 };
 
 export type CreateSiemDestinationInput = {
-    name?: Schema295;
-    url?: Schema297;
-    target?: Schema298;
-    authHeaderName?: Schema319;
-    authHeaderValue?: Schema321;
-    exportAuditLogs?: Schema323;
-    exportCredentialAuditLogs?: Schema325;
+    name?: Schema296;
+    url?: Schema298;
+    target?: Schema299;
+    authHeaderName?: Schema320;
+    authHeaderValue?: Schema322;
+    exportAuditLogs?: Schema324;
+    exportCredentialAuditLogs?: Schema326;
 };
 
 export type SiemTargetInput = ({
@@ -337,159 +338,159 @@ export type SiemTargetInput = ({
 } & SiemGcsTargetInput);
 
 export type SiemHttpsTargetInput = {
-    kind: Schema299;
+    kind: Schema300;
 };
 
 export type SiemS3TargetInput = {
-    kind: Schema300;
-    bucket: Schema301;
-    prefix?: Schema302;
-    region?: Schema304;
-    endpoint?: Schema306;
-    forcePathStyle?: Schema308;
-    accessKeyId: Schema310;
-    secretAccessKey?: Schema311;
-    compression?: Schema313;
+    kind: Schema301;
+    bucket: Schema302;
+    prefix?: Schema303;
+    region?: Schema305;
+    endpoint?: Schema307;
+    forcePathStyle?: Schema309;
+    accessKeyId: Schema311;
+    secretAccessKey?: Schema312;
+    compression?: Schema314;
 };
 
 export type SiemGcsTargetInput = {
-    kind: Schema315;
-    bucket: Schema316;
-    prefix?: Schema302;
-    serviceAccountKey?: Schema317;
-    compression?: Schema313;
+    kind: Schema316;
+    bucket: Schema317;
+    prefix?: Schema303;
+    serviceAccountKey?: Schema318;
+    compression?: Schema314;
 };
 
 export type UpdateSiemDestinationInput = {
-    name?: Schema295;
-    url?: Schema297;
-    target?: Schema298;
-    authHeaderName?: Schema319;
-    authHeaderValue?: Schema321;
-    exportAuditLogs?: Schema323;
-    exportCredentialAuditLogs?: Schema325;
-    isEnabled?: Schema334;
-    removeAuthHeader?: Schema336;
-    reactivate?: Schema338;
+    name?: Schema296;
+    url?: Schema298;
+    target?: Schema299;
+    authHeaderName?: Schema320;
+    authHeaderValue?: Schema322;
+    exportAuditLogs?: Schema324;
+    exportCredentialAuditLogs?: Schema326;
+    isEnabled?: Schema335;
+    removeAuthHeader?: Schema337;
+    reactivate?: Schema339;
 };
 
 export type ExecCommandBody = {
-    command: Schema349;
-    workdir?: Schema350;
-    timeout?: Schema351;
+    command: Schema350;
+    workdir?: Schema351;
+    timeout?: Schema352;
 };
 
 export type SendVerificationCodeRequest = {
-    email: Schema353;
-    purpose: Schema354;
-    turnstileToken?: Schema355;
-    tenantSlug?: Schema356;
+    email: Schema354;
+    purpose: Schema355;
+    turnstileToken?: Schema356;
+    tenantSlug?: Schema357;
 };
 
 export type CreateScimTokenRequest = {
-    name?: Schema358;
+    name?: Schema359;
 };
 
 export type UpdateConnectedClientRequest = {
-    label?: Schema363;
-    profileIds?: Schema365;
+    label?: Schema364;
+    profileIds?: Schema366;
 };
 
 export type CreateArtifactBody = {
-    title?: Schema367;
-    html?: Schema370;
-    markdown?: Schema372;
-    theme?: Schema374;
+    title?: Schema368;
+    html?: Schema371;
+    markdown?: Schema373;
+    theme?: Schema375;
 };
 
 export type UpdateArtifactBody = {
-    title?: Schema377;
-    html?: Schema370;
-    markdown?: Schema372;
-    theme?: Schema374;
+    title?: Schema378;
+    html?: Schema371;
+    markdown?: Schema373;
+    theme?: Schema375;
 };
 
 export type PatchArtifactBody = {
-    title?: Schema381;
-    visibility?: Schema382;
-    theme?: Schema374;
+    title?: Schema382;
+    visibility?: Schema383;
+    theme?: Schema375;
 };
 
 export type CreateArtifactThemeBody = {
-    name: Schema388;
-    backgroundColor?: Schema390;
-    textColor?: Schema392;
-    accentColor?: Schema394;
-    headingFont?: Schema396;
-    bodyFont?: Schema399;
-    codeFont?: Schema401;
-    logo?: Schema403;
-    extraCss?: Schema405;
+    name: Schema389;
+    backgroundColor?: Schema391;
+    textColor?: Schema393;
+    accentColor?: Schema395;
+    headingFont?: Schema397;
+    bodyFont?: Schema400;
+    codeFont?: Schema402;
+    logo?: Schema404;
+    extraCss?: Schema406;
 };
 
 export type PreviewArtifactThemeBody = {
-    backgroundColor?: Schema390;
-    textColor?: Schema392;
-    accentColor?: Schema394;
-    headingFont?: Schema396;
-    bodyFont?: Schema399;
-    codeFont?: Schema401;
-    logo?: Schema403;
-    extraCss?: Schema405;
+    backgroundColor?: Schema391;
+    textColor?: Schema393;
+    accentColor?: Schema395;
+    headingFont?: Schema397;
+    bodyFont?: Schema400;
+    codeFont?: Schema402;
+    logo?: Schema404;
+    extraCss?: Schema406;
 };
 
 export type SetDefaultArtifactThemeBody = {
-    theme: Schema375;
+    theme: Schema376;
 };
 
 export type PatchArtifactThemeBody = {
-    name?: Schema388;
-    backgroundColor?: Schema390;
-    textColor?: Schema392;
-    accentColor?: Schema394;
-    headingFont?: Schema396;
-    bodyFont?: Schema399;
-    codeFont?: Schema401;
-    logo?: Schema403;
-    extraCss?: Schema405;
+    name?: Schema389;
+    backgroundColor?: Schema391;
+    textColor?: Schema393;
+    accentColor?: Schema395;
+    headingFont?: Schema397;
+    bodyFont?: Schema400;
+    codeFont?: Schema402;
+    logo?: Schema404;
+    extraCss?: Schema406;
 };
 
 export type CreateSkillBody = {
-    markdown?: Schema416;
-    name?: Schema418;
-    description?: Schema421;
-    content?: Schema423;
-    visibility?: Schema425;
-    collectionId?: Schema428;
+    markdown?: Schema417;
+    name?: Schema419;
+    description?: Schema422;
+    content?: Schema424;
+    visibility?: Schema426;
+    collectionId?: Schema429;
 };
 
 export type UpdateSkillBody = {
-    markdown?: Schema416;
-    name?: Schema418;
-    description?: Schema421;
-    content?: Schema423;
-    visibility?: Schema425;
-    collectionId?: Schema428;
+    markdown?: Schema417;
+    name?: Schema419;
+    description?: Schema422;
+    content?: Schema424;
+    visibility?: Schema426;
+    collectionId?: Schema429;
 };
 
 export type ReplaceSkillFilesBody = {
-    files: Schema438;
+    files: Schema439;
 };
 
 export type ShareRoleBody = {
-    role?: Schema443;
+    role?: Schema444;
 };
 
 export type CreateSkillCollectionBody = {
-    name: Schema444;
-    description?: Schema446;
-    visibility?: Schema448;
+    name: Schema445;
+    description?: Schema447;
+    visibility?: Schema449;
 };
 
 export type UpdateSkillCollectionBody = {
-    name?: Schema444;
-    description?: Schema446;
-    visibility?: Schema448;
+    name?: Schema445;
+    description?: Schema447;
+    visibility?: Schema449;
 };
 
 export type Schema0 = string;
@@ -1363,34 +1364,39 @@ export type Schema191 = number;
 export type Schema192 = boolean;
 
 /**
+ * Whether clients can open MCP Apps from this server
+ */
+export type Schema193 = boolean;
+
+/**
  * Rules in order. Rules with a condition run before the call and the first deny stops it. A rule with a protection replaces the default of that protection for its tools
  */
-export type Schema193 = Array<Schema194>;
+export type Schema194 = Array<Schema195>;
 
-export type Schema194 = {
+export type Schema195 = {
     /**
      * Names of the tools that the rule applies to; empty applies it to every tool call
      */
-    tools?: Schema195;
+    tools?: Schema196;
     /**
      * CEL condition on the call; empty matches every call. Must be empty when check is set
      */
-    condition?: Schema196;
+    condition?: Schema197;
     /**
      * A protection instead of a condition. The rule then sets the action of that protection for its tools and replaces the default of the protection
      */
-    check?: Schema197;
+    check?: Schema198;
     /**
      * Condition actions: deny, audit or allow. Allow makes protections record matches without blocking or redacting. Deny rules still apply. Protection actions: block, redact or audit. Block refuses calls with argument matches or withholds results with matches. Redact replaces matched text. Audit records matches and changes nothing
      */
     action: 'deny' | 'audit' | 'block' | 'redact' | 'allow';
 };
 
-export type Schema195 = Array<string>;
+export type Schema196 = Array<string>;
 
-export type Schema196 = string;
+export type Schema197 = string;
 
-export type Schema197 = {
+export type Schema198 = {
     type: ProtectionCheckType;
     target: ProtectionCheckTarget;
 };
@@ -1398,76 +1404,74 @@ export type Schema197 = {
 /**
  * Built-in protections that scan tool calls and results. Replaces all protections on update
  */
-export type Schema198 = ServerProtections;
+export type Schema199 = ServerProtections;
 
-export type Schema199 = ServerProtection;
+export type Schema200 = ServerProtection;
 
 /**
  * off skips scans, audit records matches without changing text, on applies the protection actions
  */
-export type Schema200 = ProtectionMode;
+export type Schema201 = ProtectionMode;
 
-export type Schema201 = ProtectionActions;
+export type Schema202 = ProtectionActions;
 
 /**
  * The action on a match in the tool arguments
  */
-export type Schema202 = ProtectionOnAction;
+export type Schema203 = ProtectionOnAction;
 
 /**
  * The action on a match in the tool result, an upstream error message or a progress message
  */
-export type Schema203 = ProtectionOnAction;
+export type Schema204 = ProtectionOnAction;
 
 /**
  * Check options. These also apply to protection rules. Missing options use organization defaults or built-in values. Secrets: includeGeneric (boolean) also detects generic key=value secrets. Prompt injection: phrases (boolean, default true) detects injection phrases. Set false to scan only for hidden characters
  */
-export type Schema204 = Schema205;
+export type Schema205 = Schema206;
 
-export type Schema205 = {
+export type Schema206 = {
     [key: string]: unknown;
 };
 
-export type Schema206 = ServerProtection;
-
 export type Schema207 = ServerProtection;
+
+export type Schema208 = ServerProtection;
 
 /**
  * Who can see the server: only members or the whole organization
  */
-export type Schema208 = ServerVisibility;
-
-export type Schema209 = string;
+export type Schema209 = ServerVisibility;
 
 export type Schema210 = string;
+
+export type Schema211 = string;
 
 /**
  * Whether to test a spec string or a spec URL.
  */
-export type Schema211 = 'spec' | 'specUrl';
+export type Schema212 = 'spec' | 'specUrl';
 
 /**
  * Optional headers to include when fetching the remote OpenAPI/Swagger specification.
  */
-export type Schema212 = Schema213;
+export type Schema213 = Schema214;
 
-export type Schema213 = {
+export type Schema214 = {
     [key: string]: string;
 };
 
 /**
  * The OpenAPI/Swagger specification as a JSON string.
  */
-export type Schema214 = Schema215;
+export type Schema215 = Schema216;
 
-export type Schema215 = string;
+export type Schema216 = string;
 
 /**
  * The URL of the remote OpenAPI/Swagger specification to fetch and validate.
  */
-export type Schema216 = Schema217;
-
-export type Schema217 = string;
+export type Schema217 = Schema218;
 
 export type Schema218 = string;
 
@@ -1475,35 +1479,37 @@ export type Schema219 = string;
 
 export type Schema220 = string;
 
-export type Schema221 = {
+export type Schema221 = string;
+
+export type Schema222 = {
     [key: string]: unknown;
 };
 
-export type Schema222 = boolean;
+export type Schema223 = boolean;
 
-export type Schema223 = {
+export type Schema224 = {
     value: boolean;
 };
 
-export type Schema224 = string;
-
 export type Schema225 = string;
 
-export type Schema226 = 'users' | 'teams';
+export type Schema226 = string;
 
-export type Schema227 = string;
+export type Schema227 = 'users' | 'teams';
+
+export type Schema228 = string;
 
 /**
  * Credential type discriminator, always "apikey"
  */
-export type Schema228 = 'apikey';
+export type Schema229 = 'apikey';
 
 /**
  * API keys as [name, value] pairs
  */
-export type Schema229 = Array<Schema230>;
+export type Schema230 = Array<Schema231>;
 
-export type Schema230 = [
+export type Schema231 = [
     string,
     string
 ];
@@ -1511,59 +1517,59 @@ export type Schema230 = [
 /**
  * Credential type discriminator, always "oauth"
  */
-export type Schema231 = 'oauth';
+export type Schema232 = 'oauth';
 
 /**
  * OAuth tokens obtained from the authorization flow
  */
-export type Schema232 = Schema240;
+export type Schema233 = Schema241;
 
 /**
  * OAuth access token
  */
-export type Schema233 = string;
+export type Schema234 = string;
 
 /**
  * Expiry time of the access token, as a Unix epoch timestamp in milliseconds
  */
-export type Schema234 = Schema235;
+export type Schema235 = Schema236;
 
-export type Schema235 = number;
+export type Schema236 = number;
 
 /**
  * OpenID Connect ID token, if the authorization server issued one
  */
-export type Schema236 = Schema237;
+export type Schema237 = Schema238;
 
-export type Schema237 = string;
+export type Schema238 = string;
 
 /**
  * OAuth refresh token, if the authorization server issued one
  */
-export type Schema238 = Schema239;
+export type Schema239 = Schema240;
 
-export type Schema239 = string;
+export type Schema240 = string;
 
-export type Schema240 = {
-    accessToken: Schema233;
-    accessTokenExpiresAt?: Schema234;
-    idToken?: Schema236;
-    refreshToken?: Schema238;
+export type Schema241 = {
+    accessToken: Schema234;
+    accessTokenExpiresAt?: Schema235;
+    idToken?: Schema237;
+    refreshToken?: Schema239;
 };
 
 /**
  * Resource parameter (RFC 8707) used to obtain these tokens and reused for token refresh unless disabled
  */
-export type Schema241 = Schema242;
+export type Schema242 = Schema243;
 
-export type Schema242 = string;
+export type Schema243 = string;
 
 /**
  * Credential type discriminator, always "oauth-client-credentials"
  */
-export type Schema243 = 'oauth-client-credentials';
+export type Schema244 = 'oauth-client-credentials';
 
-export type Schema244 = {
+export type Schema245 = {
     clientId?: Schema174;
     clientSecret?: Schema176;
     clientAuthMethod: Schema178;
@@ -1573,36 +1579,34 @@ export type Schema244 = {
 /**
  * Cached tokenset for client credentials
  */
-export type Schema245 = Schema240;
+export type Schema246 = Schema241;
 
-export type Schema246 = 'server' | 'user' | 'profile';
-
-export type Schema247 = string;
+export type Schema247 = 'server' | 'user' | 'profile';
 
 export type Schema248 = string;
 
 export type Schema249 = string;
 
+export type Schema250 = string;
+
 /**
  * ID of the tenant
  */
-export type Schema250 = string;
-
 export type Schema251 = string;
 
 export type Schema252 = string;
 
 export type Schema253 = string;
 
-export type Schema254 = 'true' | 'false';
+export type Schema254 = string;
 
-export type Schema255 = string;
+export type Schema255 = 'true' | 'false';
 
 export type Schema256 = string;
 
-export type Schema257 = '15m' | '30m' | '1h' | '6h' | '24h' | '7d' | '30d';
+export type Schema257 = string;
 
-export type Schema258 = string;
+export type Schema258 = '15m' | '30m' | '1h' | '6h' | '24h' | '7d' | '30d';
 
 export type Schema259 = string;
 
@@ -1610,59 +1614,59 @@ export type Schema260 = string;
 
 export type Schema261 = string;
 
-/**
- * Human-readable description of the team
- */
 export type Schema262 = string;
 
 /**
- * ID of the team
+ * Human-readable description of the team
  */
 export type Schema263 = string;
 
-export type Schema264 = 'member' | 'maintainer';
-
 /**
  * ID of the team
  */
-export type Schema265 = string;
+export type Schema264 = string;
+
+export type Schema265 = 'member' | 'maintainer';
 
 /**
- * ID of the team member
+ * ID of the team
  */
 export type Schema266 = string;
 
 /**
- * ID of the profile to assign
+ * ID of the team member
  */
 export type Schema267 = string;
 
 /**
+ * ID of the profile to assign
+ */
+export type Schema268 = string;
+
+/**
  * Whether to lock the assignment; only organization owners can lock. Default is false
  */
-export type Schema268 = Schema269;
+export type Schema269 = Schema270;
 
-export type Schema269 = boolean;
+export type Schema270 = boolean;
 
-export type Schema270 = AwsSecretsManagerConfiguration | GcpSecretManagerConfiguration | HashiCorpVaultConfiguration | InfisicalConfiguration | AzureKeyVaultConfiguration;
+export type Schema271 = AwsSecretsManagerConfiguration | GcpSecretManagerConfiguration | HashiCorpVaultConfiguration | InfisicalConfiguration | AzureKeyVaultConfiguration;
 
-export type Schema271 = 'aws_secrets_manager';
-
-export type Schema272 = string;
+export type Schema272 = 'aws_secrets_manager';
 
 export type Schema273 = string;
 
 export type Schema274 = string;
 
-export type Schema275 = 'gcp_secret_manager';
+export type Schema275 = string;
 
-export type Schema276 = string;
+export type Schema276 = 'gcp_secret_manager';
 
 export type Schema277 = string;
 
-export type Schema278 = 'hashicorp_vault';
+export type Schema278 = string;
 
-export type Schema279 = string;
+export type Schema279 = 'hashicorp_vault';
 
 export type Schema280 = string;
 
@@ -1670,9 +1674,9 @@ export type Schema281 = string;
 
 export type Schema282 = string;
 
-export type Schema283 = 'infisical';
+export type Schema283 = string;
 
-export type Schema284 = string;
+export type Schema284 = 'infisical';
 
 export type Schema285 = string;
 
@@ -1682,9 +1686,9 @@ export type Schema287 = string;
 
 export type Schema288 = string;
 
-export type Schema289 = 'azure_key_vault';
+export type Schema289 = string;
 
-export type Schema290 = string;
+export type Schema290 = 'azure_key_vault';
 
 export type Schema291 = string;
 
@@ -1692,183 +1696,185 @@ export type Schema292 = string;
 
 export type Schema293 = string;
 
+export type Schema294 = string;
+
 /**
  * The secret identifier (e.g., AWS ARN, GCP secret path, Vault path, or Infisical secret name)
  */
-export type Schema294 = string;
+export type Schema295 = string;
 
 /**
  * Display name of the destination
  */
-export type Schema295 = Schema296;
+export type Schema296 = Schema297;
 
-export type Schema296 = string;
+export type Schema297 = string;
 
 /**
  * HTTPS delivery URL; required for HTTPS, ignored for buckets. Must resolve to a public address
  */
-export type Schema297 = string;
+export type Schema298 = string;
 
 /**
  * Delivery destination; defaults to HTTPS and requires url. Buckets require credentials
  */
-export type Schema298 = SiemTargetInput;
+export type Schema299 = SiemTargetInput;
 
-export type Schema299 = 'https';
+export type Schema300 = 'https';
 
-export type Schema300 = 's3';
+export type Schema301 = 's3';
 
 /**
  * Bucket name
  */
-export type Schema301 = string;
+export type Schema302 = string;
 
 /**
  * Object key prefix; defaults to gatana/. A trailing slash is added if missing
  */
-export type Schema302 = Schema303;
+export type Schema303 = Schema304;
 
-export type Schema303 = string;
+export type Schema304 = string;
 
 /**
  * Bucket region; defaults to us-east-1. Use the region required by your provider
  */
-export type Schema304 = Schema305;
+export type Schema305 = Schema306;
 
-export type Schema305 = string;
+export type Schema306 = string;
 
 /**
  * HTTPS endpoint of an S3-compatible store such as MinIO or OVH. Leave out for Amazon S3
  */
-export type Schema306 = Schema307;
+export type Schema307 = Schema308;
 
-export type Schema307 = string | null;
+export type Schema308 = string | null;
 
 /**
  * Address the bucket in the path (https://host/bucket/key). Most S3-compatible stores need this. Default is false
  */
-export type Schema308 = Schema309;
+export type Schema309 = Schema310;
 
-export type Schema309 = boolean;
+export type Schema310 = boolean;
 
 /**
  * Access key ID with permission to write under the prefix
  */
-export type Schema310 = string;
+export type Schema311 = string;
 
 /**
  * Secret access key; encrypted and never returned. Required on creation; omit on update to keep it
  */
-export type Schema311 = Schema312;
+export type Schema312 = Schema313;
 
-export type Schema312 = string;
+export type Schema313 = string;
 
 /**
  * Object compression; defaults to none
  */
-export type Schema313 = Schema314;
+export type Schema314 = Schema315;
 
-export type Schema314 = 'none' | 'gzip';
+export type Schema315 = 'none' | 'gzip';
 
-export type Schema315 = 'gcs';
+export type Schema316 = 'gcs';
 
 /**
  * Bucket name
  */
-export type Schema316 = string;
+export type Schema317 = string;
 
 /**
  * Service account JSON key with bucket write access; encrypted and never returned. Required on creation; omit on update to keep it
  */
-export type Schema317 = Schema318;
+export type Schema318 = Schema319;
 
-export type Schema318 = string;
+export type Schema319 = string;
 
 /**
  * Custom auth header name, such as Authorization; HTTPS only
  */
-export type Schema319 = Schema320;
+export type Schema320 = Schema321;
 
-export type Schema320 = string;
+export type Schema321 = string;
 
 /**
  * Stored encrypted and never returned
  */
-export type Schema321 = Schema322;
+export type Schema322 = Schema323;
 
-export type Schema322 = string;
+export type Schema323 = string;
 
 /**
  * Whether to stream audit log events. Default is true
  */
-export type Schema323 = Schema324;
+export type Schema324 = Schema325;
 
-export type Schema324 = boolean;
+export type Schema325 = boolean;
 
 /**
  * Whether to stream credential audit log events. Default is true
  */
-export type Schema325 = Schema326;
+export type Schema326 = Schema327;
 
-export type Schema326 = boolean;
+export type Schema327 = boolean;
 
-export type Schema327 = Schema295;
-
-export type Schema328 = Schema297;
+export type Schema328 = Schema296;
 
 export type Schema329 = Schema298;
 
-export type Schema330 = Schema319;
+export type Schema330 = Schema299;
 
-export type Schema331 = Schema321;
+export type Schema331 = Schema320;
 
-export type Schema332 = Schema323;
+export type Schema332 = Schema322;
 
-export type Schema333 = Schema325;
+export type Schema333 = Schema324;
+
+export type Schema334 = Schema326;
 
 /**
  * Whether the destination is enabled
  */
-export type Schema334 = Schema335;
+export type Schema335 = Schema336;
 
-export type Schema335 = boolean;
+export type Schema336 = boolean;
 
 /**
  * Whether to clear an existing custom auth header
  */
-export type Schema336 = Schema337;
+export type Schema337 = Schema338;
 
-export type Schema337 = boolean;
+export type Schema338 = boolean;
 
 /**
  * Whether to clear the failure state of a destination that was disabled automatically. Cursors are kept, so delivery resumes where it stopped rather than skipping what was missed
  */
-export type Schema338 = Schema339;
+export type Schema339 = Schema340;
 
-export type Schema339 = boolean;
+export type Schema340 = boolean;
 
-export type Schema340 = string;
+export type Schema341 = string;
 
 /**
  * Whether all users in the tenant can use the profile without an explicit assignment
  */
-export type Schema341 = boolean;
+export type Schema342 = boolean;
 
 /**
  * Whether the profile restricts its users to only the servers in the profile; applies even to tenant owners
  */
-export type Schema342 = boolean;
+export type Schema343 = boolean;
 
 /**
  * Whether MCP sessions that use the profile are forced into code mode
  */
-export type Schema343 = boolean;
+export type Schema344 = boolean;
 
-export type Schema344 = string;
+export type Schema345 = string;
 
-export type Schema345 = Array<string>;
+export type Schema346 = Array<string>;
 
-export type Schema346 = {
+export type Schema347 = {
     /**
      * Name of the tool as the MCP server itself reports it
      */
@@ -1880,284 +1886,284 @@ export type Schema346 = {
     /**
      * Name that the tool is exposed under to MCP clients, without the server-slug prefix; empty when the tool keeps its regular name
      */
-    toolNameOverride: Schema347 | Schema348;
+    toolNameOverride: Schema348 | Schema349;
 };
 
-export type Schema347 = '';
-
-export type Schema348 = string;
+export type Schema348 = '';
 
 export type Schema349 = string;
 
-export type Schema350 = string | null;
+export type Schema350 = string;
 
-export type Schema351 = number | null;
+export type Schema351 = string | null;
 
-export type Schema352 = string;
+export type Schema352 = number | null;
 
 export type Schema353 = string;
 
-export type Schema354 = 'signup' | 'playground-conversion';
+export type Schema354 = string;
 
-export type Schema355 = string;
+export type Schema355 = 'signup' | 'playground-conversion';
+
+export type Schema356 = string;
 
 /**
  * Organization ID to create. Reject unavailable IDs before sending a verification code
  */
-export type Schema356 = Schema357;
+export type Schema357 = Schema358;
 
-export type Schema357 = string;
+export type Schema358 = string;
 
 /**
  * Display name of the token. Default is "Unnamed Token"
  */
-export type Schema358 = Schema359;
+export type Schema359 = Schema360;
 
-export type Schema359 = string;
+export type Schema360 = string;
 
 /**
  * ID of the SCIM token
  */
-export type Schema360 = string;
-
 export type Schema361 = string;
+
+export type Schema362 = string;
 
 /**
  * OAuth client ID of the connection
  */
-export type Schema362 = string;
+export type Schema363 = string;
 
 /**
  * Name for the connection; pass an empty string to remove it
  */
-export type Schema363 = Schema364;
+export type Schema364 = Schema365;
 
-export type Schema364 = string;
+export type Schema365 = string;
 
 /**
  * Profiles to attach, replacing whatever was attached before; empty detaches all
  */
-export type Schema365 = Schema366;
+export type Schema366 = Schema367;
 
-export type Schema366 = Array<string>;
+export type Schema367 = Array<string>;
 
 /**
  * Title shown in the viewer and the list. When omitted, the first heading of the Markdown or the <title> of the HTML is used
  */
-export type Schema367 = Schema368;
+export type Schema368 = Schema369;
 
-export type Schema368 = string;
+export type Schema369 = string;
 
-export type Schema369 = Schema370;
+export type Schema370 = Schema371;
 
 /**
  * A complete, self-contained HTML document. Give either html or markdown, not both
  */
-export type Schema370 = string;
+export type Schema371 = string;
 
-export type Schema371 = Schema372;
+export type Schema372 = Schema373;
 
 /**
  * A Markdown document (GitHub flavored). Stored as written and rendered to HTML when served. Give either html or markdown, not both
  */
-export type Schema372 = string;
+export type Schema373 = string;
 
-export type Schema373 = Schema374;
+export type Schema374 = Schema375;
 
 /**
  * Stylesheet linked into the page when it is served. 'gatana' applies the Gatana fonts, colors and typography to plain HTML; an organization theme (by id or by name) is the Gatana theme in the organization's colors, fonts and logo; 'none' serves the document as published. A new artifact without one gets the organization default
  */
-export type Schema374 = Schema375;
+export type Schema375 = Schema376;
 
 /**
  * 'gatana' (Gatana styling), 'none' (the document as published), or an organization theme by id or by name
  */
-export type Schema375 = string;
-
 export type Schema376 = string;
 
 export type Schema377 = string;
 
-export type Schema378 = Schema370;
+export type Schema378 = string;
 
-export type Schema379 = Schema372;
+export type Schema379 = Schema371;
 
-export type Schema380 = Schema374;
+export type Schema380 = Schema373;
 
-export type Schema381 = string;
+export type Schema381 = Schema375;
+
+export type Schema382 = string;
 
 /**
  * 'private': the creator and the users and teams it is shared with; 'tenant': every signed-in member; 'public': anyone with the link
  */
-export type Schema382 = Schema383;
+export type Schema383 = Schema384;
 
-export type Schema383 = 'private' | 'tenant' | 'public';
+export type Schema384 = 'private' | 'tenant' | 'public';
 
-export type Schema384 = Schema374;
+export type Schema385 = Schema375;
 
-export type Schema385 = string;
+export type Schema386 = string;
 
 /**
  * 'users' to share with one user account, 'teams' to share with every member of a team
  */
-export type Schema386 = 'users' | 'teams';
+export type Schema387 = 'users' | 'teams';
 
 /**
  * ID of the user or of the team
  */
-export type Schema387 = string;
+export type Schema388 = string;
 
 /**
  * Name shown in pickers and accepted by agents; unique in the organization, not 'gatana' or 'none'
  */
-export type Schema388 = string;
+export type Schema389 = string;
 
-export type Schema389 = Schema390;
+export type Schema390 = Schema391;
 
 /**
  * Page background, as a hex color (#rgb or #rrggbb)
  */
-export type Schema390 = string;
+export type Schema391 = string;
 
-export type Schema391 = Schema392;
+export type Schema392 = Schema393;
 
 /**
  * Heading text; body text, lines and soft backgrounds are mixed from it and the background, as a hex color (#rgb or #rrggbb)
  */
-export type Schema392 = string;
+export type Schema393 = string;
 
-export type Schema393 = Schema394;
+export type Schema394 = Schema395;
 
 /**
  * Buttons, links on hover, the eyebrow line and the gradient, as a hex color (#rgb or #rrggbb)
  */
-export type Schema394 = string;
+export type Schema395 = string;
 
-export type Schema395 = Schema396;
+export type Schema396 = Schema397;
 
 /**
  * Font of headings
  */
-export type Schema396 = Schema397;
+export type Schema397 = Schema398;
 
-export type Schema397 = 'inter' | 'fraunces' | 'system-sans' | 'system-serif';
+export type Schema398 = 'inter' | 'fraunces' | 'system-sans' | 'system-serif';
 
-export type Schema398 = Schema399;
+export type Schema399 = Schema400;
 
 /**
  * Font of body text
  */
-export type Schema399 = Schema397;
+export type Schema400 = Schema398;
 
-export type Schema400 = Schema401;
+export type Schema401 = Schema402;
 
 /**
  * Font of code
  */
-export type Schema401 = 'jetbrains-mono' | 'system-mono';
+export type Schema402 = 'jetbrains-mono' | 'system-mono';
 
-export type Schema402 = Schema403;
+export type Schema403 = Schema404;
 
 /**
  * Logo shown at the top of every page, as a base64 data: URL of a PNG, JPEG, WebP or SVG image of at most 256 KB, or an empty string for none
  */
-export type Schema403 = string;
+export type Schema404 = string;
 
-export type Schema404 = Schema405;
+export type Schema405 = Schema406;
 
 /**
  * CSS added after the theme's own rules; the page's own styles still win over it
  */
-export type Schema405 = string;
+export type Schema406 = string;
 
-export type Schema406 = Schema390;
+export type Schema407 = Schema391;
 
-export type Schema407 = Schema392;
+export type Schema408 = Schema393;
 
-export type Schema408 = Schema394;
+export type Schema409 = Schema395;
 
-export type Schema409 = Schema396;
+export type Schema410 = Schema397;
 
-export type Schema410 = Schema399;
+export type Schema411 = Schema400;
 
-export type Schema411 = Schema401;
+export type Schema412 = Schema402;
 
-export type Schema412 = Schema403;
+export type Schema413 = Schema404;
 
-export type Schema413 = Schema405;
+export type Schema414 = Schema406;
 
-export type Schema414 = Schema388;
+export type Schema415 = Schema389;
 
-export type Schema415 = Schema416;
+export type Schema416 = Schema417;
 
 /**
  * The whole skill as one SKILL.md document: a frontmatter block with name and description, then the instructions. The three fields are taken from it, so name, description and content are not given alongside
  */
-export type Schema416 = string;
+export type Schema417 = string;
 
-export type Schema417 = Schema418;
+export type Schema418 = Schema419;
 
 /**
  * Name of the skill: lowercase letters, digits and single dashes, 1-64 characters, unique in the organization. The same rules as a Claude Code SKILL.md name
  */
-export type Schema418 = Schema419;
+export type Schema419 = Schema420;
 
-export type Schema419 = string;
+export type Schema420 = string;
 
-export type Schema420 = Schema421;
+export type Schema421 = Schema422;
 
 /**
  * One line saying when to use the skill, written for an agent deciding whether it applies
  */
-export type Schema421 = string;
+export type Schema422 = string;
 
-export type Schema422 = Schema423;
+export type Schema423 = Schema424;
 
 /**
  * The instructions as Markdown: the body of a SKILL.md without the frontmatter. Maximum 200 KiB
  */
-export type Schema423 = string;
+export type Schema424 = string;
 
-export type Schema424 = Schema425;
+export type Schema425 = Schema426;
 
 /**
  * 'organization' (the default): every member of the organization can read the skill; 'private': only the creator and the users and teams it is shared with
  */
-export type Schema425 = Schema426;
+export type Schema426 = Schema427;
 
-export type Schema426 = 'organization' | 'private';
+export type Schema427 = 'organization' | 'private';
 
-export type Schema427 = Schema428;
+export type Schema428 = Schema429;
 
 /**
  * ID of the collection to put the skill in, or null for a skill at root. You must be able to read the collection
  */
-export type Schema428 = Schema429 | null;
-
-export type Schema429 = string;
+export type Schema429 = Schema430 | null;
 
 export type Schema430 = string;
 
 export type Schema431 = string;
 
-export type Schema432 = Schema416;
+export type Schema432 = string;
 
-export type Schema433 = Schema418;
+export type Schema433 = Schema417;
 
-export type Schema434 = Schema421;
+export type Schema434 = Schema419;
 
-export type Schema435 = Schema423;
+export type Schema435 = Schema422;
 
-export type Schema436 = Schema425;
+export type Schema436 = Schema424;
 
-export type Schema437 = Schema428;
+export type Schema437 = Schema426;
+
+export type Schema438 = Schema429;
 
 /**
  * Replace all files: maximum 512 files and 4 MiB, including SKILL.md. Delete stored files omitted from the set. Keep the stored SKILL.md if omitted
  */
-export type Schema438 = Array<Schema439>;
+export type Schema439 = Array<Schema440>;
 
-export type Schema439 = {
+export type Schema440 = {
     /**
      * Path relative to the skill folder. Use / as the separator, without "." or ".." segments. Maximum 255 bytes. "SKILL.md" is the skill document
      */
@@ -2169,97 +2175,97 @@ export type Schema439 = {
     content: string;
 };
 
-export type Schema440 = string;
+export type Schema441 = string;
 
 /**
  * 'users' for one user, 'teams' for team members, 'servers' for users with server access
  */
-export type Schema441 = 'users' | 'teams' | 'servers';
+export type Schema442 = 'users' | 'teams' | 'servers';
 
 /**
  * User, team or server ID
  */
-export type Schema442 = string;
+export type Schema443 = string;
 
 /**
  * 'read' (the default) opens it to the principal; 'maintain' gives them the same rights as the creator and the organization owners
  */
-export type Schema443 = 'read' | 'maintain';
+export type Schema444 = 'read' | 'maintain';
 
 /**
  * Name of the collection: lowercase letters, digits and single dashes, 1-64 characters, unique in the organization. What the CLI subscribes to
  */
-export type Schema444 = Schema419;
+export type Schema445 = Schema420;
 
-export type Schema445 = Schema446;
+export type Schema446 = Schema447;
 
 /**
  * One line saying what the collection gathers
  */
-export type Schema446 = string;
+export type Schema447 = string;
 
-export type Schema447 = Schema448;
+export type Schema448 = Schema449;
 
 /**
  * 'organization' (the default): every member can read the collection and its skills; 'private': the creator and the users and teams it is shared with
  */
-export type Schema448 = Schema426;
+export type Schema449 = Schema427;
 
-export type Schema449 = string;
+export type Schema450 = string;
 
-export type Schema450 = Schema444;
+export type Schema451 = Schema445;
 
-export type Schema451 = Schema446;
+export type Schema452 = Schema447;
 
-export type Schema452 = Schema448;
+export type Schema453 = Schema449;
 
-export type Schema453 = string;
+export type Schema454 = string;
 
 /**
  * 'users' to share with one user account, 'teams' to share with every member of a team
  */
-export type Schema454 = 'users' | 'teams';
+export type Schema455 = 'users' | 'teams';
 
 /**
  * ID of the user or of the team
  */
-export type Schema455 = string;
-
 export type Schema456 = string;
 
+export type Schema457 = string;
+
 export type AuthMetadata = {
-    isPlayground: Schema457;
-    hasPaidSubscription: Schema458;
-    hasAssistant: Schema459;
-    hasGlamaRegistry: Schema460;
-    hasSignInMethod: Schema461;
-    capabilities: Schema462;
+    isPlayground: Schema458;
+    hasPaidSubscription: Schema459;
+    hasAssistant: Schema460;
+    hasGlamaRegistry: Schema461;
+    hasSignInMethod: Schema462;
+    capabilities: Schema463;
     features: Features;
-    user: Schema480;
-    tenant: Schema482;
-    rules: Schema503;
-    quota: Schema504;
+    user: Schema481;
+    tenant: Schema483;
+    rules: Schema504;
+    quota: Schema505;
 };
 
 export type DeploymentCapabilities = {
-    kubernetes: Schema463;
-    objectStorage: Schema464;
-    sharedObjectStorage: Schema465;
-    storageClass: Schema466;
-    tailscaleImage: Schema467;
-    email: Schema468;
-    embeddings: Schema469;
-    codeModeWorker: Schema470;
+    kubernetes: Schema464;
+    objectStorage: Schema465;
+    sharedObjectStorage: Schema466;
+    storageClass: Schema467;
+    tailscaleImage: Schema468;
+    email: Schema469;
+    embeddings: Schema470;
+    codeModeWorker: Schema471;
 };
 
 export type Features = {
-    stdio: Schema471;
-    hosted: Schema474;
-    codeMode: Schema475;
-    sandbox: Schema476;
-    storage: Schema477;
-    tailscale: Schema478;
-    serverFiles: Schema479;
+    stdio: Schema472;
+    hosted: Schema475;
+    codeMode: Schema476;
+    sandbox: Schema477;
+    storage: Schema478;
+    tailscale: Schema479;
+    serverFiles: Schema480;
 };
 
 /**
@@ -2268,13 +2274,13 @@ export type Features = {
 export type FeatureUnavailableReason = 'no-kubernetes' | 'no-object-storage' | 'no-shared-object-storage' | 'no-storage-class' | 'no-tailscale-image' | 'no-code-mode-worker';
 
 export type Feature = {
-    status: Schema472;
+    status: Schema473;
     reason?: FeatureUnavailableReason;
 };
 
 export type ServerResourceRequests = {
-    cpu: Schema487;
-    memory: Schema488;
+    cpu: Schema488;
+    memory: Schema489;
 };
 
 /**
@@ -2287,194 +2293,198 @@ export type NewServerProtectionModes = {
 };
 
 export type TenantAbilities = {
-    canHaveMultipleUsers: Schema489;
-    canUseSandbox: Schema490;
-    canUseHostedServers: Schema491;
-    canUseLocalServers: Schema492;
-    maxEnabledServers: Schema493;
-    canUseAiCompression: Schema494;
-    maxUsers: Schema495;
-    canUseCodeMode: Schema496;
-    canUseSiemStreaming: Schema497;
-    canUseAlerts: Schema498;
-    canUseDeploymentStorage: Schema499;
-    canUseTailscale: Schema500;
-    hasPaidFeatures: Schema501;
+    canHaveMultipleUsers: Schema490;
+    canUseSandbox: Schema491;
+    canUseHostedServers: Schema492;
+    canUseLocalServers: Schema493;
+    maxEnabledServers: Schema494;
+    canUseAiCompression: Schema495;
+    maxUsers: Schema496;
+    canUseCodeMode: Schema497;
+    canUseSiemStreaming: Schema498;
+    canUseAlerts: Schema499;
+    canUseDeploymentStorage: Schema500;
+    canUseTailscale: Schema501;
+    hasPaidFeatures: Schema502;
 };
 
 export type AuditLogFilterOption = {
-    value: Schema506;
-    label: Schema507;
-    sublabel?: Schema508;
+    value: Schema507;
+    label: Schema508;
+    sublabel?: Schema509;
 };
 
 export type AuditLogFilterOptions = {
-    eventName: Schema505;
-    entityType: Schema510;
-    clientId: Schema511;
-    patId: Schema512;
-    toolName: Schema513;
-    reason: Schema514;
+    eventName: Schema506;
+    entityType: Schema511;
+    clientId: Schema512;
+    patId: Schema513;
+    toolName: Schema514;
+    reason: Schema515;
 };
 
 export type ActivitySummary = {
-    days: Schema515;
-    total: Schema518;
-    servers: Schema519;
+    days: Schema516;
+    total: Schema519;
+    servers: Schema520;
 };
 
 export type ActivityDay = {
-    date: Schema516;
-    count: Schema517;
+    date: Schema517;
+    count: Schema518;
 };
 
 export type ActivityServer = {
-    serverId: Schema520;
-    slug: Schema521;
-    count: Schema522;
+    serverId: Schema521;
+    slug: Schema522;
+    count: Schema523;
 };
 
 export type AuditLogResponse = {
-    id: Schema523;
-    tenantId: Schema524;
-    eventTime: Schema525;
-    entityType: Schema526;
-    entityId: Schema527;
-    eventName: Schema528;
-    userId: Schema529;
-    details: Schema530;
-    onlySuperadminVisibility: Schema531;
-    createdAt: Schema532;
-    userFullName: Schema533;
-    userEmail: Schema534;
-    teamName: Schema535;
-    serverSlug: Schema536;
-    profileName: Schema537;
-    targetUserName: Schema538;
+    id: Schema524;
+    tenantId: Schema525;
+    eventTime: Schema526;
+    entityType: Schema527;
+    entityId: Schema528;
+    eventName: Schema529;
+    userId: Schema530;
+    details: Schema531;
+    onlySuperadminVisibility: Schema532;
+    createdAt: Schema533;
+    userFullName: Schema534;
+    userEmail: Schema535;
+    teamName: Schema536;
+    serverSlug: Schema537;
+    profileName: Schema538;
+    targetUserName: Schema539;
 };
 
 export type PaginatedAuditLogResponse = {
-    pagination: Schema539;
-    data: Schema546;
+    pagination: Schema540;
+    data: Schema547;
 };
 
 export type GetUserMeResponse = {
-    user: Schema547;
-    identities: Schema567;
+    user: Schema548;
+    identities: Schema568;
 };
 
 export type ProfileAssignment = {
-    tenantId: Schema557;
-    userId: Schema558;
-    profileId: Schema559;
-    isLockedByOrgOwner: Schema560;
-    createdAt: Schema561;
-    updatedAt: Schema562;
+    tenantId: Schema558;
+    userId: Schema559;
+    profileId: Schema560;
+    isLockedByOrgOwner: Schema561;
+    createdAt: Schema562;
+    updatedAt: Schema563;
 };
 
 export type UserIdentity = {
-    tenantId: Schema568;
-    externalId: Schema569;
-    userId: Schema570;
-    type: Schema571;
-    createdAt: Schema572;
-    updatedAt: Schema573;
+    tenantId: Schema569;
+    externalId: Schema570;
+    userId: Schema571;
+    type: Schema572;
+    createdAt: Schema573;
+    updatedAt: Schema574;
 };
 
 export type User = {
-    id: Schema548;
-    tenantId: Schema549;
-    name: Schema550;
-    email: Schema551;
-    role: Schema552;
-    isSuperAdministrator: Schema574;
-    isDisabled: Schema553;
-    isServiceAccount: Schema554;
-    isInvited: Schema555;
-    profileIds: Schema556;
-    isScimManaged: Schema563;
-    scimExternalId: Schema564;
-    createdAt: Schema565;
-    updatedAt: Schema566;
+    id: Schema549;
+    tenantId: Schema550;
+    name: Schema551;
+    email: Schema552;
+    role: Schema553;
+    isSuperAdministrator: Schema575;
+    isDisabled: Schema554;
+    isServiceAccount: Schema555;
+    isInvited: Schema556;
+    profileIds: Schema557;
+    isScimManaged: Schema564;
+    scimExternalId: Schema565;
+    createdAt: Schema566;
+    updatedAt: Schema567;
 };
 
 export type CreateUserResponse = {
-    user: Schema575;
-    setPasswordUrl?: Schema576;
+    user: Schema576;
+    setPasswordUrl?: Schema577;
 };
 
 export type ProfileTeamAssignment = {
-    tenantId: Schema581;
-    teamId: Schema582;
-    profileId: Schema583;
-    isLockedByOrgOwner: Schema584;
-    createdAt: Schema585;
-    updatedAt: Schema586;
+    tenantId: Schema582;
+    teamId: Schema583;
+    profileId: Schema584;
+    isLockedByOrgOwner: Schema585;
+    createdAt: Schema586;
+    updatedAt: Schema587;
 };
 
 export type PersonalAccessToken = {
-    tenantId: Schema588;
-    userId: Schema589;
-    id: Schema590;
-    name: Schema591;
-    apiKey: Schema592;
-    profileIds: Schema593;
-    createdAt: Schema595;
-    lastUsedAt: Schema596;
+    tenantId: Schema589;
+    userId: Schema590;
+    id: Schema591;
+    name: Schema592;
+    apiKey: Schema593;
+    profileIds: Schema594;
+    createdAt: Schema596;
+    lastUsedAt: Schema597;
 };
 
 export type ServerDto = {
-    id: Schema599;
-    slug: Schema600;
-    tenantId: Schema601;
-    description: Schema602;
-    authorization: Schema603;
-    transportConfig: Schema611;
-    oauthClientConfiguration: Schema697;
-    oauthMetadata: Schema713;
-    visibility: Schema737;
-    isEnabled: Schema738;
-    lastToolRefreshAt: Schema739;
-    mcpProtocolVersion: Schema741;
-    mcpProtocolDetectedAt: Schema742;
-    timeoutProtocol: Schema744;
-    timeoutTotal: Schema745;
-    resetTimeoutOnProgressNotification: Schema746;
-    isOutputCompressionEnabled: Schema747;
-    isOutputCompressionTransformEnabled: Schema748;
-    outputCompressionThresholdBytes: Schema749;
-    isSkillServingEnabled: Schema750;
-    firewallRules: Schema751;
-    protections: Schema756;
-    createdAt: Schema766;
-    updatedAt: Schema767;
-    resolvedProtections: Schema768;
-    serverInfo: Schema776;
+    id: Schema600;
+    slug: Schema601;
+    tenantId: Schema602;
+    description: Schema603;
+    authorization: Schema604;
+    transportConfig: Schema612;
+    oauthClientConfiguration: Schema698;
+    oauthMetadata: Schema714;
+    visibility: Schema738;
+    isEnabled: Schema739;
+    lastToolRefreshAt: Schema740;
+    mcpProtocolVersion: Schema742;
+    mcpProtocolDetectedAt: Schema743;
+    mcpCapabilities: Schema745;
+    timeoutProtocol: Schema747;
+    timeoutTotal: Schema748;
+    resetTimeoutOnProgressNotification: Schema749;
+    isOutputCompressionEnabled: Schema750;
+    isOutputCompressionTransformEnabled: Schema751;
+    outputCompressionThresholdBytes: Schema752;
+    isSkillServingEnabled: Schema753;
+    isAppServingEnabled: Schema754;
+    firewallRules: Schema755;
+    protections: Schema760;
+    createdAt: Schema770;
+    updatedAt: Schema771;
+    resolvedProtections: Schema772;
+    serverInfo: Schema780;
+    hasApps: Schema792;
+    hasSkills: Schema793;
 };
 
 export type ServerOAuthClientConfiguration = {
-    clientId: Schema699;
-    clientSecret: Schema701;
-    grantType: Schema703;
-    clientAuthMethod: Schema704;
-    scopes: Schema709;
-    isClientIdMetadataDocument: Schema711;
+    clientId: Schema700;
+    clientSecret: Schema702;
+    grantType: Schema704;
+    clientAuthMethod: Schema705;
+    scopes: Schema710;
+    isClientIdMetadataDocument: Schema712;
 };
 
 export type ServerOAuthMetadata = {
-    resource?: Schema715;
-    as?: Schema720;
+    resource?: Schema716;
+    as?: Schema721;
 };
 
 export type ResolvedProtection = {
-    actions: Schema769;
-    settings: Schema773;
+    actions: Schema773;
+    settings: Schema777;
 };
 
 export type ResolvedProtectionAction = {
     action: ProtectionOnAction;
     source: ProtectionValueSource;
-    inherited: Schema771;
+    inherited: Schema775;
 };
 
 export type ProtectionValueSource = 'server' | 'organization' | 'builtin';
@@ -2489,145 +2499,147 @@ export type ResolvedProtections = {
  * Unverified metadata from the server. Each tool refresh saves the latest server/discover result
  */
 export type ServerInfo = {
-    title: Schema777;
-    version: Schema778;
-    websiteUrl: Schema779;
-    description: Schema780;
-    icons: Schema781;
+    title: Schema781;
+    version: Schema782;
+    websiteUrl: Schema783;
+    description: Schema784;
+    icons: Schema785;
 };
 
 export type ServerInfoIcon = {
-    mimeType?: Schema782;
-    sizes?: Schema784;
-    theme?: Schema786;
+    mimeType?: Schema786;
+    sizes?: Schema788;
+    theme?: Schema790;
 };
 
 export type ServerFile = {
-    tenantId: Schema789;
-    serverId: Schema790;
-    id: Schema791;
-    filename: Schema792;
-    sourceType: Schema793;
-    sourceId: Schema798;
-    size: Schema799;
-    credentialId: Schema801;
-    createdAt: Schema803;
-    updatedAt: Schema804;
+    tenantId: Schema795;
+    serverId: Schema796;
+    id: Schema797;
+    filename: Schema798;
+    sourceType: Schema799;
+    sourceId: Schema804;
+    size: Schema805;
+    credentialId: Schema807;
+    createdAt: Schema809;
+    updatedAt: Schema810;
 };
 
 export type ServerUsage = {
-    serverId: Schema805;
-    lastSevenDays: Schema806;
+    serverId: Schema811;
+    lastSevenDays: Schema812;
 };
 
 export type ServerRunningStatusResponse = {
-    isDeployed: Schema807;
-    isAvailable: Schema808;
-    isStabilizing: Schema809;
-    pods: Schema810;
+    isDeployed: Schema813;
+    isAvailable: Schema814;
+    isStabilizing: Schema815;
+    pods: Schema816;
 };
 
 export type ServerPodStatus = {
-    name: Schema811;
-    ready: Schema812;
-    phase?: Schema813;
-    reason?: Schema814;
-    createdAt?: Schema815;
+    name: Schema817;
+    ready: Schema818;
+    phase?: Schema819;
+    reason?: Schema820;
+    createdAt?: Schema821;
 };
 
 export type TestOpenApiSpecResponse = ({
     success: true;
-} & Schema817) | ({
+} & Schema823) | ({
     success: false;
-} & Schema818);
+} & Schema824);
 
 export type ServerToolDto = {
-    tenantId: Schema820;
-    toolName: Schema821;
-    description: Schema822;
-    schema: Schema823;
-    outputSchema: Schema824;
-    annotations: Schema826;
-    isEnabled: Schema828;
-    toolNameOverride: Schema829;
-    descriptionOverride: Schema830;
-    inputSchemaOverride: Schema831;
-    overrideToolName: Schema833;
-    overrideDescription: Schema834;
-    overrideInputSchema: Schema835;
-    serverSlug: Schema837;
-    universalName: Schema838;
+    tenantId: Schema826;
+    toolName: Schema827;
+    description: Schema828;
+    schema: Schema829;
+    outputSchema: Schema830;
+    annotations: Schema832;
+    meta: Schema834;
+    isEnabled: Schema836;
+    toolNameOverride: Schema837;
+    descriptionOverride: Schema838;
+    inputSchemaOverride: Schema839;
+    overrideToolName: Schema841;
+    overrideDescription: Schema842;
+    overrideInputSchema: Schema843;
+    overrideAppOnly: Schema845;
+    serverSlug: Schema846;
+    universalName: Schema847;
 };
 
 export type GetMembersResponse = {
-    teams: Schema841;
-    users: Schema842;
+    teams: Schema851;
+    users: Schema852;
 };
 
 export type ServerCredentialsDto = {
-    id: Schema843;
-    tenantId: Schema844;
-    scope: Schema845;
-    userId: Schema847;
-    profileId: Schema849;
-    lastUsedAt: Schema851;
-    authorizedAt: Schema853;
-    authorizedByUserId: Schema854;
-    type: Schema856;
-    createdAt: Schema857;
-    updatedAt: Schema858;
-    serverSlug: Schema859;
-    userEmail: Schema860;
-    userName: Schema862;
-    profileName: Schema864;
-    authorizedByName: Schema866;
-    authorizedByEmail: Schema868;
-    apikeysPresent: Schema870;
-    subject: Schema872;
-    email: Schema874;
+    id: Schema853;
+    tenantId: Schema854;
+    scope: Schema855;
+    userId: Schema857;
+    profileId: Schema859;
+    lastUsedAt: Schema861;
+    authorizedAt: Schema863;
+    authorizedByUserId: Schema864;
+    type: Schema866;
+    createdAt: Schema867;
+    updatedAt: Schema868;
+    serverSlug: Schema869;
+    userEmail: Schema870;
+    userName: Schema872;
+    profileName: Schema874;
+    authorizedByName: Schema876;
+    authorizedByEmail: Schema878;
+    apikeysPresent: Schema880;
+    subject: Schema882;
+    email: Schema884;
 };
 
 export type GetCredentialTokenResponse = {
-    type: Schema876;
-    accessToken?: Schema877;
-    expiresAt?: Schema879;
-    apikeys?: Schema881;
+    type: Schema886;
+    accessToken?: Schema887;
+    expiresAt?: Schema889;
+    apikeys?: Schema891;
 };
 
 export type UploadSourceCodeResponse = {
-    success: Schema883;
-    message: Schema884;
-    analysisResult?: Schema885;
+    success: Schema893;
+    message: Schema894;
+    analysisResult?: Schema895;
 };
 
 export type TenantOidcConfiguration = {
-    isEnabled: Schema890;
-    displayName: Schema891;
-    issuer: Schema892;
-    authorizeEndpoint: Schema893;
-    extraParameters: Schema894;
-    tokenEndpoint: Schema895;
-    userInfoEndpoint: Schema896;
-    introspectionEndpoint: Schema897;
-    jwksUri: Schema898;
-    clientId: Schema899;
-    clientSecret: Schema900;
-    clientAuthMethod: Schema901;
-    scopes: Schema902;
+    isEnabled: Schema900;
+    displayName: Schema901;
+    issuer: Schema902;
+    authorizeEndpoint: Schema903;
+    extraParameters: Schema904;
+    tokenEndpoint: Schema905;
+    userInfoEndpoint: Schema906;
+    introspectionEndpoint: Schema907;
+    jwksUri: Schema908;
+    clientId: Schema909;
+    clientSecret: Schema910;
+    clientAuthMethod: Schema911;
+    scopes: Schema912;
 };
 
 export type TenantSamlConfiguration = {
-    isEnabled: Schema904;
-    displayName: Schema905;
-    idpMetadataUrl: Schema906;
-    idpMetadataDocument: Schema907;
-    entryPoint: Schema908;
-    cert: Schema909;
-    identifierFormat: Schema910;
-    signatureAlgorithm: Schema911;
-    emailClaim: Schema912;
-    firstNameClaim: Schema913;
-    lastNameClaim: Schema914;
+    isEnabled: Schema914;
+    displayName: Schema915;
+    idpMetadataUrl: Schema916;
+    idpMetadataDocument: Schema917;
+    entryPoint: Schema918;
+    cert: Schema919;
+    identifierFormat: Schema920;
+    signatureAlgorithm: Schema921;
+    emailClaim: Schema922;
+    firstNameClaim: Schema923;
+    lastNameClaim: Schema924;
 };
 
 /**
@@ -2647,287 +2659,287 @@ export type ProtectionDefaults = {
 };
 
 export type ProtectionDefault = {
-    mode?: Schema955;
+    mode?: Schema965;
     actions?: ProtectionActionsOutput;
-    settings?: Schema957;
+    settings?: Schema967;
 };
 
 export type AssistantLlmConfigurationStatus = {
-    provider: Schema962;
-    model: Schema963;
-    baseUrl: Schema964;
-    region: Schema966;
-    resourceName: Schema968;
-    apiVersion: Schema970;
-    hasApiKey: Schema972;
-    hasAwsAccessKey: Schema973;
+    provider: Schema972;
+    model: Schema973;
+    baseUrl: Schema974;
+    region: Schema976;
+    resourceName: Schema978;
+    apiVersion: Schema980;
+    hasApiKey: Schema982;
+    hasAwsAccessKey: Schema983;
 };
 
 export type TenantDto = {
-    id: Schema886;
-    isPlayground: Schema887;
-    displayName: Schema888;
-    upstreamOidcConfiguration: Schema889;
-    upstreamSamlConfiguration: Schema903;
-    isUpstreamOidcTokensTrusted: Schema915;
-    isAutomaticSeatIncreaseEnabled: Schema916;
-    isMcpAuthorizationApiKeyEnabled: Schema917;
-    grantPermissionsNewToolPolicy: Schema918;
-    allowMemberAddRemoteServers: Schema919;
-    allowMemberAddLocalServers: Schema920;
-    allowMemberAddHostedServers: Schema921;
-    isGoogleRefreshTokenSavingEnabled: Schema922;
+    id: Schema896;
+    isPlayground: Schema897;
+    displayName: Schema898;
+    upstreamOidcConfiguration: Schema899;
+    upstreamSamlConfiguration: Schema913;
+    isUpstreamOidcTokensTrusted: Schema925;
+    isAutomaticSeatIncreaseEnabled: Schema926;
+    isMcpAuthorizationApiKeyEnabled: Schema927;
+    grantPermissionsNewToolPolicy: Schema928;
+    allowMemberAddRemoteServers: Schema929;
+    allowMemberAddLocalServers: Schema930;
+    allowMemberAddHostedServers: Schema931;
+    isGoogleRefreshTokenSavingEnabled: Schema932;
     isMcpOauthIssuerPathToleranceEnabled: McpOauthIssuerPathToleranceEnabled;
-    isOutputCompressionAllowed: Schema923;
-    isOutputCompressionAiEnabled: Schema924;
-    isCodeModeAutoTriggerEnabled: Schema925;
-    codeModeAutoTriggerThreshold: Schema926;
-    outputCompressionAiModel: Schema928;
-    memberDefaultRole: Schema929;
-    isOwnerAllToolsOverMcpEnabled: Schema931;
-    mcpAuditLogLevel: Schema932;
-    mcpAuditLoggingIncludeProtocolMessages: Schema933;
-    defaultResourceLimits: Schema934;
-    defaultResourceRequests: Schema935;
-    deploymentResourceLimits: Schema936;
-    deploymentStorageQuota: Schema937;
-    isAssistantEnabled: Schema938;
-    isAssistantByokEnabled: Schema939;
-    assistantPlatformProcessingAcceptedAt: Schema940;
-    assistantPlatformProcessingAcceptedBy: Schema942;
-    isAssistantConversationSharingEnabled: Schema944;
-    assistantConversationSharingAcceptedAt: Schema945;
-    assistantConversationSharingAcceptedBy: Schema947;
-    assistantDailyTokenLimit: Schema949;
-    isScimEnabled: Schema951;
-    scimGroupDeleteBehavior: Schema952;
-    scimUserDeleteBehavior: Schema953;
+    isOutputCompressionAllowed: Schema933;
+    isOutputCompressionAiEnabled: Schema934;
+    isCodeModeAutoTriggerEnabled: Schema935;
+    codeModeAutoTriggerThreshold: Schema936;
+    outputCompressionAiModel: Schema938;
+    memberDefaultRole: Schema939;
+    isOwnerAllToolsOverMcpEnabled: Schema941;
+    mcpAuditLogLevel: Schema942;
+    mcpAuditLoggingIncludeProtocolMessages: Schema943;
+    defaultResourceLimits: Schema944;
+    defaultResourceRequests: Schema945;
+    deploymentResourceLimits: Schema946;
+    deploymentStorageQuota: Schema947;
+    isAssistantEnabled: Schema948;
+    isAssistantByokEnabled: Schema949;
+    assistantPlatformProcessingAcceptedAt: Schema950;
+    assistantPlatformProcessingAcceptedBy: Schema952;
+    isAssistantConversationSharingEnabled: Schema954;
+    assistantConversationSharingAcceptedAt: Schema955;
+    assistantConversationSharingAcceptedBy: Schema957;
+    assistantDailyTokenLimit: Schema959;
+    isScimEnabled: Schema961;
+    scimGroupDeleteBehavior: Schema962;
+    scimUserDeleteBehavior: Schema963;
     protectionDefaults: ProtectionDefaults;
-    assistantLlmConfigurationStatus: Schema961;
-    logo: Schema974;
+    assistantLlmConfigurationStatus: Schema971;
+    logo: Schema984;
 };
 
 export type GetSubscriptionResponse = {
-    subscriptionPlan: Schema975;
-    subscriptionSeats: Schema976;
-    subscription: Schema977;
+    subscriptionPlan: Schema985;
+    subscriptionSeats: Schema986;
+    subscription: Schema987;
 };
 
 export type DeploymentStatusResponse = {
-    isDeployed: Schema987;
-    isAvailable: Schema988;
-    isStabilizing: Schema989;
-    hasPodFailures: Schema990;
-    currentReplicaSet?: Schema991;
-    deployments: Schema993;
-    storage?: Schema1020;
+    isDeployed: Schema997;
+    isAvailable: Schema998;
+    isStabilizing: Schema999;
+    hasPodFailures: Schema1000;
+    currentReplicaSet?: Schema1001;
+    deployments: Schema1003;
+    storage?: Schema1030;
 };
 
 export type DeploymentStatus = {
-    name: Schema994;
-    ready: Schema995;
-    crash: Schema996;
-    phase?: Schema997;
-    reason?: Schema999;
-    createdAt?: Schema1001;
-    restartCount: Schema1003;
-    hasPreviousFailure: Schema1004;
-    lastFailCondition: Schema1005;
-    lastFailure?: Schema1012;
-    waitingReason?: Schema1018;
+    name: Schema1004;
+    ready: Schema1005;
+    crash: Schema1006;
+    phase?: Schema1007;
+    reason?: Schema1009;
+    createdAt?: Schema1011;
+    restartCount: Schema1013;
+    hasPreviousFailure: Schema1014;
+    lastFailCondition: Schema1015;
+    lastFailure?: Schema1022;
+    waitingReason?: Schema1028;
 };
 
 export type ServerStorageStatus = {
-    claimName: Schema1022;
-    phase: Schema1023;
-    requestedSize: Schema1024;
-    lastAttachedAt: Schema1025;
-    usedBytes: Schema1027;
+    claimName: Schema1032;
+    phase: Schema1033;
+    requestedSize: Schema1034;
+    lastAttachedAt: Schema1035;
+    usedBytes: Schema1037;
 };
 
 export type DeploymentMetricsResponse = {
-    cpu: Schema1031;
-    memory: Schema1036;
-    resourceLimits: Schema1037;
-    storage: Schema1042;
+    cpu: Schema1041;
+    memory: Schema1046;
+    resourceLimits: Schema1047;
+    storage: Schema1052;
 };
 
 export type MetricsTimeSeries = {
-    timestamps: Schema1032;
-    values: Schema1034;
+    timestamps: Schema1042;
+    values: Schema1044;
 };
 
 export type ResourceLimits = {
-    cpuCores: Schema1038;
-    memoryBytes: Schema1040;
+    cpuCores: Schema1048;
+    memoryBytes: Schema1050;
 };
 
-export type DeploymentLogPayload = Schema1045 | DeploymentLogPayloadPodInfo | Schema1082 | Schema1083 | Schema1085 | Schema1086 | Schema1090 | Schema1091 | Schema1095 | Schema1096 | Schema1097 | Schema1099;
+export type DeploymentLogPayload = Schema1055 | DeploymentLogPayloadPodInfo | Schema1092 | Schema1093 | Schema1095 | Schema1096 | Schema1100 | Schema1101 | Schema1105 | Schema1106 | Schema1107 | Schema1109;
 
 export type DeploymentLogPayloadPodInfo = {
-    type: Schema1046;
-    status: Schema1047;
-    createdAt: Schema1048;
-    pod: Schema1049;
-    initContainers: Schema1050;
-    sidecarContainers: Schema1052;
-    readableContainers: Schema1054;
-    containerStatuses: Schema1056;
-    containers: Schema1068;
-    waitingReason: Schema1070;
-    restartCount: Schema1072;
-    hasPreviousFailure: Schema1073;
-    lastFailCondition: Schema1074;
-    lastFailure?: Schema1012;
-    isSandbox: Schema1076;
-    resourceLimits: Schema1077;
+    type: Schema1056;
+    status: Schema1057;
+    createdAt: Schema1058;
+    pod: Schema1059;
+    initContainers: Schema1060;
+    sidecarContainers: Schema1062;
+    readableContainers: Schema1064;
+    containerStatuses: Schema1066;
+    containers: Schema1078;
+    waitingReason: Schema1080;
+    restartCount: Schema1082;
+    hasPreviousFailure: Schema1083;
+    lastFailCondition: Schema1084;
+    lastFailure?: Schema1022;
+    isSandbox: Schema1086;
+    resourceLimits: Schema1087;
 };
 
 export type DeploymentContainerStatus = {
-    name: Schema1057;
-    status: Schema1058;
-    startedAt?: Schema1059;
-    finishedAt?: Schema1061;
-    exitCode?: Schema1063;
-    reason?: Schema1065;
-    restarts: Schema1067;
+    name: Schema1067;
+    status: Schema1068;
+    startedAt?: Schema1069;
+    finishedAt?: Schema1071;
+    exitCode?: Schema1073;
+    reason?: Schema1075;
+    restarts: Schema1077;
 };
 
 export type TeamWithMemberCount = {
-    id: Schema1100;
-    tenantId: Schema1101;
-    name: Schema1102;
-    description: Schema1103;
-    isScimManaged: Schema1104;
-    scimExternalId: Schema1105;
-    createdAt: Schema1106;
-    updatedAt: Schema1107;
-    memberCount: Schema1108;
-    hasProfileAttached: Schema1109;
+    id: Schema1110;
+    tenantId: Schema1111;
+    name: Schema1112;
+    description: Schema1113;
+    isScimManaged: Schema1114;
+    scimExternalId: Schema1115;
+    createdAt: Schema1116;
+    updatedAt: Schema1117;
+    memberCount: Schema1118;
+    hasProfileAttached: Schema1119;
 };
 
 export type TeamMember = {
-    teamId: Schema1112;
-    userId: Schema1113;
-    role: Schema1114;
-    createdAt: Schema1116;
-    updatedAt: Schema1117;
+    teamId: Schema1122;
+    userId: Schema1123;
+    role: Schema1124;
+    createdAt: Schema1126;
+    updatedAt: Schema1127;
 };
 
 export type TeamInvitation = {
-    id: Schema1118;
-    teamId: Schema1119;
-    tenantId: Schema1120;
-    inviterUserId: Schema1121;
-    email: Schema1123;
-    role: Schema1124;
-    token: Schema1125;
-    expiresAt: Schema1126;
-    acceptedAt: Schema1127;
-    createdAt: Schema1129;
-    updatedAt: Schema1130;
+    id: Schema1128;
+    teamId: Schema1129;
+    tenantId: Schema1130;
+    inviterUserId: Schema1131;
+    email: Schema1133;
+    role: Schema1134;
+    token: Schema1135;
+    expiresAt: Schema1136;
+    acceptedAt: Schema1137;
+    createdAt: Schema1139;
+    updatedAt: Schema1140;
 };
 
-export type ServerMember = Schema1132 | Schema1138;
+export type ServerMember = Schema1142 | Schema1148;
 
 export type TeamClaimMapping = {
-    id: Schema1139;
-    tenantId: Schema1140;
-    teamId: Schema1141;
-    claimKey: Schema1142;
-    claimValue: Schema1143;
-    createdAt: Schema1144;
+    id: Schema1149;
+    tenantId: Schema1150;
+    teamId: Schema1151;
+    claimKey: Schema1152;
+    claimValue: Schema1153;
+    createdAt: Schema1154;
 };
 
 export type SecretStoreListResponse = {
-    stores: Schema1146;
+    stores: Schema1156;
 };
 
 export type SecretStoreResponse = {
-    id: Schema1147;
-    name: Schema1148;
-    type: Schema1149;
-    isEnabled: Schema1150;
-    createdAt: Schema1151;
-    updatedAt: Schema1152;
+    id: Schema1157;
+    name: Schema1158;
+    type: Schema1159;
+    isEnabled: Schema1160;
+    createdAt: Schema1161;
+    updatedAt: Schema1162;
 };
 
 export type SecretStoreDetailResponse = {
-    id: Schema1147;
-    name: Schema1148;
-    type: Schema1149;
-    isEnabled: Schema1150;
-    createdAt: Schema1151;
-    updatedAt: Schema1152;
-    configuration: Schema1153;
+    id: Schema1157;
+    name: Schema1158;
+    type: Schema1159;
+    isEnabled: Schema1160;
+    createdAt: Schema1161;
+    updatedAt: Schema1162;
+    configuration: Schema1163;
 };
 
 export type SecretMappingListResponse = {
-    mappings: Schema1177;
+    mappings: Schema1187;
 };
 
 export type SecretMappingResponse = {
-    name: Schema1178;
-    secretIdentifier: Schema1179;
-    createdAt: Schema1180;
-    updatedAt: Schema1181;
+    name: Schema1188;
+    secretIdentifier: Schema1189;
+    createdAt: Schema1190;
+    updatedAt: Schema1191;
 };
 
 export type TestSecretResponse = {
-    success: Schema1182;
-    message: Schema1183;
-    value?: Schema1184;
+    success: Schema1192;
+    message: Schema1193;
+    value?: Schema1194;
 };
 
 export type SiemDestinationDetailResponse = {
-    destination: Schema1185;
+    destination: Schema1195;
 };
 
 export type SiemDestinationResponse = {
-    id: Schema1186;
-    name: Schema1187;
-    kind: Schema1188;
-    url: Schema1189;
-    target: Schema1190;
-    hasCredentials: Schema1208;
-    authHeaderName: Schema1209;
-    hasAuthHeaderValue: Schema1211;
-    isEnabled: Schema1212;
-    status: Schema1213;
-    exportAuditLogs: Schema1214;
-    exportCredentialAuditLogs: Schema1215;
-    consecutiveFailures: Schema1216;
-    failingSince: Schema1217;
-    nextAttemptAt: Schema1219;
-    lastAttemptAt: Schema1221;
-    lastSuccessAt: Schema1223;
-    lastError: Schema1225;
-    createdAt: Schema1227;
-    updatedAt: Schema1228;
+    id: Schema1196;
+    name: Schema1197;
+    kind: Schema1198;
+    url: Schema1199;
+    target: Schema1200;
+    hasCredentials: Schema1218;
+    authHeaderName: Schema1219;
+    hasAuthHeaderValue: Schema1221;
+    isEnabled: Schema1222;
+    status: Schema1223;
+    exportAuditLogs: Schema1224;
+    exportCredentialAuditLogs: Schema1225;
+    consecutiveFailures: Schema1226;
+    failingSince: Schema1227;
+    nextAttemptAt: Schema1229;
+    lastAttemptAt: Schema1231;
+    lastSuccessAt: Schema1233;
+    lastError: Schema1235;
+    createdAt: Schema1237;
+    updatedAt: Schema1238;
 };
 
 export type SiemHttpsTargetSettings = {
-    kind: Schema1191;
+    kind: Schema1201;
 };
 
 export type SiemS3TargetSettings = {
-    kind: Schema1192;
-    bucket: Schema1193;
-    prefix: Schema1194;
-    region: Schema1195;
-    endpoint: Schema1196;
-    forcePathStyle: Schema1198;
-    accessKeyId: Schema1199;
-    compression: Schema1200;
-};
-
-export type SiemGcsTargetSettings = {
     kind: Schema1202;
     bucket: Schema1203;
     prefix: Schema1204;
-    serviceAccountEmail: Schema1205;
-    projectId: Schema1206;
-    compression: Schema1207;
+    region: Schema1205;
+    endpoint: Schema1206;
+    forcePathStyle: Schema1208;
+    accessKeyId: Schema1209;
+    compression: Schema1210;
+};
+
+export type SiemGcsTargetSettings = {
+    kind: Schema1212;
+    bucket: Schema1213;
+    prefix: Schema1214;
+    serviceAccountEmail: Schema1215;
+    projectId: Schema1216;
+    compression: Schema1217;
 };
 
 export type SiemTargetSettings = ({
@@ -2939,90 +2951,90 @@ export type SiemTargetSettings = ({
 } & SiemGcsTargetSettings);
 
 export type CreateSiemDestinationResponse = {
-    destination: Schema1229;
-    signingSecret: Schema1230;
+    destination: Schema1239;
+    signingSecret: Schema1240;
 };
 
 export type SiemSigningSecretResponse = {
-    signingSecret: Schema1231;
+    signingSecret: Schema1241;
 };
 
 export type SiemTestResponse = {
-    success: Schema1232;
-    status: Schema1233;
-    responseSnippet: Schema1235;
-    error: Schema1237;
-    location: Schema1239;
-    durationMs: Schema1241;
+    success: Schema1242;
+    status: Schema1243;
+    responseSnippet: Schema1245;
+    error: Schema1247;
+    location: Schema1249;
+    durationMs: Schema1251;
 };
 
 export type ProfileListItemDto = {
-    tenantId: Schema1242;
-    id: Schema1243;
-    createdBy: Schema1244;
-    name: Schema1245;
-    description: Schema1246;
-    isOpenToAllUsers: Schema1247;
-    isRestrictive: Schema1248;
-    isCodeModeForced: Schema1249;
-    createdAt: Schema1250;
-    updatedAt: Schema1251;
-    lastUsedAt: Schema1252;
-    numServers: Schema1254;
-    numAssignedUsers: Schema1255;
-    numAssignedTeams: Schema1256;
-    numMappings: Schema1257;
-    numUsersPats: Schema1258;
+    tenantId: Schema1252;
+    id: Schema1253;
+    createdBy: Schema1254;
+    name: Schema1255;
+    description: Schema1256;
+    isOpenToAllUsers: Schema1257;
+    isRestrictive: Schema1258;
+    isCodeModeForced: Schema1259;
+    createdAt: Schema1260;
+    updatedAt: Schema1261;
+    lastUsedAt: Schema1262;
+    numServers: Schema1264;
+    numAssignedUsers: Schema1265;
+    numAssignedTeams: Schema1266;
+    numMappings: Schema1267;
+    numUsersPats: Schema1268;
 };
 
 export type ProfileDetailsDto = {
-    tenantId: Schema1242;
-    id: Schema1243;
-    createdBy: Schema1244;
-    name: Schema1245;
-    description: Schema1246;
-    isOpenToAllUsers: Schema1247;
-    isRestrictive: Schema1248;
-    isCodeModeForced: Schema1249;
-    createdAt: Schema1250;
-    updatedAt: Schema1251;
-    lastUsedAt: Schema1252;
-    servers: Schema1259;
+    tenantId: Schema1252;
+    id: Schema1253;
+    createdBy: Schema1254;
+    name: Schema1255;
+    description: Schema1256;
+    isOpenToAllUsers: Schema1257;
+    isRestrictive: Schema1258;
+    isCodeModeForced: Schema1259;
+    createdAt: Schema1260;
+    updatedAt: Schema1261;
+    lastUsedAt: Schema1262;
+    servers: Schema1269;
 };
 
 export type ProfileClaimMapping = {
-    id: Schema1262;
-    tenantId: Schema1263;
-    profileId: Schema1264;
-    claimKey: Schema1265;
-    claimValue: Schema1266;
-    createdAt: Schema1267;
+    id: Schema1272;
+    tenantId: Schema1273;
+    profileId: Schema1274;
+    claimKey: Schema1275;
+    claimValue: Schema1276;
+    createdAt: Schema1277;
 };
 
 export type ProfileAssignmentsResponse = {
-    accounts: Schema1268;
-    teams: Schema1273;
+    accounts: Schema1278;
+    teams: Schema1283;
 };
 
 export type ProfileMaintainersResponse = {
-    maintainers: Schema1275;
+    maintainers: Schema1285;
 };
 
 export type ProfileServerToolsResponse = {
-    servers: Schema1277;
+    servers: Schema1287;
 };
 
 export type ProfileServerTools = {
-    serverSlug: Schema1278;
-    areAllToolsEnabled: Schema1279;
-    autoEnableNewTools: Schema1280;
-    tools: Schema1281;
+    serverSlug: Schema1288;
+    areAllToolsEnabled: Schema1289;
+    autoEnableNewTools: Schema1290;
+    tools: Schema1291;
 };
 
 export type ProfileToolEntry = {
-    toolName: Schema1282;
-    isPromoted: Schema1283;
-    toolNameOverride: Schema1284;
+    toolName: Schema1292;
+    isPromoted: Schema1293;
+    toolNameOverride: Schema1294;
 };
 
 export type CreateSandboxResponse = {
@@ -3030,360 +3042,363 @@ export type CreateSandboxResponse = {
 };
 
 export type SandboxDto = {
-    id: Schema1285;
-    tenantId: Schema1286;
-    lastActivityAt: Schema1287;
-    isArchived: Schema1288;
-    createdAt: Schema1289;
-    updatedAt: Schema1290;
+    id: Schema1295;
+    tenantId: Schema1296;
+    lastActivityAt: Schema1297;
+    isArchived: Schema1298;
+    createdAt: Schema1299;
+    updatedAt: Schema1300;
     user: UserSmallDto;
 };
 
 export type UserSmallDto = {
-    id: Schema1270;
-    email: Schema1271;
-    name: Schema1272;
+    id: Schema1280;
+    email: Schema1281;
+    name: Schema1282;
 };
 
 export type ListSandboxesResponse = {
-    sandboxes: Schema1291;
+    sandboxes: Schema1301;
 };
 
 /**
  * Short-lived JWT credential for SSH access to a sandbox
  */
 export type SshSessionResponse = {
-    token: Schema1292;
-    expiresIn: Schema1293;
-    host: Schema1294;
-    port: Schema1295;
+    token: Schema1302;
+    expiresIn: Schema1303;
+    host: Schema1304;
+    port: Schema1305;
 };
 
 export type PaginatedSandboxAuditLog = {
-    pagination: Schema539;
-    data: Schema1296;
+    pagination: Schema540;
+    data: Schema1306;
 };
 
 export type SandboxAuditLog = {
-    id: Schema1297;
-    tenantId: Schema1298;
-    sandboxId: Schema1299;
-    eventName: Schema1300;
-    details: Schema1301;
-    createdAt: Schema1302;
+    id: Schema1307;
+    tenantId: Schema1308;
+    sandboxId: Schema1309;
+    eventName: Schema1310;
+    details: Schema1311;
+    createdAt: Schema1312;
 };
 
 export type SendVerificationCodeResponse = {
-    success: Schema1303;
-    verificationRequired: Schema1304;
+    success: Schema1313;
+    verificationRequired: Schema1314;
 };
 
 export type GetScimTokensResponse = {
-    tokens: Schema1305;
+    tokens: Schema1315;
 };
 
 export type ScimToken = {
-    id: Schema1306;
-    tenantId: Schema1307;
-    name: Schema1308;
-    lastUsedAt: Schema1309;
-    tokenHash: Schema1311;
-    token?: Schema1312;
-    createdAt: Schema1314;
-    updatedAt: Schema1315;
+    id: Schema1316;
+    tenantId: Schema1317;
+    name: Schema1318;
+    lastUsedAt: Schema1319;
+    tokenHash: Schema1321;
+    token?: Schema1322;
+    createdAt: Schema1324;
+    updatedAt: Schema1325;
 };
 
 export type CreateScimTokenResponse = {
-    token: Schema1316;
-    rawToken: Schema1317;
+    token: Schema1326;
+    rawToken: Schema1327;
 };
 
 export type GetScimTokenSecretResponse = {
-    rawToken: Schema1318;
+    rawToken: Schema1328;
 };
 
 export type ListConnectedClientsResponse = {
-    clients: Schema1319;
+    clients: Schema1329;
 };
 
 export type ConnectedClient = {
-    clientId: Schema1320;
-    name: Schema1321;
-    label: Schema1322;
-    clientInfoName: Schema1323;
-    clientInfoVersion: Schema1324;
-    kind: Schema1325;
-    isActive: Schema1326;
-    profileIds: Schema1327;
-    firstSeenAt: Schema1329;
-    lastAuthorizedAt: Schema1331;
-    lastUsedAt: Schema1333;
-    lastSkillsListAt: Schema1335;
-    lastSkillsListVersion: Schema1337;
+    clientId: Schema1330;
+    name: Schema1331;
+    label: Schema1332;
+    clientInfoName: Schema1333;
+    clientInfoVersion: Schema1334;
+    kind: Schema1335;
+    isActive: Schema1336;
+    profileIds: Schema1337;
+    firstSeenAt: Schema1339;
+    lastAuthorizedAt: Schema1341;
+    lastUsedAt: Schema1343;
+    lastSkillsListAt: Schema1345;
+    lastSkillsListVersion: Schema1347;
 };
 
 export type UpdateConnectedClientResponse = {
-    client: Schema1338;
+    client: Schema1348;
 };
 
 export type ArtifactDto = {
-    id: Schema1339;
-    title: Schema1340;
-    createdByUserId: Schema1341;
-    createdByUserName: Schema1342;
-    createdByUserEmail: Schema1343;
-    visibility: Schema1344;
-    theme: Schema1345;
-    currentVersion: Schema1346;
-    sharedWithUserIds: Schema1347;
-    sharedWithTeamIds: Schema1349;
-    createdAt: Schema1351;
-    updatedAt: Schema1352;
-    url: Schema1353;
+    id: Schema1349;
+    title: Schema1350;
+    createdByUserId: Schema1351;
+    createdByUserName: Schema1352;
+    createdByUserEmail: Schema1353;
+    visibility: Schema1354;
+    theme: Schema1355;
+    currentVersion: Schema1356;
+    sharedWithUserIds: Schema1357;
+    sharedWithTeamIds: Schema1359;
+    createdAt: Schema1361;
+    updatedAt: Schema1362;
+    url: Schema1363;
 };
 
 export type ListArtifactsResponse = {
-    artifacts: Schema1354;
+    artifacts: Schema1364;
 };
 
 export type GetArtifactResponse = {
-    id: Schema1339;
-    title: Schema1340;
-    createdByUserId: Schema1341;
-    createdByUserName: Schema1342;
-    createdByUserEmail: Schema1343;
-    visibility: Schema1344;
-    theme: Schema1345;
-    currentVersion: Schema1346;
-    sharedWithUserIds: Schema1347;
-    sharedWithTeamIds: Schema1349;
-    createdAt: Schema1351;
-    updatedAt: Schema1352;
-    url: Schema1353;
-    createdByName: Schema1355;
-    versions: Schema1356;
-    frameUrl?: Schema1362;
+    id: Schema1349;
+    title: Schema1350;
+    createdByUserId: Schema1351;
+    createdByUserName: Schema1352;
+    createdByUserEmail: Schema1353;
+    visibility: Schema1354;
+    theme: Schema1355;
+    currentVersion: Schema1356;
+    sharedWithUserIds: Schema1357;
+    sharedWithTeamIds: Schema1359;
+    createdAt: Schema1361;
+    updatedAt: Schema1362;
+    url: Schema1363;
+    createdByName: Schema1365;
+    versions: Schema1366;
+    frameUrl?: Schema1372;
 };
 
 export type ArtifactVersionMetaDto = {
-    version: Schema1357;
-    sizeBytes: Schema1358;
-    contentType: Schema1359;
-    createdByUserId: Schema1360;
-    createdAt: Schema1361;
+    version: Schema1367;
+    sizeBytes: Schema1368;
+    contentType: Schema1369;
+    createdByUserId: Schema1370;
+    createdAt: Schema1371;
 };
 
 export type ArtifactContentResponse = {
-    html: Schema1364;
-    contentType: Schema1365;
-    source?: Schema1366;
-    version: Schema1368;
-    title: Schema1369;
-    visibility: Schema1344;
-    theme: Schema1345;
+    html: Schema1374;
+    contentType: Schema1375;
+    source?: Schema1376;
+    version: Schema1378;
+    title: Schema1379;
+    visibility: Schema1354;
+    theme: Schema1355;
 };
 
 export type ArtifactSharesResponse = {
-    users: Schema1370;
-    teams: Schema1372;
+    users: Schema1380;
+    teams: Schema1382;
 };
 
 export type ListArtifactThemesResponse = {
-    themes: Schema1374;
-    defaultTheme: Schema1383;
+    themes: Schema1384;
+    defaultTheme: Schema1393;
 };
 
 export type ArtifactThemeSummaryDto = {
-    id: Schema1375;
-    name: Schema1376;
-    backgroundColor: Schema1377;
-    textColor: Schema1377;
-    accentColor: Schema1377;
-    headingFont: Schema1378;
-    bodyFont: Schema1378;
-    codeFont: Schema1379;
-    createdAt: Schema1380;
-    updatedAt: Schema1381;
-    hasLogo: Schema1382;
+    id: Schema1385;
+    name: Schema1386;
+    backgroundColor: Schema1387;
+    textColor: Schema1387;
+    accentColor: Schema1387;
+    headingFont: Schema1388;
+    bodyFont: Schema1388;
+    codeFont: Schema1389;
+    createdAt: Schema1390;
+    updatedAt: Schema1391;
+    hasLogo: Schema1392;
 };
 
 export type ArtifactThemeDto = {
-    id: Schema1375;
-    name: Schema1376;
-    backgroundColor: Schema1377;
-    textColor: Schema1377;
-    accentColor: Schema1377;
-    headingFont: Schema1378;
-    bodyFont: Schema1378;
-    codeFont: Schema1379;
-    logo: Schema1384;
-    extraCss: Schema1385;
-    createdAt: Schema1380;
-    updatedAt: Schema1381;
+    id: Schema1385;
+    name: Schema1386;
+    backgroundColor: Schema1387;
+    textColor: Schema1387;
+    accentColor: Schema1387;
+    headingFont: Schema1388;
+    bodyFont: Schema1388;
+    codeFont: Schema1389;
+    logo: Schema1394;
+    extraCss: Schema1395;
+    createdAt: Schema1390;
+    updatedAt: Schema1391;
 };
 
 export type PreviewArtifactThemeResponse = {
-    html: Schema1386;
-    css: Schema1387;
+    html: Schema1396;
+    css: Schema1397;
 };
 
 export type SetDefaultArtifactThemeResponse = {
-    defaultTheme: Schema1388;
+    defaultTheme: Schema1398;
 };
 
 export type SkillDto = {
-    id: Schema1389;
-    name: Schema1390;
-    description: Schema1391;
-    gatewayUri: Schema1392;
-    visibility: Schema1393;
-    collectionId: Schema1394;
-    collectionName: Schema1396;
-    contentBytes: Schema1398;
-    createdByUserId: Schema1399;
-    createdByUserName: Schema1400;
-    createdByUserEmail: Schema1401;
-    sharedWithUserIds: Schema1402;
-    sharedWithTeamIds: Schema1404;
-    maintainerUserIds: Schema1406;
-    maintainerTeamIds: Schema1408;
-    sharedWithServerIds: Schema1410;
-    collectionVisibility: Schema1412;
-    collectionSharedWithUserIds: Schema1413;
-    collectionSharedWithTeamIds: Schema1415;
-    collectionMaintainerUserIds: Schema1417;
-    collectionMaintainerTeamIds: Schema1419;
-    createdAt: Schema1421;
-    updatedAt: Schema1422;
+    id: Schema1399;
+    name: Schema1400;
+    description: Schema1401;
+    gatewayUri: Schema1402;
+    visibility: Schema1403;
+    collectionId: Schema1404;
+    collectionName: Schema1406;
+    contentBytes: Schema1408;
+    createdByUserId: Schema1409;
+    createdByUserName: Schema1410;
+    createdByUserEmail: Schema1411;
+    sharedWithUserIds: Schema1412;
+    sharedWithTeamIds: Schema1414;
+    maintainerUserIds: Schema1416;
+    maintainerTeamIds: Schema1418;
+    sharedWithServerIds: Schema1420;
+    collectionVisibility: Schema1422;
+    collectionSharedWithUserIds: Schema1423;
+    collectionSharedWithTeamIds: Schema1425;
+    collectionMaintainerUserIds: Schema1427;
+    collectionMaintainerTeamIds: Schema1429;
+    createdAt: Schema1431;
+    updatedAt: Schema1432;
 };
 
 export type ListSkillsResponse = {
-    skills: Schema1423;
-    collections: Schema1424;
+    skills: Schema1433;
+    collections: Schema1434;
 };
 
 export type SkillCollectionDto = {
-    id: Schema1425;
-    name: Schema1426;
-    description: Schema1427;
-    visibility: Schema1393;
-    createdByUserId: Schema1428;
-    createdByUserName: Schema1429;
-    createdByUserEmail: Schema1430;
-    sharedWithUserIds: Schema1431;
-    sharedWithTeamIds: Schema1433;
-    maintainerUserIds: Schema1435;
-    maintainerTeamIds: Schema1437;
-    skillCount: Schema1439;
-    createdAt: Schema1440;
-    updatedAt: Schema1441;
-};
-
-export type GetSkillResponse = {
-    id: Schema1389;
-    name: Schema1390;
-    description: Schema1391;
-    gatewayUri: Schema1392;
-    visibility: Schema1393;
-    collectionId: Schema1394;
-    collectionName: Schema1396;
-    contentBytes: Schema1398;
-    createdByUserId: Schema1399;
-    createdByUserName: Schema1400;
-    createdByUserEmail: Schema1401;
-    sharedWithUserIds: Schema1402;
-    sharedWithTeamIds: Schema1404;
-    maintainerUserIds: Schema1406;
-    maintainerTeamIds: Schema1408;
-    sharedWithServerIds: Schema1410;
-    collectionVisibility: Schema1412;
-    collectionSharedWithUserIds: Schema1413;
-    collectionSharedWithTeamIds: Schema1415;
-    collectionMaintainerUserIds: Schema1417;
-    collectionMaintainerTeamIds: Schema1419;
-    createdAt: Schema1421;
-    updatedAt: Schema1422;
-    content: Schema1442;
-    markdown: Schema1443;
-    createdByName: Schema1444;
-};
-
-export type ListSkillFilesResponse = {
-    files: Schema1445;
-};
-
-export type SkillFileDto = {
-    path: Schema1446;
-    sizeBytes: Schema1447;
-    digest: Schema1448;
-    mimeType: Schema1449;
-};
-
-export type ReplaceSkillFilesResponse = {
-    files: Schema1450;
+    id: Schema1435;
+    name: Schema1436;
+    description: Schema1437;
+    visibility: Schema1403;
+    createdByUserId: Schema1438;
+    createdByUserName: Schema1439;
+    createdByUserEmail: Schema1440;
+    sharedWithUserIds: Schema1441;
+    sharedWithTeamIds: Schema1443;
+    maintainerUserIds: Schema1445;
+    maintainerTeamIds: Schema1447;
+    skillCount: Schema1449;
+    createdAt: Schema1450;
     updatedAt: Schema1451;
 };
 
+export type GetSkillResponse = {
+    id: Schema1399;
+    name: Schema1400;
+    description: Schema1401;
+    gatewayUri: Schema1402;
+    visibility: Schema1403;
+    collectionId: Schema1404;
+    collectionName: Schema1406;
+    contentBytes: Schema1408;
+    createdByUserId: Schema1409;
+    createdByUserName: Schema1410;
+    createdByUserEmail: Schema1411;
+    sharedWithUserIds: Schema1412;
+    sharedWithTeamIds: Schema1414;
+    maintainerUserIds: Schema1416;
+    maintainerTeamIds: Schema1418;
+    sharedWithServerIds: Schema1420;
+    collectionVisibility: Schema1422;
+    collectionSharedWithUserIds: Schema1423;
+    collectionSharedWithTeamIds: Schema1425;
+    collectionMaintainerUserIds: Schema1427;
+    collectionMaintainerTeamIds: Schema1429;
+    createdAt: Schema1431;
+    updatedAt: Schema1432;
+    content: Schema1452;
+    markdown: Schema1453;
+    createdByName: Schema1454;
+};
+
+export type ListSkillFilesResponse = {
+    files: Schema1455;
+};
+
+export type SkillFileDto = {
+    path: Schema1456;
+    sizeBytes: Schema1457;
+    digest: Schema1458;
+    mimeType: Schema1459;
+};
+
+export type ReplaceSkillFilesResponse = {
+    files: Schema1460;
+    updatedAt: Schema1461;
+};
+
 export type GetSkillFileResponse = {
-    file: Schema1452;
+    file: Schema1462;
 };
 
 export type SkillSharesResponse = {
-    users: Schema1455;
-    teams: Schema1458;
-    servers: Schema1460;
-    inherited: Schema1462;
+    users: Schema1465;
+    teams: Schema1468;
+    servers: Schema1470;
+    inherited: Schema1472;
 };
 
 export type ListSkillCollectionsResponse = {
-    collections: Schema1464;
+    collections: Schema1474;
 };
 
 export type SkillCollectionSharesResponse = {
-    users: Schema1455;
-    teams: Schema1458;
+    users: Schema1465;
+    teams: Schema1468;
 };
 
 export type ListServerSkillsResponse = {
-    skills: Schema1465;
-    servers: Schema1476;
+    skills: Schema1475;
+    servers: Schema1486;
 };
 
 export type ServerSkillDto = {
-    serverId: Schema1466;
-    serverSlug: Schema1467;
-    uri: Schema1468;
-    gatewayUri: Schema1469;
-    name: Schema1470;
-    description: Schema1471;
-    files: Schema1472;
+    serverId: Schema1476;
+    serverSlug: Schema1477;
+    uri: Schema1478;
+    gatewayUri: Schema1479;
+    name: Schema1480;
+    description: Schema1481;
+    files: Schema1482;
 };
 
 export type ListMcpServerSkillsResponse = {
-    skills: Schema1479;
+    skills: Schema1489;
 };
 
 export type GetMcpServerSkillFileResponse = {
-    file: Schema1480;
-    credentialPrompt: Schema1482;
+    file: Schema1490;
+    credentialPrompt: Schema1492;
+};
+
+export type GetMcpServerAppPageResponse = {
+    page: Schema1495;
+    credentialPrompt: Schema1498;
 };
 
 export type ListBuiltinSkillsResponse = {
-    skills: Schema1485;
+    skills: Schema1501;
 };
 
 export type BuiltinSkillDto = {
-    uri: Schema1486;
-    name: Schema1487;
-    description: Schema1488;
-    files: Schema1489;
+    uri: Schema1502;
+    name: Schema1503;
+    description: Schema1504;
+    files: Schema1505;
 };
 
 export type GetBuiltinSkillFileResponse = {
-    file: Schema1492;
+    file: Schema1508;
 };
-
-export type Schema457 = boolean;
 
 export type Schema458 = boolean;
 
@@ -3391,114 +3406,116 @@ export type Schema459 = boolean;
 
 export type Schema460 = boolean;
 
+export type Schema461 = boolean;
+
 /**
  * Whether the user has a password or an SSO identity
  */
-export type Schema461 = boolean;
+export type Schema462 = boolean;
 
 /**
  * Configured services and resources for the setup guide; use features to check feature availability
  */
-export type Schema462 = DeploymentCapabilities;
+export type Schema463 = DeploymentCapabilities;
 
 /**
  * A Kubernetes cluster is configured for executable (npx, uvx) and hosted servers, sandboxes, server volumes and Code Mode worker pods
  */
-export type Schema463 = boolean;
+export type Schema464 = boolean;
 
 /**
  * Hosted server code can be stored in a bucket (FUNCTIONS_STORAGE_BUCKET) or the database
  */
-export type Schema464 = boolean;
+export type Schema465 = boolean;
 
 /**
  * Server pods can download stored files. False for database storage
  */
-export type Schema465 = boolean;
+export type Schema466 = boolean;
 
 /**
  * A storage class for server volumes is configured (WORKLOAD_STORAGE_CLASS_NAME)
  */
-export type Schema466 = boolean;
+export type Schema467 = boolean;
 
 /**
  * A Tailscale sidecar image is configured (WORKLOAD_TAILSCALE_IMAGE)
  */
-export type Schema467 = boolean;
+export type Schema468 = boolean;
 
 /**
  * An email provider is configured for invitations and notices (EMAIL_PROVIDER)
  */
-export type Schema468 = boolean;
+export type Schema469 = boolean;
 
 /**
  * The embedding service passed its health check (EMBEDDING_SERVICE_URL). Without it, searches of compressed results use keywords only
  */
-export type Schema469 = boolean;
+export type Schema470 = boolean;
 
 /**
  * Code Mode can use a worker URL or start worker pods in Kubernetes
  */
-export type Schema470 = boolean;
+export type Schema471 = boolean;
 
 /**
  * Executable (npx, uvx) servers
  */
-export type Schema471 = Feature;
+export type Schema472 = Feature;
 
 /**
  * available: the organization can use it. upgrade: the plan does not include it. unavailable: the installation cannot run it
  */
-export type Schema472 = 'available' | 'upgrade' | 'unavailable';
+export type Schema473 = 'available' | 'upgrade' | 'unavailable';
 
-export type Schema473 = FeatureUnavailableReason;
+export type Schema474 = FeatureUnavailableReason;
 
 /**
  * Hosted servers, which run code uploaded to Gatana
  */
-export type Schema474 = Feature;
+export type Schema475 = Feature;
 
 /**
  * Code mode
  */
-export type Schema475 = Feature;
+export type Schema476 = Feature;
 
 /**
  * Sandboxes
  */
-export type Schema476 = Feature;
+export type Schema477 = Feature;
 
 /**
  * Persistent volumes for servers
  */
-export type Schema477 = Feature;
+export type Schema478 = Feature;
 
 /**
  * Server access to the organization tailnet
  */
-export type Schema478 = Feature;
+export type Schema479 = Feature;
 
 /**
  * Files uploaded to executable and hosted servers
  */
-export type Schema479 = Feature;
+export type Schema480 = Feature;
 
-export type Schema480 = {
+export type Schema481 = {
     id: string;
     tenantId: string;
     name: string;
     apiKey: string;
     email: string;
-    role: Schema481;
+    role: Schema482;
     isServiceAccount: boolean;
     createdAt: string;
     updatedAt: string;
     isSuperAdministrator?: boolean;
 };
 
-export type Schema481 = 'member' | 'owner';
+export type Schema482 = 'member' | 'owner';
 
-export type Schema482 = {
+export type Schema483 = {
     id: string;
     isMcpAuthorizationApiKeyEnabled: boolean;
     isOutputCompressionAllowed: boolean;
@@ -3509,10 +3526,10 @@ export type Schema482 = {
     subscriptionPlan: string;
     subscriptionSeats: number;
     numberOfEnabledUsers?: number;
-    memberDefaultRole: Schema483 | 'none';
+    memberDefaultRole: Schema484 | 'none';
     freeCredits: number;
     paidCredits: number;
-    defaultResourceLimits: Schema484;
+    defaultResourceLimits: Schema485;
     defaultResourceRequests: ServerResourceRequests;
     /**
      * Protection modes for the Add Server form, available to all users. Managing organization defaults requires the manage Tenant permission
@@ -3524,37 +3541,35 @@ export type Schema482 = {
     /**
      * When the organization logo last changed, or null when it has none. The logo is at /api/v1/tenant-logo
      */
-    logoUpdatedAt: Schema502 | null;
+    logoUpdatedAt: Schema503 | null;
 };
 
-export type Schema483 = 'member' | 'admin' | 'maintainer';
+export type Schema484 = 'member' | 'admin' | 'maintainer';
 
-export type Schema484 = {
-    cpu: Schema485;
-    memory: Schema486;
+export type Schema485 = {
+    cpu: Schema486;
+    memory: Schema487;
 };
 
 /**
  * CPU limit in Kubernetes quantity format (e.g. "500m" or "1")
  */
-export type Schema485 = string;
+export type Schema486 = string;
 
 /**
  * Memory limit in Kubernetes quantity format (e.g. "512Mi" or "1Gi")
  */
-export type Schema486 = string;
+export type Schema487 = string;
 
 /**
  * CPU reserved for the deployment, in Kubernetes quantity format (e.g. "250m" or "1"). This is the minimum the deployment is guaranteed when the hardware is busy; when capacity is free it may use more. Reserved capacity counts against the organization total even while the server idles, so keep it at what the server needs, not what it may burst to
  */
-export type Schema487 = string;
+export type Schema488 = string;
 
 /**
  * Memory reserved for the deployment, in Kubernetes quantity format (e.g. "384Mi" or "1Gi"). Unlike CPU this is also the hard ceiling: a process that exceeds it is terminated
  */
-export type Schema488 = string;
-
-export type Schema489 = boolean;
+export type Schema489 = string;
 
 export type Schema490 = boolean;
 
@@ -3562,13 +3577,13 @@ export type Schema491 = boolean;
 
 export type Schema492 = boolean;
 
-export type Schema493 = number;
+export type Schema493 = boolean;
 
-export type Schema494 = boolean;
+export type Schema494 = number;
 
-export type Schema495 = number;
+export type Schema495 = boolean;
 
-export type Schema496 = boolean;
+export type Schema496 = number;
 
 export type Schema497 = boolean;
 
@@ -3580,11 +3595,13 @@ export type Schema500 = boolean;
 
 export type Schema501 = boolean;
 
-export type Schema502 = string;
+export type Schema502 = boolean;
 
-export type Schema503 = Array<unknown>;
+export type Schema503 = string;
 
-export type Schema504 = {
+export type Schema504 = Array<unknown>;
+
+export type Schema505 = {
     enabledServers: {
         quota: number;
         current: number;
@@ -3592,26 +3609,24 @@ export type Schema504 = {
     };
 };
 
-export type Schema505 = Array<AuditLogFilterOption>;
+export type Schema506 = Array<AuditLogFilterOption>;
 
 /**
  * Value to filter by
  */
-export type Schema506 = string;
+export type Schema507 = string;
 
 /**
  * How the value reads to a person
  */
-export type Schema507 = string;
+export type Schema508 = string;
 
 /**
  * What tells two similar entries apart
  */
-export type Schema508 = Schema509;
+export type Schema509 = Schema510;
 
-export type Schema509 = string;
-
-export type Schema510 = Array<AuditLogFilterOption>;
+export type Schema510 = string;
 
 export type Schema511 = Array<AuditLogFilterOption>;
 
@@ -3621,69 +3636,69 @@ export type Schema513 = Array<AuditLogFilterOption>;
 
 export type Schema514 = Array<AuditLogFilterOption>;
 
+export type Schema515 = Array<AuditLogFilterOption>;
+
 /**
  * One entry per day of the window, including days with no calls
  */
-export type Schema515 = Array<ActivityDay>;
+export type Schema516 = Array<ActivityDay>;
 
 /**
  * The day, as YYYY-MM-DD, cut in the time zone the summary was asked for
  */
-export type Schema516 = string;
+export type Schema517 = string;
 
 /**
  * Tool calls made that day
  */
-export type Schema517 = number;
+export type Schema518 = number;
 
 /**
  * Tool calls over the whole window
  */
-export type Schema518 = number;
+export type Schema519 = number;
 
 /**
  * The most used servers, busiest first
  */
-export type Schema519 = Array<ActivityServer>;
+export type Schema520 = Array<ActivityServer>;
 
 /**
  * ID of the server the calls went to
  */
-export type Schema520 = string;
+export type Schema521 = string;
 
 /**
  * Slug of the server, as it reads on its page
  */
-export type Schema521 = string;
+export type Schema522 = string;
 
 /**
  * Tool calls made to that server
  */
-export type Schema522 = number;
-
 export type Schema523 = number;
 
-export type Schema524 = string;
+export type Schema524 = number;
 
 export type Schema525 = string;
 
-export type Schema526 = string | null;
+export type Schema526 = string;
 
 export type Schema527 = string | null;
 
-export type Schema528 = string;
+export type Schema528 = string | null;
 
-export type Schema529 = string | null;
+export type Schema529 = string;
 
-export type Schema530 = unknown;
+export type Schema530 = string | null;
 
-export type Schema531 = boolean;
+export type Schema531 = unknown;
 
-export type Schema532 = string;
+export type Schema532 = boolean;
 
 export type Schema533 = string;
 
-export type Schema534 = string | null;
+export type Schema534 = string;
 
 export type Schema535 = string | null;
 
@@ -3693,227 +3708,229 @@ export type Schema537 = string | null;
 
 export type Schema538 = string | null;
 
+export type Schema539 = string | null;
+
 /**
  * Pagination metadata
  */
-export type Schema539 = {
-    page: Schema540;
-    limit: Schema541;
-    total: Schema542;
-    totalPages: Schema543;
-    hasNext: Schema544;
-    hasPrev: Schema545;
+export type Schema540 = {
+    page: Schema541;
+    limit: Schema542;
+    total: Schema543;
+    totalPages: Schema544;
+    hasNext: Schema545;
+    hasPrev: Schema546;
 };
 
 /**
  * Current page number
  */
-export type Schema540 = number;
+export type Schema541 = number;
 
 /**
  * Maximum number of items per page
  */
-export type Schema541 = number;
+export type Schema542 = number;
 
 /**
  * Total number of items across all pages
  */
-export type Schema542 = number;
+export type Schema543 = number;
 
 /**
  * Total number of pages
  */
-export type Schema543 = number;
+export type Schema544 = number;
 
 /**
  * Whether a next page exists
  */
-export type Schema544 = boolean;
+export type Schema545 = boolean;
 
 /**
  * Whether a previous page exists
  */
-export type Schema545 = boolean;
+export type Schema546 = boolean;
 
 /**
  * Items on the current page
  */
-export type Schema546 = Array<AuditLogResponse>;
+export type Schema547 = Array<AuditLogResponse>;
 
 /**
  * The authenticated user
  */
-export type Schema547 = {
-    id: Schema548;
-    tenantId: Schema549;
-    name: Schema550;
-    email: Schema551;
-    role: Schema552;
-    isDisabled: Schema553;
-    isServiceAccount: Schema554;
-    isInvited: Schema555;
-    profileIds: Schema556;
-    isScimManaged: Schema563;
-    scimExternalId: Schema564;
-    createdAt: Schema565;
-    updatedAt: Schema566;
+export type Schema548 = {
+    id: Schema549;
+    tenantId: Schema550;
+    name: Schema551;
+    email: Schema552;
+    role: Schema553;
+    isDisabled: Schema554;
+    isServiceAccount: Schema555;
+    isInvited: Schema556;
+    profileIds: Schema557;
+    isScimManaged: Schema564;
+    scimExternalId: Schema565;
+    createdAt: Schema566;
+    updatedAt: Schema567;
 };
 
 /**
  * Unique ID of the user
  */
-export type Schema548 = string;
+export type Schema549 = string;
 
 /**
  * ID of the tenant that owns the user
  */
-export type Schema549 = string;
+export type Schema550 = string;
 
 /**
  * Display name of the user
  */
-export type Schema550 = string;
+export type Schema551 = string;
 
 /**
  * Email address of the user
  */
-export type Schema551 = string;
+export type Schema552 = string;
 
 /**
  * Role of the user in the tenant: member or owner
  */
-export type Schema552 = Schema481;
+export type Schema553 = Schema482;
 
 /**
  * Whether the user is disabled
  */
-export type Schema553 = boolean;
+export type Schema554 = boolean;
 
 /**
  * Whether the user is a service account
  */
-export type Schema554 = boolean;
+export type Schema555 = boolean;
 
 /**
  * Whether the user was invited and has not set a password yet
  */
-export type Schema555 = boolean;
+export type Schema556 = boolean;
 
 /**
  * Profile assignments of the user
  */
-export type Schema556 = Array<ProfileAssignment>;
+export type Schema557 = Array<ProfileAssignment>;
 
 /**
  * ID of the tenant that owns the assignment
  */
-export type Schema557 = string;
+export type Schema558 = string;
 
 /**
  * ID of the assigned user
  */
-export type Schema558 = string;
+export type Schema559 = string;
 
 /**
  * ID of the assigned profile
  */
-export type Schema559 = string;
+export type Schema560 = string;
 
 /**
  * Whether an organization owner locked the assignment; locked assignments take priority when the active profile is resolved
  */
-export type Schema560 = boolean;
+export type Schema561 = boolean;
 
 /**
  * Time when the assignment was created
  */
-export type Schema561 = string;
+export type Schema562 = string;
 
 /**
  * Time when the assignment was last updated
  */
-export type Schema562 = string;
+export type Schema563 = string;
 
 /**
  * Whether the user is managed through SCIM provisioning
  */
-export type Schema563 = boolean;
+export type Schema564 = boolean;
 
 /**
  * SCIM external ID of the user
  */
-export type Schema564 = string;
+export type Schema565 = string;
 
 /**
  * Time when the user was created
  */
-export type Schema565 = string;
+export type Schema566 = string;
 
 /**
  * Time when the user was last updated
  */
-export type Schema566 = string;
+export type Schema567 = string;
 
 /**
  * Sign-in identities linked to the user
  */
-export type Schema567 = Array<UserIdentity>;
+export type Schema568 = Array<UserIdentity>;
 
 /**
  * ID of the tenant that owns the identity
  */
-export type Schema568 = number;
+export type Schema569 = number;
 
 /**
  * Identifier of the user at the identity provider
  */
-export type Schema569 = string;
+export type Schema570 = string;
 
 /**
  * ID of the user the identity belongs to
  */
-export type Schema570 = string;
+export type Schema571 = string;
 
 /**
  * Type of the identity: external-oidc, external-saml, or native
  */
-export type Schema571 = 'external-oidc' | 'external-saml' | 'native';
+export type Schema572 = 'external-oidc' | 'external-saml' | 'native';
 
 /**
  * Time when the identity was created
  */
-export type Schema572 = string;
+export type Schema573 = string;
 
 /**
  * Time when the identity was last updated
  */
-export type Schema573 = string;
+export type Schema574 = string;
 
 /**
  * Whether the user is a super administrator
  */
-export type Schema574 = boolean;
+export type Schema575 = boolean;
 
 /**
  * The created user or service account
  */
-export type Schema575 = User;
+export type Schema576 = User;
 
 /**
  * Invitation link, returned only when email is disabled. Give it to the user. It is shown once and expires after 30 days
  */
-export type Schema576 = Schema577;
+export type Schema577 = Schema578;
 
-export type Schema577 = string;
+export type Schema578 = string;
 
 /**
  * The requested user
  */
-export type Schema578 = User;
+export type Schema579 = User;
 
-export type Schema579 = string;
+export type Schema580 = string;
 
-export type Schema580 = {
+export type Schema581 = {
     /**
      * Profile assignments of the user
      */
@@ -3927,34 +3944,34 @@ export type Schema580 = {
 /**
  * ID of the tenant that owns the assignment
  */
-export type Schema581 = string;
+export type Schema582 = string;
 
 /**
  * ID of the assigned team
  */
-export type Schema582 = string;
+export type Schema583 = string;
 
 /**
  * ID of the assigned profile
  */
-export type Schema583 = string;
+export type Schema584 = string;
 
 /**
  * Whether an organization owner locked the assignment; locked assignments take priority when the active profile is resolved
  */
-export type Schema584 = boolean;
+export type Schema585 = boolean;
 
 /**
  * Time when the assignment was created
  */
-export type Schema585 = string;
+export type Schema586 = string;
 
 /**
  * Time when the assignment was last updated
  */
-export type Schema586 = string;
+export type Schema587 = string;
 
-export type Schema587 = {
+export type Schema588 = {
     /**
      * Personal access tokens of the user
      */
@@ -3964,48 +3981,48 @@ export type Schema587 = {
 /**
  * ID of the tenant that owns the token
  */
-export type Schema588 = string;
+export type Schema589 = string;
 
 /**
  * ID of the user the token belongs to
  */
-export type Schema589 = string;
+export type Schema590 = string;
 
 /**
  * Unique ID of the token
  */
-export type Schema590 = string;
+export type Schema591 = string;
 
 /**
  * Display name of the token
  */
-export type Schema591 = string;
+export type Schema592 = string;
 
 /**
  * API key of the token
  */
-export type Schema592 = string;
+export type Schema593 = string;
 
 /**
  * IDs of the profiles the token uses
  */
-export type Schema593 = Array<Schema594>;
+export type Schema594 = Array<Schema595>;
 
-export type Schema594 = string;
+export type Schema595 = string;
 
 /**
  * Time when the token was created
  */
-export type Schema595 = string;
+export type Schema596 = string;
 
 /**
  * Time when the token was last used, or null if never used
  */
-export type Schema596 = Schema597 | null;
+export type Schema597 = Schema598 | null;
 
-export type Schema597 = string;
+export type Schema598 = string;
 
-export type Schema598 = {
+export type Schema599 = {
     /**
      * The created token, including its API key
      */
@@ -4015,72 +4032,72 @@ export type Schema598 = {
 /**
  * Unique ID of the server
  */
-export type Schema599 = string;
+export type Schema600 = string;
 
 /**
  * URL-friendly name of the server, unique within the tenant
  */
-export type Schema600 = string;
+export type Schema601 = string;
 
 /**
  * ID of the tenant that owns the server
  */
-export type Schema601 = string;
+export type Schema602 = string;
 
 /**
  * Human-readable description of the server
  */
-export type Schema602 = string;
+export type Schema603 = string;
 
 /**
  * Authorization configuration for the server
  */
-export type Schema603 = ServerAuthorizationOutput;
+export type Schema604 = ServerAuthorizationOutput;
 
 /**
  * Authorization method that the server uses
  */
-export type Schema604 = 'none' | 'oauth' | 'oauth-client-credentials' | 'apikey';
+export type Schema605 = 'none' | 'oauth' | 'oauth-client-credentials' | 'apikey';
 
 /**
  * Whether credentials are shared for the whole server or stored per user
  */
-export type Schema605 = Schema606 | Schema607;
+export type Schema606 = Schema607 | Schema608;
 
-export type Schema606 = 'server';
+export type Schema607 = 'server';
 
-export type Schema607 = 'user';
+export type Schema608 = 'user';
 
 /**
  * Names of the API keys that the server expects
  */
-export type Schema608 = Schema609;
+export type Schema609 = Schema610;
 
-export type Schema609 = Array<string>;
+export type Schema610 = Array<string>;
 
-export type Schema610 = 'server-scoped' | 'skip' | 'any';
+export type Schema611 = 'server-scoped' | 'skip' | 'any';
 
 /**
  * Transport configuration used to connect to the server
  */
-export type Schema611 = HttpStreamingTransportConfigOutput | StdioTransportConfigOutput | SseTransportConfigOutput | Schema644 | HostedTransportConfigOutput | OpenApiTransportConfigOutput | EmailTransportConfigOutput;
+export type Schema612 = HttpStreamingTransportConfigOutput | StdioTransportConfigOutput | SseTransportConfigOutput | Schema645 | HostedTransportConfigOutput | OpenApiTransportConfigOutput | EmailTransportConfigOutput;
 
 /**
  * Transport type discriminator, always "httpstreaming"
  */
-export type Schema612 = 'httpstreaming';
+export type Schema613 = 'httpstreaming';
 
 /**
  * URL of the MCP streamable HTTP endpoint
  */
-export type Schema613 = string;
+export type Schema614 = string;
 
 /**
  * Extra HTTP headers to send with each request, as [name, value] pairs
  */
-export type Schema614 = Schema615;
+export type Schema615 = Schema616;
 
-export type Schema615 = Array<[
+export type Schema616 = Array<[
     string,
     string
 ]>;
@@ -4088,26 +4105,26 @@ export type Schema615 = Array<[
 /**
  * Transport type discriminator, always "stdio"
  */
-export type Schema616 = 'stdio';
+export type Schema617 = 'stdio';
 
 /**
  * Command line that starts the MCP server process
  */
-export type Schema617 = string;
+export type Schema618 = string;
 
 /**
  * Docker image that the command runs in
  */
-export type Schema618 = Schema619;
+export type Schema619 = Schema620;
 
-export type Schema619 = string;
+export type Schema620 = string;
 
 /**
  * Environment variables for the process, as [name, value] pairs
  */
-export type Schema620 = Schema621;
+export type Schema621 = Schema622;
 
-export type Schema621 = Array<[
+export type Schema622 = Array<[
     string,
     string
 ]>;
@@ -4115,28 +4132,28 @@ export type Schema621 = Array<[
 /**
  * Protocol that the launched process speaks
  */
-export type Schema622 = 'sse' | 'httpstreaming' | 'stdio';
+export type Schema623 = 'sse' | 'httpstreaming' | 'stdio';
 
 /**
  * Port that the process listens on when transport is HTTP-based
  */
-export type Schema623 = Schema624 | null;
+export type Schema624 = Schema625 | null;
 
-export type Schema624 = number;
+export type Schema625 = number;
 
 /**
  * URL path of the MCP endpoint when transport is HTTP-based
  */
-export type Schema625 = Schema626 | null;
+export type Schema626 = Schema627 | null;
 
-export type Schema626 = string;
+export type Schema627 = string;
 
 /**
  * HTTP health check configuration for the process
  */
-export type Schema627 = Schema628;
+export type Schema628 = Schema629;
 
-export type Schema628 = {
+export type Schema629 = {
     /**
      * Whether the health check is active
      */
@@ -4144,57 +4161,57 @@ export type Schema628 = {
     /**
      * URL that the health check polls
      */
-    url: Schema629;
+    url: Schema630;
     /**
      * Seconds to wait before the first health check
      */
-    delaySeconds: Schema630 | null;
+    delaySeconds: Schema631 | null;
     /**
      * Seconds between health checks
      */
-    intervalSeconds: Schema631 | null;
+    intervalSeconds: Schema632 | null;
     /**
      * Number of consecutive failures before the process counts as unhealthy
      */
-    failureThreshold: Schema632 | null;
+    failureThreshold: Schema633 | null;
 };
 
-export type Schema629 = string;
-
-export type Schema630 = number;
+export type Schema630 = string;
 
 export type Schema631 = number;
 
 export type Schema632 = number;
 
+export type Schema633 = number;
+
 /**
  * Deprecated: former resource ceiling, no longer applied to deployments. Use requests to reserve capacity instead
  */
-export type Schema633 = Schema634 | null;
+export type Schema634 = Schema635 | null;
 
-export type Schema634 = {
-    cpu?: Schema485;
-    memory?: Schema486;
+export type Schema635 = {
+    cpu?: Schema486;
+    memory?: Schema487;
 };
 
 /**
  * Resources reserved for the process: the minimum it is guaranteed when the hardware is busy. Overrides the organization default
  */
-export type Schema635 = Schema636 | null;
-
-export type Schema636 = {
-    cpu?: Schema487;
-    memory?: Schema488;
-};
+export type Schema636 = Schema637 | null;
 
 export type Schema637 = {
+    cpu?: Schema488;
+    memory?: Schema489;
+};
+
+export type Schema638 = {
     /**
      * Whether the server gets a persistent volume
      */
     enabled: boolean;
 };
 
-export type Schema638 = {
+export type Schema639 = {
     /**
      * Whether the server joins the tailnet
      */
@@ -4206,32 +4223,32 @@ export type Schema638 = {
     /**
      * Machine name on the tailnet. Defaults to gatana-<server slug>
      */
-    hostname?: Schema639 | null;
+    hostname?: Schema640 | null;
 };
 
-export type Schema639 = string;
+export type Schema640 = string;
 
 /**
  * Transport type discriminator, always "sse"
  */
-export type Schema640 = 'sse';
+export type Schema641 = 'sse';
 
 /**
  * URL of the MCP SSE endpoint
  */
-export type Schema641 = string;
+export type Schema642 = string;
 
 /**
  * Extra HTTP headers to send with each request, as [name, value] pairs
  */
-export type Schema642 = Schema643;
+export type Schema643 = Schema644;
 
-export type Schema643 = Array<[
+export type Schema644 = Array<[
     string,
     string
 ]>;
 
-export type Schema644 = {
+export type Schema645 = {
     /**
      * Transport type discriminator, always "self"
      */
@@ -4245,19 +4262,19 @@ export type Schema644 = {
 /**
  * Transport type discriminator, always "hosted"
  */
-export type Schema645 = 'hosted';
+export type Schema646 = 'hosted';
 
 /**
  * Runtime that executes the hosted tool functions
  */
-export type Schema646 = 'node24' | 'python313';
+export type Schema647 = 'node24' | 'python313';
 
 /**
  * Environment variables for the hosted runtime, as [name, value] pairs
  */
-export type Schema647 = Schema648;
+export type Schema648 = Schema649;
 
-export type Schema648 = Array<[
+export type Schema649 = Array<[
     string,
     string
 ]>;
@@ -4265,31 +4282,31 @@ export type Schema648 = Array<[
 /**
  * Deprecated: former resource ceiling, no longer applied to deployments. Use requests to reserve capacity instead
  */
-export type Schema649 = Schema650 | null;
+export type Schema650 = Schema651 | null;
 
-export type Schema650 = {
-    cpu?: Schema485;
-    memory?: Schema486;
+export type Schema651 = {
+    cpu?: Schema486;
+    memory?: Schema487;
 };
 
 /**
  * Resources reserved for the hosted runtime: the minimum it is guaranteed when the hardware is busy. Overrides the organization default
  */
-export type Schema651 = Schema652 | null;
-
-export type Schema652 = {
-    cpu?: Schema487;
-    memory?: Schema488;
-};
+export type Schema652 = Schema653 | null;
 
 export type Schema653 = {
+    cpu?: Schema488;
+    memory?: Schema489;
+};
+
+export type Schema654 = {
     /**
      * Whether the server gets a persistent volume
      */
     enabled: boolean;
 };
 
-export type Schema654 = {
+export type Schema655 = {
     /**
      * Whether the server joins the tailnet
      */
@@ -4301,48 +4318,48 @@ export type Schema654 = {
     /**
      * Machine name on the tailnet. Defaults to gatana-<server slug>
      */
-    hostname?: Schema655 | null;
+    hostname?: Schema656 | null;
 };
 
-export type Schema655 = string;
+export type Schema656 = string;
 
 /**
  * Transport type discriminator, always "openapi"
  */
-export type Schema656 = 'openapi';
+export type Schema657 = 'openapi';
 
 /**
  * How the OpenAPI spec is supplied: from a URL or as inline content
  */
-export type Schema657 = 'specUrl' | 'spec';
+export type Schema658 = 'specUrl' | 'spec';
 
 /**
  * URL to fetch the OpenAPI spec from, used when method is "specUrl"
  */
-export type Schema658 = Schema659;
+export type Schema659 = Schema660;
 
-export type Schema659 = string | '';
+export type Schema660 = string | '';
 
 /**
  * Inline OpenAPI spec content, used when method is "spec"
  */
-export type Schema660 = Schema661;
+export type Schema661 = Schema662;
 
-export type Schema661 = string;
+export type Schema662 = string;
 
 /**
  * Base URL for the API requests generated from the spec
  */
-export type Schema662 = Schema663;
+export type Schema663 = Schema664;
 
-export type Schema663 = string | '';
+export type Schema664 = string | '';
 
 /**
  * Extra HTTP headers to send with each request, as [name, value] pairs
  */
-export type Schema664 = Schema665;
+export type Schema665 = Schema666;
 
-export type Schema665 = Array<[
+export type Schema666 = Array<[
     string,
     string
 ]>;
@@ -4350,16 +4367,16 @@ export type Schema665 = Array<[
 /**
  * Transport type discriminator, always "email"
  */
-export type Schema666 = 'email';
+export type Schema667 = 'email';
 
-export type Schema667 = EmailPreset | null;
+export type Schema668 = EmailPreset | null;
 
-export type Schema668 = EmailAccessLevel;
+export type Schema669 = EmailAccessLevel;
 
 /**
  * Mailbox connection settings. The protocol cannot change after server creation
  */
-export type Schema669 = ({
+export type Schema670 = ({
     protocol: 'imap';
 } & EmailImapConnectionOutput) | ({
     protocol: 'jmap';
@@ -4368,94 +4385,94 @@ export type Schema669 = ({
 /**
  * Protocol discriminator, always "imap"
  */
-export type Schema670 = 'imap';
+export type Schema671 = 'imap';
 
 /**
  * Host name of the IMAP server, for example imap.gmail.com
  */
-export type Schema671 = Schema672;
+export type Schema672 = Schema673;
 
-export type Schema672 = string;
+export type Schema673 = string;
 
 /**
  * Port of the IMAP server: usually 993 with "tls" and 143 with "starttls"
  */
-export type Schema673 = Schema674;
+export type Schema674 = Schema675;
 
-export type Schema674 = number;
+export type Schema675 = number;
 
 /**
  * Encryption method. "tls" encrypts from the start. "starttls" requires a TLS upgrade before sign-in and stops if the upgrade fails
  */
-export type Schema675 = Schema676;
+export type Schema676 = Schema677;
 
-export type Schema676 = 'tls' | 'starttls';
+export type Schema677 = 'tls' | 'starttls';
 
 /**
  * User name for the login, usually the email address. Can reference credentials and secrets
  */
-export type Schema677 = Schema678;
+export type Schema678 = Schema679;
 
-export type Schema678 = string;
+export type Schema679 = string;
 
 /**
  * Password for the login, for example an app password. Can reference credentials and secrets
  */
-export type Schema679 = Schema680;
+export type Schema680 = Schema681;
 
-export type Schema680 = string;
+export type Schema681 = string;
 
 /**
  * The server that sends mail. Without one, the server cannot send
  */
-export type Schema681 = Schema682;
+export type Schema682 = Schema683;
 
-export type Schema682 = EmailSmtpServerOutput | null;
+export type Schema683 = EmailSmtpServerOutput | null;
 
 /**
  * Host name of the SMTP server, for example smtp.gmail.com
  */
-export type Schema683 = string;
+export type Schema684 = string;
 
 /**
  * Port of the SMTP server: usually 465 with "tls" and 587 with "starttls"
  */
-export type Schema684 = Schema685;
+export type Schema685 = Schema686;
 
-export type Schema685 = number;
+export type Schema686 = number;
 
 /**
  * How the connection is encrypted. "starttls" refuses to continue if the server cannot upgrade the connection
  */
-export type Schema686 = Schema687;
+export type Schema687 = Schema688;
 
-export type Schema687 = 'tls' | 'starttls';
+export type Schema688 = 'tls' | 'starttls';
 
 /**
  * Save a copy in Sent after sending. Disable if the SMTP server saves a copy automatically, as Gmail does
  */
-export type Schema688 = Schema689;
+export type Schema689 = Schema690;
 
-export type Schema689 = boolean;
+export type Schema690 = boolean;
 
 /**
  * Protocol discriminator, always "jmap"
  */
-export type Schema690 = 'jmap';
+export type Schema691 = 'jmap';
 
 /**
  * URL of the JMAP session resource, for example https://api.fastmail.com/jmap/session
  */
-export type Schema691 = Schema692;
+export type Schema692 = Schema693;
 
-export type Schema692 = string | '';
+export type Schema693 = string | '';
 
 /**
  * HTTP headers to send with each JMAP request, as [name, value] pairs. Values can reference credentials and secrets
  */
-export type Schema693 = Schema694;
+export type Schema694 = Schema695;
 
-export type Schema694 = Array<[
+export type Schema695 = Array<[
     string,
     string
 ]>;
@@ -4463,165 +4480,163 @@ export type Schema694 = Array<[
 /**
  * ID of the JMAP account to use. Defaults to the primary mail account of the session
  */
-export type Schema695 = Schema696 | null;
+export type Schema696 = Schema697 | null;
 
-export type Schema696 = string;
+export type Schema697 = string;
 
 /**
  * OAuth client configuration, or null when not configured
  */
-export type Schema697 = Schema698 | ServerOAuthClientConfiguration;
+export type Schema698 = Schema699 | ServerOAuthClientConfiguration;
 
-export type Schema698 = null;
+export type Schema699 = null;
 
 /**
  * OAuth client ID
  */
-export type Schema699 = Schema700;
+export type Schema700 = Schema701;
 
-export type Schema700 = string;
+export type Schema701 = string;
 
 /**
  * OAuth client secret
  */
-export type Schema701 = Schema702;
+export type Schema702 = Schema703;
 
-export type Schema702 = string;
+export type Schema703 = string;
 
 /**
  * OAuth grant type used to obtain tokens
  */
-export type Schema703 = OAuthGrantType;
+export type Schema704 = OAuthGrantType;
 
 /**
  * Client authentication method used at the token endpoint
  */
-export type Schema704 = Schema705 | Schema706 | Schema707 | Schema708;
+export type Schema705 = Schema706 | Schema707 | Schema708 | Schema709;
 
-export type Schema705 = 'client_secret_basic';
+export type Schema706 = 'client_secret_basic';
 
-export type Schema706 = 'client_secret_post';
+export type Schema707 = 'client_secret_post';
 
-export type Schema707 = 'none';
+export type Schema708 = 'none';
 
-export type Schema708 = string;
+export type Schema709 = string;
 
 /**
  * Space-separated OAuth scopes to request
  */
-export type Schema709 = Schema710;
+export type Schema710 = Schema711;
 
-export type Schema710 = string;
+export type Schema711 = string;
 
 /**
  * Whether the client ID is the URL of the client ID metadata document that Gatana publishes for this server. Gatana sets it when the server is saved; a value in a request is ignored
  */
-export type Schema711 = Schema712;
+export type Schema712 = Schema713;
 
-export type Schema712 = boolean;
+export type Schema713 = boolean;
 
 /**
  * Discovered OAuth metadata, or null when not discovered
  */
-export type Schema713 = Schema714 | ServerOAuthMetadata;
+export type Schema714 = Schema715 | ServerOAuthMetadata;
 
-export type Schema714 = null;
+export type Schema715 = null;
 
 /**
  * Discovered protected resource metadata (RFC 9728)
  */
-export type Schema715 = Schema716;
+export type Schema716 = Schema717;
 
-export type Schema716 = {
+export type Schema717 = {
     /**
      * Resource identifier from the protected resource metadata
      */
-    id: Schema717;
+    id: Schema718;
     /**
      * Scopes that the protected resource supports
      */
-    availableScopes: Schema718;
+    availableScopes: Schema719;
     /**
      * URL where the protected resource metadata was fetched from
      */
-    metadataUrl: Schema719;
+    metadataUrl: Schema720;
 };
 
-export type Schema717 = string;
+export type Schema718 = string;
 
-export type Schema718 = Array<string>;
+export type Schema719 = Array<string>;
 
-export type Schema719 = string;
+export type Schema720 = string;
 
 /**
  * Discovered authorization server metadata (RFC 8414)
  */
-export type Schema720 = Schema721;
+export type Schema721 = Schema722;
 
-export type Schema721 = {
+export type Schema722 = {
     /**
      * Issuer identifier of the authorization server
      */
-    issuer: Schema722;
+    issuer: Schema723;
     /**
      * URL of the authorization endpoint
      */
-    authorizeEndpoint: Schema723;
+    authorizeEndpoint: Schema724;
     /**
      * URL of the device authorization endpoint
      */
-    deviceAuthorizationEndpoint: Schema724;
+    deviceAuthorizationEndpoint: Schema725;
     /**
      * URL of the token endpoint
      */
-    tokenEndpoint: Schema725;
+    tokenEndpoint: Schema726;
     /**
      * Extra query parameters to add to the authorization request
      */
-    extraAuthorizationParameters: Schema726;
+    extraAuthorizationParameters: Schema727;
     /**
      * Omit the resource parameter (RFC 8707) from all OAuth requests if the authorization server rejects it
      */
-    omitResourceIndicator: Schema727;
+    omitResourceIndicator: Schema728;
     /**
      * URL of the dynamic client registration endpoint
      */
-    registrationEndpoint?: Schema728;
+    registrationEndpoint?: Schema729;
     /**
      * Whether the authorization server supports PKCE
      */
-    supportsPKCE: Schema729;
+    supportsPKCE: Schema730;
     /**
      * Client authentication methods that the token endpoint supports
      */
-    supportedClientAuthMethods: Schema730;
+    supportedClientAuthMethods: Schema731;
     /**
      * Whether the authorization server supports dynamic client registration
      */
-    supportsDynamicClientRegistration: Schema731;
+    supportsDynamicClientRegistration: Schema732;
     /**
      * Reason why dynamic client registration is not available
      */
-    noDynamicClientRegistrationReason?: Schema732;
+    noDynamicClientRegistrationReason?: Schema733;
     /**
      * Whether the authorization server accepts the URL of a client ID metadata document as client ID
      */
-    supportsClientIdMetadataDocument: Schema733;
+    supportsClientIdMetadataDocument: Schema734;
     /**
      * URL of the authorization server documentation
      */
-    serviceDocumentation: Schema734;
+    serviceDocumentation: Schema735;
     /**
      * URL where the authorization server metadata was fetched from
      */
-    metadataUrl: Schema735;
+    metadataUrl: Schema736;
     /**
      * Scopes that the authorization server supports
      */
-    availableScopes: Schema736;
+    availableScopes: Schema737;
 };
-
-export type Schema722 = string;
 
 export type Schema723 = string;
 
@@ -4631,119 +4646,135 @@ export type Schema725 = string;
 
 export type Schema726 = string;
 
-export type Schema727 = boolean;
+export type Schema727 = string;
 
-export type Schema728 = string;
+export type Schema728 = boolean;
 
-export type Schema729 = boolean;
+export type Schema729 = string;
 
-export type Schema730 = Array<string>;
+export type Schema730 = boolean;
 
-export type Schema731 = boolean;
+export type Schema731 = Array<string>;
 
-export type Schema732 = string | null;
+export type Schema732 = boolean;
 
-export type Schema733 = boolean;
+export type Schema733 = string | null;
 
-export type Schema734 = string;
+export type Schema734 = boolean;
 
 export type Schema735 = string;
 
-export type Schema736 = Array<string>;
+export type Schema736 = string;
+
+export type Schema737 = Array<string>;
 
 /**
  * Who can see the server: only members or the whole organization
  */
-export type Schema737 = ServerVisibility;
+export type Schema738 = ServerVisibility;
 
 /**
  * Whether the server is enabled
  */
-export type Schema738 = boolean;
+export type Schema739 = boolean;
 
 /**
  * Time of the last tool refresh, or null if tools were never refreshed
  */
-export type Schema739 = Schema740 | null;
+export type Schema740 = Schema741 | null;
 
-export type Schema740 = string;
+export type Schema741 = string;
 
 /**
  * Last detected MCP protocol version, or an empty string if unknown
  */
-export type Schema741 = string;
+export type Schema742 = string;
 
 /**
  * Time of the last MCP protocol detection, or null if unknown
  */
-export type Schema742 = Schema743 | null;
+export type Schema743 = Schema744 | null;
 
-export type Schema743 = string;
+export type Schema744 = string;
+
+/**
+ * MCP capabilities from the last tool refresh. Extensions appear under "extensions". Null if no capabilities were recorded
+ */
+export type Schema745 = Schema746 | null;
+
+export type Schema746 = {
+    [key: string]: unknown;
+};
 
 /**
  * Timeout in seconds for a single protocol request to the server
  */
-export type Schema744 = number;
+export type Schema747 = number;
 
 /**
  * Total timeout in seconds for a tool call, including progress notifications
  */
-export type Schema745 = number;
+export type Schema748 = number;
 
 /**
  * Whether a progress notification resets the protocol timeout
  */
-export type Schema746 = boolean;
+export type Schema749 = boolean;
 
 /**
  * Whether large tool outputs are compressed before they are returned to the client
  */
-export type Schema747 = boolean;
+export type Schema750 = boolean;
 
 /**
  * Whether the compression transform step is applied to tool outputs
  */
-export type Schema748 = boolean;
+export type Schema751 = boolean;
 
 /**
  * Minimum output size in bytes before compression is applied
  */
-export type Schema749 = number;
+export type Schema752 = number;
 
 /**
  * Whether to serve this server's MCP skills to agents with access to the server
  */
-export type Schema750 = boolean;
+export type Schema753 = boolean;
+
+/**
+ * Whether clients can open MCP Apps from this server
+ */
+export type Schema754 = boolean;
 
 /**
  * Rules in order. Rules with a condition run before the call and the first deny stops it. A rule with a protection replaces the default of that protection for its tools
  */
-export type Schema751 = Array<Schema752>;
+export type Schema755 = Array<Schema756>;
 
-export type Schema752 = {
+export type Schema756 = {
     /**
      * Names of the tools that the rule applies to; empty applies it to every tool call
      */
-    tools: Schema753;
+    tools: Schema757;
     /**
      * CEL condition on the call; empty matches every call. Must be empty when check is set
      */
-    condition: Schema754;
+    condition: Schema758;
     /**
      * A protection instead of a condition. The rule then sets the action of that protection for its tools and replaces the default of the protection
      */
-    check?: Schema755;
+    check?: Schema759;
     /**
      * Condition actions: deny, audit or allow. Allow makes protections record matches without blocking or redacting. Deny rules still apply. Protection actions: block, redact or audit. Block refuses calls with argument matches or withholds results with matches. Redact replaces matched text. Audit records matches and changes nothing
      */
     action: 'deny' | 'audit' | 'block' | 'redact' | 'allow';
 };
 
-export type Schema753 = Array<string>;
+export type Schema757 = Array<string>;
 
-export type Schema754 = string;
+export type Schema758 = string;
 
-export type Schema755 = {
+export type Schema759 = {
     type: ProtectionCheckType;
     target: ProtectionCheckTarget;
 };
@@ -4751,82 +4782,82 @@ export type Schema755 = {
 /**
  * Built-in protections that scan tool calls and results. Replaces all protections on update
  */
-export type Schema756 = ServerProtectionsOutput;
+export type Schema760 = ServerProtectionsOutput;
 
-export type Schema757 = ServerProtectionOutput;
+export type Schema761 = ServerProtectionOutput;
 
 /**
  * off skips scans, audit records matches without changing text, on applies the protection actions
  */
-export type Schema758 = ProtectionMode;
+export type Schema762 = ProtectionMode;
 
-export type Schema759 = ProtectionActionsOutput;
+export type Schema763 = ProtectionActionsOutput;
 
 /**
  * The action on a match in the tool arguments
  */
-export type Schema760 = ProtectionOnAction;
+export type Schema764 = ProtectionOnAction;
 
 /**
  * The action on a match in the tool result, an upstream error message or a progress message
  */
-export type Schema761 = ProtectionOnAction;
+export type Schema765 = ProtectionOnAction;
 
 /**
  * Check options. These also apply to protection rules. Missing options use organization defaults or built-in values. Secrets: includeGeneric (boolean) also detects generic key=value secrets. Prompt injection: phrases (boolean, default true) detects injection phrases. Set false to scan only for hidden characters
  */
-export type Schema762 = Schema763;
+export type Schema766 = Schema767;
 
-export type Schema763 = {
+export type Schema767 = {
     [key: string]: unknown;
 };
 
-export type Schema764 = ServerProtectionOutput;
+export type Schema768 = ServerProtectionOutput;
 
-export type Schema765 = ServerProtectionOutput;
+export type Schema769 = ServerProtectionOutput;
 
 /**
  * Time when the server was created
  */
-export type Schema766 = string;
+export type Schema770 = string;
 
 /**
  * Time when the server was last updated
  */
-export type Schema767 = string;
+export type Schema771 = string;
 
 /**
  * Read-only. Actions and settings for On mode, with defaults applied
  */
-export type Schema768 = ResolvedProtections;
+export type Schema772 = ResolvedProtections;
 
 /**
  * Actions for each supported target in On mode, regardless of the current mode
  */
-export type Schema769 = {
+export type Schema773 = {
     arguments?: ResolvedProtectionAction;
     result?: ResolvedProtectionAction;
 };
 
-export type Schema770 = ResolvedProtectionAction;
+export type Schema774 = ResolvedProtectionAction;
 
 /**
  * The value used when the server has no override
  */
-export type Schema771 = ProtectionOnAction;
+export type Schema775 = ProtectionOnAction;
 
-export type Schema772 = ResolvedProtectionAction;
+export type Schema776 = ResolvedProtectionAction;
 
 /**
  * The value and source of each option
  */
-export type Schema773 = {
-    [key in Schema774]?: Schema775;
+export type Schema777 = {
+    [key in Schema778]?: Schema779;
 };
 
-export type Schema774 = string;
+export type Schema778 = string;
 
-export type Schema775 = {
+export type Schema779 = {
     value: unknown;
     source: ProtectionValueSource;
     /**
@@ -4838,55 +4869,65 @@ export type Schema775 = {
 /**
  * Read-only. Null when the server omits metadata or uses MCP before 2026-07-28
  */
-export type Schema776 = ServerInfo | null;
+export type Schema780 = ServerInfo | null;
 
 /**
  * Display name of the server, or an empty string
  */
-export type Schema777 = string;
+export type Schema781 = string;
 
 /**
  * Version of the server software
  */
-export type Schema778 = string;
+export type Schema782 = string;
 
 /**
  * http: or https: URL of the website, or an empty string
  */
-export type Schema779 = string;
+export type Schema783 = string;
 
 /**
  * Description of the server, or an empty string
  */
-export type Schema780 = string;
+export type Schema784 = string;
 
 /**
  * Server icons, up to one per theme. A signed-in browser can load an image from GET /api/v1/mcp-servers/{slug}/icon?theme=light|dark
  */
-export type Schema781 = Array<ServerInfoIcon>;
+export type Schema785 = Array<ServerInfoIcon>;
 
 /**
  * Image media type, if supplied by the server
  */
-export type Schema782 = Schema783;
+export type Schema786 = Schema787;
 
-export type Schema783 = string;
+export type Schema787 = string;
 
 /**
  * Image sizes, such as 48x48 or any
  */
-export type Schema784 = Schema785;
+export type Schema788 = Schema789;
 
-export type Schema785 = Array<string>;
+export type Schema789 = Array<string>;
 
 /**
  * Theme for the image
  */
-export type Schema786 = Schema787;
+export type Schema790 = Schema791;
 
-export type Schema787 = 'light' | 'dark';
+export type Schema791 = 'light' | 'dark';
 
-export type Schema788 = {
+/**
+ * Read-only. True if an enabled tool visible to models opens an MCP App
+ */
+export type Schema792 = boolean;
+
+/**
+ * Read-only. True if the server has an attached skill or published one at the last tool refresh
+ */
+export type Schema793 = boolean;
+
+export type Schema794 = {
     server: ServerDto;
     files: Array<ServerFile>;
 };
@@ -4894,96 +4935,96 @@ export type Schema788 = {
 /**
  * ID of the tenant that owns the file
  */
-export type Schema789 = string;
+export type Schema795 = string;
 
 /**
  * ID of the server that the file belongs to
  */
-export type Schema790 = string;
+export type Schema796 = string;
 
 /**
  * Unique ID of the file record
  */
-export type Schema791 = string;
+export type Schema797 = string;
 
 /**
  * Name of the file as exposed to the server
  */
-export type Schema792 = string;
+export type Schema798 = string;
 
 /**
  * Backing store that holds the file content
  */
-export type Schema793 = Schema794 | Schema795 | Schema796 | Schema797;
+export type Schema799 = Schema800 | Schema801 | Schema802 | Schema803;
 
-export type Schema794 = 'gcs';
+export type Schema800 = 'gcs';
 
-export type Schema795 = 's3';
+export type Schema801 = 's3';
 
-export type Schema796 = 'aws-ssm';
+export type Schema802 = 'aws-ssm';
 
-export type Schema797 = 'aws-secrets-manager';
+export type Schema803 = 'aws-secrets-manager';
 
 /**
  * Identifier of the file in the backing store
  */
-export type Schema798 = string;
+export type Schema804 = string;
 
 /**
  * File size in bytes, or null if unknown
  */
-export type Schema799 = Schema800 | null;
+export type Schema805 = Schema806 | null;
 
-export type Schema800 = number;
+export type Schema806 = number;
 
 /**
  * ID of the credential used to read the file, or null
  */
-export type Schema801 = Schema802 | null;
+export type Schema807 = Schema808 | null;
 
-export type Schema802 = string;
+export type Schema808 = string;
 
 /**
  * Time when the file record was created
  */
-export type Schema803 = string;
+export type Schema809 = string;
 
 /**
  * Time when the file record was last updated
  */
-export type Schema804 = string;
+export type Schema810 = string;
 
 /**
  * ID of the server
  */
-export type Schema805 = string;
+export type Schema811 = string;
 
 /**
  * MCP requests made to the server over the last seven days
  */
-export type Schema806 = number;
+export type Schema812 = number;
 
-export type Schema807 = boolean;
+export type Schema813 = boolean;
 
-export type Schema808 = boolean;
+export type Schema814 = boolean;
 
-export type Schema809 = boolean;
+export type Schema815 = boolean;
 
-export type Schema810 = Array<ServerPodStatus>;
+export type Schema816 = Array<ServerPodStatus>;
 
-export type Schema811 = string;
+export type Schema817 = string;
 
-export type Schema812 = boolean;
+export type Schema818 = boolean;
 
-export type Schema813 = string;
+export type Schema819 = string;
 
-export type Schema814 = string;
+export type Schema820 = string;
 
-export type Schema815 = string;
+export type Schema821 = string;
 
-export type Schema816 = string;
+export type Schema822 = string;
 
-export type Schema817 = {
+export type Schema823 = {
     success: true;
     /**
      * The title of the API as declared in the spec info object.
@@ -5017,123 +5058,141 @@ export type Schema817 = {
     }>;
 };
 
-export type Schema818 = {
+export type Schema824 = {
     success: false;
     error: string;
 };
 
-export type Schema819 = {
+export type Schema825 = {
     tools: Array<ServerToolDto>;
 };
 
 /**
  * ID of the tenant that owns the tool
  */
-export type Schema820 = string;
+export type Schema826 = string;
 
 /**
  * Tool name as reported by the MCP server
  */
-export type Schema821 = string;
+export type Schema827 = string;
 
 /**
  * Tool description as reported by the MCP server
  */
-export type Schema822 = string;
+export type Schema828 = string;
 
 /**
  * JSON schema for the tool input
  */
-export type Schema823 = {
+export type Schema829 = {
     [key: string]: never;
 };
 
 /**
  * JSON schema for the tool output, or null if the server does not provide one
  */
-export type Schema824 = Schema825 | null;
+export type Schema830 = Schema831 | null;
 
-export type Schema825 = {
+export type Schema831 = {
     [key: string]: never;
 };
 
 /**
  * Tool annotations as reported by the MCP server, or null if none
  */
-export type Schema826 = Schema827 | null;
+export type Schema832 = Schema833 | null;
 
-export type Schema827 = {
+export type Schema833 = {
     [key: string]: never;
+};
+
+/**
+ * Tool metadata (_meta) from the MCP server, excluding Gatana keys. Null if absent
+ */
+export type Schema834 = Schema835 | null;
+
+export type Schema835 = {
+    [key: string]: unknown;
 };
 
 /**
  * Whether the tool is enabled and exposed to clients
  */
-export type Schema828 = boolean;
+export type Schema836 = boolean;
 
 /**
  * Replacement tool name, applied when overrideToolName is true
  */
-export type Schema829 = string;
+export type Schema837 = string;
 
 /**
  * Replacement description, applied when overrideDescription is true
  */
-export type Schema830 = string;
+export type Schema838 = string;
 
 /**
  * Use this schema when overrideInputSchema is true. Null means there is no replacement.
  */
-export type Schema831 = Schema832 | null;
+export type Schema839 = Schema840 | null;
 
-export type Schema832 = {
+export type Schema840 = {
     [key: string]: never;
 };
 
 /**
  * Whether toolNameOverride replaces the original tool name
  */
-export type Schema833 = boolean;
+export type Schema841 = boolean;
 
 /**
  * Whether descriptionOverride replaces the original description
  */
-export type Schema834 = boolean;
+export type Schema842 = boolean;
 
 /**
  * Whether inputSchemaOverride replaces the original input schema
  */
-export type Schema835 = Schema836 | null;
+export type Schema843 = Schema844 | null;
 
-export type Schema836 = boolean;
+export type Schema844 = boolean;
 
-export type Schema837 = string;
+/**
+ * Whether to list an app-only tool for models
+ */
+export type Schema845 = boolean;
 
-export type Schema838 = string;
+export type Schema846 = string;
 
-export type Schema839 = {
+export type Schema847 = string;
+
+export type Schema848 = {
     success: boolean;
     message: string;
 };
 
-export type Schema840 = {
-    toolName: Schema821;
-    toolNameOverride: Schema829;
-    overrideToolName: Schema833;
-    description: Schema822;
-    descriptionOverride: Schema830;
-    serverSlug: Schema837;
-    isEnabled: Schema828;
+export type Schema849 = {
+    [key: string]: unknown;
 };
 
-export type Schema841 = Array<{
-    role: Schema483;
+export type Schema850 = {
+    toolName: Schema827;
+    toolNameOverride: Schema837;
+    overrideToolName: Schema841;
+    description: Schema828;
+    descriptionOverride: Schema838;
+    serverSlug: Schema846;
+    isEnabled: Schema836;
+};
+
+export type Schema851 = Array<{
+    role: Schema484;
     id: string;
     name: string;
 }>;
 
-export type Schema842 = Array<{
-    role: Schema483;
+export type Schema852 = Array<{
+    role: Schema484;
     id: string;
     name: string;
     email: string;
@@ -5142,576 +5201,576 @@ export type Schema842 = Array<{
 /**
  * Unique ID of the credential record
  */
-export type Schema843 = string;
+export type Schema853 = string;
 
 /**
  * ID of the tenant that owns the credential
  */
-export type Schema844 = string;
+export type Schema854 = string;
 
 /**
  * Scope that the credential applies to: server, user, or profile
  */
-export type Schema845 = Schema846;
+export type Schema855 = Schema856;
 
-export type Schema846 = 'server' | 'user' | 'profile';
+export type Schema856 = 'server' | 'user' | 'profile';
 
 /**
  * ID of the owning user, or null
  */
-export type Schema847 = Schema848 | null;
+export type Schema857 = Schema858 | null;
 
-export type Schema848 = string;
+export type Schema858 = string;
 
 /**
  * ID of the owning profile when scope is "profile", otherwise null
  */
-export type Schema849 = Schema850 | null;
+export type Schema859 = Schema860 | null;
 
-export type Schema850 = string;
+export type Schema860 = string;
 
 /**
  * Time when the credential was last used, or null if never used
  */
-export type Schema851 = Schema852 | null;
+export type Schema861 = Schema862 | null;
 
-export type Schema852 = string;
+export type Schema862 = string;
 
 /**
  * Time when the credential was authorized
  */
-export type Schema853 = string;
-
-/**
- * Last authorizing user ID, or null if unknown
- */
-export type Schema854 = Schema855 | null;
-
-export type Schema855 = string;
-
-/**
- * Authorization method that the credential was created with
- */
-export type Schema856 = 'oauth' | 'apikey' | 'oauth-client-credentials';
-
-/**
- * Time when the credential record was created
- */
-export type Schema857 = string;
-
-/**
- * Time when the credential record was last updated
- */
-export type Schema858 = string;
-
-/**
- * Slug of the server that the credential authorizes access to
- */
-export type Schema859 = string;
-
-/**
- * Email address of the owning user, or null
- */
-export type Schema860 = Schema861 | null;
-
-export type Schema861 = string;
-
-/**
- * Display name of the owning user, or null
- */
-export type Schema862 = Schema863 | null;
-
 export type Schema863 = string;
 
 /**
- * Name of the owning profile, or null
+ * Last authorizing user ID, or null if unknown
  */
 export type Schema864 = Schema865 | null;
 
 export type Schema865 = string;
 
 /**
- * Last authorizing user name, or null
+ * Authorization method that the credential was created with
  */
-export type Schema866 = Schema867 | null;
+export type Schema866 = 'oauth' | 'apikey' | 'oauth-client-credentials';
 
+/**
+ * Time when the credential record was created
+ */
 export type Schema867 = string;
 
 /**
- * Last authorizing user email, or null
+ * Time when the credential record was last updated
  */
-export type Schema868 = Schema869 | null;
+export type Schema868 = string;
 
+/**
+ * Slug of the server that the credential authorizes access to
+ */
 export type Schema869 = string;
 
 /**
- * Names of the API keys that have a stored value, or null for OAuth credentials
+ * Email address of the owning user, or null
  */
 export type Schema870 = Schema871 | null;
 
-export type Schema871 = Array<string>;
+export type Schema871 = string;
 
 /**
- * Subject claim from the OAuth ID token, or null
+ * Display name of the owning user, or null
  */
 export type Schema872 = Schema873 | null;
 
 export type Schema873 = string;
 
 /**
- * Email claim from the OAuth ID token, or null
+ * Name of the owning profile, or null
  */
 export type Schema874 = Schema875 | null;
 
 export type Schema875 = string;
 
-export type Schema876 = 'oauth' | 'apikey';
+/**
+ * Last authorizing user name, or null
+ */
+export type Schema876 = Schema877 | null;
+
+export type Schema877 = string;
+
+/**
+ * Last authorizing user email, or null
+ */
+export type Schema878 = Schema879 | null;
+
+export type Schema879 = string;
+
+/**
+ * Names of the API keys that have a stored value, or null for OAuth credentials
+ */
+export type Schema880 = Schema881 | null;
+
+export type Schema881 = Array<string>;
+
+/**
+ * Subject claim from the OAuth ID token, or null
+ */
+export type Schema882 = Schema883 | null;
+
+export type Schema883 = string;
+
+/**
+ * Email claim from the OAuth ID token, or null
+ */
+export type Schema884 = Schema885 | null;
+
+export type Schema885 = string;
+
+export type Schema886 = 'oauth' | 'apikey';
 
 /**
  * The OAuth access token (refreshed if necessary and possible).
  */
-export type Schema877 = Schema878;
+export type Schema887 = Schema888;
 
-export type Schema878 = string;
+export type Schema888 = string;
 
 /**
  * Unix timestamp (ms) when the access token expires.
  */
-export type Schema879 = Schema880;
+export type Schema889 = Schema890;
 
-export type Schema880 = number;
+export type Schema890 = number;
 
 /**
  * Array of [key, value] tuples for API key credentials.
  */
-export type Schema881 = Schema882;
+export type Schema891 = Schema892;
 
-export type Schema882 = Array<[
+export type Schema892 = Array<[
     string,
     string
 ]>;
 
-export type Schema883 = boolean;
+export type Schema893 = boolean;
 
-export type Schema884 = string;
+export type Schema894 = string;
 
-export type Schema885 = unknown;
+export type Schema895 = unknown;
 
 /**
  * Unique ID of the tenant
  */
-export type Schema886 = string;
+export type Schema896 = string;
 
 /**
  * Whether the tenant is a playground tenant
  */
-export type Schema887 = boolean;
+export type Schema897 = boolean;
 
 /**
  * Display name of the tenant
  */
-export type Schema888 = string;
+export type Schema898 = string;
 
 /**
  * External OIDC identity provider configuration, or null when not configured
  */
-export type Schema889 = TenantOidcConfiguration | null;
+export type Schema899 = TenantOidcConfiguration | null;
 
 /**
  * Whether sign-in through the OIDC provider is enabled
  */
-export type Schema890 = boolean;
+export type Schema900 = boolean;
 
 /**
  * Display name of the identity provider shown on the sign-in page
  */
-export type Schema891 = string;
+export type Schema901 = string;
 
 /**
  * Issuer identifier of the OIDC provider
  */
-export type Schema892 = string;
+export type Schema902 = string;
 
 /**
  * URL of the authorization endpoint
  */
-export type Schema893 = string;
+export type Schema903 = string;
 
 /**
  * Extra query parameters to add to the authorization request
  */
-export type Schema894 = string;
+export type Schema904 = string;
 
 /**
  * URL of the token endpoint
  */
-export type Schema895 = string;
+export type Schema905 = string;
 
 /**
  * URL of the userinfo endpoint
  */
-export type Schema896 = string;
+export type Schema906 = string;
 
 /**
  * URL of the token introspection endpoint
  */
-export type Schema897 = string;
+export type Schema907 = string;
 
 /**
  * URL of the JSON Web Key Set
  */
-export type Schema898 = string;
+export type Schema908 = string;
 
 /**
  * OAuth client ID
  */
-export type Schema899 = string;
+export type Schema909 = string;
 
 /**
  * OAuth client secret
  */
-export type Schema900 = string;
+export type Schema910 = string;
 
 /**
  * Client authentication method used at the token endpoint
  */
-export type Schema901 = 'client_secret_basic' | 'client_secret_post';
+export type Schema911 = 'client_secret_basic' | 'client_secret_post';
 
 /**
  * Space-separated OAuth scopes to request
  */
-export type Schema902 = string;
+export type Schema912 = string;
 
 /**
  * External SAML identity provider configuration, or null when not configured
  */
-export type Schema903 = TenantSamlConfiguration | null;
+export type Schema913 = TenantSamlConfiguration | null;
 
 /**
  * Whether sign-in through the SAML provider is enabled
  */
-export type Schema904 = boolean;
+export type Schema914 = boolean;
 
 /**
  * Display name of the identity provider shown on the sign-in page
  */
-export type Schema905 = string;
+export type Schema915 = string;
 
 /**
  * URL to fetch the IdP metadata document from
  */
-export type Schema906 = string;
+export type Schema916 = string;
 
 /**
  * Raw IdP metadata XML document
  */
-export type Schema907 = string;
+export type Schema917 = string;
 
 /**
  * URL of the IdP single sign-on endpoint
  */
-export type Schema908 = string;
+export type Schema918 = string;
 
 /**
  * Certificate used to validate IdP signatures
  */
-export type Schema909 = string;
+export type Schema919 = string;
 
 /**
  * SAML name identifier format to request
  */
-export type Schema910 = string;
+export type Schema920 = string;
 
 /**
  * Signature algorithm for SAML requests
  */
-export type Schema911 = string;
+export type Schema921 = string;
 
 /**
  * Name of the assertion attribute that holds the email address
  */
-export type Schema912 = string;
+export type Schema922 = string;
 
 /**
  * Name of the assertion attribute that holds the first name
  */
-export type Schema913 = string;
+export type Schema923 = string;
 
 /**
  * Name of the assertion attribute that holds the last name
  */
-export type Schema914 = string;
+export type Schema924 = string;
 
 /**
  * Whether access tokens issued by the upstream OIDC provider are accepted for MCP authorization
  */
-export type Schema915 = boolean;
+export type Schema925 = boolean;
 
 /**
  * Whether the subscription seat count increases automatically when new members join
  */
-export type Schema916 = boolean;
+export type Schema926 = boolean;
 
 /**
  * Whether API keys can be used to authorize MCP access
  */
-export type Schema917 = boolean;
+export type Schema927 = boolean;
 
 /**
  * Whether newly discovered tools are enabled automatically
  */
-export type Schema918 = boolean;
+export type Schema928 = boolean;
 
 /**
  * Whether members can add remote servers (httpstreaming, sse, openapi)
  */
-export type Schema919 = boolean;
+export type Schema929 = boolean;
 
 /**
  * Whether members can add local (stdio) servers
  */
-export type Schema920 = boolean;
+export type Schema930 = boolean;
 
 /**
  * Whether members can add hosted servers
  */
-export type Schema921 = boolean;
+export type Schema931 = boolean;
 
 /**
  * Whether Google OAuth refresh tokens are saved for the tenant
  */
-export type Schema922 = boolean;
+export type Schema932 = boolean;
 
 /**
  * Whether tool output compression is allowed for servers of the tenant
  */
-export type Schema923 = boolean;
+export type Schema933 = boolean;
 
 /**
  * Whether AI-based output compression is enabled
  */
-export type Schema924 = boolean;
+export type Schema934 = boolean;
 
 /**
  * Whether code mode is enabled automatically when the tool count exceeds the threshold
  */
-export type Schema925 = boolean;
+export type Schema935 = boolean;
 
 /**
  * Number of tools above which code mode is enabled automatically, or null for the default
  */
-export type Schema926 = Schema927 | null;
+export type Schema936 = Schema937 | null;
 
-export type Schema927 = number;
+export type Schema937 = number;
 
 /**
  * Model variant used for AI-based output compression
  */
-export type Schema928 = 'english' | 'multilingual';
+export type Schema938 = 'english' | 'multilingual';
 
 /**
  * Default server role for members, or "none" for no default access
  */
-export type Schema929 = Schema483 | Schema930;
+export type Schema939 = Schema484 | Schema940;
 
-export type Schema930 = 'none';
+export type Schema940 = 'none';
 
 /**
  * Send all organization tools to owner MCP clients. When disabled, include only servers the owner has permission to use
  */
-export type Schema931 = boolean;
+export type Schema941 = boolean;
 
 /**
  * Verbosity of MCP audit logging
  */
-export type Schema932 = McpAuditLogVerbosity;
+export type Schema942 = McpAuditLogVerbosity;
 
 /**
  * Whether MCP audit log entries include the protocol messages
  */
-export type Schema933 = boolean;
+export type Schema943 = boolean;
 
 /**
  * Deprecated: former default resource ceiling, no longer applied to deployments
  */
-export type Schema934 = Schema484;
+export type Schema944 = Schema485;
 
 /**
  * Default resources reserved for an MCP server deployment, used when a server does not set its own. The reservation is the minimum the deployment is guaranteed when the hardware is busy; when capacity is free it may use more
  */
-export type Schema935 = ServerResourceRequests;
+export type Schema945 = ServerResourceRequests;
 
 /**
  * Total CPU and memory the organization may reserve across all its deployments, summed over their requests
  */
-export type Schema936 = Schema484;
+export type Schema946 = Schema485;
 
 /**
  * Total size of persistent volumes the organization may claim across its deployments, in Kubernetes quantity format (e.g. "20Gi"). This caps what may be claimed/allocated and not what is written/used.
  */
-export type Schema937 = string;
+export type Schema947 = string;
 
 /**
  * Whether the in-app AI assistant is available to members
  */
-export type Schema938 = boolean;
+export type Schema948 = boolean;
 
 /**
  * Whether the assistant uses the organization's own model endpoint instead of the platform's
  */
-export type Schema939 = boolean;
+export type Schema949 = boolean;
 
 /**
  * Time an owner instructed Gatana to process assistant conversations through Gatana's model provider, or null if never given
  */
-export type Schema940 = Schema941 | null;
+export type Schema950 = Schema951 | null;
 
-export type Schema941 = string;
+export type Schema951 = string;
 
 /**
  * ID of the user who gave that instruction, or null if it was never given
  */
-export type Schema942 = Schema943 | null;
+export type Schema952 = Schema953 | null;
 
-export type Schema943 = string;
+export type Schema953 = string;
 
 /**
  * Whether a paying organization has agreed that Gatana may keep a reduced copy of its assistant conversations to improve the assistant. Not written for an organization on the free plan, where sharing follows from the plan
  */
-export type Schema944 = boolean;
+export type Schema954 = boolean;
 
 /**
  * Time an owner agreed to that, or null if never given
  */
-export type Schema945 = Schema946 | null;
+export type Schema955 = Schema956 | null;
 
-export type Schema946 = string;
+export type Schema956 = string;
 
 /**
  * ID of the user who agreed to it, or null if it was never given
  */
-export type Schema947 = Schema948 | null;
+export type Schema957 = Schema958 | null;
 
-export type Schema948 = string;
+export type Schema958 = string;
 
 /**
  * Maximum number of AI assistant tokens the tenant may spend per day, or null for the default
  */
-export type Schema949 = Schema950 | null;
+export type Schema959 = Schema960 | null;
 
-export type Schema950 = number;
+export type Schema960 = number;
 
 /**
  * Whether SCIM provisioning is enabled
  */
-export type Schema951 = boolean;
+export type Schema961 = boolean;
 
 /**
  * What happens to a team when its SCIM group is deleted
  */
-export type Schema952 = 'delete' | 'keep';
+export type Schema962 = 'delete' | 'keep';
 
 /**
  * What happens to a user when it is deleted through SCIM
  */
-export type Schema953 = 'delete' | 'disable' | 'keep';
+export type Schema963 = 'delete' | 'disable' | 'keep';
 
-export type Schema954 = ProtectionDefault;
+export type Schema964 = ProtectionDefault;
 
 /**
  * Mode for new servers
  */
-export type Schema955 = ProtectionMode;
+export type Schema965 = ProtectionMode;
 
-export type Schema956 = ProtectionActionsOutput;
+export type Schema966 = ProtectionActionsOutput;
 
 /**
  * Settings for servers without their own values
  */
-export type Schema957 = Schema958;
+export type Schema967 = Schema968;
 
-export type Schema958 = {
+export type Schema968 = {
     [key: string]: unknown;
 };
 
-export type Schema959 = ProtectionDefault;
+export type Schema969 = ProtectionDefault;
 
-export type Schema960 = ProtectionDefault;
+export type Schema970 = ProtectionDefault;
 
 /**
  * The organization's own model endpoint for the assistant without its credentials, or null when none is stored
  */
-export type Schema961 = AssistantLlmConfigurationStatus | null;
+export type Schema971 = AssistantLlmConfigurationStatus | null;
 
 /**
  * Kind of endpoint that is configured
  */
-export type Schema962 = 'openai-compatible' | 'bedrock' | 'azure-openai';
+export type Schema972 = 'openai-compatible' | 'bedrock' | 'azure-openai';
 
 /**
  * Configured model, deployment or inference profile identifier
  */
-export type Schema963 = string;
+export type Schema973 = string;
 
 /**
  * Base URL of the endpoint, for an OpenAI-compatible provider
  */
-export type Schema964 = Schema965 | null;
+export type Schema974 = Schema975 | null;
 
-export type Schema965 = string;
+export type Schema975 = string;
 
 /**
  * AWS region, for Bedrock
  */
-export type Schema966 = Schema967 | null;
+export type Schema976 = Schema977 | null;
 
-export type Schema967 = string;
+export type Schema977 = string;
 
 /**
  * Azure OpenAI resource name, for Azure
  */
-export type Schema968 = Schema969 | null;
+export type Schema978 = Schema979 | null;
 
-export type Schema969 = string;
+export type Schema979 = string;
 
 /**
  * Azure API version, when one is pinned
  */
-export type Schema970 = Schema971 | null;
+export type Schema980 = Schema981 | null;
 
-export type Schema971 = string;
+export type Schema981 = string;
 
 /**
  * Whether a bearer API key is stored
  */
-export type Schema972 = boolean;
+export type Schema982 = boolean;
 
 /**
  * Whether an AWS access key pair is stored
  */
-export type Schema973 = boolean;
+export type Schema983 = boolean;
 
 /**
  * The logo shown in the sidebar as a base64 data: URL, or empty when there is none
  */
-export type Schema974 = string;
+export type Schema984 = string;
 
 /**
  * Name of the subscription plan
  */
-export type Schema975 = string;
+export type Schema985 = string;
 
 /**
  * Number of seats in the subscription
  */
-export type Schema976 = number;
+export type Schema986 = number;
 
 /**
  * Details of the Stripe subscription, or null when there is none
  */
-export type Schema977 = Schema978 | null;
+export type Schema987 = Schema988 | null;
 
-export type Schema978 = {
+export type Schema988 = {
     /**
      * Whether a default payment method is set
      */
@@ -5719,7 +5778,7 @@ export type Schema978 = {
     /**
      * Time when the trial ends, or null if not in a trial
      */
-    trialEndsAt: Schema979 | null;
+    trialEndsAt: Schema989 | null;
     /**
      * Stripe subscription status
      */
@@ -5731,11 +5790,11 @@ export type Schema978 = {
     /**
      * Stripe payment method type (e.g. "card"), or null
      */
-    paymentType?: Schema980;
+    paymentType?: Schema990;
     /**
      * Time when the subscription cancels, or null if it does not cancel
      */
-    cancelsAt: Schema981 | null;
+    cancelsAt: Schema991 | null;
     /**
      * Price per seat in the subscription currency
      */
@@ -5747,41 +5806,41 @@ export type Schema978 = {
     /**
      * Discount on the subscription, or null when there is none
      */
-    discount: Schema982 | null;
+    discount: Schema992 | null;
     /**
      * Details of the default card, or null when no card is set
      */
-    card: Schema986 | null;
+    card: Schema996 | null;
 };
 
-export type Schema979 = string;
+export type Schema989 = string;
 
-export type Schema980 = string | null;
+export type Schema990 = string | null;
 
-export type Schema981 = string;
+export type Schema991 = string;
 
-export type Schema982 = {
+export type Schema992 = {
     /**
      * Percentage taken off the price, or null for a fixed amount
      */
-    percentOff: Schema983 | null;
+    percentOff: Schema993 | null;
     /**
      * Fixed amount taken off the price, or null for a percentage
      */
-    amountOff: Schema984 | null;
+    amountOff: Schema994 | null;
     /**
      * Time when the discount ends, or null if it does not end
      */
-    endsAt: Schema985 | null;
+    endsAt: Schema995 | null;
 };
 
-export type Schema983 = number;
+export type Schema993 = number;
 
-export type Schema984 = number;
+export type Schema994 = number;
 
-export type Schema985 = string;
+export type Schema995 = string;
 
-export type Schema986 = {
+export type Schema996 = {
     /**
      * Whether the card is valid
      */
@@ -5807,107 +5866,107 @@ export type Schema986 = {
 /**
  * Whether a deployment exists for the server or sandbox
  */
-export type Schema987 = boolean;
+export type Schema997 = boolean;
 
 /**
  * Whether the deployment is available and serving
  */
-export type Schema988 = boolean;
+export type Schema998 = boolean;
 
 /**
  * Whether the deployment is still rolling out or stabilizing
  */
-export type Schema989 = boolean;
+export type Schema999 = boolean;
 
 /**
  * A current pod cannot start, has crashed or had a container failure
  */
-export type Schema990 = boolean;
+export type Schema1000 = boolean;
 
 /**
  * Name of the current replica set
- */
-export type Schema991 = Schema992;
-
-export type Schema992 = string;
-
-/**
- * Status of the pods of the deployment
- */
-export type Schema993 = Array<DeploymentStatus>;
-
-/**
- * Name of the pod
- */
-export type Schema994 = string;
-
-/**
- * Whether all containers of the pod are ready
- */
-export type Schema995 = boolean;
-
-/**
- * Whether a container is crash-looping or terminated with an error
- */
-export type Schema996 = boolean;
-
-/**
- * Kubernetes pod phase (e.g. Running, Pending)
- */
-export type Schema997 = Schema998;
-
-export type Schema998 = string;
-
-/**
- * Reason for the current phase
- */
-export type Schema999 = Schema1000;
-
-export type Schema1000 = string;
-
-/**
- * Time when the pod was created
  */
 export type Schema1001 = Schema1002;
 
 export type Schema1002 = string;
 
 /**
+ * Status of the pods of the deployment
+ */
+export type Schema1003 = Array<DeploymentStatus>;
+
+/**
+ * Name of the pod
+ */
+export type Schema1004 = string;
+
+/**
+ * Whether all containers of the pod are ready
+ */
+export type Schema1005 = boolean;
+
+/**
+ * Whether a container is crash-looping or terminated with an error
+ */
+export type Schema1006 = boolean;
+
+/**
+ * Kubernetes pod phase (e.g. Running, Pending)
+ */
+export type Schema1007 = Schema1008;
+
+export type Schema1008 = string;
+
+/**
+ * Reason for the current phase
+ */
+export type Schema1009 = Schema1010;
+
+export type Schema1010 = string;
+
+/**
+ * Time when the pod was created
+ */
+export type Schema1011 = Schema1012;
+
+export type Schema1012 = string;
+
+/**
  * Number of container restarts
  */
-export type Schema1003 = number;
+export type Schema1013 = number;
 
 /**
  * Whether a previous container instance failed
  */
-export type Schema1004 = boolean;
+export type Schema1014 = boolean;
 
 /**
  * Pod condition of the last failure, or null
  */
-export type Schema1005 = Schema1006 | null;
+export type Schema1015 = Schema1016 | null;
 
-export type Schema1006 = {
+export type Schema1016 = {
     /**
      * Last time we probed the condition.
      */
-    lastProbeTime?: Schema1007;
+    lastProbeTime?: Schema1017;
     /**
      * Last time the condition transitioned from one status to another.
      */
-    lastTransitionTime?: Schema1008;
+    lastTransitionTime?: Schema1018;
     /**
      * Human-readable message indicating details about last transition.
      */
-    message?: Schema1009;
+    message?: Schema1019;
     /**
      * If set, this represents the .metadata.generation that the pod condition was set based upon. This is an alpha field. Enable PodObservedGenerationTracking to be able to use this field.
      */
-    observedGeneration?: Schema1010;
+    observedGeneration?: Schema1020;
     /**
      * Unique, one-word, CamelCase reason for the condition's last transition.
      */
-    reason?: Schema1011;
+    reason?: Schema1021;
     /**
      * Status is the status of the condition. Can be True, False, Unknown. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-conditions
      */
@@ -5918,22 +5977,22 @@ export type Schema1006 = {
     type: string;
 };
 
-export type Schema1007 = string;
+export type Schema1017 = string;
 
-export type Schema1008 = string;
+export type Schema1018 = string;
 
-export type Schema1009 = string;
+export type Schema1019 = string;
 
-export type Schema1010 = number;
+export type Schema1020 = number;
 
-export type Schema1011 = string;
+export type Schema1021 = string;
 
 /**
  * Details of the last container failure
  */
-export type Schema1012 = Schema1013;
+export type Schema1022 = Schema1023;
 
-export type Schema1013 = {
+export type Schema1023 = {
     /**
      * Name of the failed container
      */
@@ -5941,131 +6000,131 @@ export type Schema1013 = {
     /**
      * Exit code of the container
      */
-    exitCode?: Schema1014;
+    exitCode?: Schema1024;
     /**
      * Reason for the termination
      */
-    reason?: Schema1015;
+    reason?: Schema1025;
     /**
      * Message of the termination
      */
-    message?: Schema1016;
+    message?: Schema1026;
     /**
      * Time when the container terminated
      */
-    finishedAt?: Schema1017;
+    finishedAt?: Schema1027;
 };
 
-export type Schema1014 = number;
+export type Schema1024 = number;
 
-export type Schema1015 = string;
+export type Schema1025 = string;
 
-export type Schema1016 = string;
+export type Schema1026 = string;
 
-export type Schema1017 = string;
+export type Schema1027 = string;
 
 /**
  * Reason a container is waiting (e.g. ImagePullBackOff)
  */
-export type Schema1018 = Schema1019;
+export type Schema1028 = Schema1029;
 
-export type Schema1019 = string;
+export type Schema1029 = string;
 
 /**
  * State of the persistent volume of the server, or null when it keeps no state
  */
-export type Schema1020 = Schema1021;
+export type Schema1030 = Schema1031;
 
-export type Schema1021 = ServerStorageStatus | null;
+export type Schema1031 = ServerStorageStatus | null;
 
 /**
  * Name of the underlying persistent volume claim
  */
-export type Schema1022 = string;
+export type Schema1032 = string;
 
 /**
  * Claim phase reported by Kubernetes (e.g. Bound, Pending)
  */
-export type Schema1023 = string;
+export type Schema1033 = string;
 
 /**
  * Size the claim asks for, in Kubernetes quantity format
  */
-export type Schema1024 = string;
+export type Schema1034 = string;
 
 /**
  * Last time the volume was attached to a deployment, or null if never
  */
-export type Schema1025 = Schema1026 | null;
+export type Schema1035 = Schema1036 | null;
 
-export type Schema1026 = string;
+export type Schema1036 = string;
 
 /**
  * Bytes held on the volume, or null when its storage backend reports no usage
  */
-export type Schema1027 = Schema1028 | null;
+export type Schema1037 = Schema1038 | null;
 
-export type Schema1028 = number;
+export type Schema1038 = number;
 
 /**
  * Standard output of the container
  */
-export type Schema1029 = string;
+export type Schema1039 = string;
 
 /**
  * Standard error of the container
  */
-export type Schema1030 = string;
+export type Schema1040 = string;
 
 /**
  * CPU usage in cores over time
  */
-export type Schema1031 = MetricsTimeSeries;
+export type Schema1041 = MetricsTimeSeries;
 
 /**
  * Sample times as Unix epoch timestamps in seconds
  */
-export type Schema1032 = Array<Schema1033>;
+export type Schema1042 = Array<Schema1043>;
 
-export type Schema1033 = number;
+export type Schema1043 = number;
 
 /**
  * Sampled values, aligned with timestamps
  */
-export type Schema1034 = Array<Schema1035>;
+export type Schema1044 = Array<Schema1045>;
 
-export type Schema1035 = number;
+export type Schema1045 = number;
 
 /**
  * Memory usage in bytes over time
  */
-export type Schema1036 = MetricsTimeSeries;
+export type Schema1046 = MetricsTimeSeries;
 
 /**
  * Resource limits of the deployment
  */
-export type Schema1037 = ResourceLimits;
+export type Schema1047 = ResourceLimits;
 
 /**
  * CPU reserved for the deployment in cores (its guaranteed minimum under load), or null
  */
-export type Schema1038 = Schema1039 | null;
+export type Schema1048 = Schema1049 | null;
 
-export type Schema1039 = number;
+export type Schema1049 = number;
 
 /**
  * Memory reserved for the deployment in bytes (also its hard ceiling), or null
  */
-export type Schema1040 = Schema1041 | null;
+export type Schema1050 = Schema1051 | null;
 
-export type Schema1041 = number;
+export type Schema1051 = number;
 
 /**
  * Usage of the server's persistent volume, or null when it keeps no state or reports no usage
  */
-export type Schema1042 = Schema1043 | null;
+export type Schema1052 = Schema1053 | null;
 
-export type Schema1043 = {
+export type Schema1053 = {
     /**
      * Bytes held on the persistent volume over time
      */
@@ -6073,12 +6132,12 @@ export type Schema1043 = {
     /**
      * Size the volume asks for in bytes, or null when unknown
      */
-    capacityBytes: Schema1044 | null;
+    capacityBytes: Schema1054 | null;
 };
 
-export type Schema1044 = number;
+export type Schema1054 = number;
 
-export type Schema1045 = {
+export type Schema1055 = {
     /**
      * Event type discriminator, always "error"
      */
@@ -6092,151 +6151,151 @@ export type Schema1045 = {
 /**
  * Event type discriminator, always "podInfo"
  */
-export type Schema1046 = 'podInfo';
+export type Schema1056 = 'podInfo';
 
 /**
  * Status of the pod
  */
-export type Schema1047 = 'Ready' | 'Pending' | 'Running' | 'Succeeded' | 'Failed' | 'Unknown';
+export type Schema1057 = 'Ready' | 'Pending' | 'Running' | 'Succeeded' | 'Failed' | 'Unknown';
 
 /**
  * Time when the pod was created
  */
-export type Schema1048 = string;
+export type Schema1058 = string;
 
 /**
  * Name of the pod
  */
-export type Schema1049 = string;
+export type Schema1059 = string;
 
 /**
  * Names of the init containers
  */
-export type Schema1050 = Array<Schema1051>;
+export type Schema1060 = Array<Schema1061>;
 
-export type Schema1051 = string;
+export type Schema1061 = string;
 
 /**
  * Names of the init containers that are sidecars, and so keep running beside the server instead of terminating
  */
-export type Schema1052 = Array<Schema1053>;
+export type Schema1062 = Array<Schema1063>;
 
-export type Schema1053 = string;
+export type Schema1063 = string;
 
 /**
  * Names of the containers whose logs can be read. The platform own init containers are not among them
  */
-export type Schema1054 = Array<Schema1055>;
+export type Schema1064 = Array<Schema1065>;
 
-export type Schema1055 = string;
+export type Schema1065 = string;
 
 /**
  * State of every container of the pod when the stream opened, so that a pod which is past its transitions still reports what it is doing
  */
-export type Schema1056 = Array<DeploymentContainerStatus>;
+export type Schema1066 = Array<DeploymentContainerStatus>;
 
 /**
  * Name of the container
  */
-export type Schema1057 = string;
+export type Schema1067 = string;
 
 /**
  * State of the container right now
  */
-export type Schema1058 = 'pending' | 'running' | 'completed' | 'failed' | 'ready' | 'crashBackOff';
+export type Schema1068 = 'pending' | 'running' | 'completed' | 'failed' | 'ready' | 'crashBackOff';
 
 /**
  * Time when the container started
  */
-export type Schema1059 = Schema1060;
+export type Schema1069 = Schema1070;
 
-export type Schema1060 = string;
+export type Schema1070 = string;
 
 /**
  * Time when the container terminated
  */
-export type Schema1061 = Schema1062;
+export type Schema1071 = Schema1072;
 
-export type Schema1062 = string;
+export type Schema1072 = string;
 
 /**
  * Exit code, when it has terminated
  */
-export type Schema1063 = Schema1064;
+export type Schema1073 = Schema1074;
 
-export type Schema1064 = number;
+export type Schema1074 = number;
 
 /**
  * Reason for the state it is in
  */
-export type Schema1065 = Schema1066;
+export type Schema1075 = Schema1076;
 
-export type Schema1066 = string;
+export type Schema1076 = string;
 
 /**
  * Number of times the container has restarted
  */
-export type Schema1067 = number;
+export type Schema1077 = number;
 
 /**
  * Names of the containers
  */
-export type Schema1068 = Array<Schema1069>;
+export type Schema1078 = Array<Schema1079>;
 
-export type Schema1069 = string;
+export type Schema1079 = string;
 
 /**
  * Reason a container is waiting, or null
  */
-export type Schema1070 = Schema1071 | null;
+export type Schema1080 = Schema1081 | null;
 
-export type Schema1071 = string;
+export type Schema1081 = string;
 
 /**
  * Number of container restarts
  */
-export type Schema1072 = number;
+export type Schema1082 = number;
 
 /**
  * Whether a previous container instance failed
  */
-export type Schema1073 = boolean;
+export type Schema1083 = boolean;
 
 /**
  * Pod condition of the last failure, or null
  */
-export type Schema1074 = Schema1006 | null;
+export type Schema1084 = Schema1016 | null;
 
-export type Schema1075 = Schema1012;
+export type Schema1085 = Schema1022;
 
 /**
  * Whether the pod belongs to a sandbox
  */
-export type Schema1076 = boolean;
+export type Schema1086 = boolean;
 
 /**
  * Resources reserved for the pod
  */
-export type Schema1077 = {
-    cpuCores: Schema1078;
-    memoryBytes: Schema1080;
+export type Schema1087 = {
+    cpuCores: Schema1088;
+    memoryBytes: Schema1090;
 };
 
 /**
  * CPU reserved for the pod in cores (its guaranteed minimum under load), or null
  */
-export type Schema1078 = Schema1079 | null;
+export type Schema1088 = Schema1089 | null;
 
-export type Schema1079 = number;
+export type Schema1089 = number;
 
 /**
  * Memory reserved for the pod in bytes (also its hard ceiling), or null
  */
-export type Schema1080 = Schema1081 | null;
+export type Schema1090 = Schema1091 | null;
 
-export type Schema1081 = number;
+export type Schema1091 = number;
 
-export type Schema1082 = {
+export type Schema1092 = {
     /**
      * Event type discriminator, always "initContainerRunning"
      */
@@ -6247,7 +6306,7 @@ export type Schema1082 = {
     name: string;
 };
 
-export type Schema1083 = {
+export type Schema1093 = {
     /**
      * Event type discriminator, always "initContainerTerminated"
      */
@@ -6263,7 +6322,7 @@ export type Schema1083 = {
     /**
      * Reason for the termination
      */
-    reason?: Schema1084;
+    reason?: Schema1094;
     /**
      * Time when the container started
      */
@@ -6274,9 +6333,9 @@ export type Schema1083 = {
     finishedAt: string;
 };
 
-export type Schema1084 = string;
+export type Schema1094 = string;
 
-export type Schema1085 = {
+export type Schema1095 = {
     /**
      * Event type discriminator, always "sidecarContainerStarted"
      */
@@ -6291,7 +6350,7 @@ export type Schema1085 = {
     startedAt: string;
 };
 
-export type Schema1086 = {
+export type Schema1096 = {
     /**
      * Event type discriminator, always "sidecarContainerFailed"
      */
@@ -6303,15 +6362,15 @@ export type Schema1086 = {
     /**
      * Exit code the container last ended with
      */
-    exitCode?: Schema1087;
+    exitCode?: Schema1097;
     /**
      * Reason for the failure, or why it is waiting
      */
-    reason?: Schema1088;
+    reason?: Schema1098;
     /**
      * Message of the last termination
      */
-    message?: Schema1089;
+    message?: Schema1099;
     /**
      * Number of times the container has restarted
      */
@@ -6322,13 +6381,13 @@ export type Schema1086 = {
     isBackingOff: boolean;
 };
 
-export type Schema1087 = number;
+export type Schema1097 = number;
 
-export type Schema1088 = string;
+export type Schema1098 = string;
 
-export type Schema1089 = string;
+export type Schema1099 = string;
 
-export type Schema1090 = {
+export type Schema1100 = {
     /**
      * Event type discriminator, always "mainContainerWaiting"
      */
@@ -6339,11 +6398,11 @@ export type Schema1090 = {
     reason: string;
 };
 
-export type Schema1091 = {
+export type Schema1101 = {
     /**
      * Event type discriminator: "mainContainerCrashBackOff" or "mainContainerImagePullBackOff"
      */
-    type: Schema1092 | Schema1093;
+    type: Schema1102 | Schema1103;
     /**
      * Reason for the back-off
      */
@@ -6351,34 +6410,34 @@ export type Schema1091 = {
     /**
      * Additional detail about the back-off
      */
-    detail?: Schema1094;
+    detail?: Schema1104;
     /**
      * Number of restarts
      */
     restarts: number;
 };
 
-export type Schema1092 = 'mainContainerCrashBackOff';
+export type Schema1102 = 'mainContainerCrashBackOff';
 
-export type Schema1093 = 'mainContainerImagePullBackOff';
+export type Schema1103 = 'mainContainerImagePullBackOff';
 
-export type Schema1094 = string;
+export type Schema1104 = string;
 
-export type Schema1095 = {
+export type Schema1105 = {
     /**
      * Event type discriminator, always "mainContainerRunning"
      */
     type: 'mainContainerRunning';
 };
 
-export type Schema1096 = {
+export type Schema1106 = {
     /**
      * Event type discriminator, always "mainContainerReady"
      */
     type: 'mainContainerReady';
 };
 
-export type Schema1097 = {
+export type Schema1107 = {
     /**
      * Event type discriminator, always "mainContainerCrashed"
      */
@@ -6390,7 +6449,7 @@ export type Schema1097 = {
     /**
      * Reason for the crash
      */
-    reason?: Schema1098;
+    reason?: Schema1108;
     /**
      * Time when the container started
      */
@@ -6401,9 +6460,9 @@ export type Schema1097 = {
     finishedAt: string;
 };
 
-export type Schema1098 = string;
+export type Schema1108 = string;
 
-export type Schema1099 = {
+export type Schema1109 = {
     /**
      * Event type discriminator, always "done"
      */
@@ -6413,61 +6472,61 @@ export type Schema1099 = {
 /**
  * Unique ID of the team
  */
-export type Schema1100 = string;
+export type Schema1110 = string;
 
 /**
  * ID of the tenant that owns the team
  */
-export type Schema1101 = string;
+export type Schema1111 = string;
 
 /**
  * Display name of the team, unique in the organization
  */
-export type Schema1102 = string;
+export type Schema1112 = string;
 
 /**
  * Human-readable description of the team
  */
-export type Schema1103 = string;
+export type Schema1113 = string;
 
 /**
  * Whether the team is managed through SCIM provisioning
  */
-export type Schema1104 = boolean;
+export type Schema1114 = boolean;
 
 /**
  * SCIM external ID of the team
  */
-export type Schema1105 = string;
+export type Schema1115 = string;
 
 /**
  * Time when the team was created
  */
-export type Schema1106 = string;
+export type Schema1116 = string;
 
 /**
  * Time when the team was last updated
  */
-export type Schema1107 = string;
+export type Schema1117 = string;
 
 /**
  * Number of members in the team
  */
-export type Schema1108 = number;
+export type Schema1118 = number;
 
 /**
  * Whether at least one profile is assigned to the team
  */
-export type Schema1109 = boolean;
+export type Schema1119 = boolean;
 
-export type Schema1110 = {
+export type Schema1120 = {
     /**
      * The requested team
      */
     team: TeamWithMemberCount;
 };
 
-export type Schema1111 = {
+export type Schema1121 = {
     /**
      * Membership record of the user in the team
      */
@@ -6481,90 +6540,90 @@ export type Schema1111 = {
 /**
  * ID of the team
  */
-export type Schema1112 = string;
+export type Schema1122 = string;
 
 /**
  * ID of the member user
  */
-export type Schema1113 = string;
+export type Schema1123 = string;
 
 /**
  * Role of the member in the team
  */
-export type Schema1114 = Schema1115;
+export type Schema1124 = Schema1125;
 
-export type Schema1115 = 'member' | 'maintainer';
+export type Schema1125 = 'member' | 'maintainer';
 
 /**
  * Time when the membership was created
  */
-export type Schema1116 = string;
+export type Schema1126 = string;
 
 /**
  * Time when the membership was last updated
  */
-export type Schema1117 = string;
+export type Schema1127 = string;
 
 /**
  * Unique ID of the invitation
  */
-export type Schema1118 = string;
+export type Schema1128 = string;
 
 /**
  * ID of the team the invitation is for
  */
-export type Schema1119 = string;
+export type Schema1129 = string;
 
 /**
  * ID of the tenant that owns the invitation
  */
-export type Schema1120 = string;
+export type Schema1130 = string;
 
 /**
  * ID of the user who sent the invitation, or null
  */
-export type Schema1121 = Schema1122 | null;
+export type Schema1131 = Schema1132 | null;
 
-export type Schema1122 = string;
+export type Schema1132 = string;
 
 /**
  * Email address the invitation was sent to
  */
-export type Schema1123 = string;
+export type Schema1133 = string;
 
 /**
  * Role the invited person gets in the team
  */
-export type Schema1124 = Schema1115;
+export type Schema1134 = Schema1125;
 
 /**
  * Token used to accept the invitation
  */
-export type Schema1125 = string;
+export type Schema1135 = string;
 
 /**
  * Time when the invitation expires
  */
-export type Schema1126 = string;
+export type Schema1136 = string;
 
 /**
  * Time when the invitation was accepted, or null
  */
-export type Schema1127 = Schema1128 | null;
+export type Schema1137 = Schema1138 | null;
 
-export type Schema1128 = string;
+export type Schema1138 = string;
 
 /**
  * Time when the invitation was created
  */
-export type Schema1129 = string;
+export type Schema1139 = string;
 
 /**
  * Time when the invitation was last updated
  */
-export type Schema1130 = string;
+export type Schema1140 = string;
 
-export type Schema1131 = {
+export type Schema1141 = {
     /**
      * Server membership granted to the team
      */
@@ -6575,12 +6634,12 @@ export type Schema1131 = {
     serverSlug: string;
 };
 
-export type Schema1132 = {
-    tenantId: Schema1133;
-    serverId: Schema1134;
-    role: Schema1135;
-    createdAt: Schema1136;
-    updatedAt: Schema1137;
+export type Schema1142 = {
+    tenantId: Schema1143;
+    serverId: Schema1144;
+    role: Schema1145;
+    createdAt: Schema1146;
+    updatedAt: Schema1147;
     /**
      * ID of the member user
      */
@@ -6594,34 +6653,34 @@ export type Schema1132 = {
 /**
  * ID of the tenant that owns the membership
  */
-export type Schema1133 = string;
+export type Schema1143 = string;
 
 /**
  * ID of the server that the membership grants access to
  */
-export type Schema1134 = string;
+export type Schema1144 = string;
 
 /**
  * Role of the member on the server
  */
-export type Schema1135 = Schema483;
+export type Schema1145 = Schema484;
 
 /**
  * Time when the membership was created
  */
-export type Schema1136 = string;
+export type Schema1146 = string;
 
 /**
  * Time when the membership was last updated
  */
-export type Schema1137 = string;
+export type Schema1147 = string;
 
-export type Schema1138 = {
-    tenantId: Schema1133;
-    serverId: Schema1134;
-    role: Schema1135;
-    createdAt: Schema1136;
-    updatedAt: Schema1137;
+export type Schema1148 = {
+    tenantId: Schema1143;
+    serverId: Schema1144;
+    role: Schema1145;
+    createdAt: Schema1146;
+    updatedAt: Schema1147;
     /**
      * Always null for a team membership
      */
@@ -6635,93 +6694,73 @@ export type Schema1138 = {
 /**
  * Unique ID of the claim mapping
  */
-export type Schema1139 = string;
+export type Schema1149 = string;
 
 /**
  * ID of the tenant that owns the claim mapping
  */
-export type Schema1140 = string;
+export type Schema1150 = string;
 
 /**
  * ID of the team that the mapping gives membership of
  */
-export type Schema1141 = string;
+export type Schema1151 = string;
 
 /**
  * Name of the identity provider claim to match
  */
-export type Schema1142 = string;
+export type Schema1152 = string;
 
 /**
  * Claim value that gives membership when it matches
  */
-export type Schema1143 = string;
+export type Schema1153 = string;
 
 /**
  * Time when the claim mapping was created
  */
-export type Schema1144 = string;
+export type Schema1154 = string;
 
-export type Schema1145 = {
+export type Schema1155 = {
     /**
      * Profile assignments of the team
      */
     profileAssignments: Array<ProfileTeamAssignment>;
 };
 
-export type Schema1146 = Array<SecretStoreResponse>;
-
-export type Schema1147 = string;
-
-export type Schema1148 = string;
-
-export type Schema1149 = 'aws_secrets_manager' | 'gcp_secret_manager' | 'hashicorp_vault' | 'infisical' | 'azure_key_vault';
-
-export type Schema1150 = boolean;
-
-export type Schema1151 = string;
-
-export type Schema1152 = string;
-
-export type Schema1153 = AwsSecretsManagerConfigurationOutput | GcpSecretManagerConfigurationOutput | HashiCorpVaultConfigurationOutput | InfisicalConfigurationOutput | AzureKeyVaultConfigurationOutput;
-
-export type Schema1154 = 'aws_secrets_manager';
-
-export type Schema1155 = string;
-
-export type Schema1156 = string;
+export type Schema1156 = Array<SecretStoreResponse>;
 
 export type Schema1157 = string;
 
-export type Schema1158 = 'gcp_secret_manager';
+export type Schema1158 = string;
 
-export type Schema1159 = string;
+export type Schema1159 = 'aws_secrets_manager' | 'gcp_secret_manager' | 'hashicorp_vault' | 'infisical' | 'azure_key_vault';
 
-export type Schema1160 = string;
+export type Schema1160 = boolean;
 
-export type Schema1161 = 'hashicorp_vault';
+export type Schema1161 = string;
 
 export type Schema1162 = string;
 
-export type Schema1163 = string;
+export type Schema1163 = AwsSecretsManagerConfigurationOutput | GcpSecretManagerConfigurationOutput | HashiCorpVaultConfigurationOutput | InfisicalConfigurationOutput | AzureKeyVaultConfigurationOutput;
 
-export type Schema1164 = string;
+export type Schema1164 = 'aws_secrets_manager';
 
 export type Schema1165 = string;
 
-export type Schema1166 = 'infisical';
+export type Schema1166 = string;
 
 export type Schema1167 = string;
 
-export type Schema1168 = string;
+export type Schema1168 = 'gcp_secret_manager';
 
 export type Schema1169 = string;
 
 export type Schema1170 = string;
 
-export type Schema1171 = string;
+export type Schema1171 = 'hashicorp_vault';
 
-export type Schema1172 = 'azure_key_vault';
+export type Schema1172 = string;
 
 export type Schema1173 = string;
 
@@ -6729,9 +6768,9 @@ export type Schema1174 = string;
 
 export type Schema1175 = string;
 
-export type Schema1176 = string;
+export type Schema1176 = 'infisical';
 
-export type Schema1177 = Array<SecretMappingResponse>;
+export type Schema1177 = string;
 
 export type Schema1178 = string;
 
@@ -6741,95 +6780,71 @@ export type Schema1180 = string;
 
 export type Schema1181 = string;
 
-export type Schema1182 = boolean;
+export type Schema1182 = 'azure_key_vault';
 
 export type Schema1183 = string;
 
 export type Schema1184 = string;
 
+export type Schema1185 = string;
+
+export type Schema1186 = string;
+
+export type Schema1187 = Array<SecretMappingResponse>;
+
+export type Schema1188 = string;
+
+export type Schema1189 = string;
+
+export type Schema1190 = string;
+
+export type Schema1191 = string;
+
+export type Schema1192 = boolean;
+
+export type Schema1193 = string;
+
+export type Schema1194 = string;
+
 /**
  * The SIEM destination, or null when none is configured
  */
-export type Schema1185 = SiemDestinationResponse | null;
+export type Schema1195 = SiemDestinationResponse | null;
 
 /**
  * Unique ID of the destination
  */
-export type Schema1186 = string;
+export type Schema1196 = string;
 
 /**
  * Display name of the destination
  */
-export type Schema1187 = string;
+export type Schema1197 = string;
 
 /**
  * Destination type: HTTPS, S3, or GCS
  */
-export type Schema1188 = 'https' | 's3' | 'gcs';
+export type Schema1198 = 'https' | 's3' | 'gcs';
 
 /**
  * HTTPS delivery URL; empty for buckets
  */
-export type Schema1189 = string;
+export type Schema1199 = string;
 
 /**
  * Destination settings without credentials
  */
-export type Schema1190 = SiemTargetSettings;
+export type Schema1200 = SiemTargetSettings;
 
 /**
  * Send batches to an HTTPS endpoint
  */
-export type Schema1191 = 'https';
+export type Schema1201 = 'https';
 
 /**
  * Write batches to an S3 bucket
  */
-export type Schema1192 = 's3';
-
-/**
- * Bucket name
- */
-export type Schema1193 = string;
-
-/**
- * Object key prefix; empty or ending in a slash
- */
-export type Schema1194 = string;
-
-/**
- * Bucket region, e.g. eu-west-1
- */
-export type Schema1195 = string;
-
-/**
- * Custom endpoint of an S3-compatible store, or null for Amazon S3
- */
-export type Schema1196 = Schema1197 | null;
-
-export type Schema1197 = string;
-
-/**
- * Whether to address the bucket in the path instead of the host
- */
-export type Schema1198 = boolean;
-
-/**
- * Access key ID used for uploads; the secret key is never returned
- */
-export type Schema1199 = string;
-
-/**
- * Whether objects are gzipped
- */
-export type Schema1200 = Schema1201;
-
-export type Schema1201 = 'none' | 'gzip';
-
-/**
- * Write batches to a Google Cloud Storage bucket
- */
-export type Schema1202 = 'gcs';
+export type Schema1202 = 's3';
 
 /**
  * Bucket name
@@ -6837,314 +6852,358 @@ export type Schema1202 = 'gcs';
 export type Schema1203 = string;
 
 /**
- * Object name prefix; empty or ending in a slash
+ * Object key prefix; empty or ending in a slash
  */
 export type Schema1204 = string;
 
 /**
- * Service account email; its key is never returned
+ * Bucket region, e.g. eu-west-1
  */
 export type Schema1205 = string;
 
 /**
- * Project the service account belongs to
+ * Custom endpoint of an S3-compatible store, or null for Amazon S3
  */
-export type Schema1206 = string;
+export type Schema1206 = Schema1207 | null;
+
+export type Schema1207 = string;
 
 /**
- * Whether objects are gzipped
- */
-export type Schema1207 = Schema1201;
-
-/**
- * Whether bucket credentials are stored; credentials are never returned
+ * Whether to address the bucket in the path instead of the host
  */
 export type Schema1208 = boolean;
 
 /**
+ * Access key ID used for uploads; the secret key is never returned
+ */
+export type Schema1209 = string;
+
+/**
+ * Whether objects are gzipped
+ */
+export type Schema1210 = Schema1211;
+
+export type Schema1211 = 'none' | 'gzip';
+
+/**
+ * Write batches to a Google Cloud Storage bucket
+ */
+export type Schema1212 = 'gcs';
+
+/**
+ * Bucket name
+ */
+export type Schema1213 = string;
+
+/**
+ * Object name prefix; empty or ending in a slash
+ */
+export type Schema1214 = string;
+
+/**
+ * Service account email; its key is never returned
+ */
+export type Schema1215 = string;
+
+/**
+ * Project the service account belongs to
+ */
+export type Schema1216 = string;
+
+/**
+ * Whether objects are gzipped
+ */
+export type Schema1217 = Schema1211;
+
+/**
+ * Whether bucket credentials are stored; credentials are never returned
+ */
+export type Schema1218 = boolean;
+
+/**
  * Name of the custom auth header, or null when none is configured
- */
-export type Schema1209 = Schema1210 | null;
-
-export type Schema1210 = string;
-
-/**
- * Whether a custom auth header value is stored. The value itself is never returned
- */
-export type Schema1211 = boolean;
-
-/**
- * The tenant admin's on/off switch
- */
-export type Schema1212 = boolean;
-
-/**
- * Delivery status, maintained by the export job
- */
-export type Schema1213 = 'active' | 'unhealthy' | 'disabled_auto';
-
-/**
- * Whether audit log events are streamed
- */
-export type Schema1214 = boolean;
-
-/**
- * Whether credential audit log events are streamed
- */
-export type Schema1215 = boolean;
-
-/**
- * Number of delivery attempts that failed in a row
- */
-export type Schema1216 = number;
-
-/**
- * Time when the current failure streak started, or null
- */
-export type Schema1217 = Schema1218 | null;
-
-export type Schema1218 = string;
-
-/**
- * Time of the next delivery attempt, or null
  */
 export type Schema1219 = Schema1220 | null;
 
 export type Schema1220 = string;
 
 /**
+ * Whether a custom auth header value is stored. The value itself is never returned
+ */
+export type Schema1221 = boolean;
+
+/**
+ * The tenant admin's on/off switch
+ */
+export type Schema1222 = boolean;
+
+/**
+ * Delivery status, maintained by the export job
+ */
+export type Schema1223 = 'active' | 'unhealthy' | 'disabled_auto';
+
+/**
+ * Whether audit log events are streamed
+ */
+export type Schema1224 = boolean;
+
+/**
+ * Whether credential audit log events are streamed
+ */
+export type Schema1225 = boolean;
+
+/**
+ * Number of delivery attempts that failed in a row
+ */
+export type Schema1226 = number;
+
+/**
+ * Time when the current failure streak started, or null
+ */
+export type Schema1227 = Schema1228 | null;
+
+export type Schema1228 = string;
+
+/**
+ * Time of the next delivery attempt, or null
+ */
+export type Schema1229 = Schema1230 | null;
+
+export type Schema1230 = string;
+
+/**
  * Time of the last delivery attempt, or null
  */
-export type Schema1221 = Schema1222 | null;
+export type Schema1231 = Schema1232 | null;
 
-export type Schema1222 = string;
+export type Schema1232 = string;
 
 /**
  * Time of the last successful delivery, or null
  */
-export type Schema1223 = Schema1224 | null;
+export type Schema1233 = Schema1234 | null;
 
-export type Schema1224 = string;
+export type Schema1234 = string;
 
 /**
  * Message of the last delivery error, or null
- */
-export type Schema1225 = Schema1226 | null;
-
-export type Schema1226 = string;
-
-/**
- * Time when the destination was created
- */
-export type Schema1227 = string;
-
-/**
- * Time when the destination was last updated
- */
-export type Schema1228 = string;
-
-/**
- * The created SIEM destination
- */
-export type Schema1229 = SiemDestinationResponse;
-
-/**
- * Secret used to compute the HMAC signature of delivered batches
- */
-export type Schema1230 = string;
-
-/**
- * Secret used to compute the HMAC signature of delivered batches
- */
-export type Schema1231 = string;
-
-/**
- * Whether the destination accepted the test event
- */
-export type Schema1232 = boolean;
-
-/**
- * HTTP status the receiver answered with, or null when the request never completed
- */
-export type Schema1233 = Schema1234 | null;
-
-export type Schema1234 = number;
-
-/**
- * First part of the response body, to help a tenant debug a rejection
  */
 export type Schema1235 = Schema1236 | null;
 
 export type Schema1236 = string;
 
 /**
+ * Time when the destination was created
+ */
+export type Schema1237 = string;
+
+/**
+ * Time when the destination was last updated
+ */
+export type Schema1238 = string;
+
+/**
+ * The created SIEM destination
+ */
+export type Schema1239 = SiemDestinationResponse;
+
+/**
+ * Secret used to compute the HMAC signature of delivered batches
+ */
+export type Schema1240 = string;
+
+/**
+ * Secret used to compute the HMAC signature of delivered batches
+ */
+export type Schema1241 = string;
+
+/**
+ * Whether the destination accepted the test event
+ */
+export type Schema1242 = boolean;
+
+/**
+ * HTTP status the receiver answered with, or null when the request never completed
+ */
+export type Schema1243 = Schema1244 | null;
+
+export type Schema1244 = number;
+
+/**
+ * First part of the response body, to help a tenant debug a rejection
+ */
+export type Schema1245 = Schema1246 | null;
+
+export type Schema1246 = string;
+
+/**
  * Error message when the request failed, or null
  */
-export type Schema1237 = Schema1238 | null;
+export type Schema1247 = Schema1248 | null;
 
-export type Schema1238 = string;
+export type Schema1248 = string;
 
 /**
  * Test object URL (s3://bucket/key or gs://bucket/key); null for HTTPS
  */
-export type Schema1239 = Schema1240 | null;
+export type Schema1249 = Schema1250 | null;
 
-export type Schema1240 = string;
+export type Schema1250 = string;
 
 /**
  * Duration of the test request in milliseconds
  */
-export type Schema1241 = number;
+export type Schema1251 = number;
 
 /**
  * ID of the tenant that owns the profile
  */
-export type Schema1242 = string;
+export type Schema1252 = string;
 
 /**
  * Unique ID of the profile
  */
-export type Schema1243 = string;
+export type Schema1253 = string;
 
 /**
  * ID of the user who created the profile
  */
-export type Schema1244 = string;
+export type Schema1254 = string;
 
 /**
  * Display name of the profile
  */
-export type Schema1245 = string;
+export type Schema1255 = string;
 
 /**
  * Human-readable description of the profile
  */
-export type Schema1246 = string;
+export type Schema1256 = string;
 
 /**
  * Whether all users in the tenant can use the profile without an explicit assignment
  */
-export type Schema1247 = boolean;
+export type Schema1257 = boolean;
 
 /**
  * Whether the profile restricts its users to only the servers in the profile; applies even to tenant owners
  */
-export type Schema1248 = boolean;
+export type Schema1258 = boolean;
 
 /**
  * Whether MCP sessions that use the profile are forced into code mode
  */
-export type Schema1249 = boolean;
+export type Schema1259 = boolean;
 
 /**
  * Time when the profile was created
  */
-export type Schema1250 = string;
+export type Schema1260 = string;
 
 /**
  * Time when the profile was last updated
  */
-export type Schema1251 = string;
+export type Schema1261 = string;
 
 /**
  * Time of the last MCP request that used the profile, accurate to 5 minutes; null when never used
  */
-export type Schema1252 = Schema1253 | null;
+export type Schema1262 = Schema1263 | null;
 
-export type Schema1253 = string;
+export type Schema1263 = string;
 
 /**
  * Number of servers included in the profile
  */
-export type Schema1254 = number;
+export type Schema1264 = number;
 
 /**
  * Number of distinct users assigned to the profile, directly or through a team
  */
-export type Schema1255 = number;
+export type Schema1265 = number;
 
 /**
  * Number of teams assigned to the profile
  */
-export type Schema1256 = number;
+export type Schema1266 = number;
 
 /**
  * Number of claim mappings that assign the profile
  */
-export type Schema1257 = number;
+export type Schema1267 = number;
 
 /**
  * Number of distinct users that reference the profile from a personal access token
  */
-export type Schema1258 = number;
+export type Schema1268 = number;
 
 /**
  * Servers included in the profile
  */
-export type Schema1259 = Array<Schema1260>;
+export type Schema1269 = Array<Schema1270>;
 
-export type Schema1260 = {
+export type Schema1270 = {
     /**
      * Name of the server; currently the same value as slug
      */
     name: string;
-    slug: Schema600;
-    authorization: Schema603;
+    slug: Schema601;
+    authorization: Schema604;
     /**
      * Number of API keys the server expects, or null when the server does not use API key authorization
      */
-    credentialsNumKeys: Schema1261 | null;
+    credentialsNumKeys: Schema1271 | null;
     /**
      * Scope of the credentials used for the server
      */
-    credentialScope: Schema846;
+    credentialScope: Schema856;
     /**
      * Credentials stored for the server in this profile, or null if none
      */
     credentials: ServerCredentialsDto | null;
 };
 
-export type Schema1261 = number;
+export type Schema1271 = number;
 
 /**
  * Unique ID of the claim mapping
  */
-export type Schema1262 = string;
+export type Schema1272 = string;
 
 /**
  * ID of the tenant that owns the claim mapping
  */
-export type Schema1263 = string;
+export type Schema1273 = string;
 
 /**
  * ID of the profile that the mapping assigns
  */
-export type Schema1264 = string;
+export type Schema1274 = string;
 
 /**
  * Name of the identity provider claim to match
  */
-export type Schema1265 = string;
+export type Schema1275 = string;
 
 /**
  * Claim value that assigns the profile when it matches
  */
-export type Schema1266 = string;
+export type Schema1276 = string;
 
 /**
  * Time when the claim mapping was created
  */
-export type Schema1267 = string;
+export type Schema1277 = string;
 
 /**
  * Users directly assigned to the profile
  */
-export type Schema1268 = Array<Schema1269>;
+export type Schema1278 = Array<Schema1279>;
 
-export type Schema1269 = {
-    id: Schema1270;
-    email: Schema1271;
-    name: Schema1272;
+export type Schema1279 = {
+    id: Schema1280;
+    email: Schema1281;
+    name: Schema1282;
     /**
      * Time when the profile was assigned
      */
@@ -7158,24 +7217,24 @@ export type Schema1269 = {
 /**
  * Unique ID of the user
  */
-export type Schema1270 = string;
+export type Schema1280 = string;
 
 /**
  * Email address of the user
  */
-export type Schema1271 = string;
+export type Schema1281 = string;
 
 /**
  * Display name of the user
  */
-export type Schema1272 = string;
+export type Schema1282 = string;
 
 /**
  * Teams assigned to the profile
  */
-export type Schema1273 = Array<Schema1274>;
+export type Schema1283 = Array<Schema1284>;
 
-export type Schema1274 = {
+export type Schema1284 = {
     /**
      * ID of the assigned team
      */
@@ -7197,12 +7256,12 @@ export type Schema1274 = {
 /**
  * Users who maintain the profile
  */
-export type Schema1275 = Array<Schema1276>;
+export type Schema1285 = Array<Schema1286>;
 
-export type Schema1276 = {
-    id: Schema1270;
-    email: Schema1271;
-    name: Schema1272;
+export type Schema1286 = {
+    id: Schema1280;
+    email: Schema1281;
+    name: Schema1282;
     /**
      * Time when the maintainer was added
      */
@@ -7212,338 +7271,338 @@ export type Schema1276 = {
 /**
  * Tool configuration of the profile, one entry per server of the profile
  */
-export type Schema1277 = Array<ProfileServerTools>;
+export type Schema1287 = Array<ProfileServerTools>;
 
 /**
  * Slug of the MCP server that the configuration applies to
  */
-export type Schema1278 = string;
+export type Schema1288 = string;
 
 /**
  * Whether every tool of the server is available to the profile
  */
-export type Schema1279 = boolean;
+export type Schema1289 = boolean;
 
 /**
  * Whether tools that the server adds later become available to the profile automatically
  */
-export type Schema1280 = boolean;
+export type Schema1290 = boolean;
 
 /**
  * Per-tool configuration of the profile for the server
  */
-export type Schema1281 = Array<ProfileToolEntry>;
+export type Schema1291 = Array<ProfileToolEntry>;
 
 /**
  * Name of the tool as the MCP server itself reports it
  */
-export type Schema1282 = string;
+export type Schema1292 = string;
 
 /**
  * Whether the tool stays listed while the session runs in code mode
  */
-export type Schema1283 = boolean;
+export type Schema1293 = boolean;
 
 /**
  * Name that the tool is exposed under to MCP clients, without the server-slug prefix; empty when the tool keeps its regular name
  */
-export type Schema1284 = string;
-
-export type Schema1285 = string;
-
-export type Schema1286 = string;
-
-export type Schema1287 = string;
-
-export type Schema1288 = boolean;
-
-export type Schema1289 = string;
-
-export type Schema1290 = string;
-
-export type Schema1291 = Array<SandboxDto>;
-
-export type Schema1292 = string;
-
-export type Schema1293 = number;
-
 export type Schema1294 = string;
 
-export type Schema1295 = number;
+export type Schema1295 = string;
 
-/**
- * Items on the current page
- */
-export type Schema1296 = Array<SandboxAuditLog>;
+export type Schema1296 = string;
 
-export type Schema1297 = number;
+export type Schema1297 = string;
 
-export type Schema1298 = string;
+export type Schema1298 = boolean;
 
 export type Schema1299 = string;
 
 export type Schema1300 = string;
 
-export type Schema1301 = {
-    [key: string]: unknown;
-};
+export type Schema1301 = Array<SandboxDto>;
 
 export type Schema1302 = string;
 
-export type Schema1303 = boolean;
+export type Schema1303 = number;
 
-export type Schema1304 = boolean;
+export type Schema1304 = string;
+
+export type Schema1305 = number;
+
+/**
+ * Items on the current page
+ */
+export type Schema1306 = Array<SandboxAuditLog>;
+
+export type Schema1307 = number;
+
+export type Schema1308 = string;
+
+export type Schema1309 = string;
+
+export type Schema1310 = string;
+
+export type Schema1311 = {
+    [key: string]: unknown;
+};
+
+export type Schema1312 = string;
+
+export type Schema1313 = boolean;
+
+export type Schema1314 = boolean;
 
 /**
  * SCIM tokens of the organization
  */
-export type Schema1305 = Array<ScimToken>;
+export type Schema1315 = Array<ScimToken>;
 
 /**
  * Unique ID of the token
  */
-export type Schema1306 = string;
+export type Schema1316 = string;
 
 /**
  * ID of the tenant that owns the token
  */
-export type Schema1307 = string;
+export type Schema1317 = string;
 
 /**
  * Display name of the token
  */
-export type Schema1308 = string;
+export type Schema1318 = string;
 
 /**
  * Time when the token was last used, or null if never used
  */
-export type Schema1309 = Schema1310 | null;
+export type Schema1319 = Schema1320 | null;
 
-export type Schema1310 = string;
+export type Schema1320 = string;
 
 /**
  * Hash of the token secret
  */
-export type Schema1311 = string;
+export type Schema1321 = string;
 
 /**
  * Raw token secret; only included when explicitly requested
  */
-export type Schema1312 = Schema1313;
+export type Schema1322 = Schema1323;
 
-export type Schema1313 = string;
+export type Schema1323 = string;
 
 /**
  * Time when the token was created
  */
-export type Schema1314 = string;
+export type Schema1324 = string;
 
 /**
  * Time when the token was last updated
  */
-export type Schema1315 = string;
+export type Schema1325 = string;
 
 /**
  * The created SCIM token
  */
-export type Schema1316 = ScimToken;
+export type Schema1326 = ScimToken;
 
 /**
  * Raw token secret to configure in the identity provider
  */
-export type Schema1317 = string;
+export type Schema1327 = string;
 
 /**
  * Raw token secret
  */
-export type Schema1318 = string;
+export type Schema1328 = string;
 
 /**
  * Clients the user has authorized
  */
-export type Schema1319 = Array<ConnectedClient>;
+export type Schema1329 = Array<ConnectedClient>;
 
 /**
  * OAuth client ID the connection authenticates as
  */
-export type Schema1320 = string;
+export type Schema1330 = string;
 
 /**
  * Best available display name for the client
  */
-export type Schema1321 = string;
+export type Schema1331 = string;
 
 /**
  * Name the user gave the connection; empty when unnamed
  */
-export type Schema1322 = string;
+export type Schema1332 = string;
 
 /**
  * Name the client reported over MCP; empty when it never reported one
  */
-export type Schema1323 = string;
+export type Schema1333 = string;
 
 /**
  * Version the client reported over MCP; empty when unknown
  */
-export type Schema1324 = string;
+export type Schema1334 = string;
 
 /**
  * How the client registered itself, external when it did not, or slack for Slackbot
  */
-export type Schema1325 = 'cli' | 'native' | 'web' | 'external' | 'slack' | 'unknown';
+export type Schema1335 = 'cli' | 'native' | 'web' | 'external' | 'slack' | 'unknown';
 
 /**
  * Whether the connection can still be used: it holds a renewable refresh token, or for an external client, it made a request recently
  */
-export type Schema1326 = boolean;
+export type Schema1336 = boolean;
 
 /**
  * Profiles the user attached to this connection
  */
-export type Schema1327 = Array<Schema1328>;
+export type Schema1337 = Array<Schema1338>;
 
-export type Schema1328 = string;
+export type Schema1338 = string;
 
 /**
  * When the connection was first recorded; null before it authorizes or is used
  */
-export type Schema1329 = Schema1330 | null;
+export type Schema1339 = Schema1340 | null;
 
-export type Schema1330 = string;
+export type Schema1340 = string;
 
 /**
  * When the client last completed an authorization; null when not seen since recording began, and always null for an external client
  */
-export type Schema1331 = Schema1332 | null;
+export type Schema1341 = Schema1342 | null;
 
-export type Schema1332 = string;
+export type Schema1342 = string;
 
 /**
  * When the client last made a request; null when it has not made one
  */
-export type Schema1333 = Schema1334 | null;
+export type Schema1343 = Schema1344 | null;
 
-export type Schema1334 = string;
+export type Schema1344 = string;
 
 /**
  * When the client last listed skills over MCP (`skills/list`); null when it has not listed any since recording began
  */
-export type Schema1335 = Schema1336 | null;
+export type Schema1345 = Schema1346 | null;
 
-export type Schema1336 = string;
+export type Schema1346 = string;
 
 /**
  * Version the client reported when it last listed skills; empty when unknown
  */
-export type Schema1337 = string;
+export type Schema1347 = string;
 
 /**
  * The connection as it now stands
  */
-export type Schema1338 = ConnectedClient;
+export type Schema1348 = ConnectedClient;
 
-export type Schema1339 = string;
-
-export type Schema1340 = string;
-
-export type Schema1341 = string;
-
-/**
- * Display name of the creator, empty when no name is set
- */
-export type Schema1342 = string;
-
-/**
- * Email of the creator
- */
-export type Schema1343 = string;
-
-export type Schema1344 = 'private' | 'tenant' | 'public';
-
-/**
- * The theme the artifact is served with: 'gatana', 'none', or the id of an organization theme
- */
-export type Schema1345 = string;
-
-export type Schema1346 = number;
-
-/**
- * IDs of the users the artifact is shared with
- */
-export type Schema1347 = Array<Schema1348>;
-
-export type Schema1348 = string;
-
-/**
- * IDs of the teams the artifact is shared with
- */
-export type Schema1349 = Array<Schema1350>;
+export type Schema1349 = string;
 
 export type Schema1350 = string;
 
 export type Schema1351 = string;
 
+/**
+ * Display name of the creator, empty when no name is set
+ */
 export type Schema1352 = string;
 
 /**
- * The viewer URL of the artifact on the tenant domain
+ * Email of the creator
  */
 export type Schema1353 = string;
 
-export type Schema1354 = Array<ArtifactDto>;
+export type Schema1354 = 'private' | 'tenant' | 'public';
 
 /**
- * Display name of the creator, or their email when no name is set
+ * The theme the artifact is served with: 'gatana', 'none', or the id of an organization theme
  */
 export type Schema1355 = string;
 
-export type Schema1356 = Array<ArtifactVersionMetaDto>;
+export type Schema1356 = number;
 
-export type Schema1357 = number;
+/**
+ * IDs of the users the artifact is shared with
+ */
+export type Schema1357 = Array<Schema1358>;
 
-export type Schema1358 = number;
+export type Schema1358 = string;
 
-export type Schema1359 = 'text/html' | 'text/markdown';
+/**
+ * IDs of the teams the artifact is shared with
+ */
+export type Schema1359 = Array<Schema1360>;
 
 export type Schema1360 = string;
 
 export type Schema1361 = string;
 
+export type Schema1362 = string;
+
+/**
+ * The viewer URL of the artifact on the tenant domain
+ */
+export type Schema1363 = string;
+
+export type Schema1364 = Array<ArtifactDto>;
+
+/**
+ * Display name of the creator, or their email when no name is set
+ */
+export type Schema1365 = string;
+
+export type Schema1366 = Array<ArtifactVersionMetaDto>;
+
+export type Schema1367 = number;
+
+export type Schema1368 = number;
+
+export type Schema1369 = 'text/html' | 'text/markdown';
+
+export type Schema1370 = string;
+
+export type Schema1371 = string;
+
 /**
  * URL of the sandboxed content frame for the requested version (the current one by default), carrying a short-lived view token. Absent when no frame domain is configured; the viewer then fetches the content endpoint and renders it in an opaque-origin iframe
  */
-export type Schema1362 = Schema1363;
+export type Schema1372 = Schema1373;
 
-export type Schema1363 = string;
+export type Schema1373 = string;
 
 /**
  * The served document: rendered to HTML when the version is Markdown, with the theme stylesheet linked in, as the content frame serves it
  */
-export type Schema1364 = string;
+export type Schema1374 = string;
 
 /**
  * What the version was uploaded as
  */
-export type Schema1365 = Schema1359;
+export type Schema1375 = Schema1369;
 
 /**
  * The Markdown as uploaded. Only present for Markdown versions
  */
-export type Schema1366 = Schema1367;
+export type Schema1376 = Schema1377;
 
-export type Schema1367 = string;
+export type Schema1377 = string;
 
-export type Schema1368 = number;
+export type Schema1378 = number;
 
-export type Schema1369 = string;
+export type Schema1379 = string;
 
 /**
  * User accounts the artifact is shared with, oldest share first
  */
-export type Schema1370 = Array<Schema1371>;
+export type Schema1380 = Array<Schema1381>;
 
-export type Schema1371 = {
+export type Schema1381 = {
     id: string;
     name: string;
     email: string;
@@ -7552,9 +7611,9 @@ export type Schema1371 = {
 /**
  * Teams the artifact is shared with, oldest share first; every member of a team can open it
  */
-export type Schema1372 = Array<Schema1373>;
+export type Schema1382 = Array<Schema1383>;
 
-export type Schema1373 = {
+export type Schema1383 = {
     id: string;
     name: string;
     memberCount: number;
@@ -7563,345 +7622,345 @@ export type Schema1373 = {
 /**
  * The organization themes, by name
  */
-export type Schema1374 = Array<ArtifactThemeSummaryDto>;
+export type Schema1384 = Array<ArtifactThemeSummaryDto>;
 
-export type Schema1375 = string;
+export type Schema1385 = string;
 
-export type Schema1376 = string;
+export type Schema1386 = string;
 
 /**
  * Lowercase hex color, #rrggbb
  */
-export type Schema1377 = string;
+export type Schema1387 = string;
 
-export type Schema1378 = 'inter' | 'fraunces' | 'system-sans' | 'system-serif';
+export type Schema1388 = 'inter' | 'fraunces' | 'system-sans' | 'system-serif';
 
-export type Schema1379 = 'jetbrains-mono' | 'system-mono';
+export type Schema1389 = 'jetbrains-mono' | 'system-mono';
 
-export type Schema1380 = string;
+export type Schema1390 = string;
 
-export type Schema1381 = string;
+export type Schema1391 = string;
 
 /**
  * Whether the theme shows a logo at the top of the page
  */
-export type Schema1382 = boolean;
+export type Schema1392 = boolean;
 
 /**
  * The theme new artifacts get when their creator names none: 'gatana', 'none', or the id of an organization theme
  */
-export type Schema1383 = string;
+export type Schema1393 = string;
 
 /**
  * The logo as a base64 data: URL, or empty when the theme has none
  */
-export type Schema1384 = string;
-
-export type Schema1385 = string;
-
-/**
- * A sample Markdown document rendered and styled with the given theme, as one document with the stylesheet inlined. Render it in a sandboxed frame that allows scripts: it takes a later stylesheet from a message {type: "artifact-theme-css", css} of the embedding page
- */
-export type Schema1386 = string;
-
-/**
- * The stylesheet of the given theme, as inlined in html; post it to a preview already shown to restyle it in place
- */
-export type Schema1387 = string;
-
-/**
- * 'gatana', 'none', or the id of an organization theme
- */
-export type Schema1388 = string;
-
-export type Schema1389 = string;
-
-/**
- * Unique name in the organization; how agents address the skill
- */
-export type Schema1390 = string;
-
-/**
- * One line saying when to use the skill
- */
-export type Schema1391 = string;
-
-/**
- * URI that agents use to read SKILL.md through Gatana
- */
-export type Schema1392 = string;
-
-export type Schema1393 = 'organization' | 'private';
-
-/**
- * The collection the skill is in, or null at root
- */
-export type Schema1394 = Schema1395 | null;
+export type Schema1394 = string;
 
 export type Schema1395 = string;
 
 /**
- * Name of that collection, or null at root
+ * A sample Markdown document rendered and styled with the given theme, as one document with the stylesheet inlined. Render it in a sandboxed frame that allows scripts: it takes a later stylesheet from a message {type: "artifact-theme-css", css} of the embedding page
  */
-export type Schema1396 = Schema1397 | null;
+export type Schema1396 = string;
 
+/**
+ * The stylesheet of the given theme, as inlined in html; post it to a preview already shown to restyle it in place
+ */
 export type Schema1397 = string;
 
 /**
- * Size of the Markdown body in bytes
+ * 'gatana', 'none', or the id of an organization theme
  */
-export type Schema1398 = number;
+export type Schema1398 = string;
 
 export type Schema1399 = string;
 
 /**
- * Display name of the creator, empty when no name is set or the account is removed
+ * Unique name in the organization; how agents address the skill
  */
 export type Schema1400 = string;
 
 /**
- * Email of the creator, empty when the account is removed
+ * One line saying when to use the skill
  */
 export type Schema1401 = string;
 
 /**
- * IDs of the users the skill is shared with, any role
+ * URI that agents use to read SKILL.md through Gatana
  */
-export type Schema1402 = Array<Schema1403>;
+export type Schema1402 = string;
 
-export type Schema1403 = string;
+export type Schema1403 = 'organization' | 'private';
 
 /**
- * IDs of the teams the skill is shared with, any role
+ * The collection the skill is in, or null at root
  */
-export type Schema1404 = Array<Schema1405>;
+export type Schema1404 = Schema1405 | null;
 
 export type Schema1405 = string;
 
 /**
- * IDs of the users that maintain the skill: the same rights as the creator
+ * Name of that collection, or null at root
  */
-export type Schema1406 = Array<Schema1407>;
+export type Schema1406 = Schema1407 | null;
 
 export type Schema1407 = string;
 
 /**
- * IDs of the teams whose members maintain the skill
+ * Size of the Markdown body in bytes
  */
-export type Schema1408 = Array<Schema1409>;
+export type Schema1408 = number;
 
 export type Schema1409 = string;
 
 /**
- * IDs of attached servers. Access to any of these servers grants read access to the skill
- */
-export type Schema1410 = Array<Schema1411>;
-
-export type Schema1411 = string;
-
-/**
- * The collection's general access, null at root
- */
-export type Schema1412 = Schema1393 | null;
-
-/**
- * Users with access through the collection, any role
- */
-export type Schema1413 = Array<Schema1414>;
-
-export type Schema1414 = string;
-
-/**
- * Teams with access through the collection, any role
- */
-export type Schema1415 = Array<Schema1416>;
-
-export type Schema1416 = string;
-
-/**
- * Users that maintain the collection, and so this skill
- */
-export type Schema1417 = Array<Schema1418>;
-
-export type Schema1418 = string;
-
-/**
- * Teams that maintain the collection, and so this skill
- */
-export type Schema1419 = Array<Schema1420>;
-
-export type Schema1420 = string;
-
-export type Schema1421 = string;
-
-export type Schema1422 = string;
-
-export type Schema1423 = Array<SkillDto>;
-
-/**
- * The collections the caller can see, whether or not a listed skill is in them
- */
-export type Schema1424 = Array<SkillCollectionDto>;
-
-export type Schema1425 = string;
-
-/**
- * Unique name in the organization; what the CLI subscribes to
- */
-export type Schema1426 = string;
-
-/**
- * One line saying what the collection gathers
- */
-export type Schema1427 = string;
-
-export type Schema1428 = string;
-
-/**
  * Display name of the creator, empty when no name is set or the account is removed
  */
-export type Schema1429 = string;
+export type Schema1410 = string;
 
 /**
  * Email of the creator, empty when the account is removed
  */
-export type Schema1430 = string;
+export type Schema1411 = string;
 
 /**
- * IDs of the users the collection is shared with, any role
+ * IDs of the users the skill is shared with, any role
  */
-export type Schema1431 = Array<Schema1432>;
+export type Schema1412 = Array<Schema1413>;
+
+export type Schema1413 = string;
+
+/**
+ * IDs of the teams the skill is shared with, any role
+ */
+export type Schema1414 = Array<Schema1415>;
+
+export type Schema1415 = string;
+
+/**
+ * IDs of the users that maintain the skill: the same rights as the creator
+ */
+export type Schema1416 = Array<Schema1417>;
+
+export type Schema1417 = string;
+
+/**
+ * IDs of the teams whose members maintain the skill
+ */
+export type Schema1418 = Array<Schema1419>;
+
+export type Schema1419 = string;
+
+/**
+ * IDs of attached servers. Access to any of these servers grants read access to the skill
+ */
+export type Schema1420 = Array<Schema1421>;
+
+export type Schema1421 = string;
+
+/**
+ * The collection's general access, null at root
+ */
+export type Schema1422 = Schema1403 | null;
+
+/**
+ * Users with access through the collection, any role
+ */
+export type Schema1423 = Array<Schema1424>;
+
+export type Schema1424 = string;
+
+/**
+ * Teams with access through the collection, any role
+ */
+export type Schema1425 = Array<Schema1426>;
+
+export type Schema1426 = string;
+
+/**
+ * Users that maintain the collection, and so this skill
+ */
+export type Schema1427 = Array<Schema1428>;
+
+export type Schema1428 = string;
+
+/**
+ * Teams that maintain the collection, and so this skill
+ */
+export type Schema1429 = Array<Schema1430>;
+
+export type Schema1430 = string;
+
+export type Schema1431 = string;
 
 export type Schema1432 = string;
 
-/**
- * IDs of the teams the collection is shared with, any role
- */
-export type Schema1433 = Array<Schema1434>;
-
-export type Schema1434 = string;
+export type Schema1433 = Array<SkillDto>;
 
 /**
- * IDs of the users that maintain the collection
+ * The collections the caller can see, whether or not a listed skill is in them
  */
-export type Schema1435 = Array<Schema1436>;
+export type Schema1434 = Array<SkillCollectionDto>;
 
+export type Schema1435 = string;
+
+/**
+ * Unique name in the organization; what the CLI subscribes to
+ */
 export type Schema1436 = string;
 
 /**
- * IDs of the teams whose members maintain the collection
+ * One line saying what the collection gathers
  */
-export type Schema1437 = Array<Schema1438>;
+export type Schema1437 = string;
 
 export type Schema1438 = string;
 
 /**
- * How many skills in it the caller can read
+ * Display name of the creator, empty when no name is set or the account is removed
  */
-export type Schema1439 = number;
+export type Schema1439 = string;
 
+/**
+ * Email of the creator, empty when the account is removed
+ */
 export type Schema1440 = string;
 
-export type Schema1441 = string;
+/**
+ * IDs of the users the collection is shared with, any role
+ */
+export type Schema1441 = Array<Schema1442>;
+
+export type Schema1442 = string;
+
+/**
+ * IDs of the teams the collection is shared with, any role
+ */
+export type Schema1443 = Array<Schema1444>;
+
+export type Schema1444 = string;
+
+/**
+ * IDs of the users that maintain the collection
+ */
+export type Schema1445 = Array<Schema1446>;
+
+export type Schema1446 = string;
+
+/**
+ * IDs of the teams whose members maintain the collection
+ */
+export type Schema1447 = Array<Schema1448>;
+
+export type Schema1448 = string;
+
+/**
+ * How many skills in it the caller can read
+ */
+export type Schema1449 = number;
+
+export type Schema1450 = string;
+
+export type Schema1451 = string;
 
 /**
  * The instructions as Markdown: the body of the SKILL.md without the frontmatter
  */
-export type Schema1442 = string;
+export type Schema1452 = string;
 
 /**
  * The whole skill as a SKILL.md document: name and description in the frontmatter, the instructions below. What the dashboard editor holds and what agents receive
  */
-export type Schema1443 = string;
+export type Schema1453 = string;
 
 /**
  * Display name of the creator, or their email when no name is set
  */
-export type Schema1444 = string;
+export type Schema1454 = string;
 
 /**
  * Every file of the skill, SKILL.md included
  */
-export type Schema1445 = Array<SkillFileDto>;
+export type Schema1455 = Array<SkillFileDto>;
 
 /**
  * Path in the skill folder, with / as the separator, e.g. "SKILL.md"
  */
-export type Schema1446 = string;
+export type Schema1456 = string;
 
-export type Schema1447 = number;
+export type Schema1457 = number;
 
 /**
  * SHA-256 digest of the file, as "sha256:<hex>"
  */
-export type Schema1448 = string;
+export type Schema1458 = string;
 
 /**
  * Set by Gatana from the file extension
  */
-export type Schema1449 = string;
+export type Schema1459 = string;
 
 /**
  * Every file of the skill after the write, SKILL.md included
  */
-export type Schema1450 = Array<SkillFileDto>;
+export type Schema1460 = Array<SkillFileDto>;
 
 /**
  * updatedAt of the skill as this write left it. Equal to the earlier value when the set changed nothing
  */
-export type Schema1451 = string;
+export type Schema1461 = string;
 
-export type Schema1452 = {
-    path: Schema1446;
-    sizeBytes: Schema1447;
-    digest: Schema1448;
-    mimeType: Schema1449;
-    encoding: Schema1453;
-    content: Schema1454;
+export type Schema1462 = {
+    path: Schema1456;
+    sizeBytes: Schema1457;
+    digest: Schema1458;
+    mimeType: Schema1459;
+    encoding: Schema1463;
+    content: Schema1464;
 };
 
 /**
  * base64 when the bytes are not valid UTF-8
  */
-export type Schema1453 = 'utf8' | 'base64';
+export type Schema1463 = 'utf8' | 'base64';
 
-export type Schema1454 = string;
+export type Schema1464 = string;
 
 /**
  * User accounts with access, oldest share first
  */
-export type Schema1455 = Array<Schema1456>;
+export type Schema1465 = Array<Schema1466>;
 
-export type Schema1456 = {
+export type Schema1466 = {
     id: string;
     name: string;
     email: string;
-    role: Schema1457;
+    role: Schema1467;
 };
 
 /**
  * 'read' (the default) opens it to the principal; 'maintain' gives them the same rights as the creator and the organization owners
  */
-export type Schema1457 = 'read' | 'maintain';
+export type Schema1467 = 'read' | 'maintain';
 
 /**
  * Teams with access, oldest share first; every member of a team has it
  */
-export type Schema1458 = Array<Schema1459>;
+export type Schema1468 = Array<Schema1469>;
 
-export type Schema1459 = {
+export type Schema1469 = {
     id: string;
     name: string;
     memberCount: number;
-    role: Schema1457;
+    role: Schema1467;
 };
 
 /**
  * Servers in order of attachment, oldest first. Server access grants read access to the skill
  */
-export type Schema1460 = Array<Schema1461>;
+export type Schema1470 = Array<Schema1471>;
 
-export type Schema1461 = {
+export type Schema1471 = {
     id: string;
     slug: string;
 };
@@ -7909,189 +7968,228 @@ export type Schema1461 = {
 /**
  * The collection's shares, which apply to this skill as well; null at root
  */
-export type Schema1462 = Schema1463 | null;
+export type Schema1472 = Schema1473 | null;
 
-export type Schema1463 = {
+export type Schema1473 = {
     collectionId: string;
     collectionName: string;
     /**
      * The collection's general access, which opens the skill too
      */
-    visibility: Schema1393;
-    users: Schema1455;
-    teams: Schema1458;
+    visibility: Schema1403;
+    users: Schema1465;
+    teams: Schema1468;
 };
 
-export type Schema1464 = Array<SkillCollectionDto>;
+export type Schema1474 = Array<SkillCollectionDto>;
 
-export type Schema1465 = Array<ServerSkillDto>;
+export type Schema1475 = Array<ServerSkillDto>;
 
-export type Schema1466 = string;
+export type Schema1476 = string;
 
-export type Schema1467 = string;
+export type Schema1477 = string;
 
 /**
  * URI of the SKILL.md as the server publishes it
  */
-export type Schema1468 = string;
+export type Schema1478 = string;
 
 /**
  * URI of the SKILL.md as agents read it through Gatana
  */
-export type Schema1469 = string;
+export type Schema1479 = string;
 
-export type Schema1470 = string;
+export type Schema1480 = string;
 
 /**
  * One line saying when to use the skill
  */
-export type Schema1471 = string;
+export type Schema1481 = string;
 
 /**
  * Every file of the skill, SKILL.md included
  */
-export type Schema1472 = Array<Schema1473>;
+export type Schema1482 = Array<Schema1483>;
 
-export type Schema1473 = {
-    path: Schema1474;
-    sizeBytes: Schema1447;
-    digest: Schema1448;
-    mimeType: Schema1449;
-    uri: Schema1475;
+export type Schema1483 = {
+    path: Schema1484;
+    sizeBytes: Schema1457;
+    digest: Schema1458;
+    mimeType: Schema1459;
+    uri: Schema1485;
 };
 
 /**
  * File path in the skill folder, as written in the URI
  */
-export type Schema1474 = string;
+export type Schema1484 = string;
 
 /**
  * URI of the file as the server publishes it
  */
-export type Schema1475 = string;
+export type Schema1485 = string;
 
 /**
  * The servers of the listed skills
  */
-export type Schema1476 = Array<Schema1477>;
+export type Schema1486 = Array<Schema1487>;
 
-export type Schema1477 = {
+export type Schema1487 = {
     id: string;
     slug: string;
     /**
      * Time of the last tool refresh, which also reads the skills
      */
-    lastToolRefreshAt: Schema1478 | null;
+    lastToolRefreshAt: Schema1488 | null;
 };
 
-export type Schema1478 = string;
+export type Schema1488 = string;
 
-export type Schema1479 = Array<ServerSkillDto>;
+export type Schema1489 = Array<ServerSkillDto>;
 
 /**
  * The file, verified against the skill entry of the server. null when credentials are missing
  */
-export type Schema1480 = Schema1481 | null;
+export type Schema1490 = Schema1491 | null;
 
-export type Schema1481 = {
-    path: Schema1474;
-    sizeBytes: Schema1447;
-    digest: Schema1448;
+export type Schema1491 = {
+    path: Schema1484;
+    sizeBytes: Schema1457;
+    digest: Schema1458;
     /**
      * MIME type from the server, or from the file extension if absent
      */
     mimeType: string;
-    encoding: Schema1453;
-    content: Schema1454;
-    uri: Schema1475;
+    encoding: Schema1463;
+    content: Schema1464;
+    uri: Schema1485;
 };
 
 /**
  * Set when the server needs credentials before the caller can read the file
  */
-export type Schema1482 = Schema1483 | null;
+export type Schema1492 = Schema1493 | null;
 
-export type Schema1483 = {
+export type Schema1493 = {
     message: string;
     /**
      * Link that stores the credential. null when the caller cannot set it
      */
-    authorizeUrl: Schema1484 | null;
+    authorizeUrl: Schema1494 | null;
 };
 
-export type Schema1484 = string;
+export type Schema1494 = string;
 
-export type Schema1485 = Array<BuiltinSkillDto>;
+/**
+ * App page. Null if credentials are missing
+ */
+export type Schema1495 = Schema1496 | null;
+
+export type Schema1496 = {
+    /**
+     * Page URI published by the MCP server
+     */
+    uri: string;
+    /**
+     * Unscanned HTML from the MCP server
+     */
+    html: string;
+    /**
+     * Page metadata from the MCP server, including network access, permissions and border preferences
+     */
+    meta: Schema1497 | null;
+};
+
+export type Schema1497 = {
+    [key: string]: unknown;
+};
+
+/**
+ * Prompt for missing server credentials
+ */
+export type Schema1498 = Schema1499 | null;
+
+export type Schema1499 = {
+    message: string;
+    /**
+     * Link to set credentials. Null if the caller lacks permission
+     */
+    authorizeUrl: Schema1500 | null;
+};
+
+export type Schema1500 = string;
+
+export type Schema1501 = Array<BuiltinSkillDto>;
 
 /**
  * SKILL.md URI for agents to use through Gatana
  */
-export type Schema1486 = string;
+export type Schema1502 = string;
 
-export type Schema1487 = string;
+export type Schema1503 = string;
 
 /**
  * One-line description of when to use the skill
  */
-export type Schema1488 = string;
+export type Schema1504 = string;
 
 /**
  * All skill files, including SKILL.md
  */
-export type Schema1489 = Array<Schema1490>;
+export type Schema1505 = Array<Schema1506>;
 
-export type Schema1490 = {
-    path: Schema1446;
-    sizeBytes: Schema1447;
-    digest: Schema1448;
-    mimeType: Schema1449;
-    uri: Schema1491;
+export type Schema1506 = {
+    path: Schema1456;
+    sizeBytes: Schema1457;
+    digest: Schema1458;
+    mimeType: Schema1459;
+    uri: Schema1507;
 };
 
 /**
  * File URI for agents to use through Gatana
  */
-export type Schema1491 = string;
+export type Schema1507 = string;
 
-export type Schema1492 = {
-    path: Schema1446;
-    sizeBytes: Schema1447;
-    digest: Schema1448;
-    mimeType: Schema1449;
-    encoding: Schema1453;
-    content: Schema1454;
-    uri: Schema1491;
+export type Schema1508 = {
+    path: Schema1456;
+    sizeBytes: Schema1457;
+    digest: Schema1458;
+    mimeType: Schema1459;
+    encoding: Schema1463;
+    content: Schema1464;
+    uri: Schema1507;
 };
 
 /**
  * Controls how tool refresh is authorized. "server-scoped" means only server-scoped credentials are required, "skip" means refresh is done without authorization, and "any" means any available credentials (server, user, profile) can be used. Defaults to "server-scoped".
  */
-export type ToolRefreshCredentialPolicyOutput = Schema610;
+export type ToolRefreshCredentialPolicyOutput = Schema611;
 
 export type ServerAuthorizationOutput = {
-    method: Schema604;
-    credentialsScope: Schema605;
-    apikeys?: Schema608;
+    method: Schema605;
+    credentialsScope: Schema606;
+    apikeys?: Schema609;
     toolRefreshCredentialPolicy: ToolRefreshCredentialPolicyOutput;
 };
 
 export type HttpStreamingTransportConfigOutput = {
-    type: Schema612;
-    url: Schema613;
-    headers?: Schema614;
+    type: Schema613;
+    url: Schema614;
+    headers?: Schema615;
 };
 
 export type StdioTransportConfigOutput = {
-    type: Schema616;
-    command: Schema617;
-    dockerImage?: Schema618;
-    env?: Schema620;
-    transport: Schema622;
-    httpPort?: Schema623;
-    urlPath?: Schema625;
-    healthCheck?: Schema627;
-    limits?: Schema633;
-    requests?: Schema635;
+    type: Schema617;
+    command: Schema618;
+    dockerImage?: Schema619;
+    env?: Schema621;
+    transport: Schema623;
+    httpPort?: Schema624;
+    urlPath?: Schema626;
+    healthCheck?: Schema628;
+    limits?: Schema634;
+    requests?: Schema636;
     storage?: StdioTransportStorageOutput;
     tailscale?: StdioTransportTailscaleOutput;
 };
@@ -8099,25 +8197,25 @@ export type StdioTransportConfigOutput = {
 /**
  * Persistent storage for the server. When enabled the server keeps one volume, mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the deployment and counts against the organization storage quota
  */
-export type StdioTransportStorageOutput = Schema637 | null;
+export type StdioTransportStorageOutput = Schema638 | null;
 
 /**
  * Egress-only Tailscale access. When enabled the server can open connections to hosts on your tailnet, and to the subnets its routers advertise. Nothing on the tailnet can reach the server
  */
-export type StdioTransportTailscaleOutput = Schema638 | null;
+export type StdioTransportTailscaleOutput = Schema639 | null;
 
 export type SseTransportConfigOutput = {
-    type: Schema640;
-    url: Schema641;
-    headers?: Schema642;
+    type: Schema641;
+    url: Schema642;
+    headers?: Schema643;
 };
 
 export type HostedTransportConfigOutput = {
-    type: Schema645;
-    runtime: Schema646;
-    env?: Schema647;
-    limits?: Schema649;
-    requests?: Schema651;
+    type: Schema646;
+    runtime: Schema647;
+    env?: Schema648;
+    limits?: Schema650;
+    requests?: Schema652;
     storage?: HostedTransportStorageOutput;
     tailscale?: HostedTransportTailscaleOutput;
 };
@@ -8125,68 +8223,68 @@ export type HostedTransportConfigOutput = {
 /**
  * Persistent storage for the server. When enabled the server keeps one volume, mounted at the path in GATANA_DATA_DIR, which survives restarts and the idle stop. The size is fixed by the deployment and counts against the organization storage quota
  */
-export type HostedTransportStorageOutput = Schema653 | null;
+export type HostedTransportStorageOutput = Schema654 | null;
 
 /**
  * Egress-only Tailscale access. When enabled the server can open connections to hosts on your tailnet, and to the subnets its routers advertise. Nothing on the tailnet can reach the server
  */
-export type HostedTransportTailscaleOutput = Schema654 | null;
+export type HostedTransportTailscaleOutput = Schema655 | null;
 
 export type OpenApiTransportConfigOutput = {
-    type: Schema656;
-    method: Schema657;
-    specUrl: Schema658;
-    spec: Schema660;
-    baseUrl: Schema662;
-    headers?: Schema664;
+    type: Schema657;
+    method: Schema658;
+    specUrl: Schema659;
+    spec: Schema661;
+    baseUrl: Schema663;
+    headers?: Schema665;
 };
 
 export type EmailTransportConfigOutput = {
-    type: Schema666;
-    preset?: Schema667;
-    access: Schema668;
-    connection: Schema669;
+    type: Schema667;
+    preset?: Schema668;
+    access: Schema669;
+    connection: Schema670;
 };
 
 export type EmailImapConnectionOutput = {
-    protocol: Schema670;
-    host: Schema671;
-    port: Schema673;
-    security: Schema675;
-    username: Schema677;
-    password: Schema679;
-    smtp: Schema681;
-    saveSentCopy: Schema688;
+    protocol: Schema671;
+    host: Schema672;
+    port: Schema674;
+    security: Schema676;
+    username: Schema678;
+    password: Schema680;
+    smtp: Schema682;
+    saveSentCopy: Schema689;
 };
 
 /**
  * SMTP server used to send mail. Uses the same credentials as IMAP
  */
 export type EmailSmtpServerOutput = {
-    host: Schema683;
-    port: Schema684;
-    security: Schema686;
+    host: Schema684;
+    port: Schema685;
+    security: Schema687;
 };
 
 export type EmailJmapConnectionOutput = {
-    protocol: Schema690;
-    sessionUrl: Schema691;
-    headers: Schema693;
-    accountId?: Schema695;
+    protocol: Schema691;
+    sessionUrl: Schema692;
+    headers: Schema694;
+    accountId?: Schema696;
 };
 
 export type ServerProtectionOutput = {
-    mode: Schema758;
+    mode: Schema762;
     actions?: ProtectionActionsOutput;
-    settings: Schema762;
+    settings: Schema766;
 };
 
 /**
  * Actions for On mode. Missing targets use organization defaults or built-in values
  */
 export type ProtectionActionsOutput = {
-    arguments?: Schema760;
-    result?: Schema761;
+    arguments?: Schema764;
+    result?: Schema765;
 };
 
 /**
@@ -8199,41 +8297,41 @@ export type ServerProtectionsOutput = {
 };
 
 export type AwsSecretsManagerConfigurationOutput = {
-    type: Schema1154;
-    region: Schema1155;
-    accessKeyId: Schema1156;
-    secretAccessKey: Schema1157;
+    type: Schema1164;
+    region: Schema1165;
+    accessKeyId: Schema1166;
+    secretAccessKey: Schema1167;
 };
 
 export type GcpSecretManagerConfigurationOutput = {
-    type: Schema1158;
-    projectId: Schema1159;
-    serviceAccountKey: Schema1160;
+    type: Schema1168;
+    projectId: Schema1169;
+    serviceAccountKey: Schema1170;
 };
 
 export type HashiCorpVaultConfigurationOutput = {
-    type: Schema1161;
-    address: Schema1162;
-    token: Schema1163;
-    namespace?: Schema1164;
-    mountPath: Schema1165;
+    type: Schema1171;
+    address: Schema1172;
+    token: Schema1173;
+    namespace?: Schema1174;
+    mountPath: Schema1175;
 };
 
 export type InfisicalConfigurationOutput = {
-    type: Schema1166;
-    siteUrl: Schema1167;
-    accessToken: Schema1168;
-    projectId: Schema1169;
-    environment: Schema1170;
-    secretPath: Schema1171;
+    type: Schema1176;
+    siteUrl: Schema1177;
+    accessToken: Schema1178;
+    projectId: Schema1179;
+    environment: Schema1180;
+    secretPath: Schema1181;
 };
 
 export type AzureKeyVaultConfigurationOutput = {
-    type: Schema1172;
-    vaultUrl: Schema1173;
-    tenantId: Schema1174;
-    clientId: Schema1175;
-    clientSecret: Schema1176;
+    type: Schema1182;
+    vaultUrl: Schema1183;
+    tenantId: Schema1184;
+    clientId: Schema1185;
+    clientSecret: Schema1186;
 };
 
 /**
@@ -8483,1129 +8581,1139 @@ export type Schema183Writable = Schema184;
 /**
  * off skips scans, audit records matches without changing text, on applies the protection actions
  */
-export type Schema200Writable = ProtectionMode;
+export type Schema201Writable = ProtectionMode;
 
 /**
  * The action on a match in the tool arguments
- */
-export type Schema202Writable = ProtectionOnAction;
-
-/**
- * The action on a match in the tool result, an upstream error message or a progress message
  */
 export type Schema203Writable = ProtectionOnAction;
 
 /**
+ * The action on a match in the tool result, an upstream error message or a progress message
+ */
+export type Schema204Writable = ProtectionOnAction;
+
+/**
  * Check options. These also apply to protection rules. Missing options use organization defaults or built-in values. Secrets: includeGeneric (boolean) also detects generic key=value secrets. Prompt injection: phrases (boolean, default true) detects injection phrases. Set false to scan only for hidden characters
  */
-export type Schema204Writable = Schema205;
+export type Schema205Writable = Schema206;
 
 /**
  * Who can see the server: only members or the whole organization
  */
-export type Schema208Writable = ServerVisibility;
+export type Schema209Writable = ServerVisibility;
 
 /**
  * Optional headers to include when fetching the remote OpenAPI/Swagger specification.
  */
-export type Schema212Writable = Schema213;
+export type Schema213Writable = Schema214;
 
 /**
  * The OpenAPI/Swagger specification as a JSON string.
  */
-export type Schema214Writable = Schema215;
+export type Schema215Writable = Schema216;
 
 /**
  * The URL of the remote OpenAPI/Swagger specification to fetch and validate.
  */
-export type Schema216Writable = Schema217;
+export type Schema217Writable = Schema218;
 
 /**
  * API keys as [name, value] pairs
  */
-export type Schema229Writable = Array<Schema230>;
+export type Schema230Writable = Array<Schema231>;
 
 /**
  * Expiry time of the access token, as a Unix epoch timestamp in milliseconds
  */
-export type Schema234Writable = Schema235;
+export type Schema235Writable = Schema236;
 
 /**
  * OpenID Connect ID token, if the authorization server issued one
  */
-export type Schema236Writable = Schema237;
+export type Schema237Writable = Schema238;
 
 /**
  * OAuth refresh token, if the authorization server issued one
  */
-export type Schema238Writable = Schema239;
+export type Schema239Writable = Schema240;
 
 /**
  * Resource parameter (RFC 8707) used to obtain these tokens and reused for token refresh unless disabled
  */
-export type Schema241Writable = Schema242;
+export type Schema242Writable = Schema243;
 
 /**
  * Whether to lock the assignment; only organization owners can lock. Default is false
  */
-export type Schema268Writable = Schema269;
+export type Schema269Writable = Schema270;
 
 /**
  * Display name of the destination
  */
-export type Schema295Writable = Schema296;
+export type Schema296Writable = Schema297;
 
 /**
  * Object key prefix; defaults to gatana/. A trailing slash is added if missing
  */
-export type Schema302Writable = Schema303;
+export type Schema303Writable = Schema304;
 
 /**
  * Bucket region; defaults to us-east-1. Use the region required by your provider
  */
-export type Schema304Writable = Schema305;
+export type Schema305Writable = Schema306;
 
 /**
  * HTTPS endpoint of an S3-compatible store such as MinIO or OVH. Leave out for Amazon S3
  */
-export type Schema306Writable = Schema307;
+export type Schema307Writable = Schema308;
 
 /**
  * Address the bucket in the path (https://host/bucket/key). Most S3-compatible stores need this. Default is false
  */
-export type Schema308Writable = Schema309;
+export type Schema309Writable = Schema310;
 
 /**
  * Secret access key; encrypted and never returned. Required on creation; omit on update to keep it
  */
-export type Schema311Writable = Schema312;
+export type Schema312Writable = Schema313;
 
 /**
  * Object compression; defaults to none
  */
-export type Schema313Writable = Schema314;
+export type Schema314Writable = Schema315;
 
 /**
  * Service account JSON key with bucket write access; encrypted and never returned. Required on creation; omit on update to keep it
  */
-export type Schema317Writable = Schema318;
+export type Schema318Writable = Schema319;
 
 /**
  * Custom auth header name, such as Authorization; HTTPS only
  */
-export type Schema319Writable = Schema320;
+export type Schema320Writable = Schema321;
 
 /**
  * Stored encrypted and never returned
  */
-export type Schema321Writable = Schema322;
+export type Schema322Writable = Schema323;
 
 /**
  * Whether to stream audit log events. Default is true
  */
-export type Schema323Writable = Schema324;
+export type Schema324Writable = Schema325;
 
 /**
  * Whether to stream credential audit log events. Default is true
  */
-export type Schema325Writable = Schema326;
+export type Schema326Writable = Schema327;
 
-export type Schema327Writable = Schema295Writable;
+export type Schema328Writable = Schema296Writable;
 
-export type Schema328Writable = Schema297;
+export type Schema329Writable = Schema298;
 
-export type Schema330Writable = Schema319Writable;
+export type Schema331Writable = Schema320Writable;
 
-export type Schema331Writable = Schema321Writable;
+export type Schema332Writable = Schema322Writable;
 
-export type Schema332Writable = Schema323Writable;
+export type Schema333Writable = Schema324Writable;
 
-export type Schema333Writable = Schema325Writable;
+export type Schema334Writable = Schema326Writable;
 
 /**
  * Whether the destination is enabled
  */
-export type Schema334Writable = Schema335;
+export type Schema335Writable = Schema336;
 
 /**
  * Whether to clear an existing custom auth header
  */
-export type Schema336Writable = Schema337;
+export type Schema337Writable = Schema338;
 
 /**
  * Whether to clear the failure state of a destination that was disabled automatically. Cursors are kept, so delivery resumes where it stopped rather than skipping what was missed
  */
-export type Schema338Writable = Schema339;
+export type Schema339Writable = Schema340;
 
 /**
  * Organization ID to create. Reject unavailable IDs before sending a verification code
  */
-export type Schema356Writable = Schema357;
+export type Schema357Writable = Schema358;
 
 /**
  * Display name of the token. Default is "Unnamed Token"
  */
-export type Schema358Writable = Schema359;
+export type Schema359Writable = Schema360;
 
 /**
  * Name for the connection; pass an empty string to remove it
  */
-export type Schema363Writable = Schema364;
+export type Schema364Writable = Schema365;
 
 /**
  * Profiles to attach, replacing whatever was attached before; empty detaches all
  */
-export type Schema365Writable = Schema366;
+export type Schema366Writable = Schema367;
 
 /**
  * Title shown in the viewer and the list. When omitted, the first heading of the Markdown or the <title> of the HTML is used
  */
-export type Schema367Writable = Schema368;
+export type Schema368Writable = Schema369;
 
-export type Schema369Writable = Schema370;
+export type Schema370Writable = Schema371;
 
-export type Schema371Writable = Schema372;
+export type Schema372Writable = Schema373;
 
-export type Schema373Writable = Schema374Writable;
+export type Schema374Writable = Schema375Writable;
 
 /**
  * Stylesheet linked into the page when it is served. 'gatana' applies the Gatana fonts, colors and typography to plain HTML; an organization theme (by id or by name) is the Gatana theme in the organization's colors, fonts and logo; 'none' serves the document as published. A new artifact without one gets the organization default
  */
-export type Schema374Writable = Schema375;
+export type Schema375Writable = Schema376;
 
-export type Schema378Writable = Schema370;
+export type Schema379Writable = Schema371;
 
-export type Schema379Writable = Schema372;
+export type Schema380Writable = Schema373;
 
-export type Schema380Writable = Schema374Writable;
+export type Schema381Writable = Schema375Writable;
 
 /**
  * 'private': the creator and the users and teams it is shared with; 'tenant': every signed-in member; 'public': anyone with the link
  */
-export type Schema382Writable = Schema383;
+export type Schema383Writable = Schema384;
 
-export type Schema384Writable = Schema374Writable;
+export type Schema385Writable = Schema375Writable;
 
-export type Schema389Writable = Schema390;
+export type Schema390Writable = Schema391;
 
-export type Schema391Writable = Schema392;
+export type Schema392Writable = Schema393;
 
-export type Schema393Writable = Schema394;
+export type Schema394Writable = Schema395;
 
-export type Schema395Writable = Schema396Writable;
+export type Schema396Writable = Schema397Writable;
 
 /**
  * Font of headings
  */
-export type Schema396Writable = Schema397;
+export type Schema397Writable = Schema398;
 
-export type Schema398Writable = Schema399Writable;
+export type Schema399Writable = Schema400Writable;
 
 /**
  * Font of body text
  */
-export type Schema399Writable = Schema397;
+export type Schema400Writable = Schema398;
 
-export type Schema400Writable = Schema401;
+export type Schema401Writable = Schema402;
 
-export type Schema402Writable = Schema403;
+export type Schema403Writable = Schema404;
 
-export type Schema404Writable = Schema405;
+export type Schema405Writable = Schema406;
 
-export type Schema406Writable = Schema390;
+export type Schema407Writable = Schema391;
 
-export type Schema407Writable = Schema392;
+export type Schema408Writable = Schema393;
 
-export type Schema408Writable = Schema394;
+export type Schema409Writable = Schema395;
 
-export type Schema409Writable = Schema396Writable;
+export type Schema410Writable = Schema397Writable;
 
-export type Schema410Writable = Schema399Writable;
+export type Schema411Writable = Schema400Writable;
 
-export type Schema411Writable = Schema401;
+export type Schema412Writable = Schema402;
 
-export type Schema412Writable = Schema403;
+export type Schema413Writable = Schema404;
 
-export type Schema413Writable = Schema405;
+export type Schema414Writable = Schema406;
 
-export type Schema414Writable = Schema388;
+export type Schema415Writable = Schema389;
 
-export type Schema415Writable = Schema416;
+export type Schema416Writable = Schema417;
 
-export type Schema417Writable = Schema418Writable;
+export type Schema418Writable = Schema419Writable;
 
 /**
  * Name of the skill: lowercase letters, digits and single dashes, 1-64 characters, unique in the organization. The same rules as a Claude Code SKILL.md name
  */
-export type Schema418Writable = Schema419;
+export type Schema419Writable = Schema420;
 
-export type Schema420Writable = Schema421;
+export type Schema421Writable = Schema422;
 
-export type Schema422Writable = Schema423;
+export type Schema423Writable = Schema424;
 
-export type Schema424Writable = Schema425Writable;
+export type Schema425Writable = Schema426Writable;
 
 /**
  * 'organization' (the default): every member of the organization can read the skill; 'private': only the creator and the users and teams it is shared with
  */
-export type Schema425Writable = Schema426;
+export type Schema426Writable = Schema427;
 
-export type Schema427Writable = Schema428Writable;
+export type Schema428Writable = Schema429Writable;
 
 /**
  * ID of the collection to put the skill in, or null for a skill at root. You must be able to read the collection
  */
-export type Schema428Writable = Schema429 | null;
+export type Schema429Writable = Schema430 | null;
 
-export type Schema432Writable = Schema416;
+export type Schema433Writable = Schema417;
 
-export type Schema433Writable = Schema418Writable;
+export type Schema434Writable = Schema419Writable;
 
-export type Schema434Writable = Schema421;
+export type Schema435Writable = Schema422;
 
-export type Schema435Writable = Schema423;
+export type Schema436Writable = Schema424;
 
-export type Schema436Writable = Schema425Writable;
+export type Schema437Writable = Schema426Writable;
 
-export type Schema437Writable = Schema428Writable;
+export type Schema438Writable = Schema429Writable;
 
 /**
  * Name of the collection: lowercase letters, digits and single dashes, 1-64 characters, unique in the organization. What the CLI subscribes to
  */
-export type Schema444Writable = Schema419;
+export type Schema445Writable = Schema420;
 
-export type Schema445Writable = Schema446;
+export type Schema446Writable = Schema447;
 
-export type Schema447Writable = Schema448Writable;
+export type Schema448Writable = Schema449Writable;
 
 /**
  * 'organization' (the default): every member can read the collection and its skills; 'private': the creator and the users and teams it is shared with
  */
-export type Schema448Writable = Schema426;
+export type Schema449Writable = Schema427;
 
-export type Schema450Writable = Schema444Writable;
+export type Schema451Writable = Schema445Writable;
 
-export type Schema451Writable = Schema446;
+export type Schema452Writable = Schema447;
 
-export type Schema452Writable = Schema448Writable;
+export type Schema453Writable = Schema449Writable;
 
 export type AuditLogResponseWritable = {
-    tenantId: Schema524;
-    eventTime: Schema525;
-    entityType: Schema526;
-    entityId: Schema527;
-    eventName: Schema528;
-    userId: Schema529;
-    details: Schema530;
-    onlySuperadminVisibility: Schema531;
-    createdAt: Schema532;
-    userFullName: Schema533;
-    userEmail: Schema534;
-    teamName: Schema535;
-    serverSlug: Schema536;
-    profileName: Schema537;
-    targetUserName: Schema538;
+    tenantId: Schema525;
+    eventTime: Schema526;
+    entityType: Schema527;
+    entityId: Schema528;
+    eventName: Schema529;
+    userId: Schema530;
+    details: Schema531;
+    onlySuperadminVisibility: Schema532;
+    createdAt: Schema533;
+    userFullName: Schema534;
+    userEmail: Schema535;
+    teamName: Schema536;
+    serverSlug: Schema537;
+    profileName: Schema538;
+    targetUserName: Schema539;
 };
 
 export type PaginatedAuditLogResponseWritable = {
-    pagination: Schema539;
-    data: Schema546Writable;
+    pagination: Schema540;
+    data: Schema547Writable;
 };
 
-export type Schema473Writable = FeatureUnavailableReason;
+export type Schema474Writable = FeatureUnavailableReason;
 
 /**
  * What tells two similar entries apart
  */
-export type Schema508Writable = Schema509;
+export type Schema509Writable = Schema510;
 
 /**
  * Items on the current page
  */
-export type Schema546Writable = Array<AuditLogResponseWritable>;
+export type Schema547Writable = Array<AuditLogResponseWritable>;
 
 /**
  * Role of the user in the tenant: member or owner
  */
-export type Schema552Writable = Schema481;
+export type Schema553Writable = Schema482;
 
 /**
  * Invitation link, returned only when email is disabled. Give it to the user. It is shown once and expires after 30 days
  */
-export type Schema576Writable = Schema577;
+export type Schema577Writable = Schema578;
 
 /**
  * IDs of the profiles the token uses
  */
-export type Schema593Writable = Array<Schema594>;
+export type Schema594Writable = Array<Schema595>;
 
 /**
  * Time when the token was last used, or null if never used
  */
-export type Schema596Writable = Schema597 | null;
+export type Schema597Writable = Schema598 | null;
 
 /**
  * Whether credentials are shared for the whole server or stored per user
  */
-export type Schema605Writable = Schema606 | Schema607;
+export type Schema606Writable = Schema607 | Schema608;
 
 /**
  * Names of the API keys that the server expects
  */
-export type Schema608Writable = Schema609;
+export type Schema609Writable = Schema610;
 
 /**
  * Extra HTTP headers to send with each request, as [name, value] pairs
  */
-export type Schema614Writable = Schema615;
+export type Schema615Writable = Schema616;
 
 /**
  * Docker image that the command runs in
  */
-export type Schema618Writable = Schema619;
+export type Schema619Writable = Schema620;
 
 /**
  * Environment variables for the process, as [name, value] pairs
  */
-export type Schema620Writable = Schema621;
+export type Schema621Writable = Schema622;
 
 /**
  * Port that the process listens on when transport is HTTP-based
  */
-export type Schema623Writable = Schema624 | null;
+export type Schema624Writable = Schema625 | null;
 
 /**
  * URL path of the MCP endpoint when transport is HTTP-based
  */
-export type Schema625Writable = Schema626 | null;
+export type Schema626Writable = Schema627 | null;
 
 /**
  * Extra HTTP headers to send with each request, as [name, value] pairs
  */
-export type Schema642Writable = Schema643;
+export type Schema643Writable = Schema644;
 
 /**
  * Environment variables for the hosted runtime, as [name, value] pairs
  */
-export type Schema647Writable = Schema648;
+export type Schema648Writable = Schema649;
 
 /**
  * URL to fetch the OpenAPI spec from, used when method is "specUrl"
  */
-export type Schema658Writable = Schema659;
+export type Schema659Writable = Schema660;
 
 /**
  * Inline OpenAPI spec content, used when method is "spec"
  */
-export type Schema660Writable = Schema661;
+export type Schema661Writable = Schema662;
 
 /**
  * Base URL for the API requests generated from the spec
  */
-export type Schema662Writable = Schema663;
+export type Schema663Writable = Schema664;
 
 /**
  * Extra HTTP headers to send with each request, as [name, value] pairs
  */
-export type Schema664Writable = Schema665;
+export type Schema665Writable = Schema666;
 
-export type Schema667Writable = EmailPreset | null;
+export type Schema668Writable = EmailPreset | null;
 
-export type Schema668Writable = EmailAccessLevel;
+export type Schema669Writable = EmailAccessLevel;
 
 /**
  * Host name of the IMAP server, for example imap.gmail.com
  */
-export type Schema671Writable = Schema672;
+export type Schema672Writable = Schema673;
 
 /**
  * Port of the IMAP server: usually 993 with "tls" and 143 with "starttls"
  */
-export type Schema673Writable = Schema674;
+export type Schema674Writable = Schema675;
 
 /**
  * Encryption method. "tls" encrypts from the start. "starttls" requires a TLS upgrade before sign-in and stops if the upgrade fails
  */
-export type Schema675Writable = Schema676;
+export type Schema676Writable = Schema677;
 
 /**
  * User name for the login, usually the email address. Can reference credentials and secrets
  */
-export type Schema677Writable = Schema678;
+export type Schema678Writable = Schema679;
 
 /**
  * Password for the login, for example an app password. Can reference credentials and secrets
  */
-export type Schema679Writable = Schema680;
+export type Schema680Writable = Schema681;
 
 /**
  * Port of the SMTP server: usually 465 with "tls" and 587 with "starttls"
  */
-export type Schema684Writable = Schema685;
+export type Schema685Writable = Schema686;
 
 /**
  * How the connection is encrypted. "starttls" refuses to continue if the server cannot upgrade the connection
  */
-export type Schema686Writable = Schema687;
+export type Schema687Writable = Schema688;
 
 /**
  * Save a copy in Sent after sending. Disable if the SMTP server saves a copy automatically, as Gmail does
  */
-export type Schema688Writable = Schema689;
+export type Schema689Writable = Schema690;
 
 /**
  * URL of the JMAP session resource, for example https://api.fastmail.com/jmap/session
  */
-export type Schema691Writable = Schema692;
+export type Schema692Writable = Schema693;
 
 /**
  * HTTP headers to send with each JMAP request, as [name, value] pairs. Values can reference credentials and secrets
  */
-export type Schema693Writable = Schema694;
+export type Schema694Writable = Schema695;
 
 /**
  * ID of the JMAP account to use. Defaults to the primary mail account of the session
  */
-export type Schema695Writable = Schema696 | null;
+export type Schema696Writable = Schema697 | null;
 
 /**
  * OAuth client ID
  */
-export type Schema699Writable = Schema700;
+export type Schema700Writable = Schema701;
 
 /**
  * OAuth client secret
  */
-export type Schema701Writable = Schema702;
+export type Schema702Writable = Schema703;
 
 /**
  * OAuth grant type used to obtain tokens
  */
-export type Schema703Writable = OAuthGrantType;
+export type Schema704Writable = OAuthGrantType;
 
 /**
  * Client authentication method used at the token endpoint
  */
-export type Schema704Writable = Schema705 | Schema706 | Schema707 | Schema708;
+export type Schema705Writable = Schema706 | Schema707 | Schema708 | Schema709;
 
 /**
  * Space-separated OAuth scopes to request
  */
-export type Schema709Writable = Schema710;
+export type Schema710Writable = Schema711;
 
 /**
  * Whether the client ID is the URL of the client ID metadata document that Gatana publishes for this server. Gatana sets it when the server is saved; a value in a request is ignored
  */
-export type Schema711Writable = Schema712;
+export type Schema712Writable = Schema713;
 
 /**
  * Who can see the server: only members or the whole organization
  */
-export type Schema737Writable = ServerVisibility;
+export type Schema738Writable = ServerVisibility;
 
 /**
  * Time of the last tool refresh, or null if tools were never refreshed
  */
-export type Schema739Writable = Schema740 | null;
+export type Schema740Writable = Schema741 | null;
 
 /**
  * Time of the last MCP protocol detection, or null if unknown
  */
-export type Schema742Writable = Schema743 | null;
+export type Schema743Writable = Schema744 | null;
+
+/**
+ * MCP capabilities from the last tool refresh. Extensions appear under "extensions". Null if no capabilities were recorded
+ */
+export type Schema745Writable = Schema746 | null;
 
 /**
  * off skips scans, audit records matches without changing text, on applies the protection actions
  */
-export type Schema758Writable = ProtectionMode;
+export type Schema762Writable = ProtectionMode;
 
 /**
  * The action on a match in the tool arguments
  */
-export type Schema760Writable = ProtectionOnAction;
+export type Schema764Writable = ProtectionOnAction;
 
 /**
  * The action on a match in the tool result, an upstream error message or a progress message
  */
-export type Schema761Writable = ProtectionOnAction;
+export type Schema765Writable = ProtectionOnAction;
 
 /**
  * Check options. These also apply to protection rules. Missing options use organization defaults or built-in values. Secrets: includeGeneric (boolean) also detects generic key=value secrets. Prompt injection: phrases (boolean, default true) detects injection phrases. Set false to scan only for hidden characters
  */
-export type Schema762Writable = Schema763;
+export type Schema766Writable = Schema767;
 
 /**
  * The value used when the server has no override
  */
-export type Schema771Writable = ProtectionOnAction;
+export type Schema775Writable = ProtectionOnAction;
 
 /**
  * Image media type, if supplied by the server
  */
-export type Schema782Writable = Schema783;
+export type Schema786Writable = Schema787;
 
 /**
  * Image sizes, such as 48x48 or any
  */
-export type Schema784Writable = Schema785;
+export type Schema788Writable = Schema789;
 
 /**
  * Theme for the image
  */
-export type Schema786Writable = Schema787;
+export type Schema790Writable = Schema791;
 
 /**
  * Backing store that holds the file content
  */
-export type Schema793Writable = Schema794 | Schema795 | Schema796 | Schema797;
+export type Schema799Writable = Schema800 | Schema801 | Schema802 | Schema803;
 
 /**
  * File size in bytes, or null if unknown
  */
-export type Schema799Writable = Schema800 | null;
+export type Schema805Writable = Schema806 | null;
 
 /**
  * ID of the credential used to read the file, or null
  */
-export type Schema801Writable = Schema802 | null;
+export type Schema807Writable = Schema808 | null;
 
 /**
  * JSON schema for the tool input
  */
-export type Schema823Writable = {
+export type Schema829Writable = {
     [key: string]: never;
 };
 
 /**
  * JSON schema for the tool output, or null if the server does not provide one
  */
-export type Schema824Writable = Schema825Writable | null;
+export type Schema830Writable = Schema831Writable | null;
 
-export type Schema825Writable = {
+export type Schema831Writable = {
     [key: string]: never;
 };
 
 /**
  * Tool annotations as reported by the MCP server, or null if none
  */
-export type Schema826Writable = Schema827Writable | null;
+export type Schema832Writable = Schema833Writable | null;
 
-export type Schema827Writable = {
+export type Schema833Writable = {
     [key: string]: never;
 };
 
 /**
+ * Tool metadata (_meta) from the MCP server, excluding Gatana keys. Null if absent
+ */
+export type Schema834Writable = Schema835 | null;
+
+/**
  * Use this schema when overrideInputSchema is true. Null means there is no replacement.
  */
-export type Schema831Writable = Schema832Writable | null;
+export type Schema839Writable = Schema840Writable | null;
 
-export type Schema832Writable = {
+export type Schema840Writable = {
     [key: string]: never;
 };
 
 /**
  * Whether inputSchemaOverride replaces the original input schema
  */
-export type Schema835Writable = Schema836 | null;
+export type Schema843Writable = Schema844 | null;
 
 /**
  * Scope that the credential applies to: server, user, or profile
  */
-export type Schema845Writable = Schema846;
+export type Schema855Writable = Schema856;
 
 /**
  * ID of the owning user, or null
  */
-export type Schema847Writable = Schema848 | null;
+export type Schema857Writable = Schema858 | null;
 
 /**
  * ID of the owning profile when scope is "profile", otherwise null
  */
-export type Schema849Writable = Schema850 | null;
+export type Schema859Writable = Schema860 | null;
 
 /**
  * Time when the credential was last used, or null if never used
  */
-export type Schema851Writable = Schema852 | null;
+export type Schema861Writable = Schema862 | null;
 
 /**
  * Last authorizing user ID, or null if unknown
  */
-export type Schema854Writable = Schema855 | null;
+export type Schema864Writable = Schema865 | null;
 
 /**
  * Email address of the owning user, or null
  */
-export type Schema860Writable = Schema861 | null;
+export type Schema870Writable = Schema871 | null;
 
 /**
  * Display name of the owning user, or null
  */
-export type Schema862Writable = Schema863 | null;
+export type Schema872Writable = Schema873 | null;
 
 /**
  * Name of the owning profile, or null
  */
-export type Schema864Writable = Schema865 | null;
+export type Schema874Writable = Schema875 | null;
 
 /**
  * Last authorizing user name, or null
  */
-export type Schema866Writable = Schema867 | null;
+export type Schema876Writable = Schema877 | null;
 
 /**
  * Last authorizing user email, or null
  */
-export type Schema868Writable = Schema869 | null;
+export type Schema878Writable = Schema879 | null;
 
 /**
  * Names of the API keys that have a stored value, or null for OAuth credentials
  */
-export type Schema870Writable = Schema871 | null;
+export type Schema880Writable = Schema881 | null;
 
 /**
  * Subject claim from the OAuth ID token, or null
  */
-export type Schema872Writable = Schema873 | null;
+export type Schema882Writable = Schema883 | null;
 
 /**
  * Email claim from the OAuth ID token, or null
  */
-export type Schema874Writable = Schema875 | null;
+export type Schema884Writable = Schema885 | null;
 
 /**
  * The OAuth access token (refreshed if necessary and possible).
  */
-export type Schema877Writable = Schema878;
+export type Schema887Writable = Schema888;
 
 /**
  * Unix timestamp (ms) when the access token expires.
  */
-export type Schema879Writable = Schema880;
+export type Schema889Writable = Schema890;
 
 /**
  * Array of [key, value] tuples for API key credentials.
  */
-export type Schema881Writable = Schema882;
+export type Schema891Writable = Schema892;
 
 /**
  * Number of tools above which code mode is enabled automatically, or null for the default
  */
-export type Schema926Writable = Schema927 | null;
+export type Schema936Writable = Schema937 | null;
 
 /**
  * Default server role for members, or "none" for no default access
  */
-export type Schema929Writable = Schema483 | Schema930;
+export type Schema939Writable = Schema484 | Schema940;
 
 /**
  * Verbosity of MCP audit logging
  */
-export type Schema932Writable = McpAuditLogVerbosity;
+export type Schema942Writable = McpAuditLogVerbosity;
 
 /**
  * Time an owner instructed Gatana to process assistant conversations through Gatana's model provider, or null if never given
  */
-export type Schema940Writable = Schema941 | null;
+export type Schema950Writable = Schema951 | null;
 
 /**
  * ID of the user who gave that instruction, or null if it was never given
  */
-export type Schema942Writable = Schema943 | null;
+export type Schema952Writable = Schema953 | null;
 
 /**
  * Time an owner agreed to that, or null if never given
  */
-export type Schema945Writable = Schema946 | null;
+export type Schema955Writable = Schema956 | null;
 
 /**
  * ID of the user who agreed to it, or null if it was never given
  */
-export type Schema947Writable = Schema948 | null;
+export type Schema957Writable = Schema958 | null;
 
 /**
  * Maximum number of AI assistant tokens the tenant may spend per day, or null for the default
  */
-export type Schema949Writable = Schema950 | null;
+export type Schema959Writable = Schema960 | null;
 
 /**
  * Mode for new servers
  */
-export type Schema955Writable = ProtectionMode;
+export type Schema965Writable = ProtectionMode;
 
 /**
  * Settings for servers without their own values
  */
-export type Schema957Writable = Schema958;
+export type Schema967Writable = Schema968;
 
 /**
  * Base URL of the endpoint, for an OpenAI-compatible provider
  */
-export type Schema964Writable = Schema965 | null;
+export type Schema974Writable = Schema975 | null;
 
 /**
  * AWS region, for Bedrock
  */
-export type Schema966Writable = Schema967 | null;
+export type Schema976Writable = Schema977 | null;
 
 /**
  * Azure OpenAI resource name, for Azure
  */
-export type Schema968Writable = Schema969 | null;
+export type Schema978Writable = Schema979 | null;
 
 /**
  * Azure API version, when one is pinned
  */
-export type Schema970Writable = Schema971 | null;
+export type Schema980Writable = Schema981 | null;
 
 /**
  * Name of the current replica set
  */
-export type Schema991Writable = Schema992;
+export type Schema1001Writable = Schema1002;
 
 /**
  * Kubernetes pod phase (e.g. Running, Pending)
  */
-export type Schema997Writable = Schema998;
+export type Schema1007Writable = Schema1008;
 
 /**
  * Reason for the current phase
  */
-export type Schema999Writable = Schema1000;
+export type Schema1009Writable = Schema1010;
 
 /**
  * Time when the pod was created
  */
-export type Schema1001Writable = Schema1002;
+export type Schema1011Writable = Schema1012;
 
 /**
  * Reason a container is waiting (e.g. ImagePullBackOff)
  */
-export type Schema1018Writable = Schema1019;
+export type Schema1028Writable = Schema1029;
 
 /**
  * Last time the volume was attached to a deployment, or null if never
  */
-export type Schema1025Writable = Schema1026 | null;
+export type Schema1035Writable = Schema1036 | null;
 
 /**
  * Bytes held on the volume, or null when its storage backend reports no usage
  */
-export type Schema1027Writable = Schema1028 | null;
+export type Schema1037Writable = Schema1038 | null;
 
 /**
  * Sample times as Unix epoch timestamps in seconds
  */
-export type Schema1032Writable = Array<Schema1033>;
+export type Schema1042Writable = Array<Schema1043>;
 
 /**
  * Sampled values, aligned with timestamps
  */
-export type Schema1034Writable = Array<Schema1035>;
+export type Schema1044Writable = Array<Schema1045>;
 
 /**
  * CPU reserved for the deployment in cores (its guaranteed minimum under load), or null
  */
-export type Schema1038Writable = Schema1039 | null;
+export type Schema1048Writable = Schema1049 | null;
 
 /**
  * Memory reserved for the deployment in bytes (also its hard ceiling), or null
  */
-export type Schema1040Writable = Schema1041 | null;
+export type Schema1050Writable = Schema1051 | null;
 
 /**
  * Names of the init containers
  */
-export type Schema1050Writable = Array<Schema1051>;
+export type Schema1060Writable = Array<Schema1061>;
 
 /**
  * Names of the init containers that are sidecars, and so keep running beside the server instead of terminating
  */
-export type Schema1052Writable = Array<Schema1053>;
+export type Schema1062Writable = Array<Schema1063>;
 
 /**
  * Names of the containers whose logs can be read. The platform own init containers are not among them
  */
-export type Schema1054Writable = Array<Schema1055>;
+export type Schema1064Writable = Array<Schema1065>;
 
 /**
  * Time when the container started
  */
-export type Schema1059Writable = Schema1060;
+export type Schema1069Writable = Schema1070;
 
 /**
  * Time when the container terminated
  */
-export type Schema1061Writable = Schema1062;
+export type Schema1071Writable = Schema1072;
 
 /**
  * Exit code, when it has terminated
  */
-export type Schema1063Writable = Schema1064;
+export type Schema1073Writable = Schema1074;
 
 /**
  * Reason for the state it is in
  */
-export type Schema1065Writable = Schema1066;
+export type Schema1075Writable = Schema1076;
 
 /**
  * Names of the containers
  */
-export type Schema1068Writable = Array<Schema1069>;
+export type Schema1078Writable = Array<Schema1079>;
 
 /**
  * Reason a container is waiting, or null
  */
-export type Schema1070Writable = Schema1071 | null;
+export type Schema1080Writable = Schema1081 | null;
 
 /**
  * CPU reserved for the pod in cores (its guaranteed minimum under load), or null
  */
-export type Schema1078Writable = Schema1079 | null;
+export type Schema1088Writable = Schema1089 | null;
 
 /**
  * Memory reserved for the pod in bytes (also its hard ceiling), or null
  */
-export type Schema1080Writable = Schema1081 | null;
+export type Schema1090Writable = Schema1091 | null;
 
 /**
  * Role of the member in the team
  */
-export type Schema1114Writable = Schema1115;
+export type Schema1124Writable = Schema1125;
 
 /**
  * ID of the user who sent the invitation, or null
  */
-export type Schema1121Writable = Schema1122 | null;
+export type Schema1131Writable = Schema1132 | null;
 
 /**
  * Role the invited person gets in the team
  */
-export type Schema1124Writable = Schema1115;
+export type Schema1134Writable = Schema1125;
 
 /**
  * Time when the invitation was accepted, or null
  */
-export type Schema1127Writable = Schema1128 | null;
+export type Schema1137Writable = Schema1138 | null;
 
 /**
  * Role of the member on the server
  */
-export type Schema1135Writable = Schema483;
+export type Schema1145Writable = Schema484;
 
 /**
  * Custom endpoint of an S3-compatible store, or null for Amazon S3
  */
-export type Schema1196Writable = Schema1197 | null;
+export type Schema1206Writable = Schema1207 | null;
 
 /**
  * Whether objects are gzipped
  */
-export type Schema1200Writable = Schema1201;
+export type Schema1210Writable = Schema1211;
 
 /**
  * Whether objects are gzipped
  */
-export type Schema1207Writable = Schema1201;
+export type Schema1217Writable = Schema1211;
 
 /**
  * Name of the custom auth header, or null when none is configured
  */
-export type Schema1209Writable = Schema1210 | null;
+export type Schema1219Writable = Schema1220 | null;
 
 /**
  * Time when the current failure streak started, or null
  */
-export type Schema1217Writable = Schema1218 | null;
+export type Schema1227Writable = Schema1228 | null;
 
 /**
  * Time of the next delivery attempt, or null
  */
-export type Schema1219Writable = Schema1220 | null;
+export type Schema1229Writable = Schema1230 | null;
 
 /**
  * Time of the last delivery attempt, or null
  */
-export type Schema1221Writable = Schema1222 | null;
+export type Schema1231Writable = Schema1232 | null;
 
 /**
  * Time of the last successful delivery, or null
  */
-export type Schema1223Writable = Schema1224 | null;
+export type Schema1233Writable = Schema1234 | null;
 
 /**
  * Message of the last delivery error, or null
  */
-export type Schema1225Writable = Schema1226 | null;
+export type Schema1235Writable = Schema1236 | null;
 
 /**
  * HTTP status the receiver answered with, or null when the request never completed
  */
-export type Schema1233Writable = Schema1234 | null;
+export type Schema1243Writable = Schema1244 | null;
 
 /**
  * First part of the response body, to help a tenant debug a rejection
  */
-export type Schema1235Writable = Schema1236 | null;
+export type Schema1245Writable = Schema1246 | null;
 
 /**
  * Error message when the request failed, or null
  */
-export type Schema1237Writable = Schema1238 | null;
+export type Schema1247Writable = Schema1248 | null;
 
 /**
  * Test object URL (s3://bucket/key or gs://bucket/key); null for HTTPS
  */
-export type Schema1239Writable = Schema1240 | null;
+export type Schema1249Writable = Schema1250 | null;
 
 /**
  * Time of the last MCP request that used the profile, accurate to 5 minutes; null when never used
  */
-export type Schema1252Writable = Schema1253 | null;
+export type Schema1262Writable = Schema1263 | null;
 
 /**
  * Time when the token was last used, or null if never used
  */
-export type Schema1309Writable = Schema1310 | null;
+export type Schema1319Writable = Schema1320 | null;
 
 /**
  * Raw token secret; only included when explicitly requested
  */
-export type Schema1312Writable = Schema1313;
+export type Schema1322Writable = Schema1323;
 
 /**
  * Profiles the user attached to this connection
  */
-export type Schema1327Writable = Array<Schema1328>;
+export type Schema1337Writable = Array<Schema1338>;
 
 /**
  * When the connection was first recorded; null before it authorizes or is used
  */
-export type Schema1329Writable = Schema1330 | null;
+export type Schema1339Writable = Schema1340 | null;
 
 /**
  * When the client last completed an authorization; null when not seen since recording began, and always null for an external client
  */
-export type Schema1331Writable = Schema1332 | null;
+export type Schema1341Writable = Schema1342 | null;
 
 /**
  * When the client last made a request; null when it has not made one
  */
-export type Schema1333Writable = Schema1334 | null;
+export type Schema1343Writable = Schema1344 | null;
 
 /**
  * When the client last listed skills over MCP (`skills/list`); null when it has not listed any since recording began
  */
-export type Schema1335Writable = Schema1336 | null;
+export type Schema1345Writable = Schema1346 | null;
 
 /**
  * IDs of the users the artifact is shared with
  */
-export type Schema1347Writable = Array<Schema1348>;
+export type Schema1357Writable = Array<Schema1358>;
 
 /**
  * IDs of the teams the artifact is shared with
  */
-export type Schema1349Writable = Array<Schema1350>;
+export type Schema1359Writable = Array<Schema1360>;
 
 /**
  * URL of the sandboxed content frame for the requested version (the current one by default), carrying a short-lived view token. Absent when no frame domain is configured; the viewer then fetches the content endpoint and renders it in an opaque-origin iframe
  */
-export type Schema1362Writable = Schema1363;
+export type Schema1372Writable = Schema1373;
 
 /**
  * What the version was uploaded as
  */
-export type Schema1365Writable = Schema1359;
+export type Schema1375Writable = Schema1369;
 
 /**
  * The Markdown as uploaded. Only present for Markdown versions
  */
-export type Schema1366Writable = Schema1367;
+export type Schema1376Writable = Schema1377;
 
 /**
  * The collection the skill is in, or null at root
  */
-export type Schema1394Writable = Schema1395 | null;
+export type Schema1404Writable = Schema1405 | null;
 
 /**
  * Name of that collection, or null at root
  */
-export type Schema1396Writable = Schema1397 | null;
+export type Schema1406Writable = Schema1407 | null;
 
 /**
  * IDs of the users the skill is shared with, any role
  */
-export type Schema1402Writable = Array<Schema1403>;
+export type Schema1412Writable = Array<Schema1413>;
 
 /**
  * IDs of the teams the skill is shared with, any role
  */
-export type Schema1404Writable = Array<Schema1405>;
+export type Schema1414Writable = Array<Schema1415>;
 
 /**
  * IDs of the users that maintain the skill: the same rights as the creator
  */
-export type Schema1406Writable = Array<Schema1407>;
+export type Schema1416Writable = Array<Schema1417>;
 
 /**
  * IDs of the teams whose members maintain the skill
  */
-export type Schema1408Writable = Array<Schema1409>;
+export type Schema1418Writable = Array<Schema1419>;
 
 /**
  * IDs of attached servers. Access to any of these servers grants read access to the skill
  */
-export type Schema1410Writable = Array<Schema1411>;
+export type Schema1420Writable = Array<Schema1421>;
 
 /**
  * The collection's general access, null at root
  */
-export type Schema1412Writable = Schema1393 | null;
+export type Schema1422Writable = Schema1403 | null;
 
 /**
  * Users with access through the collection, any role
  */
-export type Schema1413Writable = Array<Schema1414>;
+export type Schema1423Writable = Array<Schema1424>;
 
 /**
  * Teams with access through the collection, any role
  */
-export type Schema1415Writable = Array<Schema1416>;
+export type Schema1425Writable = Array<Schema1426>;
 
 /**
  * Users that maintain the collection, and so this skill
  */
-export type Schema1417Writable = Array<Schema1418>;
+export type Schema1427Writable = Array<Schema1428>;
 
 /**
  * Teams that maintain the collection, and so this skill
  */
-export type Schema1419Writable = Array<Schema1420>;
+export type Schema1429Writable = Array<Schema1430>;
 
 /**
  * IDs of the users the collection is shared with, any role
  */
-export type Schema1431Writable = Array<Schema1432>;
+export type Schema1441Writable = Array<Schema1442>;
 
 /**
  * IDs of the teams the collection is shared with, any role
  */
-export type Schema1433Writable = Array<Schema1434>;
+export type Schema1443Writable = Array<Schema1444>;
 
 /**
  * IDs of the users that maintain the collection
  */
-export type Schema1435Writable = Array<Schema1436>;
+export type Schema1445Writable = Array<Schema1446>;
 
 /**
  * IDs of the teams whose members maintain the collection
  */
-export type Schema1437Writable = Array<Schema1438>;
+export type Schema1447Writable = Array<Schema1448>;
 
 /**
  * Controls how tool refresh is authorized. "server-scoped" means only server-scoped credentials are required, "skip" means refresh is done without authorization, and "any" means any available credentials (server, user, profile) can be used. Defaults to "server-scoped".
  */
-export type ToolRefreshCredentialPolicyOutputWritable = Schema610;
+export type ToolRefreshCredentialPolicyOutputWritable = Schema611;
 
 export type GetAuthMeData = {
     body?: never;
@@ -9857,11 +9965,11 @@ export type GetUserResponses = {
      * Successful response
      */
     200: {
-        user: Schema578;
+        user: Schema579;
         /**
          * Last request time through a connected client or personal access token, or null if none exists or the caller cannot update the user
          */
-        lastActiveAt: Schema579 | null;
+        lastActiveAt: Schema580 | null;
     };
 };
 
@@ -9884,7 +9992,7 @@ export type UpdateUserResponses = {
      * Successful response
      */
     200: {
-        user: Schema578;
+        user: Schema579;
     };
 };
 
@@ -9906,7 +10014,7 @@ export type ListUserProfilesResponses = {
     /**
      * Successful response
      */
-    200: Schema580;
+    200: Schema581;
 };
 
 export type ListUserProfilesResponse = ListUserProfilesResponses[keyof ListUserProfilesResponses];
@@ -9927,7 +10035,7 @@ export type CreateUserProfileResponses = {
     /**
      * Successful response
      */
-    200: Schema580;
+    200: Schema581;
 };
 
 export type CreateUserProfileResponse = CreateUserProfileResponses[keyof CreateUserProfileResponses];
@@ -9979,7 +10087,7 @@ export type PatchUserProfileResponses = {
     /**
      * Successful response
      */
-    200: Schema580;
+    200: Schema581;
 };
 
 export type PatchUserProfileResponse = PatchUserProfileResponses[keyof PatchUserProfileResponses];
@@ -10000,7 +10108,7 @@ export type ListUserPersonalAccessTokensResponses = {
     /**
      * Successful response
      */
-    200: Schema587;
+    200: Schema588;
 };
 
 export type ListUserPersonalAccessTokensResponse = ListUserPersonalAccessTokensResponses[keyof ListUserPersonalAccessTokensResponses];
@@ -10021,7 +10129,7 @@ export type CreateUserPersonalAccessTokenResponses = {
     /**
      * Successful response
      */
-    200: Schema598;
+    200: Schema599;
 };
 
 export type CreateUserPersonalAccessTokenResponse = CreateUserPersonalAccessTokenResponses[keyof CreateUserPersonalAccessTokenResponses];
@@ -10096,7 +10204,7 @@ export type ListServiceAccountPersonalAccessTokensResponses = {
     /**
      * Successful response
      */
-    200: Schema587;
+    200: Schema588;
 };
 
 export type ListServiceAccountPersonalAccessTokensResponse = ListServiceAccountPersonalAccessTokensResponses[keyof ListServiceAccountPersonalAccessTokensResponses];
@@ -10117,7 +10225,7 @@ export type CreateServiceAccountPersonalAccessTokenResponses = {
     /**
      * Successful response
      */
-    200: Schema598;
+    200: Schema599;
 };
 
 export type CreateServiceAccountPersonalAccessTokenResponse = CreateServiceAccountPersonalAccessTokenResponses[keyof CreateServiceAccountPersonalAccessTokenResponses];
@@ -10202,7 +10310,7 @@ export type CreateMcpServerResponses = {
     /**
      * Successful response
      */
-    200: Schema788;
+    200: Schema794;
 };
 
 export type CreateMcpServerResponse = CreateMcpServerResponses[keyof CreateMcpServerResponses];
@@ -10241,7 +10349,7 @@ export type DeleteMcpServerResponses = {
     /**
      * Successful response
      */
-    200: Schema788;
+    200: Schema794;
 };
 
 export type DeleteMcpServerResponse = DeleteMcpServerResponses[keyof DeleteMcpServerResponses];
@@ -10259,7 +10367,7 @@ export type GetMcpServerResponses = {
     /**
      * Successful response
      */
-    200: Schema788;
+    200: Schema794;
 };
 
 export type GetMcpServerResponse = GetMcpServerResponses[keyof GetMcpServerResponses];
@@ -10277,7 +10385,7 @@ export type UpdateMcpServerResponses = {
     /**
      * Successful response
      */
-    200: Schema788;
+    200: Schema794;
 };
 
 export type UpdateMcpServerResponse = UpdateMcpServerResponses[keyof UpdateMcpServerResponses];
@@ -10291,11 +10399,11 @@ export type GetMcpServerDailyUsageData = {
         /**
          * How many days back the window reaches, 1 to 90; 30 by default
          */
-        days?: Schema209;
+        days?: Schema210;
         /**
          * IANA zone the days are cut in, such as Europe/Zurich; UTC if absent or unknown
          */
-        timeZone?: Schema210;
+        timeZone?: Schema211;
     };
     url: '/mcp-servers/{serverSlug}/daily-usage';
 };
@@ -10350,7 +10458,7 @@ export type StartMcpServerResponses = {
         /**
          * Detailed information about why the server could not be started.
          */
-        detail?: Schema816;
+        detail?: Schema822;
     };
 };
 
@@ -10447,7 +10555,7 @@ export type ListMcpServerToolsData = {
         /**
          * Set to false to blank the tool schemas in the response
          */
-        schemas?: Schema218;
+        schemas?: Schema219;
     };
     url: '/mcp-servers/{serverSlug}/tools';
 };
@@ -10456,7 +10564,7 @@ export type ListMcpServerToolsResponses = {
     /**
      * Successful response
      */
-    200: Schema819;
+    200: Schema825;
 };
 
 export type ListMcpServerToolsResponse = ListMcpServerToolsResponses[keyof ListMcpServerToolsResponses];
@@ -10464,8 +10572,8 @@ export type ListMcpServerToolsResponse = ListMcpServerToolsResponses[keyof ListM
 export type GetMcpServerToolData = {
     body?: never;
     path: {
-        serverSlug: Schema219;
-        toolName: Schema220;
+        serverSlug: Schema220;
+        toolName: Schema221;
     };
     query?: never;
     url: '/mcp-servers/{serverSlug}/tools/{toolName}';
@@ -10489,7 +10597,7 @@ export type PatchMcpServerToolData = {
         /**
          * Use this schema when overrideInputSchema is true. Null means there is no replacement.
          */
-        inputSchemaOverride?: Schema221 | null;
+        inputSchemaOverride?: Schema222 | null;
         /**
          * Whether descriptionOverride replaces the original description
          */
@@ -10497,7 +10605,11 @@ export type PatchMcpServerToolData = {
         /**
          * Whether inputSchemaOverride replaces the original input schema
          */
-        overrideInputSchema?: Schema222 | null;
+        overrideInputSchema?: Schema223 | null;
+        /**
+         * Whether to list an app-only tool for models
+         */
+        overrideAppOnly?: boolean;
         /**
          * Whether toolNameOverride replaces the original tool name
          */
@@ -10512,8 +10624,8 @@ export type PatchMcpServerToolData = {
         isEnabled?: boolean;
     };
     path: {
-        serverSlug: Schema219;
-        toolName: Schema220;
+        serverSlug: Schema220;
+        toolName: Schema221;
     };
     query?: never;
     url: '/mcp-servers/{serverSlug}/tools/{toolName}';
@@ -10529,7 +10641,7 @@ export type PatchMcpServerToolResponses = {
 export type PatchMcpServerToolResponse = PatchMcpServerToolResponses[keyof PatchMcpServerToolResponses];
 
 export type UpdateMcpServerAllToolsIsEnabledData = {
-    body?: Schema223;
+    body?: Schema224;
     path: {
         serverSlug: Schema48;
     };
@@ -10541,16 +10653,16 @@ export type UpdateMcpServerAllToolsIsEnabledResponses = {
     /**
      * Successful response
      */
-    200: Schema839;
+    200: Schema848;
 };
 
 export type UpdateMcpServerAllToolsIsEnabledResponse = UpdateMcpServerAllToolsIsEnabledResponses[keyof UpdateMcpServerAllToolsIsEnabledResponses];
 
 export type UpdateMcpServerToolIsEnabledData = {
-    body?: Schema223;
+    body?: Schema224;
     path: {
-        serverSlug: Schema219;
-        toolName: Schema220;
+        serverSlug: Schema220;
+        toolName: Schema221;
     };
     query?: never;
     url: '/mcp-servers/{serverSlug}/tools/{toolName}/isEnabled';
@@ -10560,7 +10672,7 @@ export type UpdateMcpServerToolIsEnabledResponses = {
     /**
      * Successful response
      */
-    200: Schema839;
+    200: Schema848;
 };
 
 export type UpdateMcpServerToolIsEnabledResponse = UpdateMcpServerToolIsEnabledResponses[keyof UpdateMcpServerToolIsEnabledResponses];
@@ -10572,8 +10684,8 @@ export type CallMcpServerToolData = {
         };
     };
     path: {
-        serverSlug: Schema219;
-        toolName: Schema220;
+        serverSlug: Schema220;
+        toolName: Schema221;
     };
     query?: never;
     url: '/mcp-servers/{serverSlug}/tools/{toolName}/call';
@@ -10594,6 +10706,10 @@ export type CallMcpServerToolResponses = {
             content?: Array<{
                 [key: string]: unknown;
             }>;
+            /**
+             * Tool result metadata from the MCP server. MCP Apps can read it
+             */
+            _meta?: Schema849;
         };
     };
 };
@@ -10608,7 +10724,7 @@ export type ListToolsData = {
         /**
          * Set to false to blank the tool schemas in the response
          */
-        schemas?: Schema224;
+        schemas?: Schema225;
     };
     url: '/tools';
 };
@@ -10617,7 +10733,7 @@ export type ListToolsResponses = {
     /**
      * Successful response
      */
-    200: Schema819;
+    200: Schema825;
 };
 
 export type ListToolsResponse = ListToolsResponses[keyof ListToolsResponses];
@@ -10644,11 +10760,11 @@ export type GetToolsSearchResponses = {
      * Successful response
      */
     200: {
-        pagination: Schema539;
+        pagination: Schema540;
         /**
          * Items on the current page
          */
-        data: Array<Schema840>;
+        data: Array<Schema850>;
     };
 };
 
@@ -10691,9 +10807,9 @@ export type ListMcpServerMembersResponse = ListMcpServerMembersResponses[keyof L
 export type DeleteMcpServerMemberData = {
     body?: never;
     path: {
-        serverSlug: Schema225;
-        memberType: Schema226;
-        memberId: Schema227;
+        serverSlug: Schema226;
+        memberType: Schema227;
+        memberId: Schema228;
     };
     query?: never;
     url: '/mcp-servers/{serverSlug}/members/{memberType}/{memberId}';
@@ -10715,9 +10831,9 @@ export type UpdateMcpServerMemberData = {
         role: 'member' | 'admin' | 'maintainer';
     };
     path: {
-        serverSlug: Schema225;
-        memberType: Schema226;
-        memberId: Schema227;
+        serverSlug: Schema226;
+        memberType: Schema227;
+        memberId: Schema228;
     };
     query?: never;
     url: '/mcp-servers/{serverSlug}/members/{memberType}/{memberId}';
@@ -10989,15 +11105,15 @@ export type CopyMcpServerCredentialsData = {
         /**
          * The scope to copy the credentials to
          */
-        to: Schema246;
+        to: Schema247;
         /**
          * Target profile ID when copying to profile scope
          */
-        profileId?: Schema247;
+        profileId?: Schema248;
         /**
          * Target user ID when copying to user scope which is not the currently authenticated user
          */
-        userId?: Schema248;
+        userId?: Schema249;
     };
     url: '/mcp-servers/{serverSlug}/credentials/copy';
 };
@@ -11019,7 +11135,7 @@ export type GetMcpServerCredentialsAuthorizeUrlData = {
         serverSlug: Schema48;
     };
     query?: {
-        scope?: Schema246;
+        scope?: Schema247;
         redirect?: 'true' | 'false';
         returnTo?: 'details' | 'settings' | 'thank-you-page' | 'profile' | 'profile-server';
         profileId?: string;
@@ -11066,7 +11182,7 @@ export type GetMcpServerCredentialsTokenData = {
         /**
          * ID of a specific credential to retrieve the token for. If omitted, the effective credentials for the current user are resolved automatically.
          */
-        credentialsId?: Schema249;
+        credentialsId?: Schema250;
     };
     url: '/mcp-servers/{serverSlug}/credentials/token';
 };
@@ -11243,7 +11359,7 @@ export type GetTenantData = {
         /**
          * ID of the tenant
          */
-        tenantId: Schema250;
+        tenantId: Schema251;
     };
     query?: never;
     url: '/tenants/{tenantId}';
@@ -11269,7 +11385,7 @@ export type GetTenantSubscriptionData = {
         /**
          * ID of the tenant
          */
-        tenantId: Schema250;
+        tenantId: Schema251;
     };
     query?: never;
     url: '/tenants/{tenantId}/subscription';
@@ -11317,11 +11433,11 @@ export type GetDeploymentsStatusData = {
         /**
          * ID of the sandbox to get the status of
          */
-        sandboxId?: Schema251;
+        sandboxId?: Schema252;
         /**
          * Slug of the server to get the status of
          */
-        serverSlug?: Schema252;
+        serverSlug?: Schema253;
     };
     url: '/deployments/status';
 };
@@ -11346,11 +11462,11 @@ export type ListDeploymentsLogsData = {
         /**
          * Name of the container to read. Defaults to the server container
          */
-        containerName?: Schema253;
+        containerName?: Schema254;
         /**
          * Set to "true" for the logs of the previous container instance
          */
-        previous?: Schema254;
+        previous?: Schema255;
     };
     url: '/deployments/logs';
 };
@@ -11364,8 +11480,8 @@ export type ListDeploymentsLogsResponses = {
          * Container logs
          */
         logs: {
-            stdout: Schema1029;
-            stderr: Schema1030;
+            stdout: Schema1039;
+            stderr: Schema1040;
         };
     };
 };
@@ -11379,15 +11495,15 @@ export type ListDeploymentsMetricsData = {
         /**
          * Slug of the server to get metrics for
          */
-        serverSlug?: Schema255;
+        serverSlug?: Schema256;
         /**
          * ID of the sandbox to get metrics for
          */
-        sandboxId?: Schema256;
+        sandboxId?: Schema257;
         /**
          * Time range of the metrics. Default is "1h"
          */
-        range?: Schema257;
+        range?: Schema258;
     };
     url: '/deployments/metrics';
 };
@@ -11408,15 +11524,15 @@ export type ListDeploymentsDeploymentLogsData = {
         /**
          * Deprecated; no longer supported
          */
-        hostedFunctionId?: Schema258;
+        hostedFunctionId?: Schema259;
         /**
          * Slug of the server
          */
-        serverSlug?: Schema259;
+        serverSlug?: Schema260;
         /**
          * Name of a specific pod to watch
          */
-        podName?: Schema260;
+        podName?: Schema261;
     };
     url: '/deployments/deployment-logs';
 };
@@ -11437,7 +11553,7 @@ export type ListTeamsData = {
         /**
          * Only return teams this user is a member of
          */
-        userId?: Schema261;
+        userId?: Schema262;
     };
     url: '/teams';
 };
@@ -11462,7 +11578,7 @@ export type CreateTeamData = {
          * Display name of the team, unique in the organization
          */
         name: string;
-        description: Schema262;
+        description: Schema263;
     };
     path?: never;
     query?: never;
@@ -11473,7 +11589,7 @@ export type CreateTeamResponses = {
     /**
      * Successful response
      */
-    200: Schema1110;
+    200: Schema1120;
 };
 
 export type CreateTeamResponse = CreateTeamResponses[keyof CreateTeamResponses];
@@ -11484,7 +11600,7 @@ export type DeleteTeamData = {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}';
@@ -11507,7 +11623,7 @@ export type GetTeamData = {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}';
@@ -11517,7 +11633,7 @@ export type GetTeamResponses = {
     /**
      * Successful response
      */
-    200: Schema1110;
+    200: Schema1120;
 };
 
 export type GetTeamResponse = GetTeamResponses[keyof GetTeamResponses];
@@ -11528,13 +11644,13 @@ export type UpdateTeamData = {
          * Display name of the team, unique in the organization
          */
         name: string;
-        description: Schema262;
+        description: Schema263;
     };
     path: {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}';
@@ -11544,7 +11660,7 @@ export type UpdateTeamResponses = {
     /**
      * Successful response
      */
-    200: Schema1110;
+    200: Schema1120;
 };
 
 export type UpdateTeamResponse = UpdateTeamResponses[keyof UpdateTeamResponses];
@@ -11555,7 +11671,7 @@ export type ListTeamMembersData = {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}/members';
@@ -11569,7 +11685,7 @@ export type ListTeamMembersResponses = {
         /**
          * Members of the team
          */
-        members: Array<Schema1111>;
+        members: Array<Schema1121>;
     };
 };
 
@@ -11584,13 +11700,13 @@ export type CreateTeamMemberData = {
         /**
          * Role of the user in the team
          */
-        role: Schema264;
+        role: Schema265;
     };
     path: {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}/members';
@@ -11616,11 +11732,11 @@ export type DeleteTeamMemberData = {
         /**
          * ID of the team
          */
-        teamId: Schema265;
+        teamId: Schema266;
         /**
          * ID of the team member
          */
-        userId: Schema266;
+        userId: Schema267;
     };
     query?: never;
     url: '/teams/{teamId}/members/{userId}';
@@ -11645,17 +11761,17 @@ export type UpdateTeamMemberData = {
         /**
          * New role of the member in the team
          */
-        role: Schema264;
+        role: Schema265;
     };
     path: {
         /**
          * ID of the team
          */
-        teamId: Schema265;
+        teamId: Schema266;
         /**
          * ID of the team member
          */
-        userId: Schema266;
+        userId: Schema267;
     };
     query?: never;
     url: '/teams/{teamId}/members/{userId}';
@@ -11681,7 +11797,7 @@ export type ListTeamInvitationsData = {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}/invitations';
@@ -11710,13 +11826,13 @@ export type CreateTeamInvitationData = {
         /**
          * Role the invited person gets in the team
          */
-        role: Schema264;
+        role: Schema265;
     };
     path: {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}/invitations';
@@ -11772,7 +11888,7 @@ export type ListTeamServersData = {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}/servers';
@@ -11786,7 +11902,7 @@ export type ListTeamServersResponses = {
         /**
          * MCP server permissions granted to the team
          */
-        permissions: Array<Schema1131>;
+        permissions: Array<Schema1141>;
     };
 };
 
@@ -11798,7 +11914,7 @@ export type ListTeamClaimMappingsData = {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}/claim-mappings';
@@ -11833,7 +11949,7 @@ export type CreateTeamClaimMappingData = {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}/claim-mappings';
@@ -11889,7 +12005,7 @@ export type ListTeamProfilesData = {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}/profiles';
@@ -11899,7 +12015,7 @@ export type ListTeamProfilesResponses = {
     /**
      * Successful response
      */
-    200: Schema1145;
+    200: Schema1155;
 };
 
 export type ListTeamProfilesResponse = ListTeamProfilesResponses[keyof ListTeamProfilesResponses];
@@ -11910,7 +12026,7 @@ export type CreateTeamProfileData = {
         /**
          * ID of the team
          */
-        teamId: Schema263;
+        teamId: Schema264;
     };
     query?: never;
     url: '/teams/{teamId}/profiles';
@@ -11920,7 +12036,7 @@ export type CreateTeamProfileResponses = {
     /**
      * Successful response
      */
-    200: Schema1145;
+    200: Schema1155;
 };
 
 export type CreateTeamProfileResponse = CreateTeamProfileResponses[keyof CreateTeamProfileResponses];
@@ -11972,7 +12088,7 @@ export type CreateSecretStoreData = {
     body?: {
         name: string;
         type: 'aws_secrets_manager' | 'gcp_secret_manager' | 'hashicorp_vault' | 'infisical' | 'azure_key_vault';
-        configuration: Schema270;
+        configuration: Schema271;
     };
     path?: never;
     query?: never;
@@ -12025,7 +12141,7 @@ export type GetSecretStoreResponse = GetSecretStoreResponses[keyof GetSecretStor
 export type PatchSecretStoreData = {
     body?: {
         name?: string;
-        configuration?: Schema270;
+        configuration?: Schema271;
         isEnabled?: boolean;
     };
     path: {
@@ -12258,7 +12374,7 @@ export type ListProfilesData = {
         /**
          * Filter by maintainer user ID
          */
-        maintainerUserId?: Schema340;
+        maintainerUserId?: Schema341;
     };
     url: '/profiles';
 };
@@ -12284,9 +12400,9 @@ export type CreateProfileData = {
          * Human-readable description of the profile
          */
         description: string;
-        isOpenToAllUsers: Schema341;
-        isRestrictive: Schema342;
-        isCodeModeForced?: Schema343;
+        isOpenToAllUsers: Schema342;
+        isRestrictive: Schema343;
+        isCodeModeForced?: Schema344;
     };
     path?: never;
     query?: never;
@@ -12349,18 +12465,18 @@ export type UpdateProfileData = {
         /**
          * Display name of the profile
          */
-        name?: Schema344;
+        name?: Schema345;
         /**
          * Human-readable description of the profile
          */
         description?: string;
-        isOpenToAllUsers?: Schema341;
-        isRestrictive?: Schema342;
-        isCodeModeForced?: Schema343;
+        isOpenToAllUsers?: Schema342;
+        isRestrictive?: Schema343;
+        isCodeModeForced?: Schema344;
         /**
          * Servers of the profile, each given by its ID or its slug. Replaces the current list: a server that is not listed is removed from the profile, together with its tool configuration for the profile. A value that matches no server is refused
          */
-        serverIds?: Schema345;
+        serverIds?: Schema346;
     };
     path: {
         profileId: string;
@@ -12563,7 +12679,7 @@ export type UpdateProfileServerToolsData = {
         /**
          * Tools of the server that the profile enables, promotes or renames
          */
-        tools: Array<Schema346>;
+        tools: Array<Schema347>;
     };
     path: {
         profileId: string;
@@ -12701,7 +12817,7 @@ export type CreateSandboxWriteFileData = {
         sandboxId: string;
     };
     query: {
-        path: Schema352;
+        path: Schema353;
     };
     url: '/sandboxes/{sandboxId}/write-file';
 };
@@ -12723,7 +12839,7 @@ export type CreateSandboxReadFileData = {
         sandboxId: string;
     };
     query: {
-        path: Schema352;
+        path: Schema353;
     };
     url: '/sandboxes/{sandboxId}/read-file';
 };
@@ -12832,7 +12948,7 @@ export type GetScimConfigTokenSecretData = {
         /**
          * ID of the SCIM token
          */
-        tokenId: Schema360;
+        tokenId: Schema361;
     };
     query?: never;
     url: '/scim-config/tokens/{tokenId}/secret';
@@ -12853,7 +12969,7 @@ export type DeleteScimConfigTokenData = {
         /**
          * ID of the SCIM token
          */
-        tokenId: Schema360;
+        tokenId: Schema361;
     };
     query?: never;
     url: '/scim-config/tokens/{tokenId}';
@@ -12880,7 +12996,7 @@ export type ListConnectedClientsData = {
         /**
          * User ID; defaults to the signed-in user and requires update permission for another user
          */
-        userId?: Schema361;
+        userId?: Schema362;
     };
     url: '/connected-clients';
 };
@@ -12900,7 +13016,7 @@ export type DeleteConnectedClientData = {
         /**
          * OAuth client ID of the connection
          */
-        clientId: Schema362;
+        clientId: Schema363;
     };
     query?: never;
     url: '/connected-clients/{clientId}';
@@ -12923,7 +13039,7 @@ export type PatchConnectedClientData = {
         /**
          * OAuth client ID of the connection
          */
-        clientId: Schema362;
+        clientId: Schema363;
     };
     query?: never;
     url: '/connected-clients/{clientId}';
@@ -12999,7 +13115,7 @@ export type GetArtifactData = {
         /**
          * Version the frame URL should show. Defaults to the current version
          */
-        version?: Schema376;
+        version?: Schema377;
     };
     url: '/artifacts/{artifactId}';
 };
@@ -13090,15 +13206,15 @@ export type ListArtifactSharesResponse = ListArtifactSharesResponses[keyof ListA
 export type UnshareArtifactData = {
     body?: never;
     path: {
-        artifactId: Schema385;
+        artifactId: Schema386;
         /**
          * 'users' to share with one user account, 'teams' to share with every member of a team
          */
-        memberType: Schema386;
+        memberType: Schema387;
         /**
          * ID of the user or of the team
          */
-        memberId: Schema387;
+        memberId: Schema388;
     };
     query?: never;
     url: '/artifacts/{artifactId}/shares/{memberType}/{memberId}';
@@ -13116,15 +13232,15 @@ export type UnshareArtifactResponse = UnshareArtifactResponses[keyof UnshareArti
 export type ShareArtifactData = {
     body?: never;
     path: {
-        artifactId: Schema385;
+        artifactId: Schema386;
         /**
          * 'users' to share with one user account, 'teams' to share with every member of a team
          */
-        memberType: Schema386;
+        memberType: Schema387;
         /**
          * ID of the user or of the team
          */
-        memberId: Schema387;
+        memberId: Schema388;
     };
     query?: never;
     url: '/artifacts/{artifactId}/shares/{memberType}/{memberId}';
@@ -13266,11 +13382,11 @@ export type ListSkillsData = {
         /**
          * Case-insensitive text matched against the name and the description of each skill
          */
-        query?: Schema430;
+        query?: Schema431;
         /**
          * Name of a collection: only the skills in it
          */
-        collection?: Schema431;
+        collection?: Schema432;
     };
     url: '/skills';
 };
@@ -13435,15 +13551,15 @@ export type ListSkillSharesResponse = ListSkillSharesResponses[keyof ListSkillSh
 export type UnshareSkillData = {
     body?: never;
     path: {
-        skillId: Schema440;
+        skillId: Schema441;
         /**
          * 'users' for one user, 'teams' for team members, 'servers' for users with server access
          */
-        memberType: Schema441;
+        memberType: Schema442;
         /**
          * User, team or server ID
          */
-        memberId: Schema442;
+        memberId: Schema443;
     };
     query?: never;
     url: '/skills/{skillId}/shares/{memberType}/{memberId}';
@@ -13461,15 +13577,15 @@ export type UnshareSkillResponse = UnshareSkillResponses[keyof UnshareSkillRespo
 export type ShareSkillData = {
     body?: ShareRoleBody;
     path: {
-        skillId: Schema440;
+        skillId: Schema441;
         /**
          * 'users' for one user, 'teams' for team members, 'servers' for users with server access
          */
-        memberType: Schema441;
+        memberType: Schema442;
         /**
          * User, team or server ID
          */
-        memberId: Schema442;
+        memberId: Schema443;
     };
     query?: never;
     url: '/skills/{skillId}/shares/{memberType}/{memberId}';
@@ -13519,7 +13635,7 @@ export type CreateSkillCollectionResponse = CreateSkillCollectionResponses[keyof
 export type DeleteSkillCollectionData = {
     body?: never;
     path: {
-        collectionId: Schema449;
+        collectionId: Schema450;
     };
     query?: never;
     url: '/skill-collections/{collectionId}';
@@ -13539,7 +13655,7 @@ export type DeleteSkillCollectionResponse = DeleteSkillCollectionResponses[keyof
 export type GetSkillCollectionData = {
     body?: never;
     path: {
-        collectionId: Schema449;
+        collectionId: Schema450;
     };
     query?: never;
     url: '/skill-collections/{collectionId}';
@@ -13557,7 +13673,7 @@ export type GetSkillCollectionResponse = GetSkillCollectionResponses[keyof GetSk
 export type UpdateSkillCollectionData = {
     body?: UpdateSkillCollectionBody;
     path: {
-        collectionId: Schema449;
+        collectionId: Schema450;
     };
     query?: never;
     url: '/skill-collections/{collectionId}';
@@ -13575,7 +13691,7 @@ export type UpdateSkillCollectionResponse = UpdateSkillCollectionResponses[keyof
 export type ListSkillCollectionSharesData = {
     body?: never;
     path: {
-        collectionId: Schema449;
+        collectionId: Schema450;
     };
     query?: never;
     url: '/skill-collections/{collectionId}/shares';
@@ -13593,15 +13709,15 @@ export type ListSkillCollectionSharesResponse = ListSkillCollectionSharesRespons
 export type UnshareSkillCollectionData = {
     body?: never;
     path: {
-        collectionId: Schema453;
+        collectionId: Schema454;
         /**
          * 'users' to share with one user account, 'teams' to share with every member of a team
          */
-        memberType: Schema454;
+        memberType: Schema455;
         /**
          * ID of the user or of the team
          */
-        memberId: Schema455;
+        memberId: Schema456;
     };
     query?: never;
     url: '/skill-collections/{collectionId}/shares/{memberType}/{memberId}';
@@ -13619,15 +13735,15 @@ export type UnshareSkillCollectionResponse = UnshareSkillCollectionResponses[key
 export type ShareSkillCollectionData = {
     body?: ShareRoleBody;
     path: {
-        collectionId: Schema453;
+        collectionId: Schema454;
         /**
          * 'users' to share with one user account, 'teams' to share with every member of a team
          */
-        memberType: Schema454;
+        memberType: Schema455;
         /**
          * ID of the user or of the team
          */
-        memberId: Schema455;
+        memberId: Schema456;
     };
     query?: never;
     url: '/skill-collections/{collectionId}/shares/{memberType}/{memberId}';
@@ -13661,7 +13777,7 @@ export type ListServerSkillsResponse2 = ListServerSkillsResponses[keyof ListServ
 export type ListMcpServerSkillsData = {
     body?: never;
     path: {
-        serverSlug: Schema456;
+        serverSlug: Schema457;
     };
     query?: never;
     url: '/mcp-servers/{serverSlug}/skills';
@@ -13679,7 +13795,7 @@ export type ListMcpServerSkillsResponse2 = ListMcpServerSkillsResponses[keyof Li
 export type GetMcpServerSkillFileData = {
     body?: never;
     path: {
-        serverSlug: Schema456;
+        serverSlug: Schema457;
     };
     query: {
         /**
@@ -13698,6 +13814,29 @@ export type GetMcpServerSkillFileResponses = {
 };
 
 export type GetMcpServerSkillFileResponse2 = GetMcpServerSkillFileResponses[keyof GetMcpServerSkillFileResponses];
+
+export type GetMcpServerAppPageData = {
+    body?: never;
+    path: {
+        serverSlug: string;
+    };
+    query: {
+        /**
+         * Page URI published by the MCP server
+         */
+        uri: string;
+    };
+    url: '/mcp-servers/{serverSlug}/app-pages';
+};
+
+export type GetMcpServerAppPageResponses = {
+    /**
+     * Successful response
+     */
+    200: GetMcpServerAppPageResponse;
+};
+
+export type GetMcpServerAppPageResponse2 = GetMcpServerAppPageResponses[keyof GetMcpServerAppPageResponses];
 
 export type ListBuiltinSkillsData = {
     body?: never;

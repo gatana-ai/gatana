@@ -5,8 +5,8 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
-from ..models.schema_1378 import Schema1378
-from ..models.schema_1379 import Schema1379
+from ..models.schema_1388 import Schema1388
+from ..models.schema_1389 import Schema1389
 
 T = TypeVar("T", bound="ArtifactThemeSummaryDto")
 
@@ -20,9 +20,9 @@ class ArtifactThemeSummaryDto:
         background_color (str): Lowercase hex color, #rrggbb
         text_color (str): Lowercase hex color, #rrggbb
         accent_color (str): Lowercase hex color, #rrggbb
-        heading_font (Schema1378):
-        body_font (Schema1378):
-        code_font (Schema1379):
+        heading_font (Schema1388):
+        body_font (Schema1388):
+        code_font (Schema1389):
         created_at (str):
         updated_at (str):
         has_logo (bool): Whether the theme shows a logo at the top of the page
@@ -33,9 +33,9 @@ class ArtifactThemeSummaryDto:
     background_color: str
     text_color: str
     accent_color: str
-    heading_font: Schema1378
-    body_font: Schema1378
-    code_font: Schema1379
+    heading_font: Schema1388
+    body_font: Schema1388
+    code_font: Schema1389
     created_at: str
     updated_at: str
     has_logo: bool
@@ -96,11 +96,11 @@ class ArtifactThemeSummaryDto:
 
         accent_color = d.pop("accentColor")
 
-        heading_font = Schema1378(d.pop("headingFont"))
+        heading_font = Schema1388(d.pop("headingFont"))
 
-        body_font = Schema1378(d.pop("bodyFont"))
+        body_font = Schema1388(d.pop("bodyFont"))
 
-        code_font = Schema1379(d.pop("codeFont"))
+        code_font = Schema1389(d.pop("codeFont"))
 
         created_at = d.pop("createdAt")
 
